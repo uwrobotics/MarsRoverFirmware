@@ -1790,7 +1790,7 @@ all: $(APP_OUT_PATH)/$(PROJECT).bin # $(APP_OUT_PATH)/$(PROJECT).hex size
 $(APP_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
 	@$(PREPROC) $< -o $@
 
-$(APP_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(MBED_OBJ) $(PROJECT).link_script.ld 
+$(APP_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(MBED_OBJ) $(APP_OUT_PATH)/$(PROJECT).link_script.ld 
 	+@echo "$(filter %.o, $^)" > .link_options.txt
 	+@echo "link: $(notdir $@)"
 	@$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
