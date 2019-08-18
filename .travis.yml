@@ -1,7 +1,10 @@
 language: c
 
 os:
-- linux
+  - linux
+
+dist: 
+  - bionic
 
 # Only trigger builds on master
 branches:
