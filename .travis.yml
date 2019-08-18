@@ -23,6 +23,7 @@ env:
 
 # Install tools needed by build
 install:
+  - sudo apt install tree
   - wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2 -O /tmp/gcc-arm-none-eabi-8.tar.gz
   - tar -xf /tmp/gcc-arm-none-eabi-8.tar.gz
   - export PATH=$PATH:$PWD/gcc-arm-none-eabi-8-2019-q3-update/bin/
@@ -31,7 +32,13 @@ install:
 before_script:
   - arm-none-eabi-gcc --version
   - make --version
+  - pwd
+  - ls -la
 
 # Build with matrix
 script:
-  - make APP=$APP TARGET=$TARGET -j8
+  - make APP=$APP TARGET=$TARGET -j4
+
+# Log diagnostic info
+after_script:
+  - tree build -h
