@@ -33,7 +33,7 @@ env:
 # Install tools needed by build
 install:
   - mkdir -p $ARM_TOOLS_PATH
-  - if [ ! -f "$ARM_TOOLS_PATH/$ARM_TOOLS_DIR" ]; then wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xf /tmp/arm-tools.tar.gz -C $ARM_TOOLS_PATH"; fi
+  - if [ ! -f "$ARM_TOOLS_PATH/$ARM_TOOLS_DIR" ]; then wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xf /tmp/arm-tools.tar.gz -C $ARM_TOOLS_PATH; fi
   - export PATH=$PATH:$ARM_TOOLS_PATH/$ARM_TOOLS_DIR/bin/
 
 # Print toolchain versions
