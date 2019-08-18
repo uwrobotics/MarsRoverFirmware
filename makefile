@@ -3,15 +3,17 @@
 # Can be used to cross-compile compatible apps on different STM32-F446RE boards
 # Just run `make` command in same directory to see options.
 #
-# Example: $ make APP=test_blinky BOARD=nucleo
-#          $ make APP=test_blinky BOARD=science
-#          $ make APP=arm_lower   BOARD=arm
+# Example: $ make APP=test_blinky TARGET=nucleo
+#          $ make APP=test_blinky TARGET=science
+#          $ make APP=arm_lower   TARGET=arm
 #
 ###############################################################################
 
 BUILD_PATH    := build
+TARGETS_PATH  := targets
 APPS_PATH	  := apps
 APP_OUT_PATH  := ../$(BUILD_PATH)/$(APP)
+TARGET_PATH   := ../$(TARGETS_PATH)/$(TARGET)
 APP_PATH      := ../$(APPS_PATH)/$(APP)
 LIB_PATH      := ../lib
 MBED_PATH     := ../mbed-os
@@ -23,13 +25,22 @@ CONFIG_PATH   := ../config
 # cross-platform directory manipulation
 ifeq ($(shell echo $$OS),$$OS)
     MAKE_DIR = if not exist "$(1)" mkdir "$(1)"
-    RM = rmdir /S /Q "$(1)"
+    RM_DIR = rmdir /S /Q "$(1)"
     RM_FILE_TYPE = del /S /Q "$(1)" "$(2)"
 else
     MAKE_DIR = '$(SHELL)' -c "mkdir -p \"$(1)\""
-    RM = '$(SHELL)' -c "rm -rf \"$(1)\""
+    RM_DIR = '$(SHELL)' -c "rm -rf \"$(1)\""
     RM_FILE_TYPE = '$(SHELL)' -c "find $(1) -name \"$(2)\" -delete -print"
 endif
+
+null :=
+space := ${null} ${null}
+${space} := ${space}
+
+define \n
+
+
+endef
 
 # Move to the build directory
 ifeq (,$(filter $(BUILD_PATH),$(notdir $(CURDIR))))
@@ -45,8 +56,8 @@ ifeq ($(filter $(APP), $(patsubst $(APPS_PATH)/%/,%,$(sort $(dir $(wildcard $(AP
 	$(error APP is not set or is not supported. ${\n}Select an app to build with APP=app_name:${\n}${\n}$(subst ${ },${\n},$(patsubst $(APPS_PATH)/%/,%,$(sort $(dir $(wildcard $(APPS_PATH)/*/)))))${\n}${\n})
 endif
 
-ifeq ($(filter $(BOARD)," nucleo arm science safety "),)
-	$(error BOARD is not set or is not supported. Set BOARD=board_name:${\n}${\n}safety${\n}arm${\n}science${\n}nucleo${\n}${\n}))
+ifeq ($(filter $(TARGET), $(patsubst $(TARGETS_PATH)/%/,%,$(sort $(dir $(wildcard $(TARGETS_PATH)/*/))))),)
+	$(error TARGET is not set or is not supported. ${\n}Select a target with TARGET=board_name:${\n}${\n}$(subst ${ },${\n},$(patsubst $(TARGETS_PATH)/%/,%,$(sort $(dir $(wildcard $(TARGETS_PATH)/*/)))))${\n}${\n})
 endif
 
 	+@$(call MAKE_DIR,$(BUILD_PATH)/$(APP))
@@ -80,7 +91,7 @@ VPATH = ..
 ###############################################################################
 # Project settings
 
-PROJECT := $(APP)_$(BOARD)
+PROJECT := $(APP)_$(TARGET)
 
 # Project settings
 ###############################################################################
@@ -100,11 +111,15 @@ SRC_FILES_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
 
 include ${MBED_PATH}/mbed_make_obj_inc
 
-OBJECTS += $(SRC_FILES_C:.c=.o) $(SRC_FILES_CPP:.cpp=.o) ${MBED_OBJ}
+TARGET_OBJ += ${TARGET_PATH}/PeripheralPins.o
+TARGET_OBJ += ${TARGET_PATH}/system_clock.o
+
+OBJECTS += $(SRC_FILES_C:.c=.o) $(SRC_FILES_CPP:.cpp=.o) ${MBED_OBJ} ${TARGET_OBJ}
 
 INCLUDE_PATHS += -I$(CONFIG_PATH)
 INCLUDE_PATHS += -I$(LIB_PATH)
 INCLUDE_PATHS += -I$(MBED_PATH)
+INCLUDE_PATHS += -I${TARGET_PATH}
 INCLUDE_PATHS += $(APP_INC) $(LIB_INC) $(MBED_INC)
 
 LIBRARY_PATHS :=
@@ -120,17 +135,12 @@ CC      = arm-none-eabi-gcc
 CPP     = arm-none-eabi-g++
 LD      = arm-none-eabi-gcc
 ELF2BIN = arm-none-eabi-objcopy
-PREPROC = arm-none-eabi-cpp -E -P -Wl,--gc-sections -Wl,--wrap,main -Wl,--wrap,_malloc_r -Wl,--wrap,_free_r -Wl,--wrap,_realloc_r -Wl,--wrap,_memalign_r -Wl,--wrap,_calloc_r -Wl,--wrap,exit -Wl,--wrap,atexit -Wl,-n -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -DMBED_ROM_START=0x8000000 -DMBED_ROM_SIZE=0x80000 -DMBED_RAM_START=0x20000000 -DMBED_RAM_SIZE=0x20000 -DMBED_BOOT_STACK_SIZE=1024
 
-ifeq ($(BOARD),nucleo)
-	COMMON_FLAGS += -DNUCLEO_PINMAP
-else ifeq ($(BOARD),arm)
-	COMMON_FLAGS += -DROVERBOARD_ARM_PINMAP
-else ifeq ($(BOARD),science)
-	COMMON_FLAGS += -DROVERBOARD_SCIENCE_PINMAP
-else ifeq ($(BOARD),safety)
-	COMMON_FLAGS += -DROVERBOARD_SAFETY_PINMAP
-endif
+MEM_DEFINITIONS := -DMBED_ROM_START=0x8000000 -DMBED_ROM_SIZE=0x80000 -DMBED_RAM_START=0x20000000 -DMBED_RAM_SIZE=0x20000 -DMBED_BOOT_STACK_SIZE=1024 
+LD_FLAGS := -Wl,--gc-sections -Wl,--wrap,main -Wl,--wrap,_malloc_r -Wl,--wrap,_free_r -Wl,--wrap,_realloc_r -Wl,--wrap,_memalign_r -Wl,--wrap,_calloc_r -Wl,--wrap,exit -Wl,--wrap,atexit -Wl,-n -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp ${MEM_DEFINITIONS}
+LD_SYS_LIBS := -Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys  -Wl,--end-group
+
+PREPROC = arm-none-eabi-cpp -E -P ${LD_FLAGS}
 
 DEFINITIONS += -D__CMSIS_RTOS
 DEFINITIONS += -D__CORTEX_M4
@@ -167,11 +177,6 @@ DEFINITIONS += -DDEVICE_SPISLAVE=1
 DEFINITIONS += -DDEVICE_STDIO_MESSAGES=1
 DEFINITIONS += -DDEVICE_USTICKER=1
 DEFINITIONS += -DDEVICE_WATCHDOG=1
-DEFINITIONS += -DMBED_BUILD_TIMESTAMP=1566094560.68
-DEFINITIONS += -DMBED_RAM_SIZE=0x20000
-DEFINITIONS += -DMBED_RAM_START=0x20000000
-DEFINITIONS += -DMBED_ROM_SIZE=0x80000
-DEFINITIONS += -DMBED_ROM_START=0x8000000
 DEFINITIONS += -DMBED_TRAP_ERRORS_ENABLED=1
 DEFINITIONS += -DTARGET_CORTEX
 DEFINITIONS += -DTARGET_CORTEX_M
@@ -196,6 +201,7 @@ DEFINITIONS += -DUSB_STM_HAL
 DEFINITIONS += -DUSBHOST_OTHER
 DEFINITIONS += -DUSE_FULL_LL_DRIVER
 DEFINITIONS += -DUSE_HAL_DRIVER
+DEFINITIONS += ${MEM_DEFINITIONS}
 
 COMMON_FLAGS += -c
 COMMON_FLAGS += -fdata-sections
@@ -245,11 +251,6 @@ ASM_FLAGS += $(CONFIG_PATH)/mbed_config.h
 ASM_FLAGS += -x
 ASM_FLAGS += assembler-with-cpp
 ASM_FLAGS += ${COMMON_FLAGS}
-
-
-
-LD_FLAGS := -Wl,--gc-sections -Wl,--wrap,main -Wl,--wrap,_malloc_r -Wl,--wrap,_free_r -Wl,--wrap,_realloc_r -Wl,--wrap,_memalign_r -Wl,--wrap,_calloc_r -Wl,--wrap,exit -Wl,--wrap,atexit -Wl,-n -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -DMBED_ROM_START=0x8000000 -DMBED_ROM_SIZE=0x80000 -DMBED_RAM_START=0x20000000 -DMBED_RAM_SIZE=0x20000 -DMBED_BOOT_STACK_SIZE=1024 
-LD_SYS_LIBS := -Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys  -Wl,--end-group
 
 # Tools and Flags
 ###############################################################################
