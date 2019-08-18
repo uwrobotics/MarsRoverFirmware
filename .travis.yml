@@ -8,8 +8,17 @@ branches:
   only:
   - master # Build all commits and PR's on master
 
+# Cache ARM toolchain
+cache:
+  directories:
+    - "$HOME/cache"
+
 # Build matrix
 env:
+  global:
+    - ARM_TOOLS_URL=https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2
+    - ARM_TOOLS_DIR=gcc-arm-none-eabi-8-2019-q3-update
+    - ARM_TOOLS_PATH=$HOME/cache
   matrix:
     - APP=test-blinky  TARGET=nucleo
     - APP=test-blinky  TARGET=arm
@@ -23,9 +32,9 @@ env:
 
 # Install tools needed by build
 install:
-  - wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2 -O /tmp/gcc-arm-none-eabi-8.tar.gz
-  - tar -xf /tmp/gcc-arm-none-eabi-8.tar.gz
-  - export PATH=$PATH:$PWD/gcc-arm-none-eabi-8-2019-q3-update/bin/
+  - mkdir -p $ARM_TOOLS_PATH
+  - if [ ! -f "$ARM_TOOLS_PATH/$ARM_TOOLS_DIR" ]; then wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xf /tmp/arm-tools.tar.gz -C $ARM_TOOLS_PATH"; fi
+  - export PATH=$PATH:$ARM_TOOLS_PATH/$ARM_TOOLS_DIR/bin/
 
 # Print toolchain versions
 before_script:
