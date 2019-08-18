@@ -34,7 +34,7 @@ env:
 install:
   - ls -la $ARM_TOOLS_PATH
   - mkdir -p $ARM_TOOLS_PATH
-  - if [ ! -f "$ARM_TOOLS_PATH/$ARM_TOOLS_DIR" ]; then wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xvf /tmp/arm-tools.tar.gz -C $ARM_TOOLS_PATH; fi
+  - if [ ! -d "$ARM_TOOLS_PATH/$ARM_TOOLS_DIR" ]; then wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xvf /tmp/arm-tools.tar.gz -C $ARM_TOOLS_PATH; fi
   - ls -la $ARM_TOOLS_PATH/$ARM_TOOLS_DIR/bin/
   - export PATH=$PATH:$ARM_TOOLS_PATH/$ARM_TOOLS_DIR/bin/
 
