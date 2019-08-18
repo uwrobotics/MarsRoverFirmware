@@ -19,10 +19,10 @@ LIB_PATH      := ../lib
 MBED_PATH     := ../mbed-os
 CONFIG_PATH   := ../config
 
+# Utility
 ###############################################################################
-# Boiler-plate
 
-# cross-platform directory manipulation
+# Cross-platform commands
 ifeq ($(shell echo $$OS),$$OS)
     MAKE_DIR = if not exist "$(1)" mkdir "$(1)"
     RM_DIR = rmdir /S /Q "$(1)"
@@ -33,6 +33,7 @@ else
     RM_FILE_TYPE = '$(SHELL)' -c "find $(1) -name \"$(2)\" -delete -print"
 endif
 
+# Whitespace definitions
 null :=
 space := ${null} ${null}
 ${space} := ${space}
@@ -78,24 +79,27 @@ clean :
 	$(call RM_FILE_TYPE,lib,*.d)
 	$(call RM_FILE_TYPE,lib,*.o)
 
-clean-mbed: 
+clean-mbed : 
 	$(call RM_FILE_TYPE,mbed-os,*.d)
 	$(call RM_FILE_TYPE,mbed-os,*.o)
+
+clean-all :
+	$(call RM_DIR,$(BUILD_PATH))
+	$(call RM_FILE_TYPE,..,*.d)
+	$(call RM_FILE_TYPE,..,*.o)
 
 else
 
 # Trick rules into thinking we are in the root, when we are in the bulid dir
 VPATH = ..
 
-# Boiler-plate
-###############################################################################
-# Project settings
-
-PROJECT := $(APP)_$(TARGET)
-
 # Project settings
 ###############################################################################
+
+PROJECT := $(APP).$(TARGET)
+
 # Objects and Paths
+###############################################################################
 
 APP_SRC_C += $(wildcard $(APP_PATH)/*.c)
 LIB_SRC_C += $(wildcard $(LIB_PATH)/*/*.c)
@@ -109,7 +113,7 @@ LIB_INC += $(addprefix -I,$(wildcard $(LIB_PATH)/*))
 SRC_FILES_C   = $(APP_SRC_C)   $(LIB_SRC_C)
 SRC_FILES_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
 
-include ${MBED_PATH}/mbed_make_obj_inc
+include ${MBED_PATH}/mbedfile
 
 TARGET_OBJ += ${TARGET_PATH}/PeripheralPins.o
 TARGET_OBJ += ${TARGET_PATH}/system_clock.o
@@ -122,13 +126,10 @@ INCLUDE_PATHS += -I$(MBED_PATH)
 INCLUDE_PATHS += -I${TARGET_PATH}
 INCLUDE_PATHS += $(APP_INC) $(LIB_INC) $(MBED_INC)
 
-LIBRARY_PATHS :=
-LIBRARIES :=
-LINKER_SCRIPT ?= ../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/TOOLCHAIN_GCC_ARM/STM32F446XE.ld
+LINKER_SCRIPT ?= ${MBED_PATH}/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/TOOLCHAIN_GCC_ARM/STM32F446XE.ld
 
-# Objects and Paths
-###############################################################################
 # Tools and Flags
+###############################################################################
 
 AS      = arm-none-eabi-gcc
 CC      = arm-none-eabi-gcc
@@ -136,7 +137,8 @@ CPP     = arm-none-eabi-g++
 LD      = arm-none-eabi-gcc
 ELF2BIN = arm-none-eabi-objcopy
 
-MEM_DEFINITIONS := -DMBED_ROM_START=0x8000000 -DMBED_ROM_SIZE=0x80000 -DMBED_RAM_START=0x20000000 -DMBED_RAM_SIZE=0x20000 -DMBED_BOOT_STACK_SIZE=1024 
+MEM_DEFINITIONS := -DMBED_ROM_START=0x8000000 -DMBED_ROM_SIZE=0x80000 -DMBED_RAM_START=0x20000000 -DMBED_RAM_SIZE=0x20000 -DMBED_BOOT_STACK_SIZE=1024
+
 LD_FLAGS := -Wl,--gc-sections -Wl,--wrap,main -Wl,--wrap,_malloc_r -Wl,--wrap,_free_r -Wl,--wrap,_realloc_r -Wl,--wrap,_memalign_r -Wl,--wrap,_calloc_r -Wl,--wrap,exit -Wl,--wrap,atexit -Wl,-n -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp ${MEM_DEFINITIONS}
 LD_SYS_LIBS := -Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys  -Wl,--end-group
 
@@ -222,19 +224,13 @@ COMMON_FLAGS += -Wall
 COMMON_FLAGS += -Wextra
 COMMON_FLAGS += -Wno-missing-field-initializers
 COMMON_FLAGS += -Wno-unused-parameter
+COMMON_FLAGS += -include
+COMMON_FLAGS += $(CONFIG_PATH)/mbed_config.h
 
-C_FLAGS += -std=gnu11
-C_FLAGS += -include
-C_FLAGS += $(CONFIG_PATH)/mbed_config.h
 C_FLAGS += -std=gnu11
 C_FLAGS += ${DEFINITIONS}
 C_FLAGS += ${COMMON_FLAGS}
 
-CXX_FLAGS += -std=gnu++14
-CXX_FLAGS += -fno-rtti
-CXX_FLAGS += -Wvla
-CXX_FLAGS += -include
-CXX_FLAGS += $(CONFIG_PATH)/mbed_config.h
 CXX_FLAGS += -std=gnu++14
 CXX_FLAGS += -fno-rtti
 CXX_FLAGS += -Wvla
@@ -243,18 +239,12 @@ CXX_FLAGS += ${COMMON_FLAGS}
 
 ASM_FLAGS += -x
 ASM_FLAGS += assembler-with-cpp
-
-ASM_FLAGS += ${DEFINITIONS}
 ASM_FLAGS += ${MBED_INC}
-ASM_FLAGS += -include
-ASM_FLAGS += $(CONFIG_PATH)/mbed_config.h
-ASM_FLAGS += -x
-ASM_FLAGS += assembler-with-cpp
+ASM_FLAGS += ${DEFINITIONS}
 ASM_FLAGS += ${COMMON_FLAGS}
 
-# Tools and Flags
-###############################################################################
 # Rules
+###############################################################################
 
 .PHONY: all
 
@@ -286,20 +276,20 @@ $(APP_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
 
 $(APP_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(APP_OUT_PATH)/$(PROJECT).link_script.ld 
 	+@echo "$(filter %.o, $^)" > .link_options.txt
-	+@echo "link: $(notdir $@)"
+	+@echo "Link: $(notdir $@)"
 	@$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
 
 $(APP_OUT_PATH)/$(PROJECT).bin: $(APP_OUT_PATH)/$(PROJECT).elf
-	$(ELF2BIN) -O binary $< $@
-	+@echo "===== bin file ready to flash: $@ ====="
+	+@$(ELF2BIN) -O binary $< $@
+	+@echo "Generate Binary: $(notdir $@)\n"
+	+@echo "============== BIN FILE READY TO FLASH ==============\n $(@:../%=%)"
+	+@echo "====================================================="
 
 # $(APP_OUT_PATH)/$(PROJECT).hex: $(APP_OUT_PATH)/$(PROJECT).elf
 # 	$(ELF2BIN) -O ihex $< $@
 
-
-# Rules
-###############################################################################
 # Dependencies
+###############################################################################
 
 DEPS = $(OBJECTS:.o=.d)
 -include $(DEPS)

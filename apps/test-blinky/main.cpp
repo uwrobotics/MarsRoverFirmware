@@ -4,7 +4,7 @@
  */
 
 #include "mbed.h"
-#include "stats_report.h"
+#include "SystemReport.h"
 
 DigitalOut led1(LED1);
 

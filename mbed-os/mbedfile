@@ -1,5 +1,3 @@
-MBED_PATH := ../mbed-os
-
 MBED_OBJ += ${MBED_PATH}/cmsis/TARGET_CORTEX_M/mbed_tz_context.o
 MBED_OBJ += ${MBED_PATH}/components/802.15.4_RF/atmel-rf-driver/source/NanostackRfPhyAtmel.o
 MBED_OBJ += ${MBED_PATH}/components/802.15.4_RF/atmel-rf-driver/source/at24mac.o
