@@ -3,9 +3,6 @@ language: c
 os:
   - linux
 
-dist: 
-  - bionic
-
 # Only trigger builds on master
 branches:
   only:
@@ -44,3 +41,4 @@ script:
 # Log diagnostic info
 after_script:
   - du -sh build/$APP/*
+  - make clean-all
