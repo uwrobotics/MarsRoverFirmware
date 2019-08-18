@@ -2453,11 +2453,9 @@ add_custom_command(TARGET mbed-os-example-blinky PRE_LINK
                    )
 
 add_custom_command(TARGET mbed-os-example-blinky POST_BUILD
-                   COMMAND ${ELF2BIN} -O ihex $<TARGET_FILE:mbed-os-example-blinky> $<TARGET_FILE:mbed-os-example-blinky>.hex
-                   COMMAND ${CMAKE_COMMAND} -E echo "-- built: $<TARGET_FILE:mbed-os-example-blinky>.hex"
-                  )
-
-
+                   COMMAND ${ELF2BIN} -O binary $<TARGET_FILE:mbed-os-example-blinky> $<TARGET_FILE:mbed-os-example-blinky>.bin
+                   COMMAND ${CMAKE_COMMAND} -E echo "-- built: $<TARGET_FILE:mbed-os-example-blinky>.bin"
+                   )
 
 
 ##########################################################################
