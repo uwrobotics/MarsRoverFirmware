@@ -16,23 +16,22 @@ env:
     - APP=test-blinky  TARGET=science
     - APP=test-blinky  TARGET=safety
     - APP=test-blinky  TARGET=gimbal
-    - APP=test-pwm     TARGET=nucleo
-    - APP=test-pwm     TARGET=arm
-    - APP=test-pwm     TARGET=science
-    - APP=test-pwm     TARGET=safety
-    - APP=test-pwm     TARGET=gimbal
+    - APP=arm          TARGET=arm
+    - APP=science      TARGET=science
+    - APP=safety       TARGET=safety
+    - APP=gimbal       TARGET=gimbal
 
 # Install tools needed by build
 install:
   - wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2 -O /tmp/gcc-arm-none-eabi-8.tar.gz
-  - tar -xvf /tmp/gcc-arm-none-eabi-8.tar.gz
+  - tar -xf /tmp/gcc-arm-none-eabi-8.tar.gz
   - export PATH=$PATH:$PWD/gcc-arm-none-eabi-8-2019-q3-update/bin/
 
 # Print toolchain versions
-before_scripts:
+before_script:
   - arm-none-eabi-gcc --version
   - make --version
 
 # Build with matrix
 script:
-  - make APP=$APP TARGET=$TARGET
+  - make APP=$APP TARGET=$TARGET -j8
