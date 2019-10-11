@@ -8,10 +8,10 @@
 #include "neoDriver.h"
 
 enum{
-	RED 	= 0xFF000000,
-	GREEN 	= 0x00FF0000,
-	BLUE 	= 0x0000FF00,
-	WHITE 	= 0x000000FF
+	RED 	= 0x00FF00,
+	GREEN 	= 0xFF0000,
+	BLUE 	= 0x0000FF,
+	WHITE 	= 0xFFFFFF
 };
 
 

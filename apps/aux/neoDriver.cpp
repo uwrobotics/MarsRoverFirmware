@@ -20,13 +20,13 @@ NeoDriver::NeoDriver(): NeoPixelSPI(PinName(NEO_MOSI), PinName(NEO_MISO), PinNam
 unsigned long int convertToThree(unsigned char in){
 	unsigned long tr = 0;
 	for(int i = 0;i < 8;i++){
-		tr>>3;
+		tr = tr>>3;
 		if(in%2 == 1){
 			tr+=0xC00000;
 		}else{
 			tr+=0x800000;
 		}
-		in = in<<1;
+		in = in>>1;
 	}
 	return tr;
 }

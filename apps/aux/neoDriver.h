@@ -1,11 +1,12 @@
 #ifndef NEO_DRIVER_H
 #define NEO_DRIVER_H
+#include "../../targets/nucleo/PinNames.h"
 
 #ifndef NEO_PIN_NAMES
 #define NEO_PIN_NAMES
 	enum{				
-		NEO_MOSI = PA_6,
-		NEO_MISO = PA_7,
+		NEO_MOSI = PA_7,
+		NEO_MISO = PA_6,
 		NEO_SCLK = PA_5,
 		NEO_SSEL = PA_4
 	};
