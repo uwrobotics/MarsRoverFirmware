@@ -75,7 +75,7 @@ This repository contains:
     After compiling an application you should see a message similar to the following:  
     `===== bin file ready to flash: ../build/test_serial/test_serial_nucleo.bin =====`
 
-5. Deploy onto board (see below for how to connect to a board)
+5. Deploy onto board (see below for how to connect to a rover control board)
 
     Find the application .bin file, located in the build/app directory.
 
@@ -118,7 +118,7 @@ The ST-LINK debugger can then be connected via header CN4 (pins 1-5 with 1 neare
 | 6 (SWO)               | Not Connected                     |
 +-----------------------+-----------------------------------+
 ```
-![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/Nucleo_Labels.PNG)
+![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/alex/add-readme/misc/NucleoSWDLabels.png)
 
 After deploying the binary to the board, the Nucleo's `LD1` LED will flash red and green. Programming is complete when the LED stays green, so don't powercycle the board before this.
 
@@ -127,7 +127,7 @@ After deploying the binary to the board, the Nucleo's `LD1` LED will flash red a
 The boards can be communicated with through the serial interface exposed through the debug pins. You can use the USB-serial interface built into the Nucleo dev boards to communicate with the control boards by connecting the TX pin to the board's RX pin and the RX pin to the board's TX pin (transmit to recieve and vice versa). 
 
 On Ubuntu
-- Run `screen /dev/serial/by-id/usb-STM* 115200` from the terminal. You may need to prepend with `sudo`
+- Run `screen /dev/serial/by-id/usb-STM* 115200` from the terminal. You may need to prepend this with `sudo`.
 
 On Windows
 - Device manager, go to Ports (COM & LPT) and find the name of the Nucleo port (ie COM4)
