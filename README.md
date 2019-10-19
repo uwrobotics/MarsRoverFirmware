@@ -3,11 +3,14 @@
 ## Platform: [STM32F446RE](https://www.st.com/resource/en/datasheet/stm32f446re.pdf) / [NUCLEO-F446RC](https://os.mbed.com/platforms/ST-Nucleo-F446RE/)
 
 This repository contains:
-- Arm MBED OS 5 SDK source ([mbed-os](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/mbed-os))
-- Team and external libaries ([lib](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/lib))
-- Applications for running on each control board ([apps](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps))
-- Test applications for testing code components ([apps/test_xxxx](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps))
-- Configuration files for each target hardware ([targets](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/targets))
+- Arm MBED OS 5 SDK source [[mbed-os](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/mbed-os)]
+- Custom and external libaries [[lib](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/lib)]
+- Applications for running on each control board [[apps](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps)]
+- Test applications for testing code components [[apps/test_xxxx](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps)]
+- Configuration files for each target hardware [[targets](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/targets)]
+- Miscellaneous items [[misc](https://github.com/uwrobotics/MarsRover2020-firmware/tree/alex/add-readme/misc)]
+- Travis CI configuration for automatic build testing [[travis.yml](https://github.com/uwrobotics/MarsRover2020-firmware/blob/alex/add-readme/.travis.yml)]
+- Makefile [[makefile](https://github.com/uwrobotics/MarsRover2020-firmware/blob/alex/add-readme/makefile)]
 
 ## Best Contribution Practices and Tips
 
