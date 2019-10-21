@@ -1,5 +1,5 @@
-#include "mbed.h"
 #include "servo.h"
+#include "mbed.h"
 
 Servo::Servo(int rotate_type_, int range_, float max_pulse_ms_, float min_pulse_ms_): 
 rotate_type(rotate_type_),
@@ -45,12 +45,14 @@ pin(pin_),
 rotate_type(rotate_type_),
 range(range_),
 max_pulse_ms(max_pulse_ms_),
-min_pulse_ms(min_pulse_ms_) {}
+min_pulse_ms(min_pulse_ms_) {
+    
+}
 
 Servo::Servo(PinName pin_, int rotate_type_, int range_):
 pin(pin_),
 rotate_type(rotate_type_),
-range(range_);
+range(range_)
 {
     if(rotate_type == LIMITED_SERVO)
     {
@@ -84,11 +86,10 @@ rotate_type(rotate_type_)
 
 bool Servo::move(float angle)
 {
-    if(rotate_type != LIMITED_SERVO || angle > range || pin == NULL)
+    if(rotate_type != LIMITED_SERVO)
         return false;
     else
     {
         
     }
-        
 }
