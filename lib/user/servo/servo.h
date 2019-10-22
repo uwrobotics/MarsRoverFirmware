@@ -2,6 +2,7 @@
 #define SERVO_H
 
 #include "mbed.h"
+#include "PwmOut.h"
 
 #define CONT_SERVO 0                        //CONTINUOUS Rotation
 #define LIMITED_SERVO 1                     //LIMITED Range Rotation
@@ -14,9 +15,9 @@
 #define NULL -1                           //PLACEHOLDER for irrelevant values in constructors
 
     class Servo{
-        private:
+        protected:
             PinName pin;                    //PIN the servo PWM signal is attached to
-            PwmOut pwm;
+            PwmOut pwm;                     //PWM object, does not have default constructor so have to use INITIALIZER LIST to avoid COMPILER attempting to DEFAULT CONSTRUCT
 
             int     rotate_type,            //Either CONTINUOUS or LIMITED rotation servo, see define statements.
                     range;                  //range of motion, only valid for LIMIT_SERVO types
@@ -29,9 +30,9 @@
             const int PERIOD = 1000 / PWM_FREQ; //DEFAULT PERIOD LENGTH in MILISECONDS
 
         public:
-            Servo(int rotate_type_, int range_, float max_pulse_ms_, float min_pulse_ms_);
+        /*  Servo(int rotate_type_, int range_, float max_pulse_ms_, float min_pulse_ms_);
             Servo(int rotate_type_);                //If LIMITED, ASSUMING DEFAULT MAX, MIN, RANGE
-            Servo(int rotate_type_, int range_);    //If LIMITED, ASSUMING DEFAULT MAX, MIN
+            Servo(int rotate_type_, int range_);    //If LIMITED, ASSUMING DEFAULT MAX, MIN */
 
             Servo(PinName pin_, int rotate_type_, int range_, float max_pulse_ms_, float min_pulse_ms_);    //Copies previous constructors but with PIN
             Servo(PinName pin_, int rotate_type_);              
@@ -40,8 +41,6 @@
             bool set_range(int range);      //Returns FALSE if Servo Type is CONTINUOUS
             bool move(float angle);         //Returns FALSE if ANGLE > RANGE or Servo Type is CONTINUOUS
             bool set_speed(float speed);    //Returns FALSE if Servo Type is LIMITED
-
-            void attach(PinName pin_);      //Sets pin_ as PIN for PWM SIGNAL
 
             float read(void);               //Returns SPEED if CONTINUOUS and POSITION if LIMITED
     };
