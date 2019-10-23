@@ -1,0 +1,7 @@
+{"configurations": [
+    {
+        "name": "MbedOS",
+        "includePath": ["${workspaceFolder}/**", "/mbed-os/drivers"]
+    }
+]
+}
