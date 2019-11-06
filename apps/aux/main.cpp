@@ -11,9 +11,10 @@ int main(){
 
 	ledDriver ld = ledDriver();
 
-	ld.flashDisplay(BLUE);
+	ld.solidColour(RED);
 	while(1){
 		ld.refreshCurrentDisplay();
+		wait(0.5);
 	}
 
 	return 0;

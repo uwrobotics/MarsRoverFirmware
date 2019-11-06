@@ -11,6 +11,7 @@ enum{
 	RED 	= 0x00FF00,
 	GREEN 	= 0xFF0000,
 	BLUE 	= 0x0000FF,
+	PURPLE 	= 0x800080,
 	WHITE 	= 0xFFFFFF
 };
 
@@ -36,7 +37,7 @@ public:
 private:
 	
 	NeoDriver nDriver;
-	const static int flashLength = 100;//How long is the flash
+	const static int flashLength = 1;//How long is the flash
 	unsigned char displayData[PIXELWIDTH * PIXELHEIGHT * 4];
 
 	//This font is from https://opengameart.org/content/8x8-ascii-bitmap-font-with-c-source
