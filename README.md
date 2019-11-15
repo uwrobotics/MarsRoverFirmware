@@ -31,7 +31,8 @@ This repository contains:
 1. Download the development toolchain (gcc and make) and serial interface software
    
    For Ubuntu
-    - `sudo apt install gcc-arm-none-eabi`
+    - `sudo apt update`
+    - `sudo apt install make gcc-arm-none-eabi`
     - `sudo apt install screen` for serial interfacing (or `minicom`)
 		
 	For Windows
