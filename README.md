@@ -31,17 +31,13 @@ This repository contains:
 1. Download the development toolchain (gcc and make) and serial interface software
    
    For Ubuntu
-    - `sudo apt install gcc-arm-none-eabi`
+    - `sudo apt update`
+    - `sudo apt install make gcc-arm-none-eabi`
     - `sudo apt install screen` for serial interfacing (or `minicom`)
 		
 	For Windows
-    - Download [make for windows](http://gnuwin32.sourceforge.net/packages/make.htm) (choose Complete package, except sources)
-    - Run the setup package to install make
-    - Add make.exe to path (usually `C:\Program Files (x86)\GnuWin32\bin`). See [this tutoial](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/) on how to add a folder to your 'path', which allows you to reference executable files in this folder from within any workspace.
-    - Download [gcc-arm-none-eabi for windows](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) (windows 32 bit)
-    - Extract the ZIP to something like `C:\Program Files (x86)\GNU Tools ARM Embedded\<version>`
-    - Add gcc .exe files to path (`C:\Program Files (x86)\GNU Tools ARM Embedded\<version>\bin`)
-    - Install [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/) for serial interfacing
+    - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
+    - Follow Ubuntu setup instructions (optionally instead of `screen` you can use [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/), a GUI Windows app)
 	
 	For Mac
     - Open Command Line
