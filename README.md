@@ -37,7 +37,7 @@ This repository contains:
 		
 	For Windows
     - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
-    - Follow Ubuntu setup instructions
+    - Follow Ubuntu setup instructions (instead of installing screen you can install PuTTy, a Windows serial terminal application)
 	
 	For Mac
     - Open Command Line
