@@ -19,13 +19,13 @@ int main(){
         cs = 0;
 
         //write low for wait bit
-        //enc.write(0b0);
+        enc.write(0b0);
 
         //write 12 low dummy bits to recieve
-        //pos = enc.write(0X000);
+        pos = enc.write(0X000);
 
         //bring CONTROL back to HIGH to stop signaling
-        //cs = 1;
+        cs = 1;
 
         printf("%d", pos);
 
