@@ -19,7 +19,7 @@ int main(){
         cs = 0;
 
         //write low for wait bit
-        enc.write(0b0);
+        wait_ns(500);
 
         //write 12 low dummy bits to recieve
         pos = enc.write(0X000);
