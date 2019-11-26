@@ -8,15 +8,15 @@ class Servo{
         PinName pin;                    //PIN the servo PWM signal is attached to
         PwmOut pwm;                     //PWM object, does not have default constructor so have to use INITIALIZER LIST to avoid COMPILER attempting to DEFAULT CONSTRUCT
 
-        const int   CONT_SERVO = 0,         //CONTINUOUS Rotation
-                    LIMITED_SERVO = 1,      //LIMITED Range Rotation
-                    PWM_FREQ = 50,          //DEFAULT PWM FREQUENCY, should work for both length and positional control 
+        enum SERVO_TYPE {CONT_SERVO = 0, LIMTIED_SERVO = 1}; //CONT_SERVO = 0 = CONTINUOUS Rotation; LIMITED_SERVO = 1 = LIMITED Range Rotation 
+        
+        const int   PWM_FREQ = 50,          //DEFAULT PWM FREQUENCY, should work for both length and positional control 
                     DEFAULT_MAX = 2,        //DEFAULT MAX WAVE LENGTH in MILISECONDS
                     DEFAULT_MIN = 1,        //DEFAULT MIN WAVE LENGTH in MILISECONDS
                     DEFAULT_RANGE = 180,    //DEFAULT RANGE for LIMITED Servos
                     PERIOD = 1000 / PWM_FREQ; //DEFAULT PERIOD LENGTH in MILISECONDS
 
-        int         rotate_type;            //Either CONTINUOUS or LIMITED rotation servo, see define statements.
+        enum SERVO_TYPE rotate_type;            //Either CONTINUOUS or LIMITED rotation servo, see define statements.
 
 
         float       range,                  //RANGE OF MOTION, only valid for LIMIT_SERVO types
@@ -27,9 +27,9 @@ class Servo{
                     speed;                  //ROTATING SPEED in ANGLES PER SECOND
 
     public:
-        Servo(PinName pin_, int rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_);    //Copies previous constructors but with PIN
-        Servo(PinName pin_, int rotate_type_);              
-        Servo(PinName pin_, int rotate_type_, float value);    
+        Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_);    //Copies previous constructors but with PIN
+        Servo(PinName pin_, SERVO_TYPE rotate_type_);              
+        Servo(PinName pin_, SERVO_TYPE rotate_type_, float value);    
 
         bool set_range(float range_);       //Returns FALSE if Servo Type is CONTINUOUS
         bool set_max_speed(float max_speed_);   //Returns FALSE if Servo Type is LIMITED

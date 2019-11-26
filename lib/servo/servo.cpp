@@ -1,14 +1,14 @@
 #include "servo.h"
 #include "mbed.h"
 
-Servo::Servo(PinName pin_, int rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_): 
+Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_): 
 pin(pin_),
 rotate_type(rotate_type_),
 max_pulse_ms(max_pulse_ms_),
 min_pulse_ms(min_pulse_ms_),
 pwm(pin_) 
 {
-    if(rotate_type == LIMITED_SERVO)
+    if(rotate_type == SERVO_TYPE::LIMTIED_SERVO)
     {
         range = value;
         pos = 0;
@@ -28,12 +28,12 @@ pwm(pin_)
     pwm.period_ms(PERIOD);
 }
 
-Servo::Servo(PinName pin_, int rotate_type_, float value):
+Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value):
 pin(pin_),
 rotate_type(rotate_type_),
 pwm(pin_)
 {
-    if(rotate_type == LIMITED_SERVO)
+    if(rotate_type == SERVO_TYPE::LIMTIED_SERVO)
     {
         range = value;
         pos = 0;
@@ -57,12 +57,12 @@ pwm(pin_)
     pwm.period_ms(PERIOD);
 }
 
-Servo::Servo(PinName pin_, int rotate_type_):
+Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_):
 pin(pin_),
 rotate_type(rotate_type_),
 pwm(pin_)
 {
-    if(rotate_type == LIMITED_SERVO)
+    if(rotate_type == SERVO_TYPE::LIMTIED_SERVO)
     {
         range = DEFAULT_RANGE;
         pos = 0;
@@ -88,9 +88,9 @@ pwm(pin_)
 
 bool Servo::set_range(float range_)
 {
-    if(rotate_type == LIMITED_SERVO)
+    if(rotate_type == SERVO_TYPE::LIMTIED_SERVO)
         range = range_;
-    return rotate_type == LIMITED_SERVO;
+    return rotate_type == SERVO_TYPE::LIMTIED_SERVO;
 }
 
 bool Servo::set_max_speed(float max_speed_)
@@ -102,7 +102,7 @@ bool Servo::set_max_speed(float max_speed_)
 
 bool Servo::set_position(float angle)
 {
-    if(rotate_type == LIMITED_SERVO)
+    if(rotate_type == SERVO_TYPE::LIMTIED_SERVO)
     { 
         pos = angle;
         pwm.pulsewidth_ms(int((max_pulse_ms - min_pulse_ms) * angle/180 + min_pulse_ms));
@@ -124,7 +124,7 @@ bool Servo::set_speed(float speed_)
 
 float Servo::read(void)
 {
-    if(rotate_type == LIMITED_SERVO)
+    if(rotate_type == SERVO_TYPE::LIMTIED_SERVO)
         return pos;
     else
         return speed;
