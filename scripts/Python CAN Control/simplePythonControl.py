@@ -5,7 +5,7 @@ import can
 import struct
 import time
 import threading
-import xbox
+# import xbox
 
 turnTableMotion = 0
 shoulderMotion  = 0
@@ -21,37 +21,37 @@ def getInput():
 
     global scalingFactor
 
-    joy = xbox.Joystick()
+    # joy = xbox.Joystick()
 
     while 1:
 
-        turnTableMotion = fmtFloat(joy.leftX())
-        shoulderMotion = fmtFloat(joy.leftY())
-        elbowMotion = fmtFloat(joy.rightY())
+        # turnTableMotion = fmtFloat(joy.leftX())
+        # shoulderMotion = fmtFloat(joy.leftY())
+        # elbowMotion = fmtFloat(joy.rightY())
 
-        # events = get_key()
-        # if events:
-        #         for event in events:
-        #             # print(event.ev_type, event.code, event.state)
+        events = get_key()
+        if events:
+                for event in events:
+                    # print(event.ev_type, event.code, event.state)
 
-        #             scaledInput = min(1, event.state) * scalingFactor
+                    scaledInput = min(1, event.state) * scalingFactor
 
-        #             if (event.ev_type == 'Key'):
+                    if (event.ev_type == 'Key'):
 
-        #                 if (event.code == 'KEY_A'):
-        #                     turnTableMotion = -scaledInput
-        #                 elif (event.code == 'KEY_D'):
-        #                     turnTableMotion = +scaledInput
+                        if (event.code == 'KEY_A'):
+                            turnTableMotion = -scaledInput
+                        elif (event.code == 'KEY_D'):
+                            turnTableMotion = +scaledInput
 
-        #                 elif (event.code == 'KEY_W'):
-        #                     shoulderMotion = +scaledInput
-        #                 elif (event.code == 'KEY_S'):
-        #                     shoulderMotion = -scaledInput
+                        elif (event.code == 'KEY_W'):
+                            shoulderMotion = +scaledInput
+                        elif (event.code == 'KEY_S'):
+                            shoulderMotion = -scaledInput
 
-        #                 elif (event.code == 'KEY_UP'):
-        #                     elbowMotion = -scaledInput
-        #                 elif (event.code == 'KEY_DOWN'):
-        #                     elbowMotion = +scaledInput
+                        elif (event.code == 'KEY_UP'):
+                            elbowMotion = -scaledInput
+                        elif (event.code == 'KEY_DOWN'):
+                            elbowMotion = +scaledInput
 
 
 
@@ -92,9 +92,9 @@ def main():
         except can.CanError:
             print("Message NOT sent")
 
-        # print("TT: %f\n" % turnTableMotion);
-        # print("SH: %f\n" % shoulderMotion);
-        # print("EL: %f\n" % elbowMotion);
+        print("TT: %f\n" % turnTableMotion);
+        print("SH: %f\n" % shoulderMotion);
+        print("EL: %f\n" % elbowMotion);
 
 if __name__ == "__main__":
     main()
