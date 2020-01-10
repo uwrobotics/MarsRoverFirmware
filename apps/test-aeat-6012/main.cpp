@@ -6,15 +6,25 @@
 
 DigitalOut cs(CONTROL);
 
-int pos = 1;
+uint16_t pos = 0;
 
 int main(){
+/* ISSUE: ONLY OUTPUTTING 7 BITS"
 
-    SPI enc(CONTROL, READ, CLOCK);
+POTENTIAL FIX: ENSURING CLOCK SIGNAL IS AT LEAST 3.5 V
+
+POTENTIAL FIX: CHECK BIT SHFITING RELATED STUFF
+
+*/
+
+//    SPI enc(CONTROL, READ, CLOCK);
+    SPI enc(SPI_MOSI, SPI_MISO, SPI_SCK);
     enc.format(12,3);
     enc.frequency(1000000);
 
+    wait_ms(100);
 
+    printf("connected");
     while(1){
         cs = 0;
 
@@ -27,8 +37,8 @@ int main(){
         //bring CONTROL back to HIGH to stop signaling
         cs = 1;
 
-        printf("%d", pos);
+        printf("%d \r\n", pos);
 
-        wait_ms(1000);
+        wait_ms(100);
     }
 }
