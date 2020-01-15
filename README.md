@@ -74,6 +74,8 @@ This repository contains:
     
     After compiling an application you should see a message similar to the following:  
     `===== bin file ready to flash: ../build/test_serial/test_serial_nucleo.bin =====`
+    
+    **PRO TIP:** Add the flag `-j4` to your `make` command to allow multiple threads to be used for compilation, significantly speeding up compile time. You can use a number other than 4 to customize the number of threads.
 
 5. Deploy onto board (see below for how to connect to a rover control board)
 
