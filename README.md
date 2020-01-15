@@ -84,17 +84,17 @@ This repository contains:
 	For Ubuntu
 		
     - Install libusb `sudo apt install libusb-1.0-0-dev`
-    - Drag and Drop .bin file into NODE_F091RC device folder
+    - Drag and Drop .bin file into NODE_F446RC device folder
 	
 	For Windows
     
-    - Drag and Drop .bin file into NODE_F091RC device folder OR if this does not work or debugging is required:
+    - Drag and Drop .bin file into NODE_F446RC device folder OR if this does not work or debugging is required:
     - Download [st-link utility](http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-programmers/stsw-link004.html). Scroll down to Get Software
     - Connect USB to nucleo board and open st-link utility
     - Load code by going to Target->Program and browse for .bin file
 	
 	For Mac
-    - Drag and Drop .bin file into NODE_F091RC disk
+    - Drag and Drop .bin file into NODE_F446RC disk
 
     After deploying, the Nucleo will begin to flash red and green. Once the LED stays green, power-cycle the board by unplugging and replugging the 5V connector on the Nucleo.
 
