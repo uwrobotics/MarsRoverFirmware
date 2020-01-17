@@ -289,25 +289,4 @@ private:
     volatile float realOutput_;
 };
 
-// struct holding all the autoTune variables to store large number of variables between function calls
-struct autoTuneParams {
-    bool isMax, isMin, justchanged, justevaled, done;
-    double lastInputs[101] = {0};
-    double peaks[10];
-    int sampleTime, nLookBack, peakType, peakCount, controlType;
-    unsigned long peak1, peak2, currentTime;
-    double setpoint, noiseBand, absMax, absMin, oStep, refVal, output, outputStart;
-    Timer t;
-
-    autoTuneParams(float setpoint_, double oStep_=130, double noiseBand_=0.5, int sampleTime_=250, double outputStart_=160.0) {
-        setpoint = refVal = absMax = absMin = setpoint_;
-        peakType = peakCount = 0;
-        justchanged = done = false;
-        oStep = oStep_;
-        noiseBand = noiseBand_;
-        sampleTime = sampleTime_;
-        outputStart = outputStart_;
-    }
-};
-
 #endif /* PID_H */
