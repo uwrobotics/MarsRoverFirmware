@@ -6,24 +6,28 @@ class Encoder {
 
 public:
 
-	typedef struct {
-		PinName 
-	}
+	template <class t_encoderConfig>;
 
 	typedef enum t_encoderType {
 		relative,
 		absolute
-	} 
+	}
 
-	Encoder(PinName pinA, t_encoderType type, bool inverted);
-	Encoder(PinName pinA, PinName pinB, t_encoderType type, bool inverted);
-	Encoder(PinName pinA, PinName pinB, PinName pinIDX, t_encoderType type, bool inverted);
+	typedef enum t_encoderMode {
+		active,	// Constantly updating internal class members
+		passive // Only updates on read call
+	}
 
-	float getAngle();
-	float getRevolutions();
+	virtual Encoder(t_encoderConfig config);
+	virtual ~Encoder();
 
-	mbed_error_status_t 
-	mbed_error_status_t reset();
+	virtual t_encoderConfig getType() = 0;
+	virtual t_encoderMode getMode() = 0;
+	virtual float getAngle_Degrees() = 0;
+	virtual float getVelocity_DegreesPerSec() = 0;
+	virtual float getRevolutions() = 0;
+
+	virtual mbed_error_status_t reset();
 
 private:
 
