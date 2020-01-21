@@ -67,8 +67,7 @@ public:
 
     typedef struct {
         float P, I, D, bias;
-        float interval;
-
+        float deadZoneError;
     } t_pidConfig;
 
     // add other actuators here

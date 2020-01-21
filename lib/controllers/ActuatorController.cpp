@@ -121,7 +121,7 @@ void ActuatorController::update() {
 	switch (m_controlMode) {
 		case motorPower:
 			if ( (p_motor->getPower() < 0.0 && isLimSwitchMinTriggered()) ||
-				 (p_motor->getPower() ? 0.0 && isLimSwitchMaxTriggered()) ) {
+				 (p_motor->getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
 
 				p_motor->setPower(0.0);
 			}
@@ -151,10 +151,14 @@ void ActuatorController::initializePIDControllers() {
 	m_velocityPIDController.setOutputLimits(m_controllerConfig.minMotorPower_Percentage, m_controllerConfig.maxMotorPower_Percentage);
 	m_velocityPIDController.setBias(m_controllerConfig.velocityPID.bias);
 	m_velocityPIDController.setMode(PID_AUTO_MODE);
-	m_velocityPIDController.setDeadZoneError(m_controllerConfig.)
+	m_velocityPIDController.setDeadZoneError(m_controllerConfig.velocityPID.deadZoneError);
 
 	// Configure position PID
-
+	m_positionPIDController.setInputLimits(m_controllerConfig.minAngle_Degrees, m_controllerConfig.maxAngle_Degrees);
+	m_positionPIDController.setOutputLimits(m_controllerConfig.minMotorPower_Percentage, m_controllerConfig.maxMotorPower_Percentage);
+	m_positionPIDController.setBias(m_controllerConfig.positionPID.bias);
+	m_positionPIDController.setMode(PID_AUTO_MODE);
+	m_positionPIDController.setDeadZoneError(m_controllerConfig.positionPID.deadZoneError);
 }
 
 bool ActuatorController::isLimSwitchMinTriggered() {
