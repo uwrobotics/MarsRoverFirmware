@@ -9,6 +9,10 @@ class ActuatorController {
 
 public:
 
+	typedef struct {
+		
+	} t_actuatorControllerConfig;
+
 	typedef enum t_actuatorControlMode {
 		motorPower,
 		velocity,
@@ -48,6 +52,12 @@ private:
 	PID m_velocityPIDController;
 	PID m_positionPIDController;
 
+	Timer updateTimer;
+
 	void initializePIDControllers();
 
+	bool isLimSwitchMinTriggered();
+	bool isLimSwitchMaxTriggered();
+	bool isPastMinAngle();
+	bool isPastMaxAngle();
 }

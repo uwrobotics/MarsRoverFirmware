@@ -13,19 +13,20 @@ public:
 		absolute
 	}
 
-	typedef enum t_encoderMode {
-		active,	// Constantly updating internal class members
-		passive // Only updates on read call
-	}
-
 	virtual Encoder(t_encoderConfig config);
 	virtual ~Encoder();
 
+	// Must be implemented
 	virtual t_encoderConfig getType() = 0;
-	virtual t_encoderMode getMode() = 0;
 	virtual float getAngle_Degrees() = 0;
 	virtual float getVelocity_DegreesPerSec() = 0;
 	virtual float getRevolutions() = 0;
+
+	// Optionally implemented
+	virtual float getMinAngleDegrees();
+	virtual float getMaxAngleDegrees();
+	virtual bool isPastMinAngle();
+	virtual bool isPastMaxAngle();
 
 	virtual mbed_error_status_t reset();
 
