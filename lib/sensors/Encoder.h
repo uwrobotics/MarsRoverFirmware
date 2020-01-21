@@ -1,19 +1,17 @@
 #pragma once
 
 #include "mbed.h"
-
+template <class t_encoderConfig>
 class Encoder {
 
 public:
 
-	template <class t_encoderConfig>;
-
-	typedef enum t_encoderType {
+	typedef enum {
 		relative,
 		absolute
-	}
+	} t_encoderType;
 
-	virtual Encoder(t_encoderConfig config);
+	Encoder(t_encoderConfig config);
 	virtual ~Encoder();
 
 	// Must be implemented
@@ -28,4 +26,4 @@ private:
 
 
 
-}
+};

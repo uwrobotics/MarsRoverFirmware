@@ -9,11 +9,11 @@ class ActuatorController {
 
 public:
 
-	typedef enum t_actuatorControlMode {
+	typedef enum {
 		motorPower,
 		velocity,
 		position
-	}
+	} t_actuatorControlMode;
 
 	typedef struct {
 		t_actuatorControlMode defaultControlMode;
@@ -23,9 +23,9 @@ public:
 		float minAngle_Degrees, maxAngle_Degrees;
 
 		PID::t_pidConfig velocityPID, positionPID;
-	} t_actuatorControllerConfig;
+	} t_actuatorConfig;
 
-	ActuatorController(t_actuatorControllerConfig controllerConfig, 
+	ActuatorController(t_actuatorConfig actuatorConfig, 
 					   Motor const * motor, Encoder const * encoder, 
 					   DigitalIn const * limSwitchMin = NULL, 
 					   DigitalIn const * limSwitchMax = NULL);
@@ -46,7 +46,7 @@ public:
 
 private:
 
-	t_actuatorControllerConfig m_controllerConfig;
+	t_actuatorConfig m_actuatorConfig;
 	t_actuatorControlMode m_controlMode;
 
 	Motor const * p_motor;
@@ -68,4 +68,4 @@ private:
 	bool isLimSwitchMaxTriggered();
 	bool isPastMinAngle();
 	bool isPastMaxAngle();
-}
+};

@@ -2,12 +2,12 @@
 #include "ActuatorController.h"
 #include <cmath>
 
-ActuatorController::ActuatorController(t_actuatorControllerConfig controllerConfig, 
+ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, 
 									   Motor const * motor, Encoder const * encoder, 
 									   DigitalIn const * limSwitchMin = NULL, 
 									   DigitalIn const * limSwitchMax = NULL) :
 
-		m_controllerConfig(controllerConfig), p_motor(motor), p_encoder(encoder), 
+		m_actuatorConfig(actuatorConfig), p_motor(motor), p_encoder(encoder), 
 		p_limSwitchMin(limSwitchMin), p_limSwitchMax(limSwitchMax) {
 
 	m_limSwitchMin_Connected = (p_limSwitchMin != NULL && p_limSwitchMin->isConnected());
@@ -16,7 +16,7 @@ ActuatorController::ActuatorController(t_actuatorControllerConfig controllerConf
 	initializePIDControllers();
 	updateTimer.start();
 
-	setControlMode(controllerConfig.deaultControlMode);
+	setControlMode(actuatorConfig.deaultControlMode);
 }
 
 ActuatorController::t_actuatorControlMode ActuatorController::getControlMode() {
@@ -100,12 +100,12 @@ mbed_error_status_t setAngle_Degrees(float degrees) {
 		return MBED_ERROR_INVALID_OPERATION;
 	}
 
-	if (degrees <= m_controllerConfig.minAngle_Degrees) {
-		degrees = m_ontrollerConfig.minAngle_Degrees;
+	if (degrees <= m_actuatorConfig.minAngle_Degrees) {
+		degrees = m_actuatorConfig.minAngle_Degrees;
 	}
 
-	else if (degrees >= m_controllerConfig.maxAngle_Degrees) {
-		degrees = m_controllerConfig.maxAngle_Degrees;
+	else if (degrees >= m_actuatorConfig.maxAngle_Degrees) {
+		degrees = m_actuatorConfig.maxAngle_Degrees;
 	}
 
 	m_positionPIDController.setSetPoint(degrees);
@@ -147,18 +147,18 @@ void ActuatorController::update() {
 void ActuatorController::initializePIDControllers() {
 
 	// Configure velocity PID
-	m_velocityPIDController.setInputLimits(m_controllerConfig.minVelocity_DegreesPerSec, m_controllerConfig.maxVelocity_DegreesPerSec);
-	m_velocityPIDController.setOutputLimits(m_controllerConfig.minMotorPower_Percentage, m_controllerConfig.maxMotorPower_Percentage);
-	m_velocityPIDController.setBias(m_controllerConfig.velocityPID.bias);
+	m_velocityPIDController.setInputLimits(m_actuatorConfig.minVelocity_DegreesPerSec, m_actuatorConfig.maxVelocity_DegreesPerSec);
+	m_velocityPIDController.setOutputLimits(m_actuatorConfig.minMotorPower_Percentage, m_actuatorConfig.maxMotorPower_Percentage);
+	m_velocityPIDController.setBias(m_actuatorConfig.velocityPID.bias);
 	m_velocityPIDController.setMode(PID_AUTO_MODE);
-	m_velocityPIDController.setDeadZoneError(m_controllerConfig.velocityPID.deadZoneError);
+	m_velocityPIDController.setDeadZoneError(m_actuatorConfig.velocityPID.deadZoneError);
 
 	// Configure position PID
-	m_positionPIDController.setInputLimits(m_controllerConfig.minAngle_Degrees, m_controllerConfig.maxAngle_Degrees);
-	m_positionPIDController.setOutputLimits(m_controllerConfig.minMotorPower_Percentage, m_controllerConfig.maxMotorPower_Percentage);
-	m_positionPIDController.setBias(m_controllerConfig.positionPID.bias);
+	m_positionPIDController.setInputLimits(m_actuatorConfig.minAngle_Degrees, m_actuatorConfig.maxAngle_Degrees);
+	m_positionPIDController.setOutputLimits(m_actuatorConfig.minMotorPower_Percentage, m_actuatorConfig.maxMotorPower_Percentage);
+	m_positionPIDController.setBias(m_actuatorConfig.positionPID.bias);
 	m_positionPIDController.setMode(PID_AUTO_MODE);
-	m_positionPIDController.setDeadZoneError(m_controllerConfig.positionPID.deadZoneError);
+	m_positionPIDController.setDeadZoneError(m_actuatorConfig.positionPID.deadZoneError);
 }
 
 bool ActuatorController::isLimSwitchMinTriggered() {
@@ -170,9 +170,9 @@ bool ActuatorController::isLimSwitchMaxTriggered() {
 }
 
 bool ActuatorController::isPastMinAngle() {
-	return (getAngle_Degrees() < m_controllerConfig.minAngle_Degrees || isLimSwitchMinTriggered());
+	return (getAngle_Degrees() < m_actuatorConfig.minAngle_Degrees || isLimSwitchMinTriggered());
 }
 
 bool ActuatorController::isPastMaxAngle() {
-	return (getAngle_Degrees() > m_controllerConfig.maxAngle_Degrees || isLimSwitchMaxTriggered());
+	return (getAngle_Degrees() > m_actuatorConfig.maxAngle_Degrees || isLimSwitchMaxTriggered());
 }
