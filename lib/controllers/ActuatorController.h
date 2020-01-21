@@ -9,17 +9,24 @@ class ActuatorController {
 
 public:
 
-	typedef struct {
-		
-	} t_actuatorControllerConfig;
-
 	typedef enum t_actuatorControlMode {
 		motorPower,
 		velocity,
 		position
 	}
 
-	ActuatorController(Motor const * motor, Encoder const * encoder, 
+	typedef struct {
+		t_actuatorControlMode defaultControlMode;
+
+		float minMotorPower_Percentage, maxMotorPower_Percentage;
+		float minVelocity_DegreesPerSec, maxVelocity_DegreesPerSec;
+		float minAngle_Degrees, maxAngle_Degrees;
+
+		PID::t_pidConfig velocityPID, positionPID;
+	} t_actuatorControllerConfig;
+
+	ActuatorController(t_actuatorControllerConfig controllerConfig, 
+					   Motor const * motor, Encoder const * encoder, 
 					   DigitalIn const * limSwitchMin = NULL, 
 					   DigitalIn const * limSwitchMax = NULL);
 
@@ -39,6 +46,7 @@ public:
 
 private:
 
+	t_actuatorControllerConfig m_controllerConfig;
 	t_actuatorControlMode m_controlMode;
 
 	Motor const * p_motor;

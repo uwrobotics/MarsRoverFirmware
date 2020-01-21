@@ -22,12 +22,6 @@ public:
 	virtual float getVelocity_DegreesPerSec() = 0;
 	virtual float getRevolutions() = 0;
 
-	// Optionally implemented
-	virtual float getMinAngleDegrees();
-	virtual float getMaxAngleDegrees();
-	virtual bool isPastMinAngle();
-	virtual bool isPastMaxAngle();
-
 	virtual mbed_error_status_t reset();
 
 private:
