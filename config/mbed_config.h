@@ -254,6 +254,7 @@
 #define NSAPI_PPP_IPV6_AVAILABLE                                              0                                                                                                // set by library:lwip
 #define NVSTORE_ENABLED                                                       1                                                                                                // set by library:nvstore
 #define NVSTORE_MAX_KEYS                                                      16                                                                                               // set by library:nvstore
+
 // Macros
 #define MBEDTLS_CIPHER_MODE_CTR                                                                                                                                                // defined by library:SecureStore
 #define MBEDTLS_CMAC_C                                                                                                                                                         // defined by library:SecureStore
@@ -261,5 +262,38 @@
 #define NS_USE_EXTERNAL_MBED_TLS                                                                                                                                               // defined by library:nanostack
 #define UNITY_INCLUDE_CONFIG_H                                                                                                                                                 // defined by library:utest
 #define _RTE_                                                                                                                                                                  // defined by library:rtos
+
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+#define PRINT_INFO(...) {                   \
+    printf("[%s] INFO: ", __FILENAME__); \
+    printf(__VA_ARGS__);                    \
+}                                           \
+
+#define PRINT_WARNING(...) {                \
+    printf("[%s] WARNING: ", __FILENAME__); \
+    printf(__VA_ARGS__);                    \
+}                                           \
+
+#define MBED_WARN_ON_ERROR(functionCall) {                                                      \
+    mbed_error_status_t result = functionCall;                                                  \
+    if (result != MBED_SUCCESS) {                                                               \
+        PRINT_WARNING("Operation '%s' failed with status code %d \r\n", #functionCall, result); \
+    }                                                                                           \
+}                                                                                               \
+
+#define MBED_WARN_AND_RETURN_STATUS_ON_ERROR(functionCall) {                                    \
+    mbed_error_status_t result = functionCall;                                                  \
+    if (result != MBED_SUCCESS) {                                                               \
+        PRINT_WARNING("Operation '%s' failed with status code %d \r\n", #functionCall, result); \
+        return result;                                                                          \
+    }                                                                                           \
+}                                                                                               \
+
+#define MBED_ASSERT_WARN(assertion) {                           \
+    if ((assertion) == false) {                                 \
+        PRINT_WARNING("Failed assertion: %s\r\n", #assertion);  \
+    }                                                           \
+}    
 
 #endif

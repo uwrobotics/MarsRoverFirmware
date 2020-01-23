@@ -9,7 +9,7 @@ class ActuatorController {
 
 public:
 
-	typedef enum {
+	typedef enum t_actuatorControlMode {
 		motorPower,
 		velocity,
 		position
@@ -26,9 +26,9 @@ public:
 	} t_actuatorConfig;
 
 	ActuatorController(t_actuatorConfig actuatorConfig, 
-					   Motor const * motor, Encoder const * encoder, 
-					   DigitalIn const * limSwitchMin = NULL, 
-					   DigitalIn const * limSwitchMax = NULL);
+					   Motor * motor, Encoder * encoder, 
+					   DigitalIn * limSwitchMin = NULL, 
+					   DigitalIn * limSwitchMax = NULL);
 
 	mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
 	
@@ -46,13 +46,13 @@ public:
 
 private:
 
-	t_actuatorConfig m_actuatorConfig;
 	t_actuatorControlMode m_controlMode;
+	t_actuatorConfig m_actuatorConfig;
 
-	Motor const * p_motor;
-	Encoder const * p_encoder;
-	DigitalIn const * p_limSwitchMin;
-	DigitalIn const * p_limSwitchMax;
+	Motor * p_motor;
+	Encoder * p_encoder;
+	DigitalIn * p_limSwitchMin;
+	DigitalIn * p_limSwitchMax;
 
 	bool m_limSwitchMin_Connected;
 	bool m_limSwitchMax_Connected;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mbed.h"
-template <class t_encoderConfig>
+
 class Encoder {
 
 public:
@@ -11,8 +11,13 @@ public:
 		absolute
 	} t_encoderType;
 
-	Encoder(t_encoderConfig config);
-	virtual ~Encoder();
+	typedef struct {
+		t_encoderType encoderType;
+		PinName encoderPins[3];
+	} t_encoderConfig;
+
+	Encoder(t_encoderConfig config) {};
+	virtual ~Encoder() {};
 
 	// Must be implemented
 	virtual t_encoderConfig getType() = 0;
@@ -21,9 +26,5 @@ public:
 	virtual float getRevolutions() = 0;
 
 	virtual mbed_error_status_t reset();
-
-private:
-
-
 
 };

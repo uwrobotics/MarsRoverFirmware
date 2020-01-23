@@ -3,20 +3,22 @@
 #include <cmath>
 
 ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, 
-									   Motor const * motor, Encoder const * encoder, 
-									   DigitalIn const * limSwitchMin = NULL, 
-									   DigitalIn const * limSwitchMax = NULL) :
+									   Motor * motor, Encoder * encoder, 
+									   DigitalIn * limSwitchMin, 
+									   DigitalIn * limSwitchMax) :
 
 		m_actuatorConfig(actuatorConfig), p_motor(motor), p_encoder(encoder), 
-		p_limSwitchMin(limSwitchMin), p_limSwitchMax(limSwitchMax) {
+		p_limSwitchMin(limSwitchMin), p_limSwitchMax(limSwitchMax),
+		m_velocityPIDController(actuatorConfig.velocityPID.P, actuatorConfig.velocityPID.I, actuatorConfig.velocityPID.D, 0.0),
+		m_positionPIDController(actuatorConfig.positionPID.P, actuatorConfig.positionPID.I, actuatorConfig.positionPID.D, 0.0) {
 
-	m_limSwitchMin_Connected = (p_limSwitchMin != NULL && p_limSwitchMin->isConnected());
-	m_limSwitchMax_Connected = (p_limSwitchMax != NULL && p_limSwitchMax->isConnected());
+	m_limSwitchMin_Connected = (p_limSwitchMin != NULL && p_limSwitchMin->is_connected());
+	m_limSwitchMax_Connected = (p_limSwitchMax != NULL && p_limSwitchMax->is_connected());
 
 	initializePIDControllers();
 	updateTimer.start();
 
-	setControlMode(actuatorConfig.deaultControlMode);
+	setControlMode(actuatorConfig.defaultControlMode);
 }
 
 ActuatorController::t_actuatorControlMode ActuatorController::getControlMode() {
@@ -28,20 +30,22 @@ float ActuatorController::getMotorPower_Percentage() {
 }
 
 float ActuatorController::getVelocity_DegreesPerSec() {
-	return m_encoder->getVelocity_DegreesPerSec();
+	return p_encoder->getVelocity_DegreesPerSec();
 }
 
 float ActuatorController::getAngle_Degrees() {
-	return m_encoder->getAngle_Degrees();
+	return p_encoder->getAngle_Degrees();
 }
 
-mbed_error_status_t setControlMode(t_actuatorControlMode controlMode) {
+mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode controlMode) {
+
+	m_controlMode = controlMode;
 
 	 switch (controlMode) {
 
         case motorPower:
             m_controlMode = motorPower;
-            MBED_WARN_ON_ERROR(setMotorPower_Percentage(0.0f));
+            setMotorPower_Percentage(0.0f);
             break;
 
         case velocity:
@@ -63,7 +67,7 @@ mbed_error_status_t setControlMode(t_actuatorControlMode controlMode) {
     return MBED_SUCCESS;
 }
 	
-mbed_error_status_t setMotorPower_Percentage(float percentage) {
+mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentage) {
 	if (m_controlMode != motorPower) {
 		return MBED_ERROR_INVALID_OPERATION;
 	}
@@ -79,7 +83,7 @@ mbed_error_status_t setMotorPower_Percentage(float percentage) {
 	return MBED_SUCCESS;
 }
 
-mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec) {
+mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesPerSec) {
 	if (m_controlMode != velocity) {
 		return MBED_ERROR_INVALID_OPERATION;
 	}
@@ -95,7 +99,7 @@ mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec) {
 	return MBED_SUCCESS;
 }
 
-mbed_error_status_t setAngle_Degrees(float degrees) {
+mbed_error_status_t ActuatorController::setAngle_Degrees(float degrees) {
 	if (m_controlMode != position) {
 		return MBED_ERROR_INVALID_OPERATION;
 	}
