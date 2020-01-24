@@ -6,15 +6,35 @@ class Encoder {
 
 public:
 
-	typedef enum {
+	typedef enum encoderType {
 		relative,
 		absolute
 	} t_encoderType;
 
+    typedef enum quadratureEncodingType {
+        x2_encoding,
+        x4_encoding
+    } t_quadratureEncodingType;
+
 	typedef struct {
-		t_encoderType encoderType;
-		PinName encoderPins[3];
+		// PWM encoder pins
+		PinName pin_PWM = NC;
+
+		// SPI encoder pins
+		PinName pin_MOSI = NC;
+		PinName pin_MISO = NC;
+		PinName pin_SCK  = NC;
+
+		// Quadrature encoder pins
+		PinName pin_ChannelA = NC;
+		PinName pin_ChannelB = NC;
+		PinName pin_Index    = NC;
+
 		float degreesPerUnit;
+		bool inverted;
+
+		// Encoding type (for quadrature encoders)
+		t_quadratureEncodingType quadratureEncodingType = x2_encoding;
 	} t_encoderConfig;
 
 	Encoder(t_encoderConfig encoderConfig) {};

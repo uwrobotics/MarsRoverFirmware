@@ -24,7 +24,7 @@ public:
 
 private:
 
-    t_encoderType m_encoderType;
     PwmIn m_pwmIn;
+    float m_degreesPerUnit;
 
 };
