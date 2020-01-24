@@ -14,6 +14,7 @@ public:
 	typedef struct {
 		t_encoderType encoderType;
 		PinName encoderPins[3];
+		float degreesPerUnit;
 	} t_encoderConfig;
 
 	Encoder(t_encoderConfig encoderConfig) {};
