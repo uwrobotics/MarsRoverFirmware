@@ -1,9 +1,12 @@
+
 #include "EncoderRelative_Quadrature.h"
 
 EncoderRelative_Quadrature::EncoderRelative_Quadrature(t_encoderConfig encoderConfig) :
         Encoder(encoderConfig), 
         m_QEI(encoderConfig.pin_ChannelA, encoderConfig.pin_ChannelB, encoderConfig.pin_Index, encoderConfig.quadratureEncodingType),
         m_degreesPerUnit(encoderConfig.degreesPerUnit) {}
+
+EncoderRelative_Quadrature::~EncoderRelative_Quadrature() {}
 
 Encoder::t_encoderType EncoderRelative_Quadrature::getType() {
     return encoderType::relative;

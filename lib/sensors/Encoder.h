@@ -46,7 +46,7 @@ public:
 	virtual float getVelocity_DegreesPerSec() = 0;
 	
 	// Optionally implemented
-	virtual float getRevolutions();
-	virtual mbed_error_status_t reset();
+	virtual float getRevolutions() { return 0.0; };
+	virtual mbed_error_status_t reset() { return 0.0; };
 
 };

@@ -1,7 +1,10 @@
+
 #include "EncoderAbsolute_PWM.h"
 
 EncoderAbsolute_PWM::EncoderAbsolute_PWM(t_encoderConfig encoderConfig) :
 		Encoder(encoderConfig), m_pwmIn(encoderConfig.pin_PWM), m_degreesPerUnit(encoderConfig.degreesPerUnit) {}
+
+EncoderAbsolute_PWM::~EncoderAbsolute_PWM() {}
 
 Encoder::t_encoderType EncoderAbsolute_PWM::getType() {
 	return encoderType::absolute;
