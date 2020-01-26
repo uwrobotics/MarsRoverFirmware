@@ -8,6 +8,7 @@
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
+#include "ActuatorController.h"
 
 DigitalOut led1(LED1);
 
@@ -25,6 +26,35 @@ Encoder::t_encoderConfig encRelConfig = {
 
 EncoderAbsolute_PWM encAbs(encAbsConfig);
 EncoderRelative_Quadrature encRel(encRelConfig);
+
+ActuatorController::t_actuatorConfig actuatorConfig = {
+    .defaultControlMode = ActuatorController::motorPower,
+
+    .minMotorPower_Percentage = -1.0, 
+    .maxMotorPower_Percentage = 1.0,
+    
+    .minVelocity_DegreesPerSec = -5.0, 
+    .maxVelocity_DegreesPerSec = 5.0,
+    
+    .minAngle_Degrees = -90.0, 
+    .maxAngle_Degrees = 90.0,
+
+    .velocityPID = {
+        .P = 1.0,
+        .I = 0.0,
+        .D = 0.0
+    }, 
+
+    .positionPID = {
+        .P = 1.0,
+        .I = 0.0,
+        .D = 0.0
+    }
+};
+
+Motor motor(PA_5, PA_6);
+
+ActuatorController actuator(actuatorConfig, &motor, &encAbs);
 
 // main() runs in its own thread in the OS
 int main()
