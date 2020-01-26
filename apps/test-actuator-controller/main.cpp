@@ -54,7 +54,8 @@ ActuatorController::t_actuatorConfig actuatorConfig = {
 
 Motor motor(PA_5, PA_6);
 
-ActuatorController actuator(actuatorConfig, &motor, &encAbs);
+ActuatorController actuatorAbs(actuatorConfig, &motor, &encAbs);
+ActuatorController actuatorRel(actuatorConfig, &motor, &encAbs);
 
 // main() runs in its own thread in the OS
 int main()
