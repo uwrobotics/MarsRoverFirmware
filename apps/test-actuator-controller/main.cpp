@@ -12,11 +12,19 @@
 DigitalOut led1(LED1);
 
 Encoder::t_encoderConfig encAbsConfig = {
-    .pin_PWM = PA_1,
+    .pin_PWM        = PA_1,
     .degreesPerUnit = 360.0
 };
 
+Encoder::t_encoderConfig encRelConfig = {
+    .pin_ChannelA           = PA_2,
+    .pin_ChannelB           = PA_3,
+    .degreesPerUnit         = 0.25,
+    .quadratureEncodingType = Encoder::x4_encoding
+};
+
 EncoderAbsolute_PWM encAbs(encAbsConfig);
+EncoderRelative_Quadrature encRel(encRelConfig);
 
 // main() runs in its own thread in the OS
 int main()

@@ -182,6 +182,11 @@ int QEI::getPulses(void) {
 
 }
 
+float QEI::getPulseVelocity_PulsesPerSec(void) {
+
+    return movingAvgVelocity_PulsesPerSec_;
+}
+
 int QEI::getRevolutions(void) {
 
     return revolutions_;
