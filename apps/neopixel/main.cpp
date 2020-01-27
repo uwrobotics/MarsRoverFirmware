@@ -5,28 +5,24 @@
 
 #include "mbed.h"
 #include "CANMsg.h"
-int main(){
-    int a =5;
-    a++;
-}
-// #include "rover_config.h"
+#include "rover_config.h"
 // #include "neoPixel.h"
 
-//Serial        pc(SERIAL_TX, SERIAL_RX, 115200);
-//CAN           can(PB_8, PB_9, 500000);
+Serial        pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
+// CAN_RX = PB_8, CAN_TX = PB_9
+CAN           can(PB_8, PB_9, ROVER_CANBUS_FREQUENCY);
+CANMsg        rxMsg;
 //neoPixel      neoPixel_obj(64);
-//CANMsg        rxMsg;
 
-// 0x215 CAN ID for change to a neo pixel.
+// 0x794 CAN ID for change to a neo pixel.
 // Color is specified by the data inside the packet
 // 0 is solid red
 // 1 is solid blue
 // 2 is flashing green
-/*
+
 void initCAN() {
-    // Do not leave as literals, put in rover_config.h
     // CANStandard is defined in CAN.h
-    can.filter(0x215, 0xF00, CANStandard);
+    can.filter(ROVER_CANID_FIRST_GIMBTONOMY_RX, ROVER_CANID_FILTER_MASK, CANStandard);
 
     // for (int canHandle = firstCommand; canHandle <= lastCommand; canHandle++) {
     //     can.filter(RX_ID + canHandle, 0xFFF, CANStandard, canHandle);
@@ -45,7 +41,7 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg){
         //neoPixel_obj.displayRed();
         break;
     case 1:
-        pc.printf("Setting neo pixels to sold blue\r\n");
+        pc.printf("Setting neo pixels to solid blue\r\n");
         //neoPixel_obj.displayBlue();
         break;
     case 2:
@@ -60,12 +56,14 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg){
 
 void processCANMsg(CANMsg *p_newMsg) {
     // PRINT_INFO("Recieved CAN message with ID %X\r\n", p_newMsg->id);
+    // The specific can ID for changing the color of the neopixels is 0x794
+    const unsigned int setNeoPixelMode = 0x794;
 
     switch (p_newMsg->id) {
 
         //case setNeoPixelColorRed:
-        // Store 0x215 into vars that are stored in rover_config.h
-        case 0x215:
+        // Store 0x794 into vars that are stored in rover_config.h
+        case setNeoPixelMode:
             pc.printf("Updating neo pixels\r\n");
             handleSetNeoPixelColor(p_newMsg);
             break;
@@ -74,16 +72,16 @@ void processCANMsg(CANMsg *p_newMsg) {
             pc.printf("Recieved unimplemented command\r\n");
             break;
     }
-}*/
+}
 
 // main() runs in its own thread in the OS
-/*
 int main()
 {
+    initCAN();
     while(1){
         if (can.read(rxMsg)){
-            //processCANMsg(&rxMsg);
+            processCANMsg(&rxMsg);
+            rxMsg.clear();
         }
     }
-    
-}*/
+}
