@@ -161,8 +161,8 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass)
     RCC_OscInitStruct.PLL.PLLM = 15;            // VCO input clock = 1.666 MHz (25 MHz / 15)
     RCC_OscInitStruct.PLL.PLLN = 216;           // VCO output clock = 360 MHz (1.666 MHz * 216)
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2; // PLLCLK = 180 MHz (360 MHz / 2)
-    RCC_OscInitStruct.PLL.PLLQ = 2;             // Not used
-    RCC_OscInitStruct.PLL.PLLR = 2;             // Not used
+    RCC_OscInitStruct.PLL.PLLQ = 7;             // Not used
+    RCC_OscInitStruct.PLL.PLLR = 6;             // Not used
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         return 0; // FAIL
     }
