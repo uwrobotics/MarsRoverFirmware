@@ -199,6 +199,8 @@ COMMON_FLAGS += -Wextra
 COMMON_FLAGS += -Wno-missing-field-initializers
 COMMON_FLAGS += -Wno-unused-parameter
 COMMON_FLAGS += -include
+COMMON_FLAGS += ${TARGET_PATH}/mbed_config_target.h
+COMMON_FLAGS += -include
 COMMON_FLAGS += $(CONFIG_PATH)/mbed_config.h
 
 C_FLAGS += -std=gnu11
