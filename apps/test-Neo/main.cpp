@@ -25,23 +25,20 @@ int main(){
 
     while(1){
 
-        // for(int k = 0; k < PIXEL_NUM; k++)   
-        //         for(int j = 0; j < 3; j++){
-        //         int color = GREEN[j];
+        for(int k = 0; k < PIXEL_NUM; k++) 
+        {  
+                for(int j = 0; j < 3; j++){
+                int color = GREEN[j];
 
-        //             for(int i = 0; i < 8; i++){
-        //                 buffer[i+8*j+k*24] = color%2;
-        //                 color /= 2;
-        //             } 
-        //         }
-        for (int k = 0; k < PIXEL_NUM; k++)
-        {
-            output(out, red);
+                    for(int i = 0; i < 8; i++){
+                        buffer[i+8*j+k*24] = color%2;
+                        color /= 2;
+                    } 
+                }
         }
+        output(out, buffer);
 
-        // output(out, buffer);
-
-        wait_ms(250);
+        wait_ms(500);
     }
     return 1;
 }
@@ -60,8 +57,8 @@ void pulse_0(DigitalOut out){
     wait_ns(L_0_ns);
 }
 
-void output(DigitalOut out, bool buffer[24]){
-    for(int k = 24; k >=0; k--){
+void output(DigitalOut out, bool buffer[24*PIXEL_NUM]){
+    for(int k = 24*PIXEL_NUM-1; k >=0; k--){
         if(buffer[k] == 1)
             pulse_1(out);
         else
