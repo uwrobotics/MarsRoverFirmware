@@ -15,16 +15,12 @@
  * limitations under the License.
  */
 
-// Automatically generated configuration file.
-// DO NOT EDIT, content will be overwritten.
-
 #ifndef __MBED_CONFIG_DATA__
 #define __MBED_CONFIG_DATA__
 
 #include "rover_config.h"
 
 // MBED configuration parameters
-#define CLOCK_SOURCE                                                          USE_PLL_HSE_EXTC|USE_PLL_HSI                                                                     // set by target:NUCLEO_F446RE
 #define LPTICKER_DELAY_TICKS                                                  1                                                                                                // set by target:FAMILY_STM32
 #define MBED_CONF_ATMEL_RF_ASSUME_SPACED_SPI                                  1                                                                                                // set by library:atmel-rf[STM]
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED                                     7500000                                                                                          // set by library:atmel-rf
