@@ -5,7 +5,7 @@
     Each byte is a number value from 0-255 of the intensity of that individual LED light
 */
 
-class Neopixel
+class BlockingNeopixel
 {
 private:
     int pixelNum;
@@ -13,8 +13,8 @@ private:
     int off_buffer[8] = {0};
     
 public:
-    Neopixel(int numPixels);
-    ~Neopixel();
+    BlockingNeopixel(int numPixels);
+    ~BlockingNeopixel();
     void pulse_1();
     void pulse_0();
     void writeByte(const int buffer[8]);
@@ -24,8 +24,6 @@ public:
     void writeAnyRGBall(const int colour[3]);
 
     //basic functions for autonomy
-    void displayRed();
-    void displayBlue();
     void flashGreen(int numFlashes, float delay_s);
 };
 

@@ -1,4 +1,4 @@
-#include "neopixel.h"
+#include "blockingneopixel.h"
 
 #define H_1_NS 400
 #define L_1_NS 100
@@ -7,12 +7,12 @@
 
 DigitalOut out(PC_8);
 
-Neopixel::Neopixel(int numPixels)
+BlockingNeopixel::BlockingNeopixel(int numPixels)
 {
     pixelNum = numPixels;
 }
 
-Neopixel::~Neopixel()
+BlockingNeopixel::~BlockingNeopixel()
 {
 }
 
@@ -20,7 +20,7 @@ Neopixel::~Neopixel()
     Writes 1 to the neopixels
     delay is based on the NRZ timing
 */
-void Neopixel::pulse_1() {
+void BlockingNeopixel::pulse_1() {
     out.write(1);
     wait_ns(H_1_NS);
     out.write(0);
@@ -31,7 +31,7 @@ void Neopixel::pulse_1() {
     Writes 0 to the neopixels
     delay is based on the NRZ timing
 */
-void Neopixel::pulse_0(){
+void BlockingNeopixel::pulse_0(){
     out.write(1);
     wait_ns(H_0_NS);
     out.write(0);
@@ -42,7 +42,7 @@ void Neopixel::pulse_0(){
 Writes a byte of data to the pixels. Pixels require 3 bytes of data to be sent
 Each byte written is the intensity of each led on each pixel
 */
-void Neopixel::writeByte(const int buffer[8])
+void BlockingNeopixel::writeByte(const int buffer[8])
 {
     for (int i = 7; i >= 0; i--)
     {
@@ -62,7 +62,7 @@ void Neopixel::writeByte(const int buffer[8])
     w = white
     n = no colour/off
 */
-void Neopixel::showColour(char colour)
+void BlockingNeopixel::showColour(char colour)
 {
     for (int i = 0; i < pixelNum; i++)
     {
@@ -102,7 +102,7 @@ void Neopixel::showColour(char colour)
 }
 
 //tells pixels to turn on and off n times
-void Neopixel::blinkPixels(int flashes, char colour)
+void BlockingNeopixel::blinkPixels(int flashes, char colour)
 {
     for (int i = 0; i < flashes; i++)
     {
@@ -121,7 +121,7 @@ void Neopixel::blinkPixels(int flashes, char colour)
 
 //Provided an array of integers of the RGB values (in GRB order), shows those
 // colours on the pixels
-void Neopixel::writeAnyRGB(const int colour[3])
+void BlockingNeopixel::writeAnyRGB(const int colour[3])
 {
     int colourBuffer[3] = {colour[0], colour[1], colour[2]};
     int buffer[][8] = {{}, {}, {}};
@@ -137,7 +137,7 @@ void Neopixel::writeAnyRGB(const int colour[3])
     writeByte(buffer[2]);
 }
 
-void Neopixel::writeAnyRGBall(const int colour[3])
+void BlockingNeopixel::writeAnyRGBall(const int colour[3])
 {
     int colourBuffer[3] = {colour[0], colour[1], colour[2]};
     int buffer[][8] = {{}, {}, {}};
@@ -158,7 +158,7 @@ void Neopixel::writeAnyRGBall(const int colour[3])
 }
 
 //Flashing Green
-void Neopixel::flashGreen(int numFlashes, float delay_s)
+void BlockingNeopixel::flashGreen(int numFlashes, float delay_s)
 {
     for (int i = 0; i < numFlashes; i++)
     {
