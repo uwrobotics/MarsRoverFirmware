@@ -66,9 +66,8 @@ class PID {
 public:
 
     typedef struct {
-        float P, I, D, bias;
-        float interval;
-
+        float P, I, D, bias = 0.0;
+        float deadZoneError = 0.0;
     } t_pidConfig;
 
     // add other actuators here
