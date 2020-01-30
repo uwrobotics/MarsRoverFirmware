@@ -1,5 +1,4 @@
-#ifndef CANMSG_H
-#define CANMSG_H
+#pragma once
 
 #include "mbed.h"
 
@@ -78,5 +77,3 @@ public:
         return *this;
     }
 };
-
-#endif // CANMSG_H

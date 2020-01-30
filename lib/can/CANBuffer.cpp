@@ -14,8 +14,10 @@ void CANBuffer::rxIrqHandler(void) {
 
         m_CANMsg.clear();
 
-        if (!full()) {
-            push(m_CANMsg);
+        if (full()) {
+            // Should do something if full, set a flag
         }
+
+        push(m_CANMsg);
     }
 }

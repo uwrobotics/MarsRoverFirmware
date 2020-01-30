@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef CANBUFFER_DEFAULT_SIZE
-#define CANBUFFER_DEFAULT_SIZE 8 // 1 kHz
+#define CANBUFFER_DEFAULT_SIZE 8
 #endif
 
 #include "mbed.h"
@@ -26,7 +26,7 @@ private:
 
     void rxIrqHandler();
 
-    // // Remove push from public scope
-    // using CircularBuffer::push();
+    // Remove push from public scope
+    using CircularBuffer::push;
 
 };
