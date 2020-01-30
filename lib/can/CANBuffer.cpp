@@ -3,15 +3,14 @@
 CANBuffer::CANBuffer(CAN * CANInterface, BufferType type): p_CANInterface(CANInterface) {
 
     if (type == rx) {
-        Callback rxCallback(this, &rxIrqHandler);
-        p_CANInterface->attach(rxCallback, CAN::RxIrq);
+        p_CANInterface->attach(callback(this, &CANBuffer::rxIrqHandler), CAN::RxIrq);
     }
 
 }
 
-CANBuffer::rxIrqHandler() {
+void CANBuffer::rxIrqHandler(void) {
 
-    if (can.read(m_CANMsg)) {
+    if (p_CANInterface->read(m_CANMsg)) {
 
         m_CANMsg.clear();
 

@@ -1,7 +1,7 @@
 #ifndef CANMSG_H
 #define CANMSG_H
 
-#include "CAN.h"
+#include "mbed.h"
 
 class CANMsg : public CANMessage {
     

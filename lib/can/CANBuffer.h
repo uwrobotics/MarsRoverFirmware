@@ -4,9 +4,9 @@
 #define CANBUFFER_DEFAULT_SIZE 8 // 1 kHz
 #endif
 
-#include "CAN.h"
-#include "CANMsg.h"
+#include "mbed.h"
 #include "CircularBuffer.h"
+#include "CANMsg.h"
 
 class CANBuffer : CircularBuffer<CANMessage, CANBUFFER_DEFAULT_SIZE> {
 
@@ -19,13 +19,6 @@ public:
 
     CANBuffer(CAN * CANInterface, BufferType type = rx);
 
-    bool pop();
-    bool empty();
-    bool full();
-    void reset();
-    CounterType size();
-    bool peek(CANMsg &msg);
-
 private:
 
     CAN * p_CANInterface;
@@ -33,7 +26,7 @@ private:
 
     void rxIrqHandler();
 
-    // Remove push from public scope
-    using CircularBuffer::push();
+    // // Remove push from public scope
+    // using CircularBuffer::push();
 
 };
