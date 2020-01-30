@@ -1,17 +1,17 @@
-#pragma once
+#ifndef CANMSG_H
+#define CANMSG_H
 
 #include "CAN.h"
 
-class CANMsg : public CANMessage
-{
+class CANMsg : public CANMessage {
     
 public:
 
     template <class T>
-    typedef union {
+    union CANPayload {
         unsigned char data[8];
         T value;
-    } CANPayload;
+    };
 
     /** Creates empty CAN message.
      */
@@ -78,3 +78,5 @@ public:
         return *this;
     }
 };
+
+#endif // CANMSG_H
