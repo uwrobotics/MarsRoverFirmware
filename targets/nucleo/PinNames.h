@@ -192,9 +192,13 @@ typedef enum {
     LED3        = PA_5,
     LED4        = PA_5,
     LED_RED     = LED1,
+    PWM_OUT     = PB_3,
     USER_BUTTON = PC_13,
+
     // Standardized button names
     BUTTON1 = USER_BUTTON,
+
+    // Communication pins
     SERIAL_TX   = STDIO_UART_TX,
     SERIAL_RX   = STDIO_UART_RX,
     USBTX       = STDIO_UART_TX,
@@ -205,7 +209,12 @@ typedef enum {
     SPI_MISO    = PA_6,
     SPI_SCK     = PA_5,
     SPI_CS      = PB_6,
-    PWM_OUT     = PB_3,
+    CAN1_TX     = PA_12,
+    CAN1_RX     = PA_11,
+    CAN2_TX     = PB_13,
+    CAN2_RX     = PB_12,
+    CAN_TX      = CAN1_TX,
+    CAN_RX      = CAN1_RX,
 
     /**** USB pins ****/
     USB_OTG_FS_DM = PA_11,
