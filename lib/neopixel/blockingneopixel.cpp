@@ -1,3 +1,4 @@
+#include "mbed.h"
 #include "blockingneopixel.h"
 
 #define H_1_NS 400
@@ -167,4 +168,16 @@ void BlockingNeopixel::flashGreen(int numFlashes, float delay_s)
         showColour('n');
         wait(delay_s);
     }
+}
+
+//show solid red on all pixels
+void BlockingNeopixel::displayRed()
+{
+    showColour('r');
+}
+
+//show solid blue on all pixels
+void BlockingNeopixel::displayBlue()
+{
+    showColour('b');
 }

@@ -1,4 +1,5 @@
-#include "mbed.h"
+#ifndef BLOCKINGNEOPIXEL_H
+#define BLOCKINGNEOPIXEL_H
 
 /*
     Data is written in G -> R -> B
@@ -24,7 +25,9 @@ public:
     void writeAnyRGBall(const int colour[3]);
 
     //basic functions for autonomy
+    void displayRed();
+    void displayBlue();
     void flashGreen(int numFlashes, float delay_s);
 };
 
-
+#endif /* BLOCKINGNEOPIXEL_H */
