@@ -12,7 +12,7 @@ Serial        pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 // CAN_RX = PB_8, CAN_TX = PB_9
 CAN           can(PB_8, PB_9, ROVER_CANBUS_FREQUENCY);
 CANMsg        rxMsg;
-BlockingNeopixel      neopixel(64);
+BlockingNeopixel      neopixel(16);
 
 // 0x794 CAN ID for change to a neo pixel.
 // Color is specified by the data inside the packet
