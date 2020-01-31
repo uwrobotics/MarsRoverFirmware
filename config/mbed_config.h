@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-// Automatically generated configuration file.
-
 #ifndef __MBED_CONFIG_DATA__
 #define __MBED_CONFIG_DATA__
 
