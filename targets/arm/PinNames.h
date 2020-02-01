@@ -182,62 +182,103 @@ typedef enum {
     ADC_VREF = 0xF1,
     ADC_VBAT = 0xF2,
 
-    // Arduino connector namings
-    A0          = PA_0,
-    A1          = PA_1,
-    A2          = PA_4,
-    A3          = PB_0,
-    A4          = PC_1,
-    A5          = PC_0,
-    D0          = PA_3,
-    D1          = PA_2,
-    D2          = PA_10,
-    D3          = PB_3,
-    D4          = PB_5,
-    D5          = PB_4,
-    D6          = PB_10,
-    D7          = PA_8,
-    D8          = PA_9,
-    D9          = PC_7,
-    D10         = PB_6,
-    D11         = PA_7,
-    D12         = PA_6,
-    D13         = PA_5,
-    D14         = PB_9,
-    D15         = PB_8,
-
     // STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
     STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-    STDIO_UART_TX = PA_2,
+    STDIO_UART_TX = PE_8,
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
     STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-    STDIO_UART_RX = PA_3,
+    STDIO_UART_RX = PE_7,
 #endif
 
-    // Generic signals namings
-    LED1        = PA_5,
-    LED2        = PA_5,
-    LED3        = PA_5,
-    LED4        = PA_5,
-    LED_RED     = LED1,
-    USER_BUTTON = PC_13,
-    // Standardized button names
-    BUTTON1 = USER_BUTTON,
+    /**** UI ****/
+    LED_1 = PC_14,
+    LED_2 = PC_15,
+    LED_3 = PC_5,
+    LED_4 = PE_15,
+
+    BUTTON_1 = PE_3,
+    BUTTON_2 = PC_13,
+
+    /**** Actuator Pins ****/
+    MTR_PWM_TRNTBL = PD_14,
+    MTR_DIR_TRNTBL = PD_10,
+
+    MTR_PWM_SHLDR = PD_13,
+    MTR_DIR_SHLDR = PD_9,
+
+    MTR_PWM_ELBW = PD_15,
+    MTR_DIR_ELBW = PD_11,
+
+    MTR_PWM_WRSTL = PB_8,
+    MTR_DIR_WRSTL = PE_0,
+
+    MTR_PWM_WRSTR = PB_9,
+    MTR_DIR_WRSTR = PE_1,
+
+    MTR_PWM_CLAW = PD_12,
+    MTR_DIR_CLAW = PD_8,
+
+    SRVO_PWM_CLAW = PA_7,
+
+    /**** Limit Switch Pins ****/
+    LIM_TRNTBL_CCW = PD_2,
+    LIM_TRNTBL_CW = PD_3,
+
+    LIM_ELBW_CCW = PD_0,
+    LIM_ELBW_CW = PD_7, 
+
+    LIM_WRST_CCW = PD_4,
+    LIM_WRST_CNTR = PD_5,
+    LIM_WRST_CW = PD_6,
+
+    LIM_CLAW_OPEN = PC_12,
+
+    /**** Encoder Pins ****/
+    ENC_PWM_TRNTBL = PB_14,
+    ENC_PWM_SHLDR = PC_6,
+    ENC_PWM_ELBW = PE_5,
+
+    ENC_QUAD_CLAW_A = PE_9,
+    ENC_QUAD_CLAW_B = PE_11,
+
+    ENC_QUAD_WRST_LHS_A = PA_0,
+    ENC_QUAD_WRST_LHS_B = PA_1,
+
+    ENC_QUAD_WRST_RHS_A = PB_4,
+    ENC_QUAD_WRST_RHS_B = PC_7,
+
+    /**** Serial Interface Pins ****/
+    CAN1_TX = PA_12,
+    CAN1_RX = PA_11,
+
+    CAN2_TX = PB_13,
+    CAN2_RX = PB_12,
+
+    CAN_TX = CAN1_TX;
+    CAN_RX = CAN1_RX;
+
+    SPI1_SCK = PB_3,
+    SPI1_MOSI = PB_5,
+    SPI1_MISO = PA_6,
+
+    SPI2_SCK = PB_10,
+    SPI2_MOSI = PC_3,
+    SPI2_MISO = PC_2,
+
+    SPI4_SCK = PE_2,
+    SPI4_MOSI = PE_6,
+    SPI4_MISO = PE_13,
+
     SERIAL_TX   = STDIO_UART_TX,
     SERIAL_RX   = STDIO_UART_RX,
+    SERIAL_RTS  = PC_8,
+
     USBTX       = STDIO_UART_TX,
     USBRX       = STDIO_UART_RX,
-    I2C_SCL     = PB_8,
-    I2C_SDA     = PB_9,
-    SPI_MOSI    = PA_7,
-    SPI_MISO    = PA_6,
-    SPI_SCK     = PA_5,
-    SPI_CS      = PB_6,
-    PWM_OUT     = PB_3,
 
     /**** USB pins ****/
     USB_OTG_FS_DM = PA_11,
