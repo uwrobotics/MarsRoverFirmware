@@ -5,6 +5,7 @@
 class CANProcessor {
 
 public:
+
     CANProcessor(CAN &CANInterface);
 
     void start();
