@@ -195,10 +195,10 @@ typedef enum {
 #endif
 
     /**** UI ****/
-    LED_1 = PC_14,
-    LED_2 = PC_15,
-    LED_3 = PC_5,
-    LED_4 = PE_15,
+    LED1 = PC_14,
+    LED2 = PC_15,
+    LED3 = PC_5,
+    LED4 = PE_15,
 
     BUTTON_1 = PE_3,
     BUTTON_2 = PC_13,
@@ -258,8 +258,8 @@ typedef enum {
     CAN2_TX = PB_13,
     CAN2_RX = PB_12,
 
-    CAN_TX = CAN1_TX;
-    CAN_RX = CAN1_RX;
+    CAN_TX = CAN1_TX,
+    CAN_RX = CAN1_RX,
 
     SPI1_SCK = PB_3,
     SPI1_MOSI = PB_5,
