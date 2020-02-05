@@ -178,34 +178,48 @@ typedef enum {
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
     STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-    STDIO_UART_TX = PA_2,
+    STDIO_UART_TX = PC_10,
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
     STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-    STDIO_UART_RX = PA_3,
+    STDIO_UART_RX = PC_11,
 #endif
 
-    // Generic signals namings
-    LED1        = PA_5,
-    LED2        = PA_5,
-    LED3        = PA_5,
-    LED4        = PA_5,
-    LED_RED     = LED1,
-    USER_BUTTON = PC_13,
-    // Standardized button names
-    BUTTON1 = USER_BUTTON,
-    SERIAL_TX   = STDIO_UART_TX,
-    SERIAL_RX   = STDIO_UART_RX,
-    USBTX       = STDIO_UART_TX,
-    USBRX       = STDIO_UART_RX,
-    I2C_SCL     = PB_8,
-    I2C_SDA     = PB_9,
-    SPI_MOSI    = PA_7,
-    SPI_MISO    = PA_6,
-    SPI_SCK     = PA_5,
-    SPI_CS      = PB_6,
-    PWM_OUT     = PB_3,
+    /**** UI ****/
+    LED1         = PC_0,
+    LED2         = PC_1,
+    LED3         = PC_2,
+    LED4         = PC_3,
+
+    BUTTON1      = PB_0,
+    BUTTON2      = PB_1,
+
+    /**** Voltage Measurement ****/
+    BUS_5V_AI    = PA_1,
+    BUS_12V_AI   = PA_2,
+    BUS_24V_AI   = PA_3,
+    TEMP_AI      = PA_4,
+
+    /**** Serial Interface Pins ****/	
+    CAN1_TX      = PA_12,
+    CAN1_RX      = PA_11,
+
+    CAN2_TX      = PB_13,
+    CAN2_RX     = PB_12,
+
+    CAN_TX       = CAN1_TX,
+    CAN_RX       = CAN1_RX,
+
+    I2C_SCL      = PB_8,
+    I2C_SDA      = PB_9,
+
+    SERIAL_TX    = STDIO_UART_TX,
+    SERIAL_RX    = STDIO_UART_RX,
+    SERIAL_RTS   = PA_15,
+
+    USBTX        = STDIO_UART_TX,
+    USBRX        = STDIO_UART_RX,
 
     /**** USB pins ****/
     USB_OTG_FS_DM = PA_11,
