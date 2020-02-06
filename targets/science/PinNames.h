@@ -201,26 +201,15 @@ typedef enum {
     MTR_PWM_2 = PA_7,
     MTR_DIR_2 = PC_4,
 
-
     /**** Limit Switch Pins ****/
-
-
-
-
-
     LIM_SW_1  = PB_4,
     LIM_SW_2  = PB_3,
     LIM_SW_3  = PD_2,
     LIM_SW_4  = PC_12,
 
-
     /**** Encoder Pins ****/
-
-
     ENC_DCI_A    = PB_6,
     ENC_DCI_B    = PB_7,
-
-
 
     /**** Serial Interface Pins ****/
     CAN1_TX    = PA_12,

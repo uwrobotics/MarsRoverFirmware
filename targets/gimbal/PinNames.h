@@ -176,9 +176,7 @@ STDIO_UART_RX = PC_11,
     BUTTON_1 = PB_0,
     BUTTON_2 = PB_1,
 
-
     /**** Actuator Pins ****/
-
     SRVO_PWM_CR = PB_14,
     SRVO_PWM_MG = PB_15,
 
@@ -194,9 +192,7 @@ STDIO_UART_RX = PC_11,
     ULTRA_TRIG_3V3_2 = PB_8,
     ULTRA_ECHO_2 = PB_9,
 
-
     /**** Serial Interface Pins ****/
-
     SPI1_SCK   = PA_5,
     SPI1_MOSI  = PA_6,
     SPI1_MISO  = PA_7,
@@ -210,18 +206,12 @@ STDIO_UART_RX = PC_11,
     CAN_TX     = CAN1_TX,
     CAN_RX     = CAN1_RX,
 
-    
-
     SERIAL_TX  = STDIO_UART_TX,
     SERIAL_RX  = STDIO_UART_RX,
     SERIAL_RTS = PC_8,
 
     USBTX      = STDIO_UART_TX,
     USBRX      = STDIO_UART_RX,
-
-
-
-
 
     /**** USB pins ****/
     USB_OTG_FS_DM       = PA_11,
