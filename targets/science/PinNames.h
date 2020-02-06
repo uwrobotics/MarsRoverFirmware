@@ -150,30 +150,6 @@ typedef enum {
     ADC_VREF = 0xF1,
     ADC_VBAT = 0xF2,
 
-    // Arduino connector namings
-    A0          = PA_0,
-    A1          = PA_1,
-    A2          = PA_4,
-    A3          = PB_0,
-    A4          = PC_1,
-    A5          = PC_0,
-    D0          = PA_3,
-    D1          = PA_2,
-    D2          = PA_10,
-    D3          = PB_3,
-    D4          = PB_5,
-    D5          = PB_4,
-    D6          = PB_10,
-    D7          = PA_8,
-    D8          = PA_9,
-    D9          = PC_7,
-    D10         = PB_6,
-    D11         = PA_7,
-    D12         = PA_6,
-    D13         = PA_5,
-    D14         = PB_9,
-    D15         = PB_8,
-
     // STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
     STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
@@ -230,30 +206,6 @@ typedef enum {
 
     I2C_SCL      = PA_8,
     I2C_SDA      = PA_9,
-
-    /**** USB pins ****/
-    USB_OTG_FS_DM       = PA_11,
-    USB_OTG_FS_DP       = PA_12,
-    USB_OTG_FS_ID       = PA_10,
-    USB_OTG_FS_SOF      = PA_8,
-    USB_OTG_FS_VBUS     = PA_9,
-    USB_OTG_HS_DM       = PB_14,
-    USB_OTG_HS_DP       = PB_15,
-    USB_OTG_HS_ID       = PB_12,
-    USB_OTG_HS_SOF      = PA_4,
-    USB_OTG_HS_ULPI_CK  = PA_5,
-    USB_OTG_HS_ULPI_D0  = PA_3,
-    USB_OTG_HS_ULPI_D1  = PB_0,
-    USB_OTG_HS_ULPI_D2  = PB_1,
-    USB_OTG_HS_ULPI_D3  = PB_10,
-    USB_OTG_HS_ULPI_D4  = PB_2,
-    USB_OTG_HS_ULPI_D5  = PB_12,
-    USB_OTG_HS_ULPI_D6  = PB_13,
-    USB_OTG_HS_ULPI_D7  = PB_5,
-    USB_OTG_HS_ULPI_DIR = PC_2,
-    USB_OTG_HS_ULPI_NXT = PC_3,
-    USB_OTG_HS_ULPI_STP = PC_0,
-    USB_OTG_HS_VBUS     = PB_13,
 
     /**** OSCILLATOR pins ****/
     RCC_OSC32_IN  = PC_14,
