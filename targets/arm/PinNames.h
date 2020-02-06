@@ -229,7 +229,7 @@ typedef enum {
     LIM_TRNTBL_RHS = PD_3,
 
     LIM_ELBW_UP    = PD_0,
-    LIM_ELBW_DN    = PD_7, 
+    LIM_ELBW_DN    = PD_7,
 
     LIM_WRST_UP    = PD_4,
     LIM_WRST_CNTR  = PD_5,

@@ -201,12 +201,12 @@ typedef enum {
     BUS_24V_AI   = PA_3,
     TEMP_AI      = PA_4,
 
-    /**** Serial Interface Pins ****/	
+    /**** Serial Interface Pins ****/
     CAN1_TX      = PA_12,
     CAN1_RX      = PA_11,
 
     CAN2_TX      = PB_13,
-    CAN2_RX     = PB_12,
+    CAN2_RX      = PB_12,
 
     CAN_TX       = CAN1_TX,
     CAN_RX       = CAN1_RX,
@@ -258,8 +258,10 @@ typedef enum {
     SYS_JTMS_SWDIO = PA_13,
     SYS_JTRST = PB_4,
     SYS_TRACED0 = PC_8,
+
     SYS_WKUP0 = PA_0,
     SYS_WKUP1 = PC_13,
+    //no WKUP1
 
     // Not connected
     NC = (int)0xFFFFFFFF
