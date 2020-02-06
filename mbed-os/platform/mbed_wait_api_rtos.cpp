@@ -26,6 +26,8 @@
 #include "platform/mbed_power_mgmt.h"
 #include "platform/mbed_error.h"
 #include "rtos/ThisThread.h"
+#include "hal/gpio_api.h"
+#include "targets/TARGET_STM/gpio_object.h"
 
 void wait(float s)
 {
@@ -48,9 +50,12 @@ void wait(float s)
     while ((ticker_read(ticker) - start) < (uint32_t)us);
 }
 
+gpio_t gpio;
+
 /*  The actual time delay may be up to one timer tick less - 1 msec */
 void wait_ms(int ms)
 {
+	gpio_init_out(&gpio, PC_1);
     if (core_util_is_isr_active() || !core_util_are_interrupts_enabled()) {
 #if defined(MBED_TRAP_ERRORS_ENABLED) && MBED_TRAP_ERRORS_ENABLED
         MBED_ERROR(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_INVALID_OPERATION),
@@ -60,6 +65,7 @@ void wait_ms(int ms)
 #endif
     } else {
         rtos::ThisThread::sleep_for(ms);
+		gpio_write(&gpio, 1);
     }
 }
 

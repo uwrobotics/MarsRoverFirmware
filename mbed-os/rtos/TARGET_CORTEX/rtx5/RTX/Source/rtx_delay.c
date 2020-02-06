@@ -24,6 +24,8 @@
  */
 
 #include "rtx_lib.h"
+#include "hal/gpio_api.h"
+#include "targets/TARGET_STM/gpio_object.h"
 
 
 //  ==== Service Calls ====
@@ -72,16 +74,19 @@ SVC0_1(DelayUntil, osStatus_t, uint32_t)
 
 //  ==== Public API ====
 
+gpio_t gpio;
 /// Wait for Timeout (Time Delay).
 osStatus_t osDelay (uint32_t ticks) {
   osStatus_t status;
-
+  gpio_init_out(&gpio, PC_1);
   EvrRtxDelay(ticks);
+
   if (IsIrqMode() || IsIrqMasked()) {
     EvrRtxDelayError((int32_t)osErrorISR);
     status = osErrorISR;
   } else {
     status = __svcDelay(ticks);
+	gpio_write(&gpio, 1);
   }
   return status;
 }
