@@ -3,8 +3,10 @@
 
 #include "mbed.h"                
 
-class Servo{
+class Servo {
+
     protected:
+    
         PinName pin;                    //PIN the servo PWM signal is attached to
         PwmOut pwm;                     //PWM object, does not have default constructor so have to use INITIALIZER LIST to avoid COMPILER attempting to DEFAULT CONSTRUCT
 
@@ -27,6 +29,7 @@ class Servo{
                     speed;                  //ROTATING SPEED in ANGLES PER SECOND
 
     public:
+    
         Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_);    //Copies previous constructors but with PIN
         Servo(PinName pin_, SERVO_TYPE rotate_type_);              
         Servo(PinName pin_, SERVO_TYPE rotate_type_, float value);    
@@ -40,6 +43,7 @@ class Servo{
         float read(void);                   //Returns SPEED if CONTINUOUS and POSITION if LIMITED
 
         void set_period(int period);         //Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
+
 };
 
 #endif

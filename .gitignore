@@ -3,3 +3,4 @@ build
 *.d
 firmware.code-workspace
 .vscode
+.DS_Store
