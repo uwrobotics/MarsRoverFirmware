@@ -4,6 +4,7 @@
 #define PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE 12
 #endif
 
+#include "mbed.h"
 #include "Encoder.h"
 #include "PwmIn.h"
 
