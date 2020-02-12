@@ -1,22 +1,3 @@
-/*
- * An example showing how to use the mbed CAN API:
- *
- * Two affordable (about $2 on ebay) STM32F103C8T6 boards (20kB SRAM, 64kB Flash),
- * (see [https://developer.mbed.org/users/hudakz/code/STM32F103C8T6_Hello/] for more details)
- * are connected to the same CAN bus via transceivers (MCP2551 or TJA1040, or etc.).
- * CAN transceivers are not part of NUCLEO boards, therefore must be added by you.
- * Remember also that CAN bus (even a short one) must be terminated with 120 Ohm resitors at both ends.
- *
- * For more details see the wiki page <https://developer.mbed.org/users/hudakz/code/CAN_Hello/>
- *
- * The same code is used for both mbed boards, but:
- *      For board #1 compile the example without any change.
- *      For board #2 comment out line 21 before compiling
- *
- * Once the binaries have been downloaded to the boards reset both boards at the same time.
- *
- */
-  
 #include "mbed.h"
 #include "CANMsg.h"
 
