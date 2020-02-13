@@ -4,6 +4,9 @@
 #include "Motor.h"
 #include "Encoder.h"
 #include "PID.h"
+#include "PinNames.h"
+
+static DigitalIn NULL_DIGITAL_IN = DigitalIn(NC);
 
 class ActuatorController {
 
@@ -25,10 +28,11 @@ public:
 		PID::t_pidConfig velocityPID, positionPID;
 	} t_actuatorConfig;
 
+
 	ActuatorController(t_actuatorConfig actuatorConfig, 
-					   Motor * motor, Encoder * encoder, 
-					   DigitalIn * limSwitchMin = NULL, 
-					   DigitalIn * limSwitchMax = NULL);
+					   Motor &motor, Encoder &encoder, 
+					   DigitalIn &limSwitchMin = NULL_DIGITAL_IN, 
+					   DigitalIn &limSwitchMax = NULL_DIGITAL_IN);
 
 	mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
 	
@@ -49,10 +53,10 @@ private:
 	t_actuatorControlMode m_controlMode;
 	t_actuatorConfig m_actuatorConfig;
 
-	Motor * p_motor;
-	Encoder * p_encoder;
-	DigitalIn * p_limSwitchMin;
-	DigitalIn * p_limSwitchMax;
+	Motor &r_motor;
+	Encoder &r_encoder;
+	DigitalIn &r_limSwitchMin;
+	DigitalIn &r_limSwitchMax;
 
 	bool m_limSwitchMin_Connected;
 	bool m_limSwitchMax_Connected;

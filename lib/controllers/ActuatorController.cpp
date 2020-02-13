@@ -3,17 +3,17 @@
 #include <cmath>
 
 ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, 
-									   Motor * motor, Encoder * encoder, 
-									   DigitalIn * limSwitchMin, 
-									   DigitalIn * limSwitchMax) :
+									   Motor &motor, Encoder &encoder, 
+									   DigitalIn &limSwitchMin, 
+									   DigitalIn &limSwitchMax) :
 
-		m_actuatorConfig(actuatorConfig), p_motor(motor), p_encoder(encoder), 
-		p_limSwitchMin(limSwitchMin), p_limSwitchMax(limSwitchMax),
+		m_actuatorConfig(actuatorConfig), r_motor(motor), r_encoder(encoder), 
+		r_limSwitchMin(limSwitchMin), r_limSwitchMax(limSwitchMax),
 		m_velocityPIDController(actuatorConfig.velocityPID.P, actuatorConfig.velocityPID.I, actuatorConfig.velocityPID.D, 0.0),
 		m_positionPIDController(actuatorConfig.positionPID.P, actuatorConfig.positionPID.I, actuatorConfig.positionPID.D, 0.0) {
 
-	m_limSwitchMin_Connected = (p_limSwitchMin != NULL && p_limSwitchMin->is_connected());
-	m_limSwitchMax_Connected = (p_limSwitchMax != NULL && p_limSwitchMax->is_connected());
+	m_limSwitchMin_Connected = (r_limSwitchMin != NULL_DIGITAL_IN && r_limSwitchMin.is_connected());
+	m_limSwitchMax_Connected = (r_limSwitchMax != NULL_DIGITAL_IN && r_limSwitchMax.is_connected());
 
 	initializePIDControllers();
 	updateTimer.start();
@@ -26,15 +26,15 @@ ActuatorController::t_actuatorControlMode ActuatorController::getControlMode() {
 }
 
 float ActuatorController::getMotorPower_Percentage() {
-	return p_motor->getPower();
+	return r_motor.getPower();
 }
 
 float ActuatorController::getVelocity_DegreesPerSec() {
-	return p_encoder->getVelocity_DegreesPerSec();
+	return r_encoder.getVelocity_DegreesPerSec();
 }
 
 float ActuatorController::getAngle_Degrees() {
-	return p_encoder->getAngle_Degrees();
+	return r_encoder.getAngle_Degrees();
 }
 
 mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode controlMode) {
@@ -78,7 +78,7 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 		percentage = 0.0;
 	}
 
-	p_motor->setPower(percentage);
+	r_motor.setPower(percentage);
 
 	return MBED_SUCCESS;
 }
@@ -124,10 +124,10 @@ void ActuatorController::update() {
 
 	switch (m_controlMode) {
 		case motorPower:
-			if ( (p_motor->getPower() < 0.0 && isLimSwitchMinTriggered()) ||
-				 (p_motor->getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
+			if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
+				 (r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
 
-				p_motor->setPower(0.0);
+				r_motor.setPower(0.0);
 			}
 
 			break;
@@ -135,14 +135,14 @@ void ActuatorController::update() {
 		case velocity:
 			m_velocityPIDController.setInterval(updateInterval);
 			m_velocityPIDController.setProcessValue(getVelocity_DegreesPerSec());
-			p_motor->setPower(m_velocityPIDController.compute());
+			r_motor.setPower(m_velocityPIDController.compute());
 
 			break;
 
 		case position:
 			m_positionPIDController.setInterval(updateInterval);
 			m_positionPIDController.setProcessValue(getAngle_Degrees());
-			p_motor->setPower(m_positionPIDController.compute());
+			r_motor.setPower(m_positionPIDController.compute());
 
 			break;
 	}
@@ -166,11 +166,11 @@ void ActuatorController::initializePIDControllers() {
 }
 
 bool ActuatorController::isLimSwitchMinTriggered() {
-	return m_limSwitchMin_Connected && p_limSwitchMin->read() == 1;
+	return m_limSwitchMin_Connected && r_limSwitchMin.read() == 1;
 }
 
 bool ActuatorController::isLimSwitchMaxTriggered() {
-	return m_limSwitchMax_Connected && p_limSwitchMax->read() == 1;
+	return m_limSwitchMax_Connected && r_limSwitchMax.read() == 1;
 }
 
 bool ActuatorController::isPastMinAngle() {
