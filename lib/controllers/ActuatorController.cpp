@@ -46,25 +46,21 @@ mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode con
         case motorPower:
             m_controlMode = motorPower;
             setMotorPower_Percentage(0.0f);
-            break;
+            return MBED_SUCCESS;
 
         case velocity:
             m_velocityPIDController.reset();
             m_controlMode = velocity;
-            MBED_WARN_ON_ERROR(setVelocity_DegreesPerSec(0.0f));
-            break;
+            return setVelocity_DegreesPerSec(0.0f);
 
         case position:
             m_positionPIDController.reset();
             m_controlMode = position;
-            MBED_WARN_ON_ERROR(setAngle_Degrees(getAngle_Degrees()));
-            break;
+            return setAngle_Degrees(getAngle_Degrees());
 
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
-
-    return MBED_SUCCESS;
 }
 	
 mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentage) {

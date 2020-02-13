@@ -5,51 +5,51 @@
 
 // Encoder config
 
-Encoder::t_encoderConfig encAbsConfig = {
+static Encoder::t_encoderConfig encAbsConfig = {
     .pin_PWM        = PA_1,
     .degreesPerUnit = 360.0
 };
 
-Encoder::t_encoderConfig turnTableEncoderConfig = {
-        .pin_PWM = ENC_PWM_TRNTBL,
-        .degreesPerUnit = 360,
-        .inverted = false
+static Encoder::t_encoderConfig turnTableEncoderConfig = {
+    .pin_PWM = ENC_PWM_TRNTBL,
+    .degreesPerUnit = 360,
+    .inverted = false
 };
 
 static Encoder::t_encoderConfig shoulderEncoderConfig = {
-        .pin_PWM = ENC_PWM_TRNTBL,
-        .degreesPerUnit = 360,
-        .inverted = false
+    .pin_PWM = ENC_PWM_TRNTBL,
+    .degreesPerUnit = 360,
+    .inverted = false
 };
 
 static Encoder::t_encoderConfig elbowEncoderConfig = {
-        .pin_PWM = ENC_PWM_TRNTBL,
-        .degreesPerUnit = 360,
-        .inverted = false
+    .pin_PWM = ENC_PWM_TRNTBL,
+    .degreesPerUnit = 360,
+    .inverted = false
 };
 
 static Encoder::t_encoderConfig wristLeftEncoderConfig = {
-        .pin_ChannelA = ENC_QUAD_WRST_LHS_A,
-        .pin_ChannelB = ENC_QUAD_WRST_LHS_A,
+    .pin_ChannelA = ENC_QUAD_WRST_LHS_A,
+    .pin_ChannelB = ENC_QUAD_WRST_LHS_A,
 
-        .degreesPerUnit = 1.0,
-        .inverted = false
+    .degreesPerUnit = 1.0,
+    .inverted = false
 };
 
 static Encoder::t_encoderConfig wristRightEncoderConfig = {
-        .pin_ChannelA = ENC_QUAD_WRST_RHS_A,
-        .pin_ChannelB = ENC_QUAD_WRST_RHS_B,
+    .pin_ChannelA = ENC_QUAD_WRST_RHS_A,
+    .pin_ChannelB = ENC_QUAD_WRST_RHS_B,
 
-        .degreesPerUnit = 1.0,
-        .inverted = false
+    .degreesPerUnit = 1.0,
+    .inverted = false
 };
 
 static Encoder::t_encoderConfig clawEncoderConfig = {
-        .pin_ChannelA = ENC_QUAD_CLAW_A,
-        .pin_ChannelB = ENC_QUAD_CLAW_B,
+    .pin_ChannelA = ENC_QUAD_CLAW_A,
+    .pin_ChannelB = ENC_QUAD_CLAW_B,
 
-        .degreesPerUnit = 1.0,
-        .inverted = false
+    .degreesPerUnit = 1.0,
+    .inverted = false
 };
 
 // Actuator config
