@@ -34,7 +34,15 @@ This repository contains:
     - `sudo apt update`
     - `sudo apt install make gcc-arm-none-eabi`
     - `sudo apt install screen` for serial interfacing (or `minicom`)
-		
+    - Install/update ARM GCC toolchain:
+
+	      sudo apt autoremove gcc-arm-none-eabi
+          wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+          sudo tar -xvf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 -C /opt/
+          echo "\nPATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> ~/.bashrc
+          export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin 
+
+	
 	For Windows
     - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
     - Follow Ubuntu setup instructions (optionally instead of `screen` you can use [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/), a GUI Windows app)
@@ -43,9 +51,9 @@ This repository contains:
     - Open Command Line
     - Install Homebrew if not installed 
     	`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-    - Download auto-run script, which will auto install <arm-none-eabi-gcc> with latest version
+    - Download auto-run script, which will auto install with latest version:
     	`brew tap ARMmbed/homebrew-formulae`
-    - Install <arm-none-eabi-gcc> via HomeBrew
+    - Install ARM GCC toolchain via HomeBrew:
     	`brew install arm-none-eabi-gcc`
     - Install [ZOC](https://www.emtec.com/zoc/index.html) for serial interfacing
 
@@ -53,8 +61,8 @@ This repository contains:
 
     Open a new Command Prompt / Terminal window and run the following commands:
 
-    `make --version`  
-    `arm-none-eabi-gcc --version`
+    `make --version                    # Should be v3.8.x or newer`  
+    `arm-none-eabi-gcc --version       # Should be v9.2.x or newer`
 
 3. Download source code
 
