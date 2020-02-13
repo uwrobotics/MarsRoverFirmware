@@ -16,11 +16,11 @@ public:
 	} t_actuatorControlMode;
 
 	typedef struct {
-		t_actuatorControlMode defaultControlMode;
+		t_actuatorControlMode defaultControlMode = motorPower;
 
-		float minMotorPower_Percentage, maxMotorPower_Percentage;
-		float minVelocity_DegreesPerSec, maxVelocity_DegreesPerSec;
-		float minAngle_Degrees, maxAngle_Degrees;
+		float minMotorPower_Percentage = -1.0, maxMotorPower_Percentage = +1.0;
+		float minVelocity_DegreesPerSec = -10.0, maxVelocity_DegreesPerSec = +10.0;
+		float minAngle_Degrees = -90, maxAngle_Degrees = +90;
 
 		PID::t_pidConfig velocityPID, positionPID;
 	} t_actuatorConfig;

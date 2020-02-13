@@ -213,11 +213,11 @@ typedef enum {
     MTR_PWM_ELBW   = PD_15,
     MTR_DIR_ELBW   = PD_11,
 
-    MTR_PWM_WRSTL  = PB_8,
-    MTR_DIR_WRSTL  = PE_0,
+    MTR_PWM_WRST_LHS  = PB_8,
+    MTR_DIR_WRST_LHS  = PE_0,
 
-    MTR_PWM_WRSTR  = PB_9,
-    MTR_DIR_WRSTR  = PE_1,
+    MTR_PWM_WRST_RHS  = PB_9,
+    MTR_DIR_WRST_RHS  = PE_1,
 
     MTR_PWM_CLAW   = PD_12,
     MTR_DIR_CLAW   = PD_8,
