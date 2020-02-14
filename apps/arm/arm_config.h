@@ -143,3 +143,21 @@ static ActuatorController::t_actuatorConfig wristRightActuatorConfig = {
         .deadZoneError = 0.1
     }
 };
+
+static ActuatorController::t_actuatorConfig clawActuatorConfig = {
+    .velocityPID = {
+        .P = 1.0, 
+        .I = 0.0,
+        .D = 0.0, 
+        .bias = 0.0,
+        .deadZoneError = 0.1
+    }, 
+
+    .positionPID = {
+        .P = 1.0, 
+        .I = 0.0,
+        .D = 0.0, 
+        .bias = 0.0,
+        .deadZoneError = 0.1
+    }
+};

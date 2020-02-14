@@ -251,6 +251,9 @@ typedef enum {
     ENC_QUAD_WRST_RHS_A = PB_4,
     ENC_QUAD_WRST_RHS_B = PC_7,
 
+    /**** Other Sensor Pins ****/
+    FORCE_CLAW = PC_1,
+
     /**** Serial Interface Pins ****/
     CAN1_TX    = PA_12,
     CAN1_RX    = PA_11,

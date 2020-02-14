@@ -26,6 +26,9 @@ public:
     mbed_error_status_t setPitchVelocity_DegreesPerSec(float degreesPerSec);
     mbed_error_status_t setPitchAngle_Degrees(float degrees);
 
+    mbed_error_status_t setPitchMotionData(float motionData);
+    mbed_error_status_t setRollMotionData(float motionData);
+
     ActuatorController::t_actuatorControlMode getControlMode();
 
     float getRollPower_Percentage();

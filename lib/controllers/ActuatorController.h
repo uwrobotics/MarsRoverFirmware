@@ -40,6 +40,8 @@ public:
 	mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec);
 	mbed_error_status_t setAngle_Degrees(float degrees);
 
+	mbed_error_status_t setMotionData(float motionData);
+
 	t_actuatorControlMode getControlMode();
 
 	float getMotorPower_Percentage();
