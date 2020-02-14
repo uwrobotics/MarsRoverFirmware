@@ -12,7 +12,7 @@ class DifferentialWristController {
 
 public:
 
-    DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight, 
+    explicit DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight, 
                                 DigitalIn &wristLimUp, DigitalIn &WristLimCenter, DigitalIn &wristLimDown,
                                 float leftToRightMotorPowerBias = 0.0);
 
@@ -37,6 +37,8 @@ public:
     float getPitchAngle_Degrees();
 
     void update();
+
+    mbed_error_status_t runPositionCalibration();
 
 private:
 

@@ -99,6 +99,10 @@ void DifferentialWristController::update() {
     r_wristActuatorRight.update();
 }
 
+mbed_error_status_t runPositionCalibration() {
+    return MBED_SUCCESS;
+}
+
 mbed_error_status_t DifferentialWristController::setSplitMotorPower(void) {
     MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.setMotorPower_Percentage(-m_rollPower_Percentage + m_pitchPower_Percentage) * (1.0 + m_leftToRightMotorPowerBias));
     MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setMotorPower_Percentage(m_rollPower_Percentage + m_pitchPower_Percentage) * (1.0 - m_leftToRightMotorPowerBias));
