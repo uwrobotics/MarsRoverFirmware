@@ -12,7 +12,7 @@ class ActuatorController {
 
 public:
 
-	typedef enum t_actuatorControlMode {
+	typedef enum t_actuatorControlMode : uint8_t {
 		motorPower,
 		velocity,
 		position
@@ -29,7 +29,7 @@ public:
 	} t_actuatorConfig;
 
 
-	ActuatorController(t_actuatorConfig actuatorConfig, 
+	explicit ActuatorController(t_actuatorConfig actuatorConfig, 
 					   Motor &motor, Encoder &encoder, 
 					   DigitalIn &limSwitchMin = NULL_DIGITAL_IN, 
 					   DigitalIn &limSwitchMax = NULL_DIGITAL_IN);

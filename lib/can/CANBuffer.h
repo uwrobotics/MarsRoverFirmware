@@ -1,15 +1,15 @@
 #pragma once
 
-#ifndef CANBUFFER_DEFAULT_SIZE
-#define CANBUFFER_DEFAULT_SIZE 8
-#endif
-
 #include "mbed.h"
 #include "CircularBuffer.h"
 #include "CANMsg.h"
 #include <stdint.h>
 
-class CANBuffer : CircularBuffer<CANMessage, CANBUFFER_DEFAULT_SIZE> {
+#ifndef CANBUFFER_DEFAULT_SIZE
+#define CANBUFFER_DEFAULT_SIZE 8
+#endif
+
+class CANBuffer : CircularBuffer<CANMsg, CANBUFFER_DEFAULT_SIZE> {
 
 public:
 
@@ -18,7 +18,7 @@ public:
         tx
     };
 
-    CANBuffer(CAN * CANInterface, BufferType type = rx);
+    CANBuffer(CAN &CANInterface, BufferType type = rx);
 
     /** Pop the transaction from the buffer
      *
@@ -56,7 +56,7 @@ public:
 
 private:
 
-    CAN * p_CANInterface;
+    CAN &r_CANInterface;
     CANMsg m_CANMsg;
 
     void rxIrqHandler();

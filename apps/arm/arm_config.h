@@ -107,3 +107,39 @@ static ActuatorController::t_actuatorConfig elbowActuatorConfig = {
         .deadZoneError = 0.1
     }
 };
+
+static ActuatorController::t_actuatorConfig wristLeftActuatorConfig = {
+    .velocityPID = {
+        .P = 1.0, 
+        .I = 0.0,
+        .D = 0.0, 
+        .bias = 0.0,
+        .deadZoneError = 0.1
+    }, 
+
+    .positionPID = {
+        .P = 1.0, 
+        .I = 0.0,
+        .D = 0.0, 
+        .bias = 0.0,
+        .deadZoneError = 0.1
+    }
+};
+
+static ActuatorController::t_actuatorConfig wristRightActuatorConfig = {
+    .velocityPID = {
+        .P = 1.0, 
+        .I = 0.0,
+        .D = 0.0, 
+        .bias = 0.0,
+        .deadZoneError = 0.1
+    }, 
+
+    .positionPID = {
+        .P = 1.0, 
+        .I = 0.0,
+        .D = 0.0, 
+        .bias = 0.0,
+        .deadZoneError = 0.1
+    }
+};
