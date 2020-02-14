@@ -67,6 +67,32 @@ mbed_error_status_t DifferentialWristController::setPitchAngle_Degrees(float deg
     return setSplitAngles();
 }
 
+mbed_error_status_t DifferentialWristController::setPitchMotionData(float motionData) {
+    switch(getControlMode()) {
+        case ActuatorController::t_actuatorControlMode::motorPower:
+            return setPitchPower_Percentage(motionData);
+        case ActuatorController::t_actuatorControlMode::velocity:
+            return setPitchVelocity_DegreesPerSec(motionData);
+        case ActuatorController::t_actuatorControlMode::position:
+            return setPitchAngle_Degrees(motionData);
+        default: 
+            return MBED_ERROR_INVALID_ARGUMENT;
+    }
+}
+
+mbed_error_status_t DifferentialWristController::setRollMotionData(float motionData) {
+    switch(getControlMode()) {
+        case ActuatorController::t_actuatorControlMode::motorPower:
+            return setRollPower_Percentage(motionData);
+        case ActuatorController::t_actuatorControlMode::velocity:
+            return setRollVelocity_DegreesPerSec(motionData);
+        case ActuatorController::t_actuatorControlMode::position:
+            return setRollAngle_Degrees(motionData);
+        default: 
+            return MBED_ERROR_INVALID_ARGUMENT;
+    }
+}
+
 ActuatorController::t_actuatorControlMode DifferentialWristController::getControlMode() {
     return m_controlMode;
 }

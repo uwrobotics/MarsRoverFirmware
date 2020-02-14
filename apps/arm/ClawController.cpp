@@ -16,6 +16,19 @@ mbed_error_status_t ClawController::setGapDistance_Cm(float cm) {
     return setAngle_Degrees(shaftPosition_Degrees);
 }
 
+mbed_error_status_t ClawController::setMotionData(float motionData) {
+    switch(getControlMode()) {
+        case t_actuatorControlMode::motorPower:
+            return setMotorPower_Percentage(motionData);
+        case t_actuatorControlMode::velocity:
+            return setGapVelocity_CmPerSec(motionData);
+        case t_actuatorControlMode::position:
+            return setGapDistance_Cm(motionData);
+        default: 
+            return MBED_ERROR_INVALID_ARGUMENT;
+    }
+}
+
 float ClawController::getGapVelocity_CmPerSec() {
     return getVelocity_DegreesPerSec() / 2.0 + 0.0 * getAngle_Degrees(); // TODO find mapping function (velocity dependent on position)
 }

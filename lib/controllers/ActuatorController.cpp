@@ -114,6 +114,19 @@ mbed_error_status_t ActuatorController::setAngle_Degrees(float degrees) {
 
 }
 
+mbed_error_status_t ActuatorController::setMotionData(float motionData) {
+	switch(getControlMode()) {
+		case t_actuatorControlMode::motorPower:
+			return setMotorPower_Percentage(motionData);
+		case t_actuatorControlMode::velocity:
+			return setVelocity_DegreesPerSec(motionData);
+		case t_actuatorControlMode::position:
+			return setAngle_Degrees(motionData);
+		default: 
+			return MBED_ERROR_INVALID_ARGUMENT;
+	}
+}
+
 void ActuatorController::update() {
 	float updateInterval = updateTimer.read();
 	updateTimer.reset();

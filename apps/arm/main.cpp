@@ -6,6 +6,7 @@
 #include "EncoderRelative_Quadrature.h"
 #include "ActuatorController.h"
 #include "DifferentialWristController.h"
+#include "ClawController.h"
 #include "CANMsg.h"
 #include <map>
 
@@ -35,14 +36,17 @@ DigitalIn wristLimDown(LIM_WRST_DN);
 DigitalIn wristLimCenter(LIM_WRST_CNTR);
 DigitalIn clawLimOpen(LIM_CLAW_OPEN);
 
+AnalogIn clawForceSensor(FORCE_CLAW);
+
 ActuatorController turnTableActuator(turnTableActuatorConfig, turnTableMotor, turnTableEncoder, turnTableLimRight, turnTableLimLeft);
 ActuatorController shoulderActuator(shoulderActuatorConfig, shoulderMotor, shoulderEncoder);
 ActuatorController elbowActuator(elbowActuatorConfig, elbowMotor, elbowEncoder, elbowLimDown, elbowLimUp);
 
 ActuatorController wristLeftActuator(wristLeftActuatorConfig, wristLeftMotor, wristLeftEncoder);
-ActuatorController wristRightctuator(wristRightActuatorConfig, wristRightMotor, wristRightEncoder);
+ActuatorController wristRightActuator(wristRightActuatorConfig, wristRightMotor, wristRightEncoder);
 
-DifferentialWristController wristController(wristLeftActuator, wristRightctuator, wristLimUp, wristLimCenter, wristLimDown);
+DifferentialWristController wristController(wristLeftActuator, wristRightActuator, wristLimUp, wristLimCenter, wristLimDown);
+ClawController clawController(clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor);
 
 DigitalOut led1(LED1);
 
@@ -60,11 +64,66 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
         case SET_WRIST_CONTROL_MODE:
             return wristController.setControlMode(controlMode);
         case SET_CLAW_CONTROL_MODE:
-            // TODO
-            break;
+            return clawController.setControlMode(controlMode);
+        default:
+            return MBED_ERROR_INVALID_ARGUMENT;
+    }
+}
+
+static mbed_error_status_t setMotionData(CANMsg &msg) {
+    float motionData;
+    msg.getPayload(motionData);
+
+        switch(msg.id) {
+        case SET_TURNTABLE_MOTIONDATA:
+            return turnTableActuator.setMotionData(motionData);
+        case SET_SHOULDER_MOTIONDATA:
+            return shoulderActuator.setMotionData(motionData);
+        case SET_ELBOW_MOTIONDATA:
+            return elbowActuator.setMotionData(motionData);
+        case SET_WRIST_PITCH_MOTIONDATA:
+            return wristController.setPitchMotionData(motionData);
+        case SET_WRIST_ROLL_MOTIONDATA:
+            return wristController.setRollMotionData(motionData);
+        case SET_CLAW_MOTIONDATA:
+            return clawController.setMotionData(motionData);
+        default:
+            return MBED_ERROR_INVALID_ARGUMENT;
+    }
+}
+
+static mbed_error_status_t runWristCalibration(CANMsg &msg) {
+    bool runCalibration;
+    msg.getPayload(runCalibration);
+
+    if (runCalibration) {
+        return wristController.runPositionCalibration();
     }
 
     return MBED_SUCCESS;
+}
+
+static mbed_error_status_t runClawCalibration(CANMsg &msg) {
+    bool runCalibration;
+    msg.getPayload(runCalibration);
+
+    if (runCalibration) {
+        return clawController.runPositionCalibration();
+    }
+
+    return MBED_SUCCESS;
+}
+
+static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
+    return MBED_SUCCESS; // TODO
+}
+
+static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
+    return MBED_SUCCESS; // TODO
+}
+
+static mbed_error_status_t setPIDConstant(CANMsg &msg) {
+    return MBED_SUCCESS; // TODO
 }
 
 std::map<CANCommandIDs, CANMsg::CANMsgHandler> canIDHandlerMap;
@@ -75,6 +134,28 @@ std::map<CANCommandIDs, CANMsg::CANMsgHandler> canIDHandlerMap;
 int main()
 {
     canIDHandlerMap[SET_TURNTABLE_CONTROL_MODE] = &setControlMode;
+    canIDHandlerMap[SET_SHOULDER_CONTROL_MODE]  = &setControlMode;
+    canIDHandlerMap[SET_ELBOW_CONTROL_MODE]     = &setControlMode;
+    canIDHandlerMap[SET_WRIST_CONTROL_MODE]     = &setControlMode;
+    canIDHandlerMap[SET_CLAW_CONTROL_MODE]      = &setControlMode;
+
+    canIDHandlerMap[SET_TURNTABLE_MOTIONDATA]   = &setMotionData;
+    canIDHandlerMap[SET_SHOULDER_MOTIONDATA]    = &setMotionData;
+    canIDHandlerMap[SET_ELBOW_MOTIONDATA]       = &setMotionData;
+    canIDHandlerMap[SET_WRIST_PITCH_MOTIONDATA] = &setMotionData;
+    canIDHandlerMap[SET_WRIST_ROLL_MOTIONDATA]  = &setMotionData;
+    canIDHandlerMap[SET_CLAW_MOTIONDATA]        = &setMotionData;
+
+    canIDHandlerMap[SET_TOOL_TIP_DEPLOYMENT]    = &setToolTipDeployment;
+
+    canIDHandlerMap[SET_PID_TUNING_MODE]        = &setPIDTuningMode;
+    canIDHandlerMap[SET_PID_DEADZONE]           = &setPIDConstant;
+    canIDHandlerMap[SET_JOINT_PID_P]            = &setPIDConstant;
+    canIDHandlerMap[SET_JOINT_PID_I]            = &setPIDConstant;
+    canIDHandlerMap[SET_JOINT_PID_D]            = &setPIDConstant;
+    canIDHandlerMap[SET_JOINT_PID_BIAS]         = &setPIDConstant;
+
+
 
     while (true) {
         led1 = !led1;
