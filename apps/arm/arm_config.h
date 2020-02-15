@@ -5,11 +5,6 @@
 
 // Encoder config
 
-static Encoder::t_encoderConfig encAbsConfig = {
-    .pin_PWM        = PA_1,
-    .degreesPerUnit = 360.0
-};
-
 static Encoder::t_encoderConfig turnTableEncoderConfig = {
     .pin_PWM = ENC_PWM_TRNTBL,
     .degreesPerUnit = 360,
