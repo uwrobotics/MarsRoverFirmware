@@ -1,12 +1,14 @@
 #pragma once
 
 #include "mbed.h"
+#include <map>
 
 class CANMsg : public CANMessage {
     
 public:
 
     typedef mbed_error_status_t (* CANMsgHandler)(CANMsg&);
+    typedef std::map<unsigned int, CANMsg::CANMsgHandler> CANMsgHandlerMap;
 
     template <class T>
     union CANPayload {

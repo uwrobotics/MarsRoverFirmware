@@ -5,7 +5,7 @@
 
 namespace ArmConfig {
 
-    // Encoder config
+    /*** ENCODER CONFIG ***/
 
     static Encoder::t_encoderConfig turnTableEncoderConfig = {
         .pin_PWM = ENC_PWM_TRNTBL,
@@ -49,7 +49,7 @@ namespace ArmConfig {
         .inverted = false
     };
 
-    // Actuator config
+    /*** ROTARY ACTUATOR CONFIG ***/
 
     static ActuatorController::t_actuatorConfig turnTableActuatorConfig = {
         .velocityPID = {
