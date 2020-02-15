@@ -1,6 +1,6 @@
 #pragma once
 
-typedef enum {
+typedef enum CANID {
 
     // ERROR CAN IDs
 
@@ -43,4 +43,4 @@ typedef enum {
     CLAW_POSITION,
     FORCE_SENSOR_VALUE
 
-} CANCommandIDs;
+} CANID;
