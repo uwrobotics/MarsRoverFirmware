@@ -130,7 +130,7 @@ static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
     return MBED_SUCCESS; // TODO
 }
 
-// Enable or disable PID tuning mode
+// Enable or disable PID tuning mode10
 static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
     return MBED_SUCCESS; // TODO
 }
@@ -203,7 +203,7 @@ void txCANProcessor() {
         txMsg.id = SHOULDER_POSITION;
         txMsg.setPayload(shoulderActuator.getAngle_Degrees());
         can1.write(txMsg);
-        ThisThread::sleep_for(20);
+        ThisThread::sleep_for(200);
 
         txMsg.id = ELBOW_POSITION;
         txMsg.setPayload(elbowActuator.getAngle_Degrees());
