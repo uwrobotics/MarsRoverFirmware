@@ -33,7 +33,7 @@ This repository contains:
    For Ubuntu
     - `sudo apt update`
     - `sudo apt install make gcc-arm-none-eabi`
-    - `sudo apt install screen` for serial interfacing (or `minicom`)
+    - `sudo apt install screen can-utils` for serial and CAN interfacing
     - Install/update ARM GCC toolchain:
 
 	      sudo apt autoremove gcc-arm-none-eabi
@@ -142,3 +142,17 @@ On Ubuntu
 On Windows
 - Device manager, go to Ports (COM & LPT) and find the name of the Nucleo port (ie COM4)
 - Open PuTTy, select the Serial radio button, enter the COM port name and the baud rate (default 115200) and click open
+
+## CAN Communication
+
+The boards can also be communicated with over the CAN bus interfaces. You can use a CANable serial USB-CAN dongle to communicate with them from your development computer. Connect the CAN_H, CAN_L, and GND pins of the CANable to the corresponding pins on the board, and the dongle to your computer.
+
+On Ubuntu
+- Run `sudo slcand -o -c -s6 /dev/serial/by-id/*CAN*-if00 can0` to set up the CAN interface
+    - The flag `-s6` sets the bus speed to 500 kbps
+    - The flag `-s8` sets the bus speed to 1 Mbps
+- Run `sudo ip link set can0 up` to enable the interface
+- Run `cansend can0 999#DEADBEEF` to send a frame to ID 0x999 with payload 0xDEADBEEF
+- Run `candump can0` to show all traffic received by can0
+
+See the [CANable Getting Started guide](https://canable.io/getting-started.html) for more information including Windows support.
