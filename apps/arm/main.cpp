@@ -1,7 +1,7 @@
 #include "mbed.h"
+#include "can_config.h"
 
 #include "ArmConfig.h"
-#include "AnalogIn.h"
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
@@ -10,10 +10,11 @@
 #include "ClawController.h"
 #include "CANMsg.h"
 #include "CANBuffer.h"
-#include <map>
 
-#include "can_config.h"
+/*** ARM COMPONENTS ***/
+/**********************/
 
+// Motors
 Motor turnTableMotor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
 Motor shoulderMotor(MTR_PWM_SHLDR, MTR_DIR_SHLDR, false);
 Motor elbowMotor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
@@ -21,14 +22,15 @@ Motor wristLeftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 Motor wristRightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 Motor clawMotor(MTR_PWM_CLAW, MTR_DIR_CLAW, false);
 
+// Encoders
 EncoderAbsolute_PWM turnTableEncoder(ArmConfig::turnTableEncoderConfig);
 EncoderAbsolute_PWM shoulderEncoder(ArmConfig::shoulderEncoderConfig);
 EncoderAbsolute_PWM elbowEncoder(ArmConfig::elbowEncoderConfig);
-
 EncoderRelative_Quadrature wristLeftEncoder(ArmConfig::wristLeftEncoderConfig);
 EncoderRelative_Quadrature wristRightEncoder(ArmConfig::wristRightEncoderConfig);
 EncoderRelative_Quadrature clawEncoder(ArmConfig::clawEncoderConfig);
 
+// Limit switches
 DigitalIn turnTableLimLeft(LIM_TRNTBL_LHS);
 DigitalIn turnTableLimRight(LIM_TRNTBL_RHS);
 DigitalIn elbowLimUp(LIM_ELBW_UP);
@@ -38,62 +40,68 @@ DigitalIn wristLimDown(LIM_WRST_DN);
 DigitalIn wristLimCenter(LIM_WRST_CNTR);
 DigitalIn clawLimOpen(LIM_CLAW_OPEN);
 
+// Analog inputs
 AnalogIn clawForceSensor(FORCE_CLAW);
 
+// Rotary actuators
 ActuatorController turnTableActuator(ArmConfig::turnTableActuatorConfig, turnTableMotor, turnTableEncoder, turnTableLimRight, turnTableLimLeft);
 ActuatorController shoulderActuator(ArmConfig::shoulderActuatorConfig, shoulderMotor, shoulderEncoder);
 ActuatorController elbowActuator(ArmConfig::elbowActuatorConfig, elbowMotor, elbowEncoder, elbowLimDown, elbowLimUp);
-
 ActuatorController wristLeftActuator(ArmConfig::wristLeftActuatorConfig, wristLeftMotor, wristLeftEncoder);
 ActuatorController wristRightActuator(ArmConfig::wristRightActuatorConfig, wristRightMotor, wristRightEncoder);
 
+// Complex controllers
 DifferentialWristController wristController(wristLeftActuator, wristRightActuator, wristLimUp, wristLimCenter, wristLimDown);
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor);
 
-DigitalOut led1(LED1);
+/*** ARM COMMAND HANDLER FUNCTIONS ***/
+/*************************************/
 
+// Set the control mode of a joint (motor power / velocity / position)
 static mbed_error_status_t setControlMode(CANMsg &msg) {
     ActuatorController::t_actuatorControlMode controlMode;
     msg.getPayload(controlMode);
 
     switch(msg.id) {
-        case SET_TURNTABLE_CONTROL_MODE:
+        case CANID::SET_TURNTABLE_CONTROL_MODE:
             return turnTableActuator.setControlMode(controlMode);
-        case SET_SHOULDER_CONTROL_MODE:
+        case CANID::SET_SHOULDER_CONTROL_MODE:
             return shoulderActuator.setControlMode(controlMode);
-        case SET_ELBOW_CONTROL_MODE:
+        case CANID::SET_ELBOW_CONTROL_MODE:
             return elbowActuator.setControlMode(controlMode);
-        case SET_WRIST_CONTROL_MODE:
+        case CANID::SET_WRIST_CONTROL_MODE:
             return wristController.setControlMode(controlMode);
-        case SET_CLAW_CONTROL_MODE:
+        case CANID::SET_CLAW_CONTROL_MODE:
             return clawController.setControlMode(controlMode);
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
 }
 
+// Set the motion data (motor power / velocity / position) of a joint
 static mbed_error_status_t setMotionData(CANMsg &msg) {
     float motionData;
     msg.getPayload(motionData);
 
         switch(msg.id) {
-        case SET_TURNTABLE_MOTIONDATA:
+        case CANID::SET_TURNTABLE_MOTIONDATA:
             return turnTableActuator.setMotionData(motionData);
-        case SET_SHOULDER_MOTIONDATA:
+        case CANID::SET_SHOULDER_MOTIONDATA:
             return shoulderActuator.setMotionData(motionData);
-        case SET_ELBOW_MOTIONDATA:
+        case CANID::SET_ELBOW_MOTIONDATA:
             return elbowActuator.setMotionData(motionData);
-        case SET_WRIST_PITCH_MOTIONDATA:
+        case CANID::SET_WRIST_PITCH_MOTIONDATA:
             return wristController.setPitchMotionData(motionData);
-        case SET_WRIST_ROLL_MOTIONDATA:
+        case CANID::SET_WRIST_ROLL_MOTIONDATA:
             return wristController.setRollMotionData(motionData);
-        case SET_CLAW_MOTIONDATA:
+        case CANID::SET_CLAW_MOTIONDATA:
             return clawController.setMotionData(motionData);
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
 }
 
+// Run wrist calibration routine
 static mbed_error_status_t runWristCalibration(CANMsg &msg) {
     bool runCalibration;
     msg.getPayload(runCalibration);
@@ -105,6 +113,7 @@ static mbed_error_status_t runWristCalibration(CANMsg &msg) {
     return MBED_SUCCESS;
 }
 
+// Run claw calibration routine
 static mbed_error_status_t runClawCalibration(CANMsg &msg) {
     bool runCalibration;
     msg.getPayload(runCalibration);
@@ -116,19 +125,23 @@ static mbed_error_status_t runClawCalibration(CANMsg &msg) {
     return MBED_SUCCESS;
 }
 
+// Deploy or retract tool tip
 static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
     return MBED_SUCCESS; // TODO
 }
 
+// Enable or disable PID tuning mode
 static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
     return MBED_SUCCESS; // TODO
 }
 
-static mbed_error_status_t setPIDConstant(CANMsg &msg) {
+// Configure PID parameters
+static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     return MBED_SUCCESS; // TODO
 }
 
-static std::map<unsigned int, CANMsg::CANMsgHandler> canIDHandlerMap = {
+// Handler function mappings
+static CANMsg::CANMsgHandlerMap canHandlerMap = {
     {CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
     {CANID::SET_SHOULDER_CONTROL_MODE,  &setControlMode},
     {CANID::SET_ELBOW_CONTROL_MODE,     &setControlMode},
@@ -148,36 +161,82 @@ static std::map<unsigned int, CANMsg::CANMsgHandler> canIDHandlerMap = {
 
     {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
 
-    {CANID::SET_PID_DEADZONE,           &setPIDConstant},
-    {CANID::SET_JOINT_PID_P,            &setPIDConstant},
-    {CANID::SET_JOINT_PID_I,            &setPIDConstant},
-    {CANID::SET_JOINT_PID_D,            &setPIDConstant},
-    {CANID::SET_JOINT_PID_BIAS,         &setPIDConstant}
+    {CANID::SET_PID_DEADZONE,           &setPIDParameter},
+    {CANID::SET_JOINT_PID_P,            &setPIDParameter},
+    {CANID::SET_JOINT_PID_I,            &setPIDParameter},
+    {CANID::SET_JOINT_PID_D,            &setPIDParameter},
+    {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
 };
 
-CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
-CANBuffer canBuffer(can1, CANBuffer::BufferType::rx);
+/*** ARM CANBus ***/
+/******************/
 
-void canProcessorThread() {
+// Interface and recieve buffer
+CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
+
+// Incoming message processor
+void rxCANProcessor() {
     CANMsg rxMsg;
 
     while (true) {
-        canBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
+        rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
 
-        if (canBuffer.pop(rxMsg) && (canIDHandlerMap.find(rxMsg.id) != canIDHandlerMap.end())) {
-            canIDHandlerMap[rxMsg.id](rxMsg);
+        if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.id) != canHandlerMap.end())) {
+            canHandlerMap[rxMsg.id](rxMsg);
         }
         
-        ThisThread::sleep_for(100);
+        ThisThread::sleep_for(20);
     }
 }
 
-Thread canThread;
+// Outgoing message processor
+void txCANProcessor() {
+    CANMsg txMsg;
+
+    while (true) {
+        txMsg.id = TURNTABLE_POSITION;
+        txMsg.setPayload(turnTableActuator.getAngle_Degrees());
+        can1.write(txMsg);
+        ThisThread::sleep_for(200);
+
+        txMsg.id = SHOULDER_POSITION;
+        txMsg.setPayload(shoulderActuator.getAngle_Degrees());
+        can1.write(txMsg);
+        ThisThread::sleep_for(20);
+
+        txMsg.id = ELBOW_POSITION;
+        txMsg.setPayload(elbowActuator.getAngle_Degrees());
+        can1.write(txMsg);
+        ThisThread::sleep_for(200);
+
+        txMsg.id = WRIST_PITCH_POSITION;
+        txMsg.setPayload(wristController.getPitchAngle_Degrees());
+        can1.write(txMsg);
+        ThisThread::sleep_for(200);
+
+        txMsg.id = WRIST_ROLL_POSITION;
+        txMsg.setPayload(wristController.getRollAngle_Degrees());
+        can1.write(txMsg);
+        ThisThread::sleep_for(200);
+
+        txMsg.id = CLAW_POSITION;
+        txMsg.setPayload(clawController.getGapDistance_Cm());
+        can1.write(txMsg);
+        ThisThread::sleep_for(200);
+    }
+}
+
+Thread rxCANProcessorThread;
+Thread txCANProcessorThread;
+
+DigitalOut led1(LED1);
 
 int main()
 {
 
-    canThread.start(canProcessorThread);
+    rxCANProcessorThread.start(rxCANProcessor);
+    txCANProcessorThread.start(txCANProcessor);
 
     while (true) {
         led1 = !led1;
