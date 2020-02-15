@@ -186,7 +186,7 @@ void rxCANProcessor() {
             canHandlerMap[rxMsg.id](rxMsg);
         }
         
-        ThisThread::sleep_for(20);
+        ThisThread::sleep_for(8);
     }
 }
 
@@ -239,7 +239,14 @@ int main()
     txCANProcessorThread.start(txCANProcessor);
 
     while (true) {
-        led1 = !led1;
-        ThisThread::sleep_for(500);
+
+        // Compute actuator controls
+        turnTableActuator.update();
+        shoulderActuator.update();
+        elbowActuator.update();
+        wristController.update();
+        clawController.update();
+
+        ThisThread::sleep_for(2);
     }
 }
