@@ -9,7 +9,10 @@
 #define CANBUFFER_DEFAULT_SIZE 8
 #endif
 
-class CANBuffer : CircularBuffer<CANMsg, CANBUFFER_DEFAULT_SIZE> {
+#define CANBUFFER_FLAG_DATA_READY (1UL << 0)
+#define CANBUFFER_FLAG_FULL       (1UL << 1)
+
+class CANBuffer : public CircularBuffer<CANMsg, CANBUFFER_DEFAULT_SIZE> {
 
 public:
 
@@ -27,37 +30,20 @@ public:
      */
     bool pop(CANMsg &canMSG);
 
-    /** Check if the buffer is empty
-     *
-     * @return True if the buffer is empty, false if not
-     */
-    bool empty() const;
+    uint32_t getFlags();
 
-    /** Check if the buffer is full
-     *
-     * @return True if the buffer is full, false if not
-     */
-    bool full() const;
+    uint32_t waitFlagsAny(uint32_t flags=0, uint32_t millisec=osWaitForever, bool clear=true);
 
-    /** Reset the buffer
-     *
-     */
-    void reset();
+    uint32_t waitFlagsAll(uint32_t flags=0, uint32_t millisec=osWaitForever, bool clear=true);
 
-    /** Get the number of elements currently stored in the circular_buffer */
-    uint32_t size() const;
-
-    /** Peek into circular buffer without popping
-     *
-     * @param data Data to be peeked from the buffer
-     * @return True if the buffer is not empty and data contains a transaction, false otherwise
-     */
-    bool peek(CANMsg &canMSG) const;
 
 private:
 
     CAN &r_CANInterface;
     CANMsg m_CANMsg;
+
+
+    EventFlags m_eventFlags;
 
     void rxIrqHandler();
 

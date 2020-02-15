@@ -125,7 +125,7 @@ void DifferentialWristController::update() {
     r_wristActuatorRight.update();
 }
 
-mbed_error_status_t runPositionCalibration() {
+mbed_error_status_t DifferentialWristController::runPositionCalibration() {
 
     // TODO
 

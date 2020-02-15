@@ -8,6 +8,7 @@
 #include "DifferentialWristController.h"
 #include "ClawController.h"
 #include "CANMsg.h"
+#include "CANBuffer.h"
 #include <map>
 
 #include "can_config.h"
@@ -126,39 +127,59 @@ static mbed_error_status_t setPIDConstant(CANMsg &msg) {
     return MBED_SUCCESS; // TODO
 }
 
-std::map<CANCommandIDs, CANMsg::CANMsgHandler> canIDHandlerMap;
+static std::map<unsigned int, CANMsg::CANMsgHandler> canIDHandlerMap = {
+    {SET_TURNTABLE_CONTROL_MODE, &setControlMode},
+    {SET_SHOULDER_CONTROL_MODE,  &setControlMode},
+    {SET_ELBOW_CONTROL_MODE,     &setControlMode},
+    {SET_WRIST_CONTROL_MODE,     &setControlMode},
+    {SET_CLAW_CONTROL_MODE,      &setControlMode},
 
+    {SET_TURNTABLE_MOTIONDATA,   &setMotionData},
+    {SET_SHOULDER_MOTIONDATA,    &setMotionData},
+    {SET_ELBOW_MOTIONDATA,       &setMotionData},
+    {SET_WRIST_PITCH_MOTIONDATA, &setMotionData},
+    {SET_WRIST_ROLL_MOTIONDATA,  &setMotionData},
+    {SET_CLAW_MOTIONDATA,        &setMotionData},
+    {SET_TOOL_TIP_DEPLOYMENT,    &setToolTipDeployment},
 
+    {RUN_WRIST_CALIBRATION,      &runWristCalibration},
+    {RUN_CLAW_CALIBRATION,       &runClawCalibration},
 
+    {SET_PID_TUNING_MODE,        &setPIDTuningMode},
+
+    {SET_PID_DEADZONE,           &setPIDConstant},
+    {SET_JOINT_PID_P,            &setPIDConstant},
+    {SET_JOINT_PID_I,            &setPIDConstant},
+    {SET_JOINT_PID_D,            &setPIDConstant},
+    {SET_JOINT_PID_BIAS,         &setPIDConstant}
+};
+
+CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+CANBuffer canBuffer(can1, CANBuffer::BufferType::rx);
+
+void canProcessorThread() {
+    CANMsg rxMsg;
+
+    while (true) {
+        canBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
+
+        if (canBuffer.pop(rxMsg) && (canIDHandlerMap.find(rxMsg.id) != canIDHandlerMap.end())) {
+            canIDHandlerMap[rxMsg.id](rxMsg);
+        }
+        
+        ThisThread::sleep_for(100);
+    }
+}
+
+Thread canThread;
 
 int main()
 {
-    canIDHandlerMap[SET_TURNTABLE_CONTROL_MODE] = &setControlMode;
-    canIDHandlerMap[SET_SHOULDER_CONTROL_MODE]  = &setControlMode;
-    canIDHandlerMap[SET_ELBOW_CONTROL_MODE]     = &setControlMode;
-    canIDHandlerMap[SET_WRIST_CONTROL_MODE]     = &setControlMode;
-    canIDHandlerMap[SET_CLAW_CONTROL_MODE]      = &setControlMode;
 
-    canIDHandlerMap[SET_TURNTABLE_MOTIONDATA]   = &setMotionData;
-    canIDHandlerMap[SET_SHOULDER_MOTIONDATA]    = &setMotionData;
-    canIDHandlerMap[SET_ELBOW_MOTIONDATA]       = &setMotionData;
-    canIDHandlerMap[SET_WRIST_PITCH_MOTIONDATA] = &setMotionData;
-    canIDHandlerMap[SET_WRIST_ROLL_MOTIONDATA]  = &setMotionData;
-    canIDHandlerMap[SET_CLAW_MOTIONDATA]        = &setMotionData;
-
-    canIDHandlerMap[SET_TOOL_TIP_DEPLOYMENT]    = &setToolTipDeployment;
-
-    canIDHandlerMap[SET_PID_TUNING_MODE]        = &setPIDTuningMode;
-    canIDHandlerMap[SET_PID_DEADZONE]           = &setPIDConstant;
-    canIDHandlerMap[SET_JOINT_PID_P]            = &setPIDConstant;
-    canIDHandlerMap[SET_JOINT_PID_I]            = &setPIDConstant;
-    canIDHandlerMap[SET_JOINT_PID_D]            = &setPIDConstant;
-    canIDHandlerMap[SET_JOINT_PID_BIAS]         = &setPIDConstant;
-
-
+    canThread.start(canProcessorThread);
 
     while (true) {
         led1 = !led1;
-        wait_ms(500);
+        ThisThread::sleep_for(500);
     }
 }
