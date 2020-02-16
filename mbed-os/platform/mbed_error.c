@@ -126,7 +126,7 @@ WEAK MBED_NORETURN void error(const char *format, ...)
         mbed_error_vprintf(format, arg);
         va_end(arg);
         // Add a newline to prevent any line buffering
-        mbed_error_puts("\n");
+        mbed_error_puts("\r\n");
 #endif
     }
 
@@ -303,10 +303,10 @@ WEAK MBED_NORETURN mbed_error_status_t mbed_error(mbed_error_status_t error_stat
     //We need not call delete_mbed_crc(crc_obj) here as we are going to reset the system anyway, and calling delete while handling a fatal error may cause nested exception
 #if MBED_CONF_PLATFORM_FATAL_ERROR_AUTO_REBOOT_ENABLED && (MBED_CONF_PLATFORM_ERROR_REBOOT_MAX > 0)
 #ifndef NDEBUG
-    mbed_error_printf("\n= System will be rebooted due to a fatal error =\n");
+    mbed_error_printf("\r\n= System will be rebooted due to a fatal error =\r\n");
     if (report_error_ctx->error_reboot_count >= MBED_CONF_PLATFORM_ERROR_REBOOT_MAX) {
         //We have rebooted more than enough, hold the system here.
-        mbed_error_printf("= Reboot count(=%ld) reached maximum, system will halt after rebooting =\n", report_error_ctx->error_reboot_count);
+        mbed_error_printf("= Reboot count(=%ld) reached maximum, system will halt after rebooting =\r\n", report_error_ctx->error_reboot_count);
     }
 #endif
     system_reset();//do a system reset to get the system rebooted
@@ -450,7 +450,7 @@ static inline const char *name_or_unnamed(const char *name)
 /* Prints info of a thread(using osRtxThread_t struct)*/
 static void print_thread(const osRtxThread_t *thread)
 {
-    mbed_error_printf("\n%s  State: 0x%" PRIX8 " Entry: 0x%08" PRIX32 " Stack Size: 0x%08" PRIX32 " Mem: 0x%08" PRIX32 " SP: 0x%08" PRIX32, name_or_unnamed(thread->name), thread->state, thread->thread_addr, thread->stack_size, (uint32_t)thread->stack_mem, thread->sp);
+    mbed_error_printf("\r\n%s  State: 0x%" PRIX8 " Entry: 0x%08" PRIX32 " Stack Size: 0x%08" PRIX32 " Mem: 0x%08" PRIX32 " SP: 0x%08" PRIX32, name_or_unnamed(thread->name), thread->state, thread->thread_addr, thread->stack_size, (uint32_t)thread->stack_mem, thread->sp);
 }
 
 /* Prints thread info from a list */
@@ -471,7 +471,7 @@ static void print_error_report(const mbed_error_ctx *ctx, const char *error_msg,
     int error_code = MBED_GET_ERROR_CODE(ctx->error_status);
     int error_module = MBED_GET_ERROR_MODULE(ctx->error_status);
 
-    mbed_error_printf("\n\n++ MbedOS Error Info ++\nError Status: 0x%X Code: %d Module: %d\nError Message: ", ctx->error_status, error_code, error_module);
+    mbed_error_printf("\r\n\r\n++ MbedOS Error Info ++\r\nError Status: 0x%X Code: %d Module: %d\r\nError Message: ", ctx->error_status, error_code, error_module);
 
     switch (error_code) {
         //These are errors reported by kernel handled from mbed_rtx_handlers
@@ -516,7 +516,7 @@ static void print_error_report(const mbed_error_ctx *ctx, const char *error_msg,
             break;
     }
     mbed_error_puts(error_msg);
-    mbed_error_printf("\nLocation: 0x%" PRIX32, ctx->error_address);
+    mbed_error_printf("\r\nLocation: 0x%" PRIX32, ctx->error_address);
 
     /* We print the filename passed in, not any filename in the context. This
      * avoids the console print for mbed_error being limited to the presence
@@ -526,39 +526,39 @@ static void print_error_report(const mbed_error_ctx *ctx, const char *error_msg,
      * users of mbed_error() may also choose to.
      */
     if (error_filename) {
-        mbed_error_puts("\nFile: ");
+        mbed_error_puts("\r\nFile: ");
         mbed_error_puts(error_filename);
         mbed_error_printf("+%d", error_line);
     }
 
-    mbed_error_printf("\nError Value: 0x%" PRIX32, ctx->error_value);
+    mbed_error_printf("\r\nError Value: 0x%" PRIX32, ctx->error_value);
 #ifdef MBED_CONF_RTOS_PRESENT
-    mbed_error_printf("\nCurrent Thread: %s  Id: 0x%" PRIX32 " Entry: 0x%" PRIX32 " StackSize: 0x%" PRIX32 " StackMem: 0x%" PRIX32 " SP: 0x%" PRIX32 " ",
+    mbed_error_printf("\r\nCurrent Thread: %s  Id: 0x%" PRIX32 " Entry: 0x%" PRIX32 " StackSize: 0x%" PRIX32 " StackMem: 0x%" PRIX32 " SP: 0x%" PRIX32 " ",
                       name_or_unnamed(((osRtxThread_t *)ctx->thread_id)->name),
                       ctx->thread_id, ctx->thread_entry_address, ctx->thread_stack_size, ctx->thread_stack_mem, ctx->thread_current_sp);
 #endif
 
 #if MBED_CONF_PLATFORM_ERROR_ALL_THREADS_INFO && defined(MBED_CONF_RTOS_PRESENT)
-    mbed_error_printf("\nNext:");
+    mbed_error_printf("\r\nNext:");
     print_thread(osRtxInfo.thread.run.next);
 
-    mbed_error_printf("\nReady:");
+    mbed_error_printf("\r\nReady:");
     print_threads_info(osRtxInfo.thread.ready.thread_list);
 
-    mbed_error_printf("\nWait:");
+    mbed_error_printf("\r\nWait:");
     print_threads_info(osRtxInfo.thread.wait_list);
 
-    mbed_error_printf("\nDelay:");
+    mbed_error_printf("\r\nDelay:");
     print_threads_info(osRtxInfo.thread.delay_list);
 #endif
 #if !defined(MBED_SYS_STATS_ENABLED)
-    mbed_error_printf("\nFor more info, visit: https://mbed.com/s/error?error=0x%08X&tgt=" GET_TARGET_NAME(TARGET_NAME), ctx->error_status);
+    mbed_error_printf("\r\nFor more info, visit: https://mbed.com/s/error?error=0x%08X&tgt=" GET_TARGET_NAME(TARGET_NAME), ctx->error_status);
 #else
     mbed_stats_sys_t sys_stats;
     mbed_stats_sys_get(&sys_stats);
-    mbed_error_printf("\nFor more info, visit: https://mbed.com/s/error?error=0x%08X&osver=%" PRId32 "&core=0x%08" PRIX32 "&comp=%d&ver=%" PRIu32 "&tgt=" GET_TARGET_NAME(TARGET_NAME), ctx->error_status, sys_stats.os_version, sys_stats.cpu_id, sys_stats.compiler_id, sys_stats.compiler_version);
+    mbed_error_printf("\r\nFor more info, visit: https://mbed.com/s/error?error=0x%08X&osver=%" PRId32 "&core=0x%08" PRIX32 "&comp=%d&ver=%" PRIu32 "&tgt=" GET_TARGET_NAME(TARGET_NAME), ctx->error_status, sys_stats.os_version, sys_stats.cpu_id, sys_stats.compiler_id, sys_stats.compiler_version);
 #endif
-    mbed_error_printf("\n-- MbedOS Error Info --\n");
+    mbed_error_printf("\r\n-- MbedOS Error Info --\r\n");
 }
 #endif //ifndef NDEBUG
 
@@ -596,7 +596,7 @@ mbed_error_status_t mbed_save_error_hist(const char *path)
     }
 
     //First store the first and last errors
-    if (fprintf(error_log_file, "\nFirst Error: Status:0x%x ThreadId:0x%x Address:0x%x Value:0x%x\n",
+    if (fprintf(error_log_file, "\r\nFirst Error: Status:0x%x ThreadId:0x%x Address:0x%x Value:0x%x\r\n",
                 (unsigned int)first_error_ctx.error_status,
                 (unsigned int)first_error_ctx.thread_id,
                 (unsigned int)first_error_ctx.error_address,
@@ -605,7 +605,7 @@ mbed_error_status_t mbed_save_error_hist(const char *path)
         goto exit;
     }
 
-    if (fprintf(error_log_file, "\nLast Error: Status:0x%x ThreadId:0x%x Address:0x%x Value:0x%x\n",
+    if (fprintf(error_log_file, "\r\nLast Error: Status:0x%x ThreadId:0x%x Address:0x%x Value:0x%x\r\n",
                 (unsigned int)last_error_ctx.error_status,
                 (unsigned int)last_error_ctx.thread_id,
                 (unsigned int)last_error_ctx.error_address,
@@ -618,7 +618,7 @@ mbed_error_status_t mbed_save_error_hist(const char *path)
     while (--log_count >= 0) {
         mbed_error_hist_get(log_count, &ctx);
         //first line of file will be error log count
-        if (fprintf(error_log_file, "\n%d: Status:0x%x ThreadId:0x%x Address:0x%x Value:0x%x\n",
+        if (fprintf(error_log_file, "\r\n%d: Status:0x%x ThreadId:0x%x Address:0x%x Value:0x%x\r\n",
                     log_count,
                     (unsigned int)ctx.error_status,
                     (unsigned int)ctx.thread_id,
