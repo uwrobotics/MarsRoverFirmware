@@ -1,4 +1,5 @@
 #include "mbed.h"
+#include "mbed_config.h"
 #include "can_config.h"
 
 #include "ArmConfig.h"
@@ -173,22 +174,26 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
 
 // Interface and recieve buffer
 CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
-CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
+// CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
 
 // Incoming message processor
-void rxCANProcessor() {
-    CANMsg rxMsg;
+// void rxCANProcessor() {
+//     CANMsg rxMsg;
 
-    while (true) {
-        rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
+//     while (true) {
+//         if (can1.read(rxMsg)) {
+//             canHandlerMap[rxMsg.id](rxMsg);
+//         }
 
-        if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.id) != canHandlerMap.end())) {
-            canHandlerMap[rxMsg.id](rxMsg);
-        }
+//         // rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
+
+//         // if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.id) != canHandlerMap.end())) {
+//         //     canHandlerMap[rxMsg.id](rxMsg);
+//         // }
         
-        ThisThread::sleep_for(8);
-    }
-}
+//         ThisThread::sleep_for(8);
+//     }
+// }
 
 // Outgoing message processor
 void txCANProcessor() {
@@ -227,7 +232,7 @@ void txCANProcessor() {
     }
 }
 
-Thread rxCANProcessorThread;
+// Thread rxCANProcessorThread;
 Thread txCANProcessorThread;
 
 DigitalOut led1(LED1);
@@ -235,10 +240,20 @@ DigitalOut led1(LED1);
 int main()
 {
 
-    rxCANProcessorThread.start(rxCANProcessor);
+    // rxCANProcessorThread.start(rxCANProcessor);
     txCANProcessorThread.start(txCANProcessor);
 
     while (true) {
+
+        CANMsg rxMsg;
+        if (can1.read(rxMsg)) {
+            if (canHandlerMap.count(rxMsg.id) > 0) {
+                canHandlerMap[rxMsg.id](rxMsg);
+            }
+            else {
+                // TODO: Warn about unsupported CAN command (without flooding serial)
+            }
+        }
 
         // Compute actuator controls
         turnTableActuator.update();
