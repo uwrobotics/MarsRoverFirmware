@@ -6,6 +6,7 @@ Serial pc(SERIAL_TX, SERIAL_RX);
 DigitalOut led(LED1);
 
 // Wire the output PWM signal to the PWM input
+// or connect external PWM input to pwmIn pin
 PwmOut pwmOut(PinName::MTR_PWM_SHLDR);
 PwmIn pwmIn(PinName::ENC_PWM_SHLDR, 50);
 

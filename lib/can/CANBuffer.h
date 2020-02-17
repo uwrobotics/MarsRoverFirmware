@@ -5,14 +5,14 @@
 #include "CANMsg.h"
 #include <stdint.h>
 
-#ifndef CANBUFFER_DEFAULT_SIZE
-#define CANBUFFER_DEFAULT_SIZE 8
+#ifndef CANBUFFER_SIZE
+#define CANBUFFER_SIZE 8
 #endif
 
 #define CANBUFFER_FLAG_DATA_READY (1UL << 0)
 #define CANBUFFER_FLAG_FULL       (1UL << 1)
 
-class CANBuffer : public CircularBuffer<CANMsg, CANBUFFER_DEFAULT_SIZE> {
+class CANBuffer : public CircularBuffer<CANMsg, CANBUFFER_SIZE> {
 
 public:
 
