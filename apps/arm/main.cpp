@@ -186,7 +186,7 @@ void rxCANProcessor() {
                 canHandlerMap[rxMsg.id](rxMsg);
             }
             else {
-                // TODO: Warn about unsupported CAN command (without flooding serial)
+                // TODO: Warn about unsupported CAN command (without flooding)
             }
         }
 
@@ -242,7 +242,7 @@ void txCANProcessor() {
     }
 }
 
-Thread rxCANProcessorThread;
+Thread rxCANProcechrssorThread;
 Thread txCANProcessorThread;
 
 DigitalOut led1(LED1);
