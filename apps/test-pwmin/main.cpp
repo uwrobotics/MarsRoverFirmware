@@ -1,8 +1,6 @@
 #include "mbed.h"
 #include "PwmIn.h"
 
-Serial pc(SERIAL_TX, SERIAL_RX);
-
 DigitalOut led(LED1);
 
 // Wire the output PWM signal to the PWM input
@@ -49,11 +47,11 @@ int main() {
             }
         }
 
-        if (printTimer.read() >= 0.1) {
+        if (printTimer.read() >= 0.05) {
             printTimer.reset();
             pc.printf("Avg PW: %+f, \tAvg Prd: %+f, \tRaw Duty: %+f, \tAvg Duty: %+f, \tAvg Duty Velo: %+f, \tAvg Ang Velo: %+f\r\n", 
                   pwmIn.avgPulseWidth(), pwmIn.avgPeriod(), pwmIn.dutyCycle(), pwmIn.avgDutyCycle(), pwmIn.avgDutyCycleVelocity(), pwmIn.avgDutyCycleVelocity() * 360.0);
 
-        }
+        }ENC_PWM_SHLDR
     }
 }
