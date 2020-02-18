@@ -242,7 +242,7 @@ void txCANProcessor() {
     }
 }
 
-Thread rxCANProcechrssorThread;
+Thread rxCANProcessorThread;
 Thread txCANProcessorThread;
 
 DigitalOut led1(LED1);
