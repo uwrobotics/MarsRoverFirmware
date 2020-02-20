@@ -1,10 +1,14 @@
 #pragma once
 
 #include "mbed.h"
+#include <map>
 
 class CANMsg : public CANMessage {
     
 public:
+
+    typedef mbed_error_status_t (* CANMsgHandler)(CANMsg&);
+    typedef std::map<unsigned int, CANMsg::CANMsgHandler> CANMsgHandlerMap;
 
     template <class T>
     union CANPayload {
@@ -42,7 +46,7 @@ public:
     template<class T>
     void setPayload(const T value) {
         MBED_ASSERT_WARN(sizeof(T) <= 8); // Make sure input type fits
-        CANPayload<T> * payload = data;
+        CANPayload<T> * payload = (CANPayload<T> *) &data;
         payload->value = value;
         len = sizeof(T);
     }
@@ -52,7 +56,7 @@ public:
     template<class T>
     void getPayload(T& val) {
         MBED_ASSERT_WARN(len = sizeof(T)); // Make sure output fits
-        CANPayload<T> * payload = data;
+        CANPayload<T> * payload = (CANPayload<T> *) &data;
         val = payload->value;
     }
 

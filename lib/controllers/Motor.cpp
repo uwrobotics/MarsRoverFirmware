@@ -9,7 +9,7 @@ Motor::Motor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
     m_pwm = 0.0;
  
     // Initial condition of output enables
-    m_dir = 0.0;
+    m_dir = 0;
 
     // Set max limit to 1.0
     m_limit = fmin(m_limit, 1.0);

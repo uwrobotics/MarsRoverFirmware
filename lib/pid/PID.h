@@ -56,16 +56,17 @@
  * Defines
  */
 #define PID_MANUAL_MODE 0
-#define PID_AUTO_MODE   1
+#define PID_AUTO_MODE 1
 
 /**
  * Proportional-integral-derivative controller.
  */
-class PID {
+class PID
+{
 
 public:
-
-    typedef struct {
+    typedef struct
+    {
         float P, I, D, bias = 0.0;
         float deadZoneError = 0.0;
     } t_pidConfig;
@@ -77,7 +78,8 @@ public:
     };
 
     // configurable parameters for autotuning process
-    typedef struct {
+    typedef struct
+    {
         int nLookBack;
         unsigned long sampleTime;
         double outputStart, oStep, noiseBand, setpoint;
@@ -102,7 +104,7 @@ public:
      * @param InMin The real world value corresponding to 0%.
      * @param InMax The real world value corresponding to 100%.
      */
-    void setInputLimits(float inMin , float inMax);
+    void setInputLimits(float inMin, float inMax);
 
     /**
      * Scale from outputs to 0-100%.
@@ -128,7 +130,7 @@ public:
      * called on a manual to auto transition.
      */
     void reset(void);
-    
+
     /**
      * Set PID to manual or auto mode.
      *
@@ -136,28 +138,28 @@ public:
      *             Non-zero -> Auto
      */
     void setMode(int mode);
-    
+
     /**
      * Set how fast the PID loop is run.
      *
      * @param interval PID calculation peformed every interval seconds.
      */
     void setInterval(float interval);
-    
+
     /**
      * Set the set point.
      *
      * @param sp The set point as a real world value.
      */
     void setSetPoint(float sp);
-    
+
     /**
      * Set the process value.
      *
      * @param pv The process value as a real world value.
      */
     void setProcessValue(float pv);
-    
+
     /**
      * Set the bias.
      *
@@ -177,7 +179,6 @@ public:
      */
     void setRealOutput(float realOutput);
 
-
     /**
      * Setup needed before autotuning
      * @param outputPointer generic pointer to actual output (ex. PWM pin)
@@ -185,7 +186,7 @@ public:
      * @param actuatorType type of actuator needed to cast generic void pointer 
      */
     void setupAutoTune(void *outputPointer, float *inputPointer, int actuatorType);
-    
+
     /**
      * Run the autotuning algorithm and set autoTune class member variables
      * @param PI choose between PI and PID control, calculation is different
@@ -194,7 +195,7 @@ public:
     // uncomment below line and comment line after for debug output
     // void autoTune(Serial *pc, bool PI, t_AutoTuneConfig *autoTuneConfig = nullptr);
     void autoTune(bool PI, t_AutoTuneConfig *autoTuneConfig = nullptr);
-    
+
     /**
      * Set the output from within the PID class, needed for autotuning
      * @param output output as a float, casting done in function based on actuator type
@@ -225,9 +226,9 @@ public:
     float getATunePParam();
     float getATuneIParam();
     float getATuneDParam();
+    float getSetPoint();
 
 private:
-
     bool usingFeedForward;
     bool inAuto;
 
@@ -250,19 +251,19 @@ private:
 
     //Struct with all the autotune parameters
     t_AutoTuneConfig AutoTuneConfig;
-    
+
     //Raw tuning parameters.
     float pParam_;
     float iParam_;
     float dParam_;
-    
+
     //The point we want to reach.
-    float setPoint_;         
+    float setPoint_;
     //The thing we measure.
-    float processVariable_;  
+    float processVariable_;
     float prevProcessVariable_;
     //The output that affects the process variable.
-    float controllerOutput_; 
+    float controllerOutput_;
     float prevControllerOutput_;
 
     //We work in % for calculations so these will scale from
@@ -282,7 +283,7 @@ private:
     float bias_;
 
     //The interval between samples.
-    float tSample_;          
+    float tSample_;
 
     //Controller output as a real world value.
     volatile float realOutput_;
