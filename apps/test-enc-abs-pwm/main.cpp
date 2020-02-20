@@ -23,7 +23,7 @@ DigitalOut led(LED1);
 int main() {
 
     float inverter = +1;
-    int period_ms = 2; // Equivalent to 0.5kHz frequency
+    int period_ms = 4; // Equivalent to 0.5kHz frequency
     float duty = 0.1;
 
     // Specify PWM period

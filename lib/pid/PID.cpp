@@ -554,3 +554,7 @@ float PID::getATuneDParam() {
     return autoTuneTauD_;
 
 }
+
+float PID::getSetPoint() {
+    return setPoint_;
+}

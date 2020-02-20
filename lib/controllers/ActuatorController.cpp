@@ -16,7 +16,7 @@ ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig,
 	m_limSwitchMax_Connected = (r_limSwitchMax != NULL_DIGITAL_IN && r_limSwitchMax.is_connected());
 
 	initializePIDControllers();
-	updateTimer.start();
+	m_updateTimer.start();
 
 	setControlMode(actuatorConfig.defaultControlMode);
 }
@@ -68,6 +68,7 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 		return MBED_ERROR_INVALID_OPERATION;
 	}
 
+	// Only check for limit switch triggered if in motor mode
 	if ((percentage < 0.0 && isLimSwitchMinTriggered()) ||
 		(percentage > 0.0 && isLimSwitchMaxTriggered())) {
 		
@@ -84,10 +85,19 @@ mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesP
 		return MBED_ERROR_INVALID_OPERATION;
 	}
 
+	// Limit velocity setpoint to zero if arm is out of bounds
 	if ( (degreesPerSec < 0.0 && isPastMinAngle()) ||
 		 (degreesPerSec > 0.0 && isPastMaxAngle()) ) {
 
 		degreesPerSec = 0.0;
+	}
+
+	// Bound input velocity by configured limits
+	if (degreesPerSec < m_actuatorConfig.minVelocity_DegreesPerSec) {
+		degreesPerSec = m_actuatorConfig.minVelocity_DegreesPerSec;
+	}
+	else if (degreesPerSec > m_actuatorConfig.maxVelocity_DegreesPerSec) {
+		degreesPerSec = m_actuatorConfig.maxVelocity_DegreesPerSec;
 	}
 
 	m_velocityPIDController.setSetPoint(degreesPerSec);
@@ -100,11 +110,11 @@ mbed_error_status_t ActuatorController::setAngle_Degrees(float degrees) {
 		return MBED_ERROR_INVALID_OPERATION;
 	}
 
-	if (degrees <= m_actuatorConfig.minAngle_Degrees) {
+	// Bound input angle by configured limits
+	if (degrees < m_actuatorConfig.minAngle_Degrees) {
 		degrees = m_actuatorConfig.minAngle_Degrees;
 	}
-
-	else if (degrees >= m_actuatorConfig.maxAngle_Degrees) {
+	else if (degrees > m_actuatorConfig.maxAngle_Degrees) {
 		degrees = m_actuatorConfig.maxAngle_Degrees;
 	}
 
@@ -127,21 +137,27 @@ mbed_error_status_t ActuatorController::setMotionData(float motionData) {
 	}
 }
 
-void ActuatorController::update() {
-	float updateInterval = updateTimer.read();
-	updateTimer.reset();
+mbed_error_status_t ActuatorController::update() {
+	float updateInterval = m_updateTimer.read();
+	m_updateTimer.reset();
 
 	switch (m_controlMode) {
+		
 		case motorPower:
-			if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
-				 (r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
 
-				r_motor.setPower(0.0);
-			}
+			// Currently do nothing: limiting is handled as a general case
 
 			break;
 
 		case velocity:
+
+			// Limit velocity setpoint to zero if arm is out of bounds
+			if ( (m_velocityPIDController.getSetPoint() < 0.0 && isPastMinAngle()) ||
+				 (m_velocityPIDController.getSetPoint() > 0.0 && isPastMaxAngle()) ) {
+
+				m_velocityPIDController.setSetPoint(0.0);
+			}
+
 			m_velocityPIDController.setInterval(updateInterval);
 			m_velocityPIDController.setProcessValue(getVelocity_DegreesPerSec());
 			r_motor.setPower(m_velocityPIDController.compute());
@@ -154,7 +170,20 @@ void ActuatorController::update() {
 			r_motor.setPower(m_positionPIDController.compute());
 
 			break;
+		
+		default: 
+			return MBED_ERROR_INVALID_OPERATION;
 	}
+
+	// Always constrain the motor power to 0 or the reverse direction (away from limit switch) 
+	// if the corresponding limit switch is triggered
+	if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
+	     (r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
+
+		r_motor.setPower(0.0);
+	}
+
+	// TODO: Add watchdogging (feed here)
 }
 
 void ActuatorController::initializePIDControllers() {
