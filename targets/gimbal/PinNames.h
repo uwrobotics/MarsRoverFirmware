@@ -149,7 +149,7 @@ typedef enum {
     ADC_TEMP = 0xF0,
     ADC_VREF = 0xF1,
     ADC_VBAT = 0xF2,
-    
+
 // STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
 STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
@@ -191,8 +191,8 @@ STDIO_UART_RX = PC_11,
 
     /**** Serial Interface Pins ****/
     SPI1_SCK   = PA_5,
-    SPI1_MOSI  = PA_6,
-    SPI1_MISO  = PA_7,
+    SPI1_MOSI  = PA_7,
+    SPI1_MISO  = PA_6,
 
     CAN1_TX    = PA_12,
     CAN1_RX    = PA_11,
@@ -206,6 +206,7 @@ STDIO_UART_RX = PC_11,
     SERIAL_TX  = STDIO_UART_TX,
     SERIAL_RX  = STDIO_UART_RX,
     SERIAL_RTS = PC_8,
+    //does not exist
 
     USBTX      = STDIO_UART_TX,
     USBRX      = STDIO_UART_RX,

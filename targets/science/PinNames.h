@@ -172,8 +172,8 @@ typedef enum {
     BUTTON_2 = PB_1,
 
     /**** Actuator Pins ****/
-    MTR_PWM_1 = PA_5,
-    MTR_DIR_1 = PA_6,
+    MTR_PWM_1 = PA_6,
+    MTR_DIR_1 = PA_5,
     MTR_PWM_2 = PA_7,
     MTR_DIR_2 = PC_4,
 
@@ -201,11 +201,11 @@ typedef enum {
     SERIAL_RX  = STDIO_UART_RX,
     SERIAL_RTS = PA_15,
 
-    USBTX      = STDIO_UART_TX,
-    USBRX      = STDIO_UART_RX,
+    //USBTX      = STDIO_UART_TX,
+    //USBRX      = STDIO_UART_RX,
 
-    I2C_SCL      = PA_8,
-    I2C_SDA      = PA_9,
+    TEMP_MOIST_I2C_SCL      = PA_8,
+    TEMP_MOIST_I2C_SDA      = PC_9,
 
     /**** OSCILLATOR pins ****/
     RCC_OSC32_IN  = PC_14,

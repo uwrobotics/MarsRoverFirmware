@@ -172,10 +172,10 @@ typedef enum {
     BUTTON2      = PB_1,
 
     /**** Voltage Measurement ****/
-    BUS_5V_AI    = PA_1,
-    BUS_12V_AI   = PA_2,
-    BUS_24V_AI   = PA_3,
-    TEMP_AI      = PA_4,
+    BUS_5V_ANLG_IN    = PA_1,
+    BUS_12V_ANLG_IN   = PA_2,
+    BUS_24V_ANLG_IN   = PA_3,
+    TEMP_ANLG_IN      = PA_4,
 
     /**** Serial Interface Pins ****/
     CAN1_TX      = PA_12,
@@ -187,8 +187,8 @@ typedef enum {
     CAN_TX       = CAN1_TX,
     CAN_RX       = CAN1_RX,
 
-    I2C_SCL      = PB_8,
-    I2C_SDA      = PB_9,
+    CUR_SEN_I2C_SCL      = PB_8,
+    CUR_SEN_I2C_SDA      = PB_9,
 
     SERIAL_TX    = STDIO_UART_TX,
     SERIAL_RX    = STDIO_UART_RX,
