@@ -43,3 +43,12 @@ float ClawController::getGripForce_Newtons() {
 mbed_error_status_t ClawController::runPositionCalibration() {
     return MBED_SUCCESS; // TODO
 }
+
+float ClawController::convertShaftPositionDegreesToGapCm(float shaftPosition_Degrees) {
+    return (6.363885761e-7)*(shaftPosition_Degrees*shaftPosition_Degrees) - (8.793434733e-3)*shaftPosition_Degrees + 15.80749897;
+}
+
+float ClawController::convertGapCmToShaftPositionDegrees(float gap_cm) {
+    return (1.573564198)*(gap_cm*gap_cm)- (158.4968661)*gap_cm + 2119.701587;
+    // return (8.282382533e-3)*(gap_cm*gap_cm*gap_cm*gap_cm) - (2.986760459e-1)*(gap_cm*gap_cm*gap_cm) + (5.007842722)*(gap_cm*gap_cm) - (171.560244)*gap_cm + 2127.848743; // High precision 
+}

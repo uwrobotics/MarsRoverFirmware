@@ -86,7 +86,6 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 
     switch(msg.id) {
         case CANID::SET_TURNTABLE_MOTIONDATA:
-            printf("SETTING TT MOTION DATA TO %f\r\n", motionData);
             return turnTableActuator.setMotionData(motionData);
         case CANID::SET_SHOULDER_MOTIONDATA:
             return shoulderActuator.setMotionData(motionData);
