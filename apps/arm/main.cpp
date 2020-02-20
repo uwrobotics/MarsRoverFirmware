@@ -84,8 +84,9 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
     float motionData;
     msg.getPayload(motionData);
 
-        switch(msg.id) {
+    switch(msg.id) {
         case CANID::SET_TURNTABLE_MOTIONDATA:
+            printf("SETTING TT MOTION DATA TO %f\r\n", motionData);
             return turnTableActuator.setMotionData(motionData);
         case CANID::SET_SHOULDER_MOTIONDATA:
             return shoulderActuator.setMotionData(motionData);
@@ -207,38 +208,40 @@ void rxCANProcessor() {
 
 // Outgoing message processor
 void txCANProcessor() {
+    const int txPeriod_millisec = 500;
+
     CANMsg txMsg;
 
     while (true) {
         txMsg.id = TURNTABLE_POSITION;
         txMsg.setPayload(turnTableActuator.getAngle_Degrees());
         can1.write(txMsg);
-        ThisThread::sleep_for(200);
+        ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SHOULDER_POSITION;
         txMsg.setPayload(shoulderActuator.getAngle_Degrees());
         can1.write(txMsg);
-        ThisThread::sleep_for(200);
+        ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = ELBOW_POSITION;
         txMsg.setPayload(elbowActuator.getAngle_Degrees());
         can1.write(txMsg);
-        ThisThread::sleep_for(200);
+        ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = WRIST_PITCH_POSITION;
         txMsg.setPayload(wristController.getPitchAngle_Degrees());
         can1.write(txMsg);
-        ThisThread::sleep_for(200);
+        ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = WRIST_ROLL_POSITION;
         txMsg.setPayload(wristController.getRollAngle_Degrees());
         can1.write(txMsg);
-        ThisThread::sleep_for(200);
+        ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = CLAW_POSITION;
         txMsg.setPayload(clawController.getGapDistance_Cm());
         can1.write(txMsg);
-        ThisThread::sleep_for(200);
+        ThisThread::sleep_for(txPeriod_millisec);
     }
 }
 
@@ -249,6 +252,9 @@ DigitalOut led1(LED1);
 
 int main()
 {
+    printf("\r\n\r\n");
+    printf("ARM APPLICATION STARTED\r\n");
+    printf("=======================\r\n");
 
     rxCANProcessorThread.start(rxCANProcessor);
     txCANProcessorThread.start(txCANProcessor);

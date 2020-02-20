@@ -68,6 +68,8 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 		return MBED_ERROR_INVALID_OPERATION;
 	}
 
+	printf("TRYING TO SET MOTOR POWER TO %f\r\n", percentage);
+
 	// Only check for limit switch triggered if in motor mode
 	if ((percentage < 0.0 && isLimSwitchMinTriggered()) ||
 		(percentage > 0.0 && isLimSwitchMaxTriggered())) {
@@ -184,6 +186,8 @@ mbed_error_status_t ActuatorController::update() {
 	}
 
 	// TODO: Add watchdogging (feed here)
+
+	return MBED_SUCCESS;
 }
 
 void ActuatorController::initializePIDControllers() {
@@ -204,11 +208,11 @@ void ActuatorController::initializePIDControllers() {
 }
 
 bool ActuatorController::isLimSwitchMinTriggered() {
-	return m_limSwitchMin_Connected && r_limSwitchMin.read() == 1;
+	return m_limSwitchMin_Connected && r_limSwitchMin.read() == 0; // Open drain
 }
 
 bool ActuatorController::isLimSwitchMaxTriggered() {
-	return m_limSwitchMax_Connected && r_limSwitchMax.read() == 1;
+	return m_limSwitchMax_Connected && r_limSwitchMax.read() == 0; // Open drain
 }
 
 bool ActuatorController::isPastMinAngle() {

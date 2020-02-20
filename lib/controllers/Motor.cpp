@@ -9,7 +9,7 @@ Motor::Motor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
     m_pwm = 0.0;
  
     // Initial condition of output enables
-    m_dir = 0.0;
+    m_dir = 0;
 
     // Set max limit to 1.0
     m_limit = fmin(m_limit, 1.0);
@@ -21,6 +21,8 @@ Motor::Motor(t_motorConfig motorConfig) : Motor(motorConfig.pwmPin, motorConfig.
 void Motor::setPower(float dutyCycle) {
     m_dir = ((dutyCycle > 0.0) != m_inverted);
     m_pwm = fmin(fabs(dutyCycle), m_limit);
+
+    printf("SET MOTOR POWER TO %f\r\n", m_pwm.read());
 }
 
 Motor& Motor::operator=(int dutyCycle) {
