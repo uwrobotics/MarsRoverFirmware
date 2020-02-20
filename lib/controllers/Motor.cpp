@@ -21,8 +21,6 @@ Motor::Motor(t_motorConfig motorConfig) : Motor(motorConfig.pwmPin, motorConfig.
 void Motor::setPower(float dutyCycle) {
     m_dir = ((dutyCycle > 0.0) != m_inverted);
     m_pwm = fmin(fabs(dutyCycle), m_limit);
-
-    printf("SET MOTOR POWER TO %f\r\n", m_pwm.read());
 }
 
 Motor& Motor::operator=(int dutyCycle) {

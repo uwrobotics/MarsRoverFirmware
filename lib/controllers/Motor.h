@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef MOTOR_DEFAULT_FREQUENCY_HZ
-#define MOTOR_DEFAULT_FREQUENCY_HZ 10000 // 10 kHz
+#define MOTOR_DEFAULT_FREQUENCY_HZ 244 // 10 kHz
 #endif
  
 #include "mbed.h"

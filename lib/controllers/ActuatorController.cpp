@@ -68,8 +68,6 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 		return MBED_ERROR_INVALID_OPERATION;
 	}
 
-	printf("TRYING TO SET MOTOR POWER TO %f\r\n", percentage);
-
 	// Only check for limit switch triggered if in motor mode
 	if ((percentage < 0.0 && isLimSwitchMinTriggered()) ||
 		(percentage > 0.0 && isLimSwitchMaxTriggered())) {
