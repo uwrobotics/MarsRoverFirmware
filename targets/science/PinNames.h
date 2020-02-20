@@ -201,8 +201,8 @@ typedef enum {
     SERIAL_RX  = STDIO_UART_RX,
     SERIAL_RTS = PA_15,
 
-    //USBTX      = STDIO_UART_TX,
-    //USBRX      = STDIO_UART_RX,
+    USBTX      = STDIO_UART_TX,
+    USBRX      = STDIO_UART_RX,
 
     TEMP_MOIST_I2C_SCL      = PA_8,
     TEMP_MOIST_I2C_SDA      = PC_9,
