@@ -201,44 +201,61 @@ void rxCANProcessor() {
         //     }
         // }
         
-        ThisThread::sleep_for(8);
+        ThisThread::sleep_for(2);
     }
 }
 
 // Outgoing message processor
 void txCANProcessor() {
-    const int txPeriod_millisec = 500;
+    const int txPeriod_millisec = 100;
 
     CANMsg txMsg;
 
+    struct __attribute__((__packed__)) motionReport {
+        float position;
+        float velocity;
+    } motionReport;
+
     while (true) {
-        txMsg.id = TURNTABLE_POSITION;
-        txMsg.setPayload(turnTableActuator.getAngle_Degrees());
+        txMsg.id = REPORT_TURNTABLE_MOTION;
+        motionReport.position = turnTableActuator.getAngle_Degrees();
+        motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
-        txMsg.id = SHOULDER_POSITION;
-        txMsg.setPayload(shoulderActuator.getAngle_Degrees());
+        txMsg.id = REPORT_SHOULDER_MOTION;
+        motionReport.position = shoulderActuator.getAngle_Degrees();
+        motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
-        txMsg.id = ELBOW_POSITION;
-        txMsg.setPayload(elbowActuator.getAngle_Degrees());
+        txMsg.id = REPORT_ELBOW_MOTION;
+        motionReport.position = elbowActuator.getAngle_Degrees();
+        motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
-        txMsg.id = WRIST_PITCH_POSITION;
-        txMsg.setPayload(wristController.getPitchAngle_Degrees());
+        txMsg.id = REPORT_WRIST_PITCH_MOTION;
+        motionReport.position = wristController.getPitchAngle_Degrees();
+        motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
-        txMsg.id = WRIST_ROLL_POSITION;
-        txMsg.setPayload(wristController.getRollAngle_Degrees());
+        txMsg.id = REPORT_WRIST_PITCH_MOTION;
+        motionReport.position = wristController.getRollAngle_Degrees();
+        motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
-        txMsg.id = CLAW_POSITION;
-        txMsg.setPayload(clawController.getGapDistance_Cm());
+        txMsg.id = REPORT_CLAW_MOTION;
+        motionReport.position = clawController.getGapDistance_Cm();
+        motionReport.velocity = clawController.getGapVelocity_CmPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
     }
@@ -267,6 +284,6 @@ int main()
         wristController.update();
         clawController.update();
 
-        ThisThread::sleep_for(2);
+        ThisThread::sleep_for(1);
     }
 }
