@@ -23,6 +23,8 @@ public:
 private:
 
     PwmIn m_pwmIn;
+
     float m_degreesPerUnit;
+    float m_zeroOffset_Degrees;
 
 };

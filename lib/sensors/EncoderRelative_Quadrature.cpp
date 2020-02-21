@@ -4,7 +4,7 @@
 EncoderRelative_Quadrature::EncoderRelative_Quadrature(t_encoderConfig encoderConfig) :
         Encoder(encoderConfig), 
         m_QEI(encoderConfig.pin_ChannelA, encoderConfig.pin_ChannelB, encoderConfig.pin_Index, encoderConfig.quadratureEncodingType),
-        m_degreesPerUnit(encoderConfig.degreesPerUnit) {}
+        m_degreesPerUnit(encoderConfig.degreesPerUnit), m_zeroOffset_Degrees(encoderConfig.offset_Degrees) {}
 
 EncoderRelative_Quadrature::~EncoderRelative_Quadrature() {}
 
@@ -13,7 +13,7 @@ Encoder::t_encoderType EncoderRelative_Quadrature::getType() {
 }
 
 float EncoderRelative_Quadrature::getAngle_Degrees() {
-    return m_QEI.getPulses() * m_degreesPerUnit;
+    return (m_QEI.getPulses() * m_degreesPerUnit) - m_zeroOffset_Degrees;
 }
 
 float EncoderRelative_Quadrature::getVelocity_DegreesPerSec() {

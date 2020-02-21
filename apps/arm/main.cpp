@@ -58,6 +58,34 @@ ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEnco
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
 
+static mbed_error_status_t setOverrideFlags(CANMsg &msg) {
+    uint8_t flags;
+    msg.getPayload(flags);
+
+    if (flags & FLAG_DISABLE_LIMIT_SWITCH_CHECKS) {
+        // TODO
+    } 
+    else {
+
+    }
+
+    if (flags & FLAG_DISABLE_ANGLE_BOUNDS_CHECKS) {
+        // TODO
+    }
+    else {
+
+    }
+
+    if (flags & FLAG_DISABLE_FEEDBACK) {
+        // TODO
+    }
+    else {
+        
+    }
+
+    return MBED_SUCCESS;
+}
+
 // Set the control mode of a joint (motor power / velocity / position)
 static mbed_error_status_t setControlMode(CANMsg &msg) {
     ActuatorController::t_actuatorControlMode controlMode;
@@ -77,6 +105,8 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
+
+    return MBED_SUCCESS;
 }
 
 // Set the motion data (motor power / velocity / position) of a joint
@@ -100,6 +130,8 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
+
+    return MBED_SUCCESS;
 }
 
 // Run wrist calibration routine
@@ -143,6 +175,8 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
 
 // Handler function mappings
 static CANMsg::CANMsgHandlerMap canHandlerMap = {
+    {CANID::SET_OVERRIDE_FLAGS,         &setOverrideFlags},
+
     {CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
     {CANID::SET_SHOULDER_CONTROL_MODE,  &setControlMode},
     {CANID::SET_ELBOW_CONTROL_MODE,     &setControlMode},
