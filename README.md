@@ -1,7 +1,7 @@
 # Mars Rover 2020 Firmware Repository
 [![Build Status](https://travis-ci.org/uwrobotics/MarsRover2020-firmware.svg?branch=master)](https://travis-ci.org/uwrobotics/MarsRover2020-firmware)
 
-## Platform: [STM32F446RE](https://www.st.com/resource/en/datasheet/stm32f446re.pdf) / [NUCLEO-F446RC](https://os.mbed.com/platforms/ST-Nucleo-F446RE/)
+## Platform: [STM32F446xE](https://www.st.com/resource/en/datasheet/stm32f446re.pdf) / [NUCLEO-F446RE](https://os.mbed.com/platforms/ST-Nucleo-F446RE/)
 
 This repository contains:
 - Arm MBED OS 5 SDK source [[mbed-os](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/mbed-os)]
@@ -33,8 +33,16 @@ This repository contains:
    For Ubuntu
     - `sudo apt update`
     - `sudo apt install make gcc-arm-none-eabi`
-    - `sudo apt install screen` for serial interfacing (or `minicom`)
-		
+    - `sudo apt install screen can-utils` for serial and CAN interfacing
+    - Install/update ARM GCC toolchain:
+
+	      sudo apt autoremove gcc-arm-none-eabi
+          wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+          sudo tar -xvf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 -C /opt/
+          echo "\nPATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> ~/.bashrc
+          export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin 
+
+	
 	For Windows
     - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
     - Follow Ubuntu setup instructions (optionally instead of `screen` you can use [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/), a GUI Windows app)
@@ -43,9 +51,9 @@ This repository contains:
     - Open Command Line
     - Install Homebrew if not installed 
     	`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-    - Download auto-run script, which will auto install <arm-none-eabi-gcc> with latest version
+    - Download auto-run script, which will auto install with latest version:
     	`brew tap ARMmbed/homebrew-formulae`
-    - Install <arm-none-eabi-gcc> via HomeBrew
+    - Install ARM GCC toolchain via HomeBrew:
     	`brew install arm-none-eabi-gcc`
     - Install [ZOC](https://www.emtec.com/zoc/index.html) for serial interfacing
 
@@ -53,8 +61,8 @@ This repository contains:
 
     Open a new Command Prompt / Terminal window and run the following commands:
 
-    `make --version`  
-    `arm-none-eabi-gcc --version`
+    `make --version                    # Should be v3.8.x or newer`  
+    `arm-none-eabi-gcc --version       # Should be v9.2.x or newer`
 
 3. Download source code
 
@@ -134,3 +142,17 @@ On Ubuntu
 On Windows
 - Device manager, go to Ports (COM & LPT) and find the name of the Nucleo port (ie COM4)
 - Open PuTTy, select the Serial radio button, enter the COM port name and the baud rate (default 115200) and click open
+
+## CAN Communication
+
+The boards can also be communicated with over the CAN bus interfaces. You can use a CANable serial USB-CAN dongle to communicate with them from your development computer. Connect the CAN_H, CAN_L, and GND pins of the CANable to the corresponding pins on the board, and the dongle to your computer.
+
+On Ubuntu
+- Run `sudo slcand -o -c -s6 /dev/serial/by-id/*CAN*-if00 can0` to set up the CAN interface
+    - The flag `-s6` sets the bus speed to 500 kbps
+    - The flag `-s8` sets the bus speed to 1 Mbps
+- Run `sudo ip link set can0 up` to enable the interface
+- Run `cansend can0 999#DEADBEEF` to send a frame to ID 0x999 with payload 0xDEADBEEF
+- Run `candump can0` to show all traffic received by can0
+
+See the [CANable Getting Started guide](https://canable.io/getting-started.html) for more information including Windows support.
