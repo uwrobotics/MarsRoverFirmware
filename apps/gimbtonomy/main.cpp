@@ -67,8 +67,7 @@ void processCANMsg(CANMsg *p_newMsg) {
 }
 
 // main() runs in its own thread in the OS
-int main()
-{
+int main(){
     initCAN();
     while(1){
         if (can.read(rxMsg)){
