@@ -1,3 +1,11 @@
+# Build output
 build
 *.o
 *.d
+
+# MacOS pollution
+*.DS_store
+
+# VS Code pollution
+firmware.code-workspace
+.vscode

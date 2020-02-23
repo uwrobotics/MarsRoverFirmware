@@ -158,11 +158,11 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass)
 
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLM = 8;             // VCO input clock = 1 MHz (8 MHz / 8)
-    RCC_OscInitStruct.PLL.PLLN = 360;           // VCO output clock = 360 MHz (1 MHz * 360)
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2; // PLLCLK = 180 MHz (360 MHz / 2)
-    RCC_OscInitStruct.PLL.PLLQ = 7;             //
-    RCC_OscInitStruct.PLL.PLLR = 2;             //
+    RCC_OscInitStruct.PLL.PLLM = 25;            // VCO input clock = 1.0 MHz (25 MHz / 25) [must be >= 0.95MHz && <= 2.1MHz]
+    RCC_OscInitStruct.PLL.PLLN = 360;           // VCO output clock = 360 MHz (1.0 MHz * 360) [must be >= 100MHz && <= 432MHz]
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2; // PLLCLK = 180 MHz (360 MHz / 2) [must be >= 24MHz && <= 180MHz]
+    RCC_OscInitStruct.PLL.PLLQ = 7;             // Not used
+    RCC_OscInitStruct.PLL.PLLR = 6;             // Not used
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         return 0; // FAIL
     }
@@ -173,9 +173,9 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass)
     }
 
     // Select PLLSAI output as USB clock source
-    PeriphClkInitStruct.PLLSAI.PLLSAIM = 8;
-    PeriphClkInitStruct.PLLSAI.PLLSAIN = 384;
-    PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8;
+    PeriphClkInitStruct.PLLSAI.PLLSAIM = 25; // 25 / 25 = 1 MHz
+    PeriphClkInitStruct.PLLSAI.PLLSAIN = 384; // 1 * 384 = 384 MHz
+    PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8; // 384 / 8 = 48 MHz
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
     PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLSAIP;
     HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);

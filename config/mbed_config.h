@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-// Automatically generated configuration file.
-// DO NOT EDIT, content will be overwritten.
-
 #ifndef __MBED_CONFIG_DATA__
 #define __MBED_CONFIG_DATA__
 
-// Configuration parameters
-#define CLOCK_SOURCE                                                          USE_PLL_HSE_EXTC|USE_PLL_HSI                                                                     // set by target:NUCLEO_F446RE
+#include "rover_config.h"
+
+// MBED configuration parameters
 #define LPTICKER_DELAY_TICKS                                                  1                                                                                                // set by target:FAMILY_STM32
 #define MBED_CONF_ATMEL_RF_ASSUME_SPACED_SPI                                  1                                                                                                // set by library:atmel-rf[STM]
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED                                     7500000                                                                                          // set by library:atmel-rf
@@ -151,7 +149,7 @@
 #define MBED_CONF_NSAPI_SOCKET_STATS_MAX_COUNT                                10                                                                                               // set by library:nsapi
 #define MBED_CONF_PLATFORM_CRASH_CAPTURE_ENABLED                              0                                                                                                // set by library:platform
 #define MBED_CONF_PLATFORM_CTHUNK_COUNT_MAX                                   8                                                                                                // set by library:platform
-#define MBED_CONF_PLATFORM_DEFAULT_SERIAL_BAUD_RATE                           9600                                                                                             // set by library:platform
+#define MBED_CONF_PLATFORM_DEFAULT_SERIAL_BAUD_RATE                           ROVER_DEFAULT_SERIAL_BAUD_RATE                                                                                             // set by library:platform
 #define MBED_CONF_PLATFORM_ERROR_ALL_THREADS_INFO                             0                                                                                                // set by library:platform
 #define MBED_CONF_PLATFORM_ERROR_FILENAME_CAPTURE_ENABLED                     0                                                                                                // set by library:platform
 #define MBED_CONF_PLATFORM_ERROR_HIST_ENABLED                                 0                                                                                                // set by library:platform
@@ -161,7 +159,7 @@
 #define MBED_CONF_PLATFORM_FORCE_NON_COPYABLE_ERROR                           0                                                                                                // set by library:platform
 #define MBED_CONF_PLATFORM_MAX_ERROR_FILENAME_LEN                             16                                                                                               // set by library:platform
 #define MBED_CONF_PLATFORM_POLL_USE_LOWPOWER_TIMER                            0                                                                                                // set by library:platform
-#define MBED_CONF_PLATFORM_STDIO_BAUD_RATE                                    9600                                                                                             // set by library:platform
+#define MBED_CONF_PLATFORM_STDIO_BAUD_RATE                                    ROVER_DEFAULT_SERIAL_BAUD_RATE                                                                                             // set by library:platform
 #define MBED_CONF_PLATFORM_STDIO_BUFFERED_SERIAL                              0                                                                                                // set by library:platform
 #define MBED_CONF_PLATFORM_STDIO_CONVERT_NEWLINES                             0                                                                                                // set by library:platform
 #define MBED_CONF_PLATFORM_STDIO_CONVERT_TTY_NEWLINES                         0                                                                                                // set by library:platform
@@ -223,7 +221,7 @@
 #define MBED_CONF_TARGET_INIT_US_TICKER_AT_BOOT                               1                                                                                                // set by target:FAMILY_STM32
 #define MBED_CONF_TARGET_LPTICKER_LPTIM_CLOCK                                 1                                                                                                // set by target:FAMILY_STM32
 #define MBED_CONF_TARGET_LPUART_CLOCK_SOURCE                                  USE_LPUART_CLK_LSE|USE_LPUART_CLK_PCLK1                                                          // set by target:FAMILY_STM32
-#define MBED_CONF_TARGET_LSE_AVAILABLE                                        1                                                                                                // set by target:FAMILY_STM32
+#define MBED_CONF_TARGET_LSE_AVAILABLE                                        0                                                                                                // set by target:FAMILY_STM32
 #define MBED_CONF_TARGET_MPU_ROM_END                                          0x0fffffff                                                                                       // set by target:Target
 #define MBED_CONF_TARGET_TICKLESS_FROM_US_TICKER                              0                                                                                                // set by target:Target
 #define MBED_CONF_TELIT_HE910_BAUDRATE                                        115200                                                                                           // set by library:TELIT_HE910
@@ -254,6 +252,35 @@
 #define NSAPI_PPP_IPV6_AVAILABLE                                              0                                                                                                // set by library:lwip
 #define NVSTORE_ENABLED                                                       1                                                                                                // set by library:nvstore
 #define NVSTORE_MAX_KEYS                                                      16                                                                                               // set by library:nvstore
+
+// Device driver configuration
+#define DEVICE_ANALOGIN                                                       1
+#define DEVICE_ANALOGOUT                                                      1
+#define DEVICE_CAN                                                            1
+#define DEVICE_FLASH                                                          1
+#define DEVICE_I2C                                                            1
+#define DEVICE_I2C_ASYNCH                                                     1
+#define DEVICE_I2CSLAVE                                                       1
+#define DEVICE_INTERRUPTIN                                                    1
+#define DEVICE_LPTICKER                                                       1
+#define DEVICE_MPU                                                            1
+#define DEVICE_PORTIN                                                         1
+#define DEVICE_PORTINOUT                                                      1
+#define DEVICE_PORTOUT                                                        1
+#define DEVICE_PWMOUT                                                         1
+#define DEVICE_RESET_REASON                                                   1
+#define DEVICE_RTC                                                            1
+#define DEVICE_SERIAL                                                         1
+#define DEVICE_SERIAL_ASYNCH                                                  1
+#define DEVICE_SERIAL_FC                                                      1
+#define DEVICE_SLEEP                                                          1
+#define DEVICE_SPI                                                            1
+#define DEVICE_SPI_ASYNCH                                                     1
+#define DEVICE_SPISLAVE                                                       1
+#define DEVICE_STDIO_MESSAGES                                                 1
+#define DEVICE_USTICKER                                                       1
+#define DEVICE_WATCHDOG                                                       1
+
 // Macros
 #define MBEDTLS_CIPHER_MODE_CTR                                                                                                                                                // defined by library:SecureStore
 #define MBEDTLS_CMAC_C                                                                                                                                                         // defined by library:SecureStore
@@ -261,5 +288,38 @@
 #define NS_USE_EXTERNAL_MBED_TLS                                                                                                                                               // defined by library:nanostack
 #define UNITY_INCLUDE_CONFIG_H                                                                                                                                                 // defined by library:utest
 #define _RTE_                                                                                                                                                                  // defined by library:rtos
+
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+#define PRINT_INFO(...) {                   \
+    printf("[%s] INFO: ", __FILENAME__); \
+    printf(__VA_ARGS__);                    \
+}                                           \
+
+#define PRINT_WARNING(...) {                \
+    printf("[%s] WARNING: ", __FILENAME__); \
+    printf(__VA_ARGS__);                    \
+}                                           \
+
+#define MBED_WARN_ON_ERROR(functionCall) {                                                      \
+    mbed_error_status_t result = functionCall;                                                  \
+    if (result != MBED_SUCCESS) {                                                               \
+        PRINT_WARNING("Operation '%s' failed with status code %d \r\n", #functionCall, result); \
+    }                                                                                           \
+}                                                                                               \
+
+#define MBED_WARN_AND_RETURN_STATUS_ON_ERROR(functionCall) {                                    \
+    mbed_error_status_t result = functionCall;                                                  \
+    if (result != MBED_SUCCESS) {                                                               \
+        PRINT_WARNING("Operation '%s' failed with status code %d \r\n", #functionCall, result); \
+        return result;                                                                          \
+    }                                                                                           \
+}                                                                                               \
+
+#define MBED_ASSERT_WARN(assertion) {                           \
+    if ((assertion) == false) {                                 \
+        PRINT_WARNING("Failed assertion: %s\r\n", #assertion);  \
+    }                                                           \
+}    
 
 #endif
