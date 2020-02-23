@@ -3,10 +3,5 @@ build
 *.o
 *.d
 
-# VS Code pollution
-firmware.code-workspace
-.vscode
-.DS_Store
-
 # MacOS pollution
 *.DS_store
