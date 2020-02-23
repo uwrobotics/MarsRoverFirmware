@@ -1,5 +1,6 @@
 #include "mbed.h"
 #include "Servo.h"
+#include "cstdlib"
 
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_): 
     pin(pin_),
@@ -21,7 +22,7 @@ Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse
         pos = -1;
     }
     //INIT PWM DEFAULT
-    pwm.period_ms(PERIOD);
+    pwm.period_us(PERIOD*1000);
 }
 
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value):
@@ -48,7 +49,7 @@ Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value):
     min_pulse_ms = DEFAULT_MIN;
 
     //INIT PWM DEFAULT
-    pwm.period_ms(PERIOD);
+    pwm.period_us(PERIOD*1000);
 }
 
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_):
@@ -75,7 +76,7 @@ pwm(pin_)
     min_pulse_ms = DEFAULT_MIN;
 
     //INIT PWM DEFAULT
-    pwm.period_ms(PERIOD);
+    pwm.period_us(PERIOD*1000);
 }
 
 bool Servo::set_range(float range_){
@@ -93,7 +94,7 @@ bool Servo::set_max_speed(float max_speed_){
 bool Servo::set_position(float angle){
     if(rotate_type == LIM_SERVO){ 
         pos = angle;
-        pwm.pulsewidth_ms(int((max_pulse_ms - min_pulse_ms) * angle/180 + min_pulse_ms));
+        pwm.pulsewidth_us(int(((max_pulse_ms - min_pulse_ms) * angle/180 + min_pulse_ms)*1000));
     }
     else
         return false;
@@ -101,8 +102,11 @@ bool Servo::set_position(float angle){
 
 bool Servo::set_speed(float speed_){
     if(rotate_type == CONT_SERVO){
+        if(std::abs(speed_) > max_speed)
+            speed_ = max_speed;
+
         speed = speed_;
-        pwm.pulsewidth_ms(int((max_pulse_ms-min_pulse_ms)/2 * speed/max_speed + min_pulse_ms + (max_pulse_ms-min_pulse_ms)/2));
+        pwm.pulsewidth_us(int(((max_pulse_ms-min_pulse_ms)/2 * speed/max_speed + min_pulse_ms + (max_pulse_ms-min_pulse_ms)/2)*1000));
     }
     else
         return false;
@@ -117,5 +121,5 @@ float Servo::read(void){
 
 void Servo::set_period(int period)
 {
-    pwm.period_ms(period);
+    pwm.period_us(period*1000);
 }
