@@ -26,6 +26,8 @@ public:
 		float minAngle_Degrees = -90, maxAngle_Degrees = +90;
 
 		PID::t_pidConfig velocityPID, positionPID;
+
+		float watchDogTimeout_Seconds = 3.0;
 	} t_actuatorConfig;
 
 
@@ -48,7 +50,7 @@ public:
 	float getVelocity_DegreesPerSec();
 	float getAngle_Degrees();
 
-	void update();
+	mbed_error_status_t update();
 
 private:
 
@@ -66,7 +68,7 @@ private:
 	PID m_velocityPIDController;
 	PID m_positionPIDController;
 
-	Timer updateTimer;
+	Timer m_updateTimer;
 
 	void initializePIDControllers();
 

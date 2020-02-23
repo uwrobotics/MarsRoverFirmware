@@ -26,4 +26,10 @@ private:
 
     AnalogIn &r_forceSensor;
 
+<<<<<<< HEAD
+=======
+    float convertShaftPositionDegreesToGapCm(float shaftPosition_Degrees);
+    float convertGapCmToShaftPositionDegrees(float gap_cm);
+
+>>>>>>> master
 };
