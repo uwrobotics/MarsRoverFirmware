@@ -150,102 +150,78 @@ typedef enum {
     ADC_VREF = 0xF1,
     ADC_VBAT = 0xF2,
 
-    // Arduino connector namings
-    A0          = PA_0,
-    A1          = PA_1,
-    A2          = PA_4,
-    A3          = PB_0,
-    A4          = PC_1,
-    A5          = PC_0,
-    D0          = PA_3,
-    D1          = PA_2,
-    D2          = PA_10,
-    D3          = PB_3,
-    D4          = PB_5,
-    D5          = PB_4,
-    D6          = PB_10,
-    D7          = PA_8,
-    D8          = PA_9,
-    D9          = PC_7,
-    D10         = PB_6,
-    D11         = PA_7,
-    D12         = PA_6,
-    D13         = PA_5,
-    D14         = PB_9,
-    D15         = PB_8,
-
     // STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
     STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-    STDIO_UART_TX = PA_2,
+    STDIO_UART_TX = PC_10,
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
     STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-    STDIO_UART_RX = PA_3,
+    STDIO_UART_RX = PC_11,
 #endif
 
-    // Generic signals namings
-    LED1        = PA_5,
-    LED2        = PA_5,
-    LED3        = PA_5,
-    LED4        = PA_5,
-    LED_RED     = LED1,
-    USER_BUTTON = PC_13,
-    // Standardized button names
-    BUTTON1 = USER_BUTTON,
-    SERIAL_TX   = STDIO_UART_TX,
-    SERIAL_RX   = STDIO_UART_RX,
-    USBTX       = STDIO_UART_TX,
-    USBRX       = STDIO_UART_RX,
-    I2C_SCL     = PB_8,
-    I2C_SDA     = PB_9,
-    SPI_MOSI    = PA_7,
-    SPI_MISO    = PA_6,
-    SPI_SCK     = PA_5,
-    SPI_CS      = PB_6,
-    PWM_OUT     = PB_3,
+    /**** UI ****/
+    LED1 = PC_0,
+    LED_R = PC_1,
+    LED_G = PC_2,
+    LED_B = PC_3,
 
-    /**** USB pins ****/
-    USB_OTG_FS_DM = PA_11,
-    USB_OTG_FS_DP = PA_12,
-    USB_OTG_FS_ID = PA_10,
-    USB_OTG_FS_SOF = PA_8,
-    USB_OTG_FS_VBUS = PA_9,
-    USB_OTG_HS_DM = PB_14,
-    USB_OTG_HS_DP = PB_15,
-    USB_OTG_HS_ID = PB_12,
-    USB_OTG_HS_SOF = PA_4,
-    USB_OTG_HS_ULPI_CK = PA_5,
-    USB_OTG_HS_ULPI_D0 = PA_3,
-    USB_OTG_HS_ULPI_D1 = PB_0,
-    USB_OTG_HS_ULPI_D2 = PB_1,
-    USB_OTG_HS_ULPI_D3 = PB_10,
-    USB_OTG_HS_ULPI_D4 = PB_2,
-    USB_OTG_HS_ULPI_D5 = PB_12,
-    USB_OTG_HS_ULPI_D6 = PB_13,
-    USB_OTG_HS_ULPI_D7 = PB_5,
-    USB_OTG_HS_ULPI_DIR = PC_2,
-    USB_OTG_HS_ULPI_NXT = PC_3,
-    USB_OTG_HS_ULPI_STP = PC_0,
-    USB_OTG_HS_VBUS = PB_13,
+    BUTTON_1 = PB_0,
+    BUTTON_2 = PB_1,
+
+    /**** Actuator Pins ****/
+    MTR_PWM_1 = PA_6,
+    MTR_DIR_1 = PA_5,
+    MTR_PWM_2 = PA_7,
+    MTR_DIR_2 = PC_4,
+
+    /**** Limit Switch Pins ****/
+    LIM_SW_1  = PB_4,
+    LIM_SW_2  = PB_3,
+    LIM_SW_3  = PD_2,
+    LIM_SW_4  = PC_12,
+
+    /**** Encoder Pins ****/
+    ENC_DCI_A    = PB_6,
+    ENC_DCI_B    = PB_7,
+
+    /**** Serial Interface Pins ****/
+    CAN1_TX    = PA_12,
+    CAN1_RX    = PA_11,
+
+    CAN2_TX    = PB_13,
+    CAN2_RX    = PB_12,
+
+    CAN_TX     = CAN1_TX,
+    CAN_RX     = CAN1_RX,
+
+    SERIAL_TX  = STDIO_UART_TX,
+    SERIAL_RX  = STDIO_UART_RX,
+    SERIAL_RTS = PA_15,
+
+    USBTX      = STDIO_UART_TX,
+    USBRX      = STDIO_UART_RX,
+
+    TEMP_MOIST_I2C_SCL      = PA_8,
+    TEMP_MOIST_I2C_SDA      = PC_9,
 
     /**** OSCILLATOR pins ****/
-    RCC_OSC32_IN = PC_14,
+    RCC_OSC32_IN  = PC_14,
     RCC_OSC32_OUT = PC_15,
-    RCC_OSC_IN = PH_0,
-    RCC_OSC_OUT = PH_1,
+    RCC_OSC_IN    = PH_0,
+    RCC_OSC_OUT   = PH_1,
 
     /**** DEBUG pins ****/
     SYS_JTCK_SWCLK = PA_14,
-    SYS_JTDI = PA_15,
-    SYS_JTDO_SWO = PB_3,
+    SYS_JTDI       = PA_15,
+    SYS_JTDO_SWO   = PB_3,
     SYS_JTMS_SWDIO = PA_13,
-    SYS_JTRST = PB_4,
-    SYS_TRACED0 = PC_8,
-    SYS_WKUP0 = PA_0,
-    SYS_WKUP1 = PC_13,
+    SYS_JTRST      = PB_4,
+    SYS_TRACED0    = PC_8,
+    SYS_WKUP0      = PA_0,
+    SYS_WKUP1      = PC_13,
 
     // Not connected
     NC = (int)0xFFFFFFFF
