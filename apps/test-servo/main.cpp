@@ -1,10 +1,9 @@
 #include "mbed.h"
-#include "servo.h"
+#include "Servo.h"
 
 int main()
 {
-    Servo my_servo(A1,LIMITED_SERVO,180.0,2.0,1.0);
-    my_servo.move(50);
+    Servo my_servo(PA_0, Servo::LIM_SERVO, 180.0,2.0,1.0);
 
     while(1){}
 
