@@ -162,7 +162,15 @@ static mbed_error_status_t runClawCalibration(CANMsg &msg) {
 
 // Deploy or retract tool tip
 static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
-    return MBED_SUCCESS; // TODO
+    bool extend;
+    msg.getPayload(extend);
+
+    if (extend) {
+        return clawController.extendToolTip();
+    }
+    else {
+        return clawController.retractToolTip();
+    }
 }
 
 // Enable or disable PID tuning mode10
@@ -243,7 +251,8 @@ void rxCANProcessor() {
 
 // Outgoing message processor
 void txCANProcessor() {
-    const int txPeriod_millisec = 100;
+    const int txInterdelay_millisec = 2;
+    const int txPeriod_millisec = 10;
 
     CANMsg txMsg;
 
@@ -258,47 +267,49 @@ void txCANProcessor() {
         motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_SHOULDER_MOTION;
         motionReport.position = shoulderActuator.getAngle_Degrees();
         motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_ELBOW_MOTION;
         motionReport.position = elbowActuator.getAngle_Degrees();
         motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_WRIST_PITCH_MOTION;
         motionReport.position = wristController.getPitchAngle_Degrees();
         motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_WRIST_PITCH_MOTION;
         motionReport.position = wristController.getRollAngle_Degrees();
         motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_CLAW_MOTION;
         motionReport.position = clawController.getGapDistance_Cm();
         motionReport.velocity = clawController.getGapVelocity_CmPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
+        ThisThread::sleep_for(txInterdelay_millisec);
+
         ThisThread::sleep_for(txPeriod_millisec);
     }
 }
 
-Thread rxCANProcessorThread;
-Thread txCANProcessorThread;
+Thread rxCANProcessorThread(osPriorityAboveNormal);
+Thread txCANProcessorThread(osPriorityBelowNormal);
 
 DigitalOut led1(LED1);
 
@@ -320,6 +331,6 @@ int main()
         wristController.update();
         clawController.update();
 
-        ThisThread::sleep_for(1);
+        ThisThread::sleep_for(2);
     }
 }
