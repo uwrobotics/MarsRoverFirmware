@@ -4,7 +4,7 @@
 EncoderRelative_Quadrature::EncoderRelative_Quadrature(t_encoderConfig encoderConfig) :
         Encoder(encoderConfig), 
         m_QEI(encoderConfig.pin_ChannelA, encoderConfig.pin_ChannelB, encoderConfig.pin_Index, encoderConfig.quadratureEncodingType),
-        m_degreesPerUnit(encoderConfig.degreesPerUnit), m_zeroOffset_Degrees(encoderConfig.offset_Degrees) {}
+        m_degreesPerUnit(encoderConfig.degreesPerUnit), m_zeroOffset_Degrees(encoderConfig.zeroOffset_Degrees) {}
 
 EncoderRelative_Quadrature::~EncoderRelative_Quadrature() {}
 

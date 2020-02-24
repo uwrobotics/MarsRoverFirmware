@@ -3,7 +3,7 @@
 
 EncoderAbsolute_PWM::EncoderAbsolute_PWM(t_encoderConfig encoderConfig) :
 		Encoder(encoderConfig), m_pwmIn(encoderConfig.pin_PWM), 
-		m_degreesPerUnit(encoderConfig.degreesPerUnit), m_zeroOffset_Degrees(encoderConfig.offset_Degrees) {}
+		m_degreesPerUnit(encoderConfig.degreesPerUnit), m_zeroOffset_Degrees(encoderConfig.zeroOffset_Degrees) {}
 
 EncoderAbsolute_PWM::~EncoderAbsolute_PWM() {}
 

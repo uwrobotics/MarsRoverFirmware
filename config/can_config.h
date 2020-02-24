@@ -11,7 +11,7 @@ typedef enum CANID {
 
     // ARM CAN IDs
 
-    RESET                       = 0x720,
+    ARM_RESET                   = 0x720,
     SET_OVERRIDE_FLAGS,
 
     SET_TURNTABLE_CONTROL_MODE  = 0x740,

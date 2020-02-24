@@ -14,7 +14,7 @@ public:
 
     explicit DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight, 
                                 DigitalIn &wristLimUp, DigitalIn &WristLimCenter, DigitalIn &wristLimDown,
-                                float leftToRightMotorPowerBias = 0.0);
+                                float leftToRightMotorPowerBias = 0.0, float calibrationTimeout_Seconds = 10.0);
 
     mbed_error_status_t setControlMode(ActuatorController::t_actuatorControlMode controlMode);
     
@@ -48,11 +48,16 @@ private:
     ActuatorController &r_wristActuatorLeft;
     ActuatorController &r_wristActuatorRight;
 
-    DigitalIn &r_wristLimUp;
-    DigitalIn &r_wristLimCenter;
-    DigitalIn &r_wristLimDown;
+    DigitalIn &r_limSwitchUp;
+    DigitalIn &r_limSwitchCenter;
+    DigitalIn &r_limSwitchDown;
+
+	bool m_limSwitchUp_Connected;
+	bool m_limSwitchCenter_Connected;
+	bool m_limSwitchDown_Connected;
 
     float m_leftToRightMotorPowerBias;
+    float m_calibrationTimeout_Seconds;
 
     float m_rollPower_Percentage, m_pitchPower_Percentage;
     float m_rollVelocity_DegreesPerSec, m_pitchVelocity_DegreesPerSec;
@@ -61,6 +66,10 @@ private:
     mbed_error_status_t setSplitMotorPower(void);
     mbed_error_status_t setSplitVelocities(void);
     mbed_error_status_t setSplitAngles(void);
+
+    bool isLimSwitchUpTriggered();
+    bool isLimSwitchCenterTriggered();
+    bool isLimSwitchDownTriggered();
 
     ActuatorController::t_actuatorControlMode m_controlMode;
 

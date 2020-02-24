@@ -1,11 +1,16 @@
 #include "DifferentialWristController.h"
+#include "ThisThread.h"
 
 DifferentialWristController::DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight, 
                                                          DigitalIn &wristLimUp, DigitalIn &wristLimCenter, DigitalIn &wristLimDown,
-                                                         float leftToRightMotorPowerBias) :
+                                                         float leftToRightMotorPowerBias, float calibrationTimeout_Seconds) :
         r_wristActuatorLeft(wristActuatorLeft), r_wristActuatorRight(wristActuatorRight), 
-        r_wristLimUp(wristLimUp), r_wristLimCenter(wristLimCenter), r_wristLimDown(wristLimDown),
-        m_leftToRightMotorPowerBias(leftToRightMotorPowerBias) {
+        r_limSwitchUp(wristLimUp), r_limSwitchCenter(wristLimCenter), r_limSwitchDown(wristLimDown),
+        m_leftToRightMotorPowerBias(leftToRightMotorPowerBias), m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {
+
+	m_limSwitchUp_Connected = (r_limSwitchUp != NULL_DIGITAL_IN && r_limSwitchUp.is_connected());
+	m_limSwitchCenter_Connected = (r_limSwitchCenter != NULL_DIGITAL_IN && r_limSwitchCenter.is_connected());
+	m_limSwitchDown_Connected = (r_limSwitchDown != NULL_DIGITAL_IN && r_limSwitchDown.is_connected());
 
     m_rollPower_Percentage = 0.0f;
     m_pitchPower_Percentage = 0.0f;
@@ -127,7 +132,22 @@ void DifferentialWristController::update() {
 
 mbed_error_status_t DifferentialWristController::runPositionCalibration() {
 
-    // TODO
+    // Timer calibrationTimer;
+    // calibrationTimer.start();
+
+    // ActuatorController::t_actuatorControlMode prevControlMode = ActuatorController::getControlMode();
+
+    // setControlMode(ActuatorController::velocity);
+    // setRollVelocity_DegreesPerSec(5.0);
+
+    // while (!isLimSwitchCenterTriggered() && calibrationTimer.read() < m_calibrationTimeout_Seconds)
+    // {
+    //     ThisThread::sleep_for(5);
+    // }
+
+    // r_wristActuatorLeft.
+    // setRollVelocity_DegreesPerSec(0.0);
+
 
     return MBED_SUCCESS;
 }
@@ -151,4 +171,16 @@ mbed_error_status_t DifferentialWristController::setSplitAngles(void) {
     MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setAngle_Degrees(m_rollAngle_Degrees + m_pitchAngle_Degrees));
 
     return MBED_SUCCESS;
+}
+
+bool DifferentialWristController::isLimSwitchUpTriggered() {
+	return m_limSwitchUp_Connected && r_limSwitchUp.read() == 0; // Open drain
+}
+
+bool DifferentialWristController::isLimSwitchCenterTriggered() {
+	return m_limSwitchCenter_Connected && r_limSwitchCenter.read() == 0; // Open drain
+}
+
+bool DifferentialWristController::isLimSwitchDownTriggered() {
+	return m_limSwitchDown_Connected && r_limSwitchDown.read() == 0; // Open drain
 }
