@@ -73,4 +73,6 @@ private:
 
     ActuatorController::t_actuatorControlMode m_controlMode;
 
+    Mutex m_mutex;
+
 };

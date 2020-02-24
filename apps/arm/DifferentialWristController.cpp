@@ -132,43 +132,79 @@ void DifferentialWristController::update() {
 
 mbed_error_status_t DifferentialWristController::runPositionCalibration() {
 
-    // Timer calibrationTimer;
-    // calibrationTimer.start();
+    Timer calibrationTimer;
 
-    // ActuatorController::t_actuatorControlMode prevControlMode = ActuatorController::getControlMode();
+    ActuatorController::t_actuatorControlMode prevControlMode = getControlMode();
+        
+    if (m_mutex.trylock_for(1000)) {
 
-    // setControlMode(ActuatorController::velocity);
-    // setRollVelocity_DegreesPerSec(5.0);
+        calibrationTimer.start();
 
-    // while (!isLimSwitchCenterTriggered() && calibrationTimer.read() < m_calibrationTimeout_Seconds)
-    // {
-    //     ThisThread::sleep_for(5);
-    // }
+        setControlMode(ActuatorController::velocity);
+        setRollVelocity_DegreesPerSec(5.0);
 
-    // r_wristActuatorLeft.
-    // setRollVelocity_DegreesPerSec(0.0);
+        while (!isLimSwitchCenterTriggered() && calibrationTimer.read() < m_calibrationTimeout_Seconds)
+        {
+            ThisThread::sleep_for(5);
+        }
 
+        setRollVelocity_DegreesPerSec(0.0);
+
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.resetEncoder());
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.resetEncoder());
+
+        setControlMode(prevControlMode);
+    }
+    else {
+        return MBED_ERROR_MUTEX_LOCK_FAILED;
+    }
+
+    m_mutex.unlock();
 
     return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setSplitMotorPower(void) {
-    MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.setMotorPower_Percentage(-m_rollPower_Percentage + m_pitchPower_Percentage) * (1.0 + m_leftToRightMotorPowerBias));
-    MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setMotorPower_Percentage(m_rollPower_Percentage + m_pitchPower_Percentage) * (1.0 - m_leftToRightMotorPowerBias));
+    
+    if (m_mutex.trylock_for(200)) {
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.setMotorPower_Percentage(-m_rollPower_Percentage + m_pitchPower_Percentage) * (1.0 + m_leftToRightMotorPowerBias));
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setMotorPower_Percentage(m_rollPower_Percentage + m_pitchPower_Percentage) * (1.0 - m_leftToRightMotorPowerBias));
+    }
+    else {
+        return MBED_ERROR_TIME_OUT;
+    }
+
+    m_mutex.unlock();
 
     return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setSplitVelocities(void) {
-    MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.setVelocity_DegreesPerSec(-m_rollVelocity_DegreesPerSec + m_pitchVelocity_DegreesPerSec));
-    MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setVelocity_DegreesPerSec(m_rollVelocity_DegreesPerSec + m_pitchVelocity_DegreesPerSec));
+    
+    if (m_mutex.trylock_for(200)) {
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.setVelocity_DegreesPerSec(-m_rollVelocity_DegreesPerSec + m_pitchVelocity_DegreesPerSec));
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setVelocity_DegreesPerSec(m_rollVelocity_DegreesPerSec + m_pitchVelocity_DegreesPerSec));
+    }
+    else {
+        return MBED_ERROR_MUTEX_LOCK_FAILED;
+    }
+
+    m_mutex.unlock();
 
     return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setSplitAngles(void) {
-    MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.setAngle_Degrees(-m_rollAngle_Degrees + m_pitchAngle_Degrees));
-    MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setAngle_Degrees(m_rollAngle_Degrees + m_pitchAngle_Degrees));
+
+    if (m_mutex.trylock_for(200)) {
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.setAngle_Degrees(-m_rollAngle_Degrees + m_pitchAngle_Degrees));
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.setAngle_Degrees(m_rollAngle_Degrees + m_pitchAngle_Degrees));
+    }
+    else {
+        return MBED_ERROR_MUTEX_LOCK_FAILED;
+    }
+
+    m_mutex.unlock();
 
     return MBED_SUCCESS;
 }

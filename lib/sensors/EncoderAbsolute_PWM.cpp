@@ -18,3 +18,7 @@ float EncoderAbsolute_PWM::getAngle_Degrees() {
 float EncoderAbsolute_PWM::getVelocity_DegreesPerSec() {
 	return m_pwmIn.avgDutyCycleVelocity() * m_degreesPerUnit;
 }
+
+mbed_error_status_t EncoderAbsolute_PWM::reset() {
+	m_zeroOffset_Degrees = m_pwmIn.avgDutyCycle() * m_degreesPerUnit;
+}

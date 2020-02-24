@@ -188,6 +188,11 @@ mbed_error_status_t ActuatorController::update() {
 	return MBED_SUCCESS;
 }
 
+
+mbed_error_status_t ActuatorController::resetEncoder() {
+	r_encoder.reset();
+}
+
 void ActuatorController::initializePIDControllers() {
 
 	// Configure velocity PID

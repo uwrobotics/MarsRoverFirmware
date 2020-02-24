@@ -52,6 +52,8 @@ public:
 
 	mbed_error_status_t update();
 
+	mbed_error_status_t resetEncoder();
+
 private:
 
 	t_actuatorControlMode m_controlMode;
