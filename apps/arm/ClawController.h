@@ -36,6 +36,8 @@ private:
     float m_tooltipRetractedAngle_Degrees;
 
     float convertShaftPositionDegreesToGapCm(float shaftPosition_Degrees);
+    float convertShaftVelocityDegreesToGapVelocityCm(float shaftPosition_DegreesPerSec);
     float convertGapCmToShaftPositionDegrees(float gap_cm);
+    float convertGapVelocityCmToShaftVelocityDegrees(float gap_cmPerSec);
 
 };
