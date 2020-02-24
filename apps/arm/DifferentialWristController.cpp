@@ -3,10 +3,12 @@
 
 DifferentialWristController::DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight, 
                                                          DigitalIn &wristLimUp, DigitalIn &wristLimCenter, DigitalIn &wristLimDown,
-                                                         float leftToRightMotorPowerBias, float calibrationTimeout_Seconds) :
+                                                         float leftToRightMotorPowerBias, float maxPitchAngle_Degrees, float minPitchAngle_Degrees, 
+                                                         float calibrationTimeout_Seconds) :
         r_wristActuatorLeft(wristActuatorLeft), r_wristActuatorRight(wristActuatorRight), 
         r_limSwitchUp(wristLimUp), r_limSwitchCenter(wristLimCenter), r_limSwitchDown(wristLimDown),
-        m_leftToRightMotorPowerBias(leftToRightMotorPowerBias), m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {
+        m_leftToRightMotorPowerBias(leftToRightMotorPowerBias), m_maxPitchAngle_Degrees(maxPitchAngle_Degrees), m_minPitchAngle_Degrees(minPitchAngle_Degrees), 
+        m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {
 
 	m_limSwitchUp_Connected = (r_limSwitchUp != NULL_DIGITAL_IN && r_limSwitchUp.is_connected());
 	m_limSwitchCenter_Connected = (r_limSwitchCenter != NULL_DIGITAL_IN && r_limSwitchCenter.is_connected());
@@ -37,39 +39,110 @@ mbed_error_status_t DifferentialWristController::setControlMode(ActuatorControll
     m_rollAngle_Degrees = 0.0f;
     m_pitchAngle_Degrees = 0.0f;
 
-    update();
-
     return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setRollPower_Percentage(float percentage) {
-    m_rollPower_Percentage = percentage;
-    return setSplitMotorPower();
+
+    mbed_error_status_t errStatus;
+
+    if (m_mutex.trylock_for(200)) {
+        m_rollPower_Percentage = percentage;
+        errStatus = setSplitMotorPower();
+    }
+    else {
+        return MBED_ERROR_TIME_OUT;
+    }
+
+    m_mutex.unlock();
+
+    return errStatus;
+    
 }
 
 mbed_error_status_t DifferentialWristController::setRollVelocity_DegreesPerSec(float degreesPerSec) {
-    m_rollVelocity_DegreesPerSec = degreesPerSec;
-    return setSplitVelocities();
+
+    mbed_error_status_t errStatus;
+ 
+    if (m_mutex.trylock_for(200)) {
+        m_rollVelocity_DegreesPerSec = degreesPerSec;
+        errStatus = setSplitVelocities();    
+        }
+    else {
+        return MBED_ERROR_TIME_OUT;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setRollAngle_Degrees(float degrees) {
-    m_rollAngle_Degrees = degrees;
-    return setSplitAngles();
+    
+    mbed_error_status_t errStatus;
+
+    if (m_mutex.trylock_for(200)) {
+        m_rollAngle_Degrees = degrees;
+        errStatus = setSplitAngles();
+    }
+    else {
+        return MBED_ERROR_TIME_OUT;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchPower_Percentage(float percentage) {
-    m_pitchPower_Percentage = percentage;
-    return setSplitMotorPower();
+
+    mbed_error_status_t errStatus;
+
+    if (m_mutex.trylock_for(200)) {
+        m_pitchPower_Percentage = percentage;
+        errStatus = setSplitMotorPower();
+    }
+    else {
+        return MBED_ERROR_TIME_OUT;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchVelocity_DegreesPerSec(float degreesPerSec) {
-    m_pitchVelocity_DegreesPerSec = degreesPerSec;
-    return setSplitVelocities();
+
+    mbed_error_status_t errStatus;
+
+    if (m_mutex.trylock_for(200)) {
+        m_pitchVelocity_DegreesPerSec = degreesPerSec;
+        errStatus = setSplitVelocities();
+    }
+    else {
+        return MBED_ERROR_TIME_OUT;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchAngle_Degrees(float degrees) {
-    m_pitchAngle_Degrees = degrees;
-    return setSplitAngles();
+
+    mbed_error_status_t errStatus;
+
+    if (m_mutex.trylock_for(200)) {
+        m_pitchAngle_Degrees = degrees;
+        errStatus = setSplitAngles();
+    }
+    else {
+        return MBED_ERROR_TIME_OUT;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchMotionData(float motionData) {
@@ -145,15 +218,49 @@ mbed_error_status_t DifferentialWristController::runPositionCalibration() {
 
         while (!isLimSwitchCenterTriggered() && calibrationTimer.read() < m_calibrationTimeout_Seconds)
         {
-            ThisThread::sleep_for(5);
+            update();
+            ThisThread::sleep_for(2);
         }
 
         setRollVelocity_DegreesPerSec(0.0);
+
+        // Settle
+        ThisThread::sleep_for(750);
+
+        setPitchVelocity_DegreesPerSec(5.0); // Pitch upwards
+
+        while (!isLimSwitchUpTriggered() && calibrationTimer.read() < m_calibrationTimeout_Seconds)
+        {
+            update();
+            ThisThread::sleep_for(2);
+        }
+
+        setPitchVelocity_DegreesPerSec(0.0);
+
+        // Settle
+        ThisThread::sleep_for(750);
+
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.resetEncoder());
+        MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.resetEncoder());
+
+        setControlMode(ActuatorController::position);
+
+        setPitchAngle_Degrees(-m_maxPitchAngle_Degrees);
+
+        while ((getPitchAngle_Degrees() > (-m_maxPitchAngle_Degrees + 2.0)) && calibrationTimer.read() < m_calibrationTimeout_Seconds)
+        {
+            update();
+            ThisThread::sleep_for(2);
+        }
+
+        // Settle
+        ThisThread::sleep_for(750);
 
         MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorLeft.resetEncoder());
         MBED_WARN_AND_RETURN_STATUS_ON_ERROR(r_wristActuatorRight.resetEncoder());
 
         setControlMode(prevControlMode);
+
     }
     else {
         return MBED_ERROR_MUTEX_LOCK_FAILED;

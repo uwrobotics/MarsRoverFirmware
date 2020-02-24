@@ -41,12 +41,12 @@ mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode con
 
 	m_controlMode = controlMode;
 
-	 switch (controlMode) {
+	switch (controlMode) {
 
         case motorPower:
             m_controlMode = motorPower;
             setMotorPower_Percentage(0.0f);
-            return MBED_SUCCESS;
+			return update();
 
         case velocity:
             m_velocityPIDController.reset();

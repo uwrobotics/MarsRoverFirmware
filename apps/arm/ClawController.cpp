@@ -7,15 +7,48 @@ ClawController::ClawController(t_actuatorConfig actuatorConfig,
         ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax), r_forceSensor(forceSensor), r_tooltipServo(tooltipServo),
         m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees), m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees) {};
 
+mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {
+
+    if (m_mutex.trylock_for(200)) {
+        return ActuatorController::setMotorPower_Percentage(percentage);
+    }
+    else {
+        return MBED_ERROR_MUTEX_LOCK_FAILED;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
+}
 
 mbed_error_status_t ClawController::setGapVelocity_CmPerSec(float cmPerSec) {
-    float shaftVelocity_DegreesPerSec = convertGapVelocityCmToShaftVelocityDegrees(cmPerSec);
-    return setVelocity_DegreesPerSec(shaftVelocity_DegreesPerSec);
+    
+    if (m_mutex.trylock_for(200)) {
+        float shaftVelocity_DegreesPerSec = convertGapVelocityCmToShaftVelocityDegrees(cmPerSec);
+        return setVelocity_DegreesPerSec(shaftVelocity_DegreesPerSec);
+    }
+    else {
+        return MBED_ERROR_MUTEX_LOCK_FAILED;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 mbed_error_status_t ClawController::setGapDistance_Cm(float cm) {
-    float shaftPosition_Degrees = convertGapCmToShaftPositionDegrees(cm);
-    return setAngle_Degrees(shaftPosition_Degrees);
+
+    if (m_mutex.trylock_for(200)) {
+        float shaftPosition_Degrees = convertGapCmToShaftPositionDegrees(cm);
+        return setAngle_Degrees(shaftPosition_Degrees);
+    }
+    else {
+        return MBED_ERROR_MUTEX_LOCK_FAILED;
+    }
+
+    m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 mbed_error_status_t ClawController::setMotionData(float motionData) {
@@ -53,7 +86,17 @@ float ClawController::getGripForce_Newtons() {
 }
 
 mbed_error_status_t ClawController::runPositionCalibration() {
-    return MBED_SUCCESS; // TODO
+    // if (m_mutex.trylock_for(200)) {
+    //     float shaftPosition_Degrees = convertGapCmToShaftPositionDegrees(cm);
+    //     return setAngle_Degrees(shaftPosition_Degrees);
+    // }
+    // else {
+    //     return MBED_ERROR_MUTEX_LOCK_FAILED;
+    // }
+
+    // m_mutex.unlock();
+
+    return MBED_SUCCESS;
 }
 
 float ClawController::convertShaftPositionDegreesToGapCm(float shaftPosition_Degrees) {

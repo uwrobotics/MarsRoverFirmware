@@ -12,6 +12,8 @@ public:
                        DigitalIn &limSwitchMax, AnalogIn &forceSensor, Servo &tooltipServo,
                        float tooltipExtendedAngle_Degrees = 180.0, float tooltipRetractedAngle_Degrees = 0.0);
 
+    mbed_error_status_t setMotorPower_Percentage(float percentage);
+
     mbed_error_status_t setGapVelocity_CmPerSec(float cmPerSec);
     mbed_error_status_t setGapDistance_Cm(float cm);
 
@@ -39,5 +41,7 @@ private:
     float convertShaftVelocityDegreesToGapVelocityCm(float shaftPosition_DegreesPerSec);
     float convertGapCmToShaftPositionDegrees(float gap_cm);
     float convertGapVelocityCmToShaftVelocityDegrees(float gap_cmPerSec);
+
+    Mutex m_mutex;
 
 };
