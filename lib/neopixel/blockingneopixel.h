@@ -28,6 +28,7 @@ public:
     void displayRed();
     void displayBlue();
     void flashGreen(int numFlashes, float delay_s);
+    void shutdown();
 };
 
 #endif /* BLOCKINGNEOPIXEL_H */
