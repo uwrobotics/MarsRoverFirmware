@@ -3,9 +3,10 @@
 ClawController::ClawController(t_actuatorConfig actuatorConfig, 
                        Motor &motor, Encoder &encoder,  
                        DigitalIn &limSwitchMax, AnalogIn &forceSensor, Servo &tooltipServo,
-                       float tooltipExtendedAngle_Degrees, float tooltipRetractedAngle_Degrees) : 
+                       float tooltipExtendedAngle_Degrees, float tooltipRetractedAngle_Degrees, float calibrationTimeout_Seconds) : 
         ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax), r_forceSensor(forceSensor), r_tooltipServo(tooltipServo),
-        m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees), m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees) {};
+        m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees), m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees),
+        m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {};
 
 mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {
 
@@ -86,15 +87,34 @@ float ClawController::getGripForce_Newtons() {
 }
 
 mbed_error_status_t ClawController::runPositionCalibration() {
-    // if (m_mutex.trylock_for(200)) {
-    //     float shaftPosition_Degrees = convertGapCmToShaftPositionDegrees(cm);
-    //     return setAngle_Degrees(shaftPosition_Degrees);
-    // }
-    // else {
-    //     return MBED_ERROR_MUTEX_LOCK_FAILED;
-    // }
+    Timer calibrationTimer;
 
-    // m_mutex.unlock();
+    ActuatorController::t_actuatorControlMode prevControlMode = getControlMode();
+        
+    if (m_mutex.trylock_for(1000)) {
+
+        calibrationTimer.start();
+
+        setControlMode(ActuatorController::motorPower);
+        setMotorPower_Percentage(0.5);
+
+        while (!isLimSwitchMaxTriggered() && calibrationTimer.read() < m_calibrationTimeout_Seconds)
+        {
+            update();
+            ThisThread::sleep_for(2);
+        }
+
+        setMotorPower_Percentage(0.0);
+
+        // Settle
+        ThisThread::sleep_for(750);
+        resetEncoder();
+    }
+    else {
+        return MBED_ERROR_MUTEX_LOCK_FAILED;
+    }
+
+    m_mutex.unlock();
 
     return MBED_SUCCESS;
 }

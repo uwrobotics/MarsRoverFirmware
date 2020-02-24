@@ -74,7 +74,7 @@ mbed_error_status_t DifferentialWristController::setRollVelocity_DegreesPerSec(f
 
     m_mutex.unlock();
 
-    return MBED_SUCCESS;
+    return errStatus;
 }
 
 mbed_error_status_t DifferentialWristController::setRollAngle_Degrees(float degrees) {
@@ -91,7 +91,7 @@ mbed_error_status_t DifferentialWristController::setRollAngle_Degrees(float degr
 
     m_mutex.unlock();
 
-    return MBED_SUCCESS;
+    return errStatus;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchPower_Percentage(float percentage) {
@@ -108,7 +108,7 @@ mbed_error_status_t DifferentialWristController::setPitchPower_Percentage(float 
 
     m_mutex.unlock();
 
-    return MBED_SUCCESS;
+    return errStatus;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchVelocity_DegreesPerSec(float degreesPerSec) {
@@ -125,7 +125,7 @@ mbed_error_status_t DifferentialWristController::setPitchVelocity_DegreesPerSec(
 
     m_mutex.unlock();
 
-    return MBED_SUCCESS;
+    return errStatus;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchAngle_Degrees(float degrees) {
@@ -142,7 +142,7 @@ mbed_error_status_t DifferentialWristController::setPitchAngle_Degrees(float deg
 
     m_mutex.unlock();
 
-    return MBED_SUCCESS;
+    return errStatus;
 }
 
 mbed_error_status_t DifferentialWristController::setPitchMotionData(float motionData) {
