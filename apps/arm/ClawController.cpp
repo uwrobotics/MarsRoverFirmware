@@ -2,8 +2,10 @@
 
 ClawController::ClawController(t_actuatorConfig actuatorConfig, 
                        Motor &motor, Encoder &encoder,  
-                       DigitalIn &limSwitchMax, AnalogIn &forceSensor) : 
-        ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax), r_forceSensor(forceSensor) {};
+                       DigitalIn &limSwitchMax, AnalogIn &forceSensor, Servo &tooltipServo,
+                       float tooltipExtendedAngle_Degrees, float tooltipRetractedAngle_Degrees) : 
+        ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax), r_forceSensor(forceSensor), r_tooltipServo(tooltipServo),
+        m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees), m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees) {};
 
 
 mbed_error_status_t ClawController::setGapVelocity_CmPerSec(float cmPerSec) {
@@ -28,6 +30,17 @@ mbed_error_status_t ClawController::setMotionData(float motionData) {
             return MBED_ERROR_INVALID_ARGUMENT;
     }
 }
+
+mbed_error_status_t ClawController::extendToolTip() {
+    mbed_error_status_t err_status = r_tooltipServo.set_position(m_tooltipExtendedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
+    return err_status;
+}
+
+mbed_error_status_t ClawController::retractToolTip() {
+    mbed_error_status_t err_status = r_tooltipServo.set_position(m_tooltipRetractedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
+    return err_status;
+}
+
 
 float ClawController::getGapVelocity_CmPerSec() {
     return getVelocity_DegreesPerSec() / 2.0 + 0.0 * getAngle_Degrees(); // TODO find mapping function (velocity dependent on position)

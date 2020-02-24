@@ -18,7 +18,7 @@ public:
      * @param inverted  If true, then forward speed will set dir to 0 instead of 1, otherwise inverse
      * @param limit     Maximum speed magnitude
      */
-    ServoMotor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0);
+    ServoMotor(PinName pwm, bool inverted = false, float min_pulsewidth_ms = 1.0, float max_pulsewidth_ms = 2.0, float limit = 1.0);
 
     ServoMotor(Motor::t_motorConfig motorConfig);
 
