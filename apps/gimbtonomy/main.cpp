@@ -10,7 +10,7 @@
 
 Serial        pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 // CAN_RX = PB_8, CAN_TX = PB_9
-CAN           can(PB_8, PB_9, ROVER_CANBUS_FREQUENCY);
+CAN           can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 CANMsg        rxMsg;
 BlockingNeopixel      neopixel(16);
 
@@ -27,7 +27,7 @@ void initCAN() {
 
 void handleSetNeoPixelColor(CANMsg *p_newMsg){
     // 0 = solid red, 1 = solid blue, 2 = flashing green
-    unsigned int neoPixelMode = 0;
+    uint8_t neoPixelMode = 0;
     *p_newMsg >> neoPixelMode;
 
     switch (neoPixelMode){
