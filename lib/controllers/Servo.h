@@ -31,7 +31,8 @@ protected:
     
         Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_);    //Copies previous constructors but with PIN
         Servo(PinName pin_, SERVO_TYPE rotate_type_);              
-        Servo(PinName pin_, SERVO_TYPE rotate_type_, float value);    
+        Servo(PinName pin_, SERVO_TYPE rotate_type_, float value);
+        Servo();    
 
         bool setRange(float range_);           //Returns FALSE if Servo Type is CONTINUOUS
         bool setMaxSpeed(float max_speed_);   //Returns FALSE if Servo Type is LIMITED

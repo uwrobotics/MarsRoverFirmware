@@ -34,7 +34,7 @@ namespace GimbConfig {
     };
 
     /*** ACTUATOR CONFIG ***/
-    static ActuatorController::t_actuatorControlMode panActuatorControlMode = velocity;
+    static ActuatorController::t_actuatorControlMode panActuatorControlMode = ActuatorController::velocity;
     static ActuatorController::t_actuatorConfig panActuatorConfig = {
         panActuatorControlMode,
         .minAngle_Degrees = -360.0,
@@ -57,7 +57,7 @@ namespace GimbConfig {
         }
     };
 
-    static ActuatorController::t_actuatorControlMode tiltActuatorControlMode = position;
+    static ActuatorController::t_actuatorControlMode tiltActuatorControlMode = ActuatorController::position;
     static ActuatorController::t_actuatorConfig tiltActuatorConfig = {
         tiltActuatorControlMode,
         .minAngle_Degrees = -90,

@@ -93,7 +93,7 @@ float Motor::servoRead(void) {
 }
 
 float Motor::servoGetMaxSpeed(void) {
-    return m_servo.getMaxSpeed()
+    return m_servo.getMaxSpeed();
 }
 
 void Motor::servoSetPeriod(int period) {

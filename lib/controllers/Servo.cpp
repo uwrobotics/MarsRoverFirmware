@@ -2,13 +2,16 @@
 #include "Servo.h"
 #include "cstdlib"
 
+Servo::Servo():
+pin(NC), pwm(NC) {
+}
+
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_): 
     pin(pin_),
     rotate_type(rotate_type_),
     max_pulse_ms(max_pulse_ms_),
     min_pulse_ms(min_pulse_ms_),
-    pwm(pin_) 
-{
+    pwm(pin_) {
     if(rotate_type == LIM_SERVO){
         range = value;
         pos = 0;
