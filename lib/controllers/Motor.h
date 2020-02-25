@@ -5,6 +5,7 @@
 #endif
  
 #include "mbed.h"
+#include "Servo.h"
  
 // Interface to control a standard DC motor with an H-bridge using a PwmOut and 2 DigitalOuts
 
@@ -15,7 +16,7 @@ public:
         motor,
         lim_servo,
         cont_servo
-    } motorType
+    } motorType;
 
     typedef struct motorConfig{
         PinName pwmPin;
@@ -23,7 +24,6 @@ public:
         bool inverted;
         int freqInHz;
         float limit;
-
     } t_motorConfig;
  
     /** Create a motor control interface    
