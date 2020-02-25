@@ -11,8 +11,13 @@
 class Motor {
 
 public:
+    enum t_motorType {
+        motor,
+        lim_servo,
+        cont_servo
+    } motorType
 
-    typedef struct {
+    typedef struct motorConfig{
         PinName pwmPin;
         PinName dirPin;
         bool inverted;
@@ -29,9 +34,9 @@ public:
      * @param inverted  If true, then forward speed will set dir to 0 instead of 1, otherwise inverse
      * @param limit     Maximum speed magnitude
      */
-    Motor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0);
+    Motor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0, t_motorType motorType = motor);
 
-    Motor(t_motorConfig motorConfig);
+    Motor(t_motorConfig motorConfig, t_motorType motorType = motor);
 
     /** Set the speed of the motor
      * 
@@ -45,10 +50,28 @@ public:
      * @return Current speed of motor
      */
     float getPower();
- 
+
+    /** Read the motor type
+     * 
+     * @return Motor type
+     */
+    t_motorType getType();
+    
+    // Servo type exclusive functions
+    bool servoSetRange(float range_);           //Returns FALSE if t_motorType != lim_servo
+    bool servoSetMaxSpeed(float max_speed_);   //Returns FALSE if t_motorType != cont_servo
+    bool servoSetPosition(float angle);         //Sets POS to angle if t_motorType == lim_servo
+    bool servoSetSpeed(float speed_);           //Sets rotation SPEED to speed_ if t_motorType == cont_servo
+    float servoRead(void);                       //Returns SPEED if CONTINUOUS and POSITION if LIMITED
+    float servoGetMaxSpeed(void);               //Returns MAX SPEED
+    void servoSetPeriod(int period);            //Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
+
 protected:
     PwmOut m_pwm;
     DigitalOut m_dir;
     bool m_inverted;
     float m_limit;
+    
+    // member servo, only used when t_motorType = servo
+    Servo m_servo;
 };

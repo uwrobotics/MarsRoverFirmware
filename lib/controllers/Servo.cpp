@@ -79,19 +79,19 @@ pwm(pin_)
     pwm.period_us(PERIOD*1000);
 }
 
-bool Servo::set_range(float range_){
+bool Servo::setRange(float range_){
     if(rotate_type == LIM_SERVO)
         range = range_;
     return rotate_type == LIM_SERVO;
 }
 
-bool Servo::set_max_speed(float max_speed_){
+bool Servo::setMaxSpeed(float max_speed_){
     if(rotate_type == CONT_SERVO)
         max_speed = max_speed_;
     return rotate_type == CONT_SERVO;
 }
 
-bool Servo::set_position(float angle){
+bool Servo::setPosition(float angle){
     if(rotate_type == LIM_SERVO){ 
         pos = angle;
         pwm.pulsewidth_us(int(((max_pulse_ms - min_pulse_ms) * angle/180 + min_pulse_ms)*1000));
@@ -100,7 +100,7 @@ bool Servo::set_position(float angle){
         return false;
 }
 
-bool Servo::set_speed(float speed_){
+bool Servo::setSpeed(float speed_){
     if(rotate_type == CONT_SERVO){
         if(std::abs(speed_) > max_speed)
             speed_ = max_speed;
@@ -119,7 +119,18 @@ float Servo::read(void){
         return speed;
 }
 
-void Servo::set_period(int period)
+float Servo::getMaxSpeed(void){
+    return max_speed;
+}
+
+void Servo::setPeriod(int period)
 {
     pwm.period_us(period*1000);
+}
+
+Servo Servo::operator=(Servo servo_){
+    range = servo_.range;
+    max_speed = servo_.max_speed;
+    max_pulse_ms = servo_.max_pulse_ms;
+    min_pulse_ms = servo_.min_pulse_ms;
 }

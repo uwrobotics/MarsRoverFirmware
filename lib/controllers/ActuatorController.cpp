@@ -81,13 +81,12 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 }
 
 mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesPerSec) {
-	if (m_controlMode != velocity) {
+	if (m_controlMode != velocity) 
 		return MBED_ERROR_INVALID_OPERATION;
-	}
 
 	// Limit velocity setpoint to zero if arm is out of bounds
 	if ( (degreesPerSec < 0.0 && isPastMinAngle()) ||
-		 (degreesPerSec > 0.0 && isPastMaxAngle()) ) {
+		(degreesPerSec > 0.0 && isPastMaxAngle()) ) {
 
 		degreesPerSec = 0.0;
 	}
@@ -103,7 +102,9 @@ mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesP
 	m_velocityPIDController.setSetPoint(degreesPerSec);
 
 	return MBED_SUCCESS;
+
 }
+
 
 mbed_error_status_t ActuatorController::setAngle_Degrees(float degrees) {
 	if (m_controlMode != position) {
@@ -137,29 +138,15 @@ mbed_error_status_t ActuatorController::setMotionData(float motionData) {
 	}
 }
 
-<<<<<<< HEAD
-void ActuatorController::update() {
-	float updateInterval = updateTimer.read();
-	updateTimer.reset();
-=======
 mbed_error_status_t ActuatorController::update() {
 	float updateInterval = m_updateTimer.read();
 	m_updateTimer.reset();
->>>>>>> master
 
 	switch (m_controlMode) {
 		
 		case motorPower:
-<<<<<<< HEAD
-			if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
-				 (r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
-
-				r_motor.setPower(0.0);
-			}
-=======
 
 			// Currently do nothing: limiting is handled as a general case
->>>>>>> master
 
 			break;
 
@@ -174,28 +161,46 @@ mbed_error_status_t ActuatorController::update() {
 
 			m_velocityPIDController.setInterval(updateInterval);
 			m_velocityPIDController.setProcessValue(getVelocity_DegreesPerSec());
-			r_motor.setPower(m_velocityPIDController.compute());
 
+			switch (r_motor.getType()) {
+				case Motor::motor:
+					r_motor.setPower(m_velocityPIDController.compute());
+					break;
+				case Motor::cont_servo:
+					r_motor.servoSetSpeed(m_velocityPIDController.compute()*r_motor.servoGetMaxSpeed());
+					break;
+				default:
+					return MBED_ERROR_INVALID_OPERATION;
+			}
 			break;
 
 		case position:
-			m_positionPIDController.setInterval(updateInterval);
-			m_positionPIDController.setProcessValue(getAngle_Degrees());
-			r_motor.setPower(m_positionPIDController.compute());
-
+			switch(r_motor.getType()) {
+				case Motor::motor:
+					m_positionPIDController.setInterval(updateInterval);
+					m_positionPIDController.setProcessValue(getAngle_Degrees());
+					r_motor.setPower(m_positionPIDController.compute());
+					break;		
+				case Motor::lim_servo:
+					r_motor.servoSetPosition(m_positionPIDController.getSetPoint());
+					break;
+				default:
+					return MBED_ERROR_INVALID_OPERATION;	
+			}
 			break;
 		
 		default: 
 			return MBED_ERROR_INVALID_OPERATION;
 	}
 
+	// Only triggers if motorType is motor
 	// Always constrain the motor power to 0 or the reverse direction (away from limit switch) 
 	// if the corresponding limit switch is triggered
-	if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
-	     (r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
-
-		r_motor.setPower(0.0);
-	}
+	if(r_motor.motorType == Motor::motor)
+		if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
+			(r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
+			r_motor.setPower(0.0);
+		}
 
 	// TODO: Add watchdogging (feed here)
 
@@ -220,19 +225,11 @@ void ActuatorController::initializePIDControllers() {
 }
 
 bool ActuatorController::isLimSwitchMinTriggered() {
-<<<<<<< HEAD
-	return m_limSwitchMin_Connected && r_limSwitchMin.read() == 1;
-}
-
-bool ActuatorController::isLimSwitchMaxTriggered() {
-	return m_limSwitchMax_Connected && r_limSwitchMax.read() == 1;
-=======
 	return m_limSwitchMin_Connected && r_limSwitchMin.read() == 0; // Open drain
 }
 
 bool ActuatorController::isLimSwitchMaxTriggered() {
 	return m_limSwitchMax_Connected && r_limSwitchMax.read() == 0; // Open drain
->>>>>>> master
 }
 
 bool ActuatorController::isPastMinAngle() {
