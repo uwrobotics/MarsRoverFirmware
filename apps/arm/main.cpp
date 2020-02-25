@@ -84,11 +84,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
     float motionData;
     msg.getPayload(motionData);
 
-<<<<<<< HEAD
-        switch(msg.id) {
-=======
     switch(msg.id) {
->>>>>>> master
         case CANID::SET_TURNTABLE_MOTIONDATA:
             return turnTableActuator.setMotionData(motionData);
         case CANID::SET_SHOULDER_MOTIONDATA:
@@ -139,80 +135,6 @@ static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
 static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
     return MBED_SUCCESS; // TODO
 }
-<<<<<<< HEAD
-
-// Configure PID parameters
-static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-    return MBED_SUCCESS; // TODO
-}
-
-// Handler function mappings
-static CANMsg::CANMsgHandlerMap canHandlerMap = {
-    {CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
-    {CANID::SET_SHOULDER_CONTROL_MODE,  &setControlMode},
-    {CANID::SET_ELBOW_CONTROL_MODE,     &setControlMode},
-    {CANID::SET_WRIST_CONTROL_MODE,     &setControlMode},
-    {CANID::SET_CLAW_CONTROL_MODE,      &setControlMode},
-
-    {CANID::SET_TURNTABLE_MOTIONDATA,   &setMotionData},
-    {CANID::SET_SHOULDER_MOTIONDATA,    &setMotionData},
-    {CANID::SET_ELBOW_MOTIONDATA,       &setMotionData},
-    {CANID::SET_WRIST_PITCH_MOTIONDATA, &setMotionData},
-    {CANID::SET_WRIST_ROLL_MOTIONDATA,  &setMotionData},
-    {CANID::SET_CLAW_MOTIONDATA,        &setMotionData},
-    {CANID::SET_TOOL_TIP_DEPLOYMENT,    &setToolTipDeployment},
-
-    {CANID::RUN_WRIST_CALIBRATION,      &runWristCalibration},
-    {CANID::RUN_CLAW_CALIBRATION,       &runClawCalibration},
-
-    {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
-
-    {CANID::SET_PID_DEADZONE,           &setPIDParameter},
-    {CANID::SET_JOINT_PID_P,            &setPIDParameter},
-    {CANID::SET_JOINT_PID_I,            &setPIDParameter},
-    {CANID::SET_JOINT_PID_D,            &setPIDParameter},
-    {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
-};
-
-/*** ARM CANBus ***/
-/******************/
-
-// Interface and recieve buffer
-CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
-// CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
-
-// Incoming message processor
-void rxCANProcessor() {
-    CANMsg rxMsg;
-
-    while (true) {
-        if (can1.read(rxMsg)) {
-            if (canHandlerMap.count(rxMsg.id) > 0) {
-                canHandlerMap[rxMsg.id](rxMsg);
-            }
-            else {
-                // TODO: Warn about unsupported CAN command (without flooding)
-            }
-        }
-
-        // rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
-
-        // if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.id) != canHandlerMap.end())) {
-        //     if (canHandlerMap.count(rxMsg.id) > 0) {
-        //         canHandlerMap[rxMsg.id](rxMsg);
-        //     }
-        //     else {
-        //         // TODO: Warn about unsupported CAN command (without flooding serial)
-        //     }
-        // }
-        
-        ThisThread::sleep_for(8);
-    }
-}
-
-// Outgoing message processor
-void txCANProcessor() {
-=======
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
@@ -287,63 +209,38 @@ void rxCANProcessor() {
 void txCANProcessor() {
     const int txPeriod_millisec = 500;
 
->>>>>>> master
     CANMsg txMsg;
 
     while (true) {
         txMsg.id = TURNTABLE_POSITION;
         txMsg.setPayload(turnTableActuator.getAngle_Degrees());
         can1.write(txMsg);
-<<<<<<< HEAD
-        ThisThread::sleep_for(200);
-=======
         ThisThread::sleep_for(txPeriod_millisec);
->>>>>>> master
 
         txMsg.id = SHOULDER_POSITION;
         txMsg.setPayload(shoulderActuator.getAngle_Degrees());
         can1.write(txMsg);
-<<<<<<< HEAD
-        ThisThread::sleep_for(200);
-=======
         ThisThread::sleep_for(txPeriod_millisec);
->>>>>>> master
 
         txMsg.id = ELBOW_POSITION;
         txMsg.setPayload(elbowActuator.getAngle_Degrees());
         can1.write(txMsg);
-<<<<<<< HEAD
-        ThisThread::sleep_for(200);
-=======
         ThisThread::sleep_for(txPeriod_millisec);
->>>>>>> master
 
         txMsg.id = WRIST_PITCH_POSITION;
         txMsg.setPayload(wristController.getPitchAngle_Degrees());
         can1.write(txMsg);
-<<<<<<< HEAD
-        ThisThread::sleep_for(200);
-=======
         ThisThread::sleep_for(txPeriod_millisec);
->>>>>>> master
 
         txMsg.id = WRIST_ROLL_POSITION;
         txMsg.setPayload(wristController.getRollAngle_Degrees());
         can1.write(txMsg);
-<<<<<<< HEAD
-        ThisThread::sleep_for(200);
-=======
         ThisThread::sleep_for(txPeriod_millisec);
->>>>>>> master
 
         txMsg.id = CLAW_POSITION;
         txMsg.setPayload(clawController.getGapDistance_Cm());
         can1.write(txMsg);
-<<<<<<< HEAD
-        ThisThread::sleep_for(200);
-=======
         ThisThread::sleep_for(txPeriod_millisec);
->>>>>>> master
     }
 }
 
@@ -354,12 +251,9 @@ DigitalOut led1(LED1);
 
 int main()
 {
-<<<<<<< HEAD
-=======
     printf("\r\n\r\n");
     printf("ARM APPLICATION STARTED\r\n");
     printf("=======================\r\n");
->>>>>>> master
 
     rxCANProcessorThread.start(rxCANProcessor);
     txCANProcessorThread.start(txCANProcessor);
