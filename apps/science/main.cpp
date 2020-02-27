@@ -5,6 +5,7 @@
 #include "ScienceConfig.h"
 #include "EncoderRelative_Quadrature.h"
 #include "EncoderAbsolute_PWM.h"
+#include "Servo.h"
 #include "CANMsg.h"
 #include "CANBuffer.h"
 
@@ -15,6 +16,10 @@ Motor diggerLiftMotor(MTR_PWM_2, MTR_DIR_2, false);
 // Encoders
 EncoderRelative_Quadrature diggerLiftEncoder(ScienceConfig::diggerLiftEncoderConfig);
 EncoderAbsolute_PWM indexerEncoder(ScienceConfig::indexerEncoderConfig);
+
+// Servos
+Servo coverServo(SRVO_PWM_1, coverServoType, coverServoRange, coverServoMaxPulse, coverServoMinPulse);
+Servo diggerServo(SRVO_PWM_2, diggerServoType, diggerServoRange, diggerServoMaxPulse, diggerServoMinPulse);
 
 // Limit Switches
 DigitalIn indexerLimLeft(LIM_SW_1);
@@ -42,6 +47,10 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
             return indexerActuator.setMotionData(motionData);
         case CANID::SET_LIFT_POS:
             return diggerLiftActuator.setMotionData(motionData);
+        case CANID::SET_COVER_POS:
+            return coverServo.setPosition(motionData);
+        case CANID::SET_DIGGER_POS:
+            return diggerServo.setPosition(motionData);
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
@@ -56,7 +65,9 @@ Thread txCANProcessorThread;
 
 static CANMsg::CANMsgHandlerMap canHandleMap = {
     {CANID::SET_INDEXER_POS, setMotionData},
-    {CANID::SET_LIFT_POS,    setMotionData}
+    {CANID::SET_LIFT_POS,    setMotionData},
+    {CANID::SET_COVER_POS,   setMotionData},
+    {CANID::SET_DIGGER_POS,  setMotionData}
 };
 
 // Process incoming CAN messages
@@ -65,7 +76,11 @@ void rxCANProcessor() {
 
     while(true) {
         if(can1.read(rxMsg)) {
-
+            if(canHandleMap.count(rxMsg.id) > 0) {
+                canHandleMap[rxMsg.id](rxMsg);
+            } else {
+                // ruh roh
+            }
         }
     }
 }
@@ -77,12 +92,22 @@ void txCANProcessor(){
 
     while(true) {
         txMsg.id = SEND_INDEXER_POS;
-        txMsg.setPayload(indexerActuator.getAngle_Degrees);
+        txMsg.setPayload(indexerActuator.getAngle_Degrees());
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_LIFT_POS;
-        txMsg.setPayload(diggerLiftActuator.getAngle_Degrees);
+        txMsg.setPayload(diggerLiftActuator.getAngle_Degrees());
+        can1.write(txMsg);
+        ThisThread::sleep_for(txPeriod_millisec);
+
+        txMsg.id = SEND_COVER_POS;
+        txMsg.setPayload(coverServo.read());
+        can1.write(txMsg);
+        ThisThread::sleep_for(txPeriod_millisec);
+        
+        txMsg.id = SEND_DIGGER_POS;
+        txMsg.setPayload(diggerServo.read());
         can1.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
     }

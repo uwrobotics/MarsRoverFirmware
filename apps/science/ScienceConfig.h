@@ -4,6 +4,7 @@
 #include "../targets/science/PinNames.h"
 #include "Encoder.h"
 #include "ActuatorController.h"
+#include "Servo.h"
 
 namespace ScienceConfig {
 
@@ -19,6 +20,17 @@ namespace ScienceConfig {
     static Encoder::t_encoderConfig indexerEncoderConfig = {
         
     };
+
+    /* Servo Config */
+    static Servo::SERVO_TYPE coverServoType = Servo::LIM_SERVO;
+    static float coverServoRange = 120.0;
+    static float coverServoMaxPulse = 2.2;
+    static float coverServoMinPulse = 0.8;
+
+    static Servo::SERVO_TYPE diggerServoType = Servo::LIM_SERVO;
+    static float diggerServoRange = 120.0;
+    static float diggerServoMaxPulse = 2.2;
+    static float diggerServoMinPulse = 0.8;
 
     /* Rotary Actuator Config */
 

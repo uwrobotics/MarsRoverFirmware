@@ -48,11 +48,11 @@ typedef enum CANID {
     SET_INDEXER_POS             = 0x760,
     SET_LIFT_POS,
     SET_COVER_POS,
-    SET_SCOOPER_POS,
+    SET_DIGGER_POS,
  
     SEND_INDEXER_POS            = 0x770,
     SEND_LIFT_POS,
     SEND_COVER_POS,
-    SEND_SCOOPER_POS
+    SEND_DIGGER_POS
 
 } CANID;

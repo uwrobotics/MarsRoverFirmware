@@ -176,6 +176,8 @@ typedef enum {
     MTR_DIR_1 = PA_5,
     MTR_PWM_2 = PA_7,
     MTR_DIR_2 = PC_4,
+    SRVO_PWM_1 = PB_2,
+    SRVO_PWM_2 = PB_10,
 
     /**** Limit Switch Pins ****/
     LIM_SW_1  = PB_4,
