@@ -19,6 +19,7 @@ BlockingNeopixel      neopixel(16);
 // 0 is solid red
 // 1 is solid blue
 // 2 is flashing green
+// 3 is off
 
 void initCAN() {
     // CANStandard is defined in CAN.h
@@ -42,6 +43,10 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg){
     case 2:
         pc.printf("Setting neo pixels to flashing green\r\n");
         neopixel.flashGreen(10,2);
+        break;
+    case 3:
+        pc.printf("Setting neo pixels to flashing green\r\n");
+        neopixel.shutdown();
         break;
     default:
         pc.printf("Neo pixels tried to be set to unknow mode\r\n");
@@ -68,6 +73,7 @@ void processCANMsg(CANMsg *p_newMsg) {
 
 // main() runs in its own thread in the OS
 int main(){
+    pc.printf("Beginning neopixel fw app.\r\n");
     initCAN();
     while(1){
         if (can.read(rxMsg)){
@@ -75,4 +81,24 @@ int main(){
             rxMsg.clear();
         }
     }
+    /*printf("This is neopixel debug with only the library\r\n");
+    BlockingNeopixel obj(16);
+    while(1){
+        printf("turning neopixel blue\r\n");
+        obj.displayBlue();
+        wait(1);
+        printf("flashing neopixel red\r\n");
+        obj.blinkPixels(5,'g');
+        wait(1);
+        obj.showColour('w');
+        wait(1);
+        //printf("flashing neopixel green\r\n");
+        //obj.flashGreen(5,1);
+        //wait(1);
+        obj.shutdown();
+        wait(1);
+
+    }*/
+    return 1;
+
 }
