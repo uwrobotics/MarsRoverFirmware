@@ -18,8 +18,8 @@ EncoderRelative_Quadrature diggerLiftEncoder(ScienceConfig::diggerLiftEncoderCon
 EncoderAbsolute_PWM indexerEncoder(ScienceConfig::indexerEncoderConfig);
 
 // Servos
-Servo coverServo(SRVO_PWM_1, coverServoType, coverServoRange, coverServoMaxPulse, coverServoMinPulse);
-Servo diggerServo(SRVO_PWM_2, diggerServoType, diggerServoRange, diggerServoMaxPulse, diggerServoMinPulse);
+Servo coverServo(SRVO_PWM_1, ScienceConfig::coverServoType, ScienceConfig::coverServoRange, ScienceConfig::coverServoMaxPulse, ScienceConfig::coverServoMinPulse);
+Servo diggerServo(SRVO_PWM_2, ScienceConfig::diggerServoType, ScienceConfig::diggerServoRange, ScienceConfig::diggerServoMaxPulse, ScienceConfig::diggerServoMinPulse);
 
 // Limit Switches
 DigitalIn indexerLimLeft(LIM_SW_1);
@@ -48,9 +48,9 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
         case CANID::SET_LIFT_POS:
             return diggerLiftActuator.setMotionData(motionData);
         case CANID::SET_COVER_POS:
-            return coverServo.setPosition(motionData);
+            return coverServo.set_position(motionData);
         case CANID::SET_DIGGER_POS:
-            return diggerServo.setPosition(motionData);
+            return diggerServo.set_position(motionData);
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }

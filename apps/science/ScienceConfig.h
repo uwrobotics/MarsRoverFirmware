@@ -35,7 +35,7 @@ namespace ScienceConfig {
     /* Rotary Actuator Config */
 
     static ActuatorController::t_actuatorConfig diggerLiftActuatorConfig = {
-        .defaultControlMode = position,
+        .defaultControlMode = ActuatorController::t_actuatorControlMode::position,
         .positionPID = {
             .P = 1.0, 
             .I = 0.0,
