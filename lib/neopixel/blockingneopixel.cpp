@@ -187,3 +187,40 @@ void BlockingNeopixel::shutdown()
 {
     showColour('n');
 }
+
+
+void BlockingNeopixel::overwriteFirstBit(char colour)
+{
+    switch (colour)
+    {
+    case 'g':
+        writeByte(on_buffer);
+        writeByte(off_buffer);
+        writeByte( off_buffer);
+        break;
+    case 'b':
+        writeByte(off_buffer);
+        writeByte(off_buffer);
+        writeByte(on_buffer);
+        break;
+    case 'r':
+        writeByte(off_buffer);    
+        writeByte(on_buffer);
+        writeByte(off_buffer);
+        break;
+    case 'w':
+        writeByte(on_buffer);
+        writeByte(on_buffer);
+        writeByte(on_buffer);
+        break;
+    case 'n':
+        writeByte(off_buffer);    
+        writeByte(off_buffer);
+        writeByte(off_buffer);
+        break;
+
+    // can possibly add more colours but will need custom byte data so send        
+    default:
+        break;
+    }
+}
