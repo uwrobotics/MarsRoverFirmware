@@ -6,7 +6,7 @@
 #define H_0_NS 150
 #define L_0_NS 300
 
-DigitalOut out(PC_8);
+DigitalOut out(PA_2);
 
 BlockingNeopixel::BlockingNeopixel(int numPixels)
 {
