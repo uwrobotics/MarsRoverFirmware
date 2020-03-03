@@ -1,10 +1,10 @@
 #include "mbed.h"
 #include "blockingneopixel.h"
 
-#define H_1_NS 400
-#define L_1_NS 100
-#define H_0_NS 150
-#define L_0_NS 300
+#define H_1_NS 700
+#define L_1_NS 600
+#define H_0_NS 350
+#define L_0_NS 800
 
 DigitalOut out(PA_2);
 
