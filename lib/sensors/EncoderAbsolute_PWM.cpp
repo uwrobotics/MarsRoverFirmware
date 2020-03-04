@@ -21,4 +21,5 @@ float EncoderAbsolute_PWM::getVelocity_DegreesPerSec() {
 
 mbed_error_status_t EncoderAbsolute_PWM::reset() {
 	m_zeroOffset_Degrees = m_pwmIn.avgDutyCycle() * m_degreesPerUnit;
+    return MBED_SUCCESS;
 }

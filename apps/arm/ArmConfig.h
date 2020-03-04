@@ -3,9 +3,9 @@
 #include "Encoder.h"
 #include "ActuatorController.h"
 
-#define FLAG_DISABLE_LIMIT_SWITCH_CHECKS (1U << 0)
-#define FLAG_DISABLE_ANGLE_BOUNDS_CHECKS (1U << 1)
-#define FLAG_DISABLE_FEEDBACK            (1U << 2)
+constexpr uint8_t FLAG_DISABLE_LIMIT_SWITCH_CHECKS = (1U << 0);
+constexpr uint8_t FLAG_DISABLE_ANGLE_BOUNDS_CHECKS = (1U << 1);
+constexpr uint8_t FLAG_DISABLE_FEEDBACK            = (1U << 2);
 
 namespace ArmConfig {
 

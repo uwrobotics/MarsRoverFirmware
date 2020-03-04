@@ -191,6 +191,7 @@ mbed_error_status_t ActuatorController::update() {
 
 mbed_error_status_t ActuatorController::resetEncoder() {
 	r_encoder.reset();
+	return MBED_SUCCESS;
 }
 
 void ActuatorController::initializePIDControllers() {

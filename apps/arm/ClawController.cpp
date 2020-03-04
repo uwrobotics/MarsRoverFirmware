@@ -10,46 +10,49 @@ ClawController::ClawController(t_actuatorConfig actuatorConfig,
 
 mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {
 
+    mbed_error_status_t err_status = MBED_ERROR_INVALID_OPERATION;
+
     if (m_mutex.trylock_for(200)) {
-        return ActuatorController::setMotorPower_Percentage(percentage);
+        err_status = ActuatorController::setMotorPower_Percentage(percentage);
     }
     else {
         return MBED_ERROR_MUTEX_LOCK_FAILED;
     }
 
     m_mutex.unlock();
-
-    return MBED_SUCCESS;
+    return err_status;
 }
 
 mbed_error_status_t ClawController::setGapVelocity_CmPerSec(float cmPerSec) {
     
+    float shaftVelocity_DegreesPerSec = convertGapVelocityCmToShaftVelocityDegrees(cmPerSec);
+    mbed_error_status_t err_status = MBED_ERROR_INVALID_OPERATION;
+
     if (m_mutex.trylock_for(200)) {
-        float shaftVelocity_DegreesPerSec = convertGapVelocityCmToShaftVelocityDegrees(cmPerSec);
-        return setVelocity_DegreesPerSec(shaftVelocity_DegreesPerSec);
+        err_status = setVelocity_DegreesPerSec(shaftVelocity_DegreesPerSec);
     }
     else {
         return MBED_ERROR_MUTEX_LOCK_FAILED;
     }
 
     m_mutex.unlock();
-
-    return MBED_SUCCESS;
+    return err_status;
 }
 
 mbed_error_status_t ClawController::setGapDistance_Cm(float cm) {
 
-    if (m_mutex.trylock_for(200)) {
-        float shaftPosition_Degrees = convertGapCmToShaftPositionDegrees(cm);
-        return setAngle_Degrees(shaftPosition_Degrees);
+    float shaftPosition_Degrees = convertGapCmToShaftPositionDegrees(cm);
+    mbed_error_status_t err_status = MBED_ERROR_INVALID_OPERATION;
+
+    if (m_mutex.trylock_for(200)) { 
+        err_status = setAngle_Degrees(shaftPosition_Degrees);
     }
     else {
         return MBED_ERROR_MUTEX_LOCK_FAILED;
     }
 
     m_mutex.unlock();
-
-    return MBED_SUCCESS;
+    return err_status;
 }
 
 mbed_error_status_t ClawController::setMotionData(float motionData) {
@@ -109,6 +112,8 @@ mbed_error_status_t ClawController::runPositionCalibration() {
         // Settle
         ThisThread::sleep_for(750);
         resetEncoder();
+
+        setControlMode(prevControlMode);
     }
     else {
         return MBED_ERROR_MUTEX_LOCK_FAILED;

@@ -58,10 +58,11 @@ private:
 	bool m_limSwitchDown_Connected;
 
     float m_leftToRightMotorPowerBias;
-    float m_calibrationTimeout_Seconds;
 
     float m_maxPitchAngle_Degrees;
     float m_minPitchAngle_Degrees;
+
+    float m_calibrationTimeout_Seconds;
 
     float m_rollPower_Percentage, m_pitchPower_Percentage;
     float m_rollVelocity_DegreesPerSec, m_pitchVelocity_DegreesPerSec;
