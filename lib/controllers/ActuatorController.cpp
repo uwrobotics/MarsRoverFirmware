@@ -41,12 +41,12 @@ mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode con
 
 	m_controlMode = controlMode;
 
-	 switch (controlMode) {
+	switch (controlMode) {
 
         case motorPower:
             m_controlMode = motorPower;
             setMotorPower_Percentage(0.0f);
-            return MBED_SUCCESS;
+			return update();
 
         case velocity:
             m_velocityPIDController.reset();
@@ -185,6 +185,12 @@ mbed_error_status_t ActuatorController::update() {
 
 	// TODO: Add watchdogging (feed here)
 
+	return MBED_SUCCESS;
+}
+
+
+mbed_error_status_t ActuatorController::resetEncoder() {
+	r_encoder.reset();
 	return MBED_SUCCESS;
 }
 

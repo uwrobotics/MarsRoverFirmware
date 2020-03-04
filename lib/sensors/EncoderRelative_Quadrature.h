@@ -21,6 +21,8 @@ public:
 private:
 
     QEI m_QEI;
+
     float m_degreesPerUnit;
+    float m_zeroOffset_Degrees;
 
 };

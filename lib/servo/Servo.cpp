@@ -103,7 +103,7 @@ bool Servo::set_position(float angle){
 bool Servo::set_speed(float speed_){
     if(rotate_type == CONT_SERVO){
         if(std::abs(speed_) > max_speed)
-            speed_ = max_speed;
+            speed_ = (speed_/speed_) * max_speed;
 
         speed = speed_;
         pwm.pulsewidth_us(int(((max_pulse_ms-min_pulse_ms)/2 * speed/max_speed + min_pulse_ms + (max_pulse_ms-min_pulse_ms)/2)*1000));
