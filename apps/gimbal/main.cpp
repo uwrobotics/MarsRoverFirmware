@@ -67,6 +67,12 @@ Thread rxCANProcessorThread;
 
 int main()
 {
+    PwmOut limservo (SRVO_PWM_CR);
+    limservo.period_ms(20);
+    limservo.pulsewidth_ms(2);
+
+    tiltServo.setPosition(180);
+
     printf("\r\n\r\n");
     printf("GIMBAL APPLICATION STARTED \r\n");
     printf("==========================");
