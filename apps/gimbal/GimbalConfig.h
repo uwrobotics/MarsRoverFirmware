@@ -11,7 +11,7 @@ namespace GimbConfig {
 
     static Encoder::t_encoderConfig panEncoderConfig = {
         .pin_PWM = ENC_PWM_GIMB,
-        .degreesPerUnit = 360,
+        .degreesPerUnit = 360.0,
         .inverted = false
     };
 
@@ -35,6 +35,7 @@ namespace GimbConfig {
 
     /*** ACTUATOR CONFIG ***/
     static ActuatorController::t_actuatorControlMode panActuatorControlMode = ActuatorController::velocity;
+
     static ActuatorController::t_actuatorConfig panActuatorConfig = {
         panActuatorControlMode,
         .minAngle_Degrees = -360.0,

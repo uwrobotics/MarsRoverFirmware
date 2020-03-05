@@ -1,8 +1,10 @@
 #include "../targets/gimbal/pinNames.h"
 
 #include "mbed.h"
+#include "mbed_error.h"
 #include "mbed_config.h"
 #include "can_config.h"
+#include "rtos.h"
 
 #include "GimbalConfig.h"
 #include "Encoder.h"
@@ -32,8 +34,49 @@ DigitalIn tiltLimUp(LIM_GIMB);
 ActuatorController panActuator(GimbConfig::panActuatorConfig, panServoMotor, panEncoder);
 ActuatorController tiltActuator(GimbConfig::tiltActuatorConfig, tiltServoMotor, panEncoder); // panEncoder as placeholder, will not be called.
 
+CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+
+void rxCANProcessor() {
+    CANMsg rxMsg;
+
+    while(true) {
+        if (can1.read(rxMsg)) {
+            float pos;
+            rxMsg.getPayload(pos);
+
+            switch (rxMsg.id)
+            {
+            case SET_GIMBAL_PAN :
+                panActuator.setMotionData(pos);
+                break;
+
+            case SET_GIMBAL_PITCH :
+                tiltActuator.setMotionData(pos);
+                break;
+
+            default :
+                break;
+            }
+        }
+
+        ThisThread::sleep_for(8);
+    }
+}
+
+Thread rxCANProcessorThread;
+
 int main()
 {
+    printf("\r\n\r\n");
+    printf("GIMBAL APPLICATION STARTED \r\n");
+    printf("==========================");
+
+    rxCANProcessorThread.start(rxCANProcessor);
+
     while (true) {
-    }
+        panActuator.update();
+        tiltActuator.update();
+        
+        ThisThread::sleep_for(2);
+   }
 }

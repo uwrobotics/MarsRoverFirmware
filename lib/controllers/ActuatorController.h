@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mbed.h"
+#include "Mbed.h"
 #include "Motor.h"
 #include "Encoder.h"
 #include "PID.h"
@@ -24,7 +24,7 @@ public:
 
 		float minMotorPower_Percentage = -1.0, maxMotorPower_Percentage = +1.0;
 		float minVelocity_DegreesPerSec = -10.0, maxVelocity_DegreesPerSec = +10.0;
-		float minAngle_Degrees = -90, maxAngle_Degrees = +90;
+		float minAngle_Degrees, maxAngle_Degrees;
 
 		PID::t_pidConfig velocityPID, positionPID;
 
