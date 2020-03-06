@@ -3,8 +3,10 @@
 class MoistureSensor {
     public:
 
-        MoistureSensor(PinName sda, PinName scl, bool* initialized);
+        MoistureSensor(PinName sda, PinName scl);
         ~MoistureSensor() = default;
+
+        bool Is_Initialized();
 
         uint16_t Read_Moisture();
         float Read_Temperature();

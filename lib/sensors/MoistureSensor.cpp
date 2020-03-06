@@ -12,26 +12,31 @@ constexpr int Sensor_HW_ID_Code = 0x55;                                     //Ex
 constexpr int Sensor_Moisture_Function = 0x10;                              //Function address registers for moisture and temperature modules        
 constexpr int Sensor_Temp_Function = 0x04;  
 
-MoistureSensor::MoistureSensor(PinName sda, PinName scl, bool* initialized) : i2c_(sda, scl){  
+MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl){}
+
+bool MoistureSensor::Is_Initialized(){
     char cmd[2];
     cmd[0] = Sensor_Status_Base;
     cmd[1] = Sensor_Status_HW_ID;
 
-    char* check = new char{0};
+    char check[1];
 
     i2c_.write(Sensor_I2C_Address, cmd, 2);                                 //initialize registers for checking device ID
 
     i2c_.read(Sensor_I2C_Address, check, 1);                                //read device ID
 
-    if(*check != Sensor_HW_ID_Code){                                        //compare received HW ID Code to correct one
-        *initialized = false;
+    if(check[0] == Sensor_HW_ID_Code){                                      //compare received HW ID Code to correct one
+        return true;
     }
-    else{
-        *initialized = true;
-    }
+
+    return false;
 }
 
 uint16_t MoistureSensor::Read_Moisture(){
+    if(!(this->Is_Initialized())){                                          //checks if device is initialized, returns 65534 if there is an issue
+        return 65534;
+    }
+
     char cmd[2];
     cmd[0] = Sensor_Moisture_Base;
     cmd[1] = Sensor_Moisture_Function;
@@ -56,6 +61,10 @@ uint16_t MoistureSensor::Read_Moisture(){
 }
 
 float MoistureSensor::Read_Temperature(){
+    if(!(this->Is_Initialized())){                                          //checks if device is initialized, returns -273.0 if there is an issue
+        return -273.0;
+    }
+    
     char cmd[2];
     cmd[0] = Sensor_Status_Base;
     cmd[1] = Sensor_Temp_Function;
