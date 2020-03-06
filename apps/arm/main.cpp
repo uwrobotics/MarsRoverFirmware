@@ -218,41 +218,32 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
 
 // Interface and recieve buffer
 CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
-// CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
+CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
 
 // Incoming message processor
 void rxCANProcessor() {
     CANMsg rxMsg;
 
     while (true) {
-        if (can1.read(rxMsg)) {
+
+        rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
+
+        if (rxCANBuffer.pop(rxMsg)) {
             if (canHandlerMap.count(rxMsg.id) > 0) {
                 canHandlerMap[rxMsg.id](rxMsg);
             }
             else {
-                // TODO: Warn about unsupported CAN command (without flooding)
+                // TODO: Warn about unsupported CAN command (without flooding serial)
             }
         }
-
-        // rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
-
-        // if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.id) != canHandlerMap.end())) {
-        //     if (canHandlerMap.count(rxMsg.id) > 0) {
-        //         canHandlerMap[rxMsg.id](rxMsg);
-        //     }
-        //     else {
-        //         // TODO: Warn about unsupported CAN command (without flooding serial)
-        //     }
-        // }
         
-        ThisThread::sleep_for(2);
+        ThisThread::sleep_for(1);
     }
 }
 
 // Outgoing message processor
 void txCANProcessor() {
-    const int txInterdelay_millisec = 2;
-    const int txPeriod_millisec = 10;
+    const int txPeriod_millisec = 20;
 
     CANMsg txMsg;
 
@@ -267,42 +258,36 @@ void txCANProcessor() {
         motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_SHOULDER_MOTION;
         motionReport.position = shoulderActuator.getAngle_Degrees();
         motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_ELBOW_MOTION;
         motionReport.position = elbowActuator.getAngle_Degrees();
         motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_WRIST_PITCH_MOTION;
         motionReport.position = wristController.getPitchAngle_Degrees();
         motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_WRIST_PITCH_MOTION;
         motionReport.position = wristController.getRollAngle_Degrees();
         motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txInterdelay_millisec);
 
         txMsg.id = REPORT_CLAW_MOTION;
         motionReport.position = clawController.getGapDistance_Cm();
         motionReport.velocity = clawController.getGapVelocity_CmPerSec();
         txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txInterdelay_millisec);
 
         ThisThread::sleep_for(txPeriod_millisec);
     }

@@ -16,6 +16,9 @@ bool CANBuffer::pop(CANMsg &canMSG) {
 
     if (empty()) {
         m_eventFlags.clear(CANBUFFER_FLAG_DATA_READY | CANBUFFER_FLAG_FULL);
+    } 
+    else if (!full()) {
+        m_eventFlags.clear(CANBUFFER_FLAG_FULL);
     }
 
     core_util_critical_section_exit();
@@ -25,7 +28,7 @@ bool CANBuffer::pop(CANMsg &canMSG) {
 
 void CANBuffer::rxIrqHandler(void) {
 
-    if (r_CANInterface.read(m_CANMsg)) {
+    if (r_CANInterface.readNonLocking(m_CANMsg)) {
 
         core_util_critical_section_enter();
 
@@ -44,11 +47,11 @@ uint32_t CANBuffer::getFlags() {
     return m_eventFlags.get();
 }
 
-uint32_t CANBuffer::waitFlagsAny(uint32_t flags, uint32_t millisec, bool clear) {
-    return m_eventFlags.wait_all(flags, millisec, clear);
+uint32_t CANBuffer::waitFlagsAny(uint32_t flags, uint32_t millisec) {
+    return m_eventFlags.wait_all(flags, millisec, false);
 }
 
-uint32_t CANBuffer::waitFlagsAll(uint32_t flags, uint32_t millisec, bool clear) {
+uint32_t CANBuffer::waitFlagsAll(uint32_t flags, uint32_t millisec) {
 
-    return m_eventFlags.wait_any(flags, millisec, clear);
+    return m_eventFlags.wait_any(flags, millisec, false);
 }

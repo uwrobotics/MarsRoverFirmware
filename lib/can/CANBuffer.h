@@ -32,9 +32,9 @@ public:
 
     uint32_t getFlags();
 
-    uint32_t waitFlagsAny(uint32_t flags=0, uint32_t millisec=osWaitForever, bool clear=true);
+    uint32_t waitFlagsAny(uint32_t flags=0, uint32_t millisec=osWaitForever);
 
-    uint32_t waitFlagsAll(uint32_t flags=0, uint32_t millisec=osWaitForever, bool clear=true);
+    uint32_t waitFlagsAll(uint32_t flags=0, uint32_t millisec=osWaitForever);
 
 
 private:

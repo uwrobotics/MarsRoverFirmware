@@ -189,6 +189,18 @@ public:
      */
     int read(CANMessage &msg, int handle = 0);
 
+    /** Read a CANMessage from the bus wihout aquiring mutex (for ISR reads)
+     * --> UWRT added function, not MBED included! [AP]
+     *
+     *  @param msg A CANMessage to read to.
+     *  @param handle message filter handle (0 for any message)
+     *
+     *  @returns
+     *    0 if no message arrived,
+     *    1 if message arrived
+     */
+    int readNonLocking(CANMessage &msg, int handle = 0);
+
     /** Reset CAN interface.
      *
      * To use after error overflow.
