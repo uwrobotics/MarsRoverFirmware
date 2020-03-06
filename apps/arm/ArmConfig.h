@@ -3,6 +3,10 @@
 #include "Encoder.h"
 #include "ActuatorController.h"
 
+constexpr uint8_t FLAG_DISABLE_LIMIT_SWITCH_CHECKS = (1U << 0);
+constexpr uint8_t FLAG_DISABLE_ANGLE_BOUNDS_CHECKS = (1U << 1);
+constexpr uint8_t FLAG_DISABLE_FEEDBACK            = (1U << 2);
+
 namespace ArmConfig {
 
     /*** ENCODER CONFIG ***/
@@ -10,19 +14,19 @@ namespace ArmConfig {
     static Encoder::t_encoderConfig turnTableEncoderConfig = {
         .pin_PWM = ENC_PWM_TRNTBL,
         .degreesPerUnit = 360,
-        .inverted = false
+        .zeroOffset_Degrees = 0.0
     };
 
     static Encoder::t_encoderConfig shoulderEncoderConfig = {
         .pin_PWM = ENC_PWM_TRNTBL,
         .degreesPerUnit = 360,
-        .inverted = false
+        .zeroOffset_Degrees = 0.0
     };
 
     static Encoder::t_encoderConfig elbowEncoderConfig = {
         .pin_PWM = ENC_PWM_TRNTBL,
         .degreesPerUnit = 360,
-        .inverted = false
+        .zeroOffset_Degrees = 0.0
     };
 
     static Encoder::t_encoderConfig wristLeftEncoderConfig = {
@@ -30,7 +34,7 @@ namespace ArmConfig {
         .pin_ChannelB = ENC_QUAD_WRST_LHS_A,
 
         .degreesPerUnit = 1.0,
-        .inverted = false
+        .zeroOffset_Degrees = 0.0
     };
 
     static Encoder::t_encoderConfig wristRightEncoderConfig = {
@@ -38,7 +42,7 @@ namespace ArmConfig {
         .pin_ChannelB = ENC_QUAD_WRST_RHS_B,
 
         .degreesPerUnit = 1.0,
-        .inverted = false
+        .zeroOffset_Degrees = 0.0
     };
 
     static Encoder::t_encoderConfig clawEncoderConfig = {
@@ -46,7 +50,7 @@ namespace ArmConfig {
         .pin_ChannelB = ENC_QUAD_CLAW_B,
 
         .degreesPerUnit = 1.0,
-        .inverted = false
+        .zeroOffset_Degrees = 0.0
     };
 
     /*** ROTARY ACTUATOR CONFIG ***/

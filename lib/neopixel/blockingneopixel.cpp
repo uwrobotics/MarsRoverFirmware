@@ -6,7 +6,7 @@
 #define H_0_NS 150
 #define L_0_NS 300
 
-DigitalOut out(PC_8);
+DigitalOut out(PA_2);
 
 BlockingNeopixel::BlockingNeopixel(int numPixels)
 {
@@ -67,7 +67,7 @@ void BlockingNeopixel::showColour(char colour)
 {
     for (int i = 0; i < pixelNum; i++)
     {
-         switch (colour)
+        switch (colour)
         {
         case 'g':
             writeByte(on_buffer);
@@ -180,4 +180,10 @@ void BlockingNeopixel::displayRed()
 void BlockingNeopixel::displayBlue()
 {
     showColour('b');
+}
+
+//turn off all pixels
+void BlockingNeopixel::shutdown()
+{
+    showColour('n');
 }

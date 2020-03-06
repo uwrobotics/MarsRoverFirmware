@@ -20,9 +20,13 @@ public:
     float getAngle_Degrees();
     float getVelocity_DegreesPerSec();
 
+    mbed_error_status_t reset();
+
 private:
 
     PwmIn m_pwmIn;
+
     float m_degreesPerUnit;
+    float m_zeroOffset_Degrees;
 
 };

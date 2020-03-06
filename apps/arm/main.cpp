@@ -11,6 +11,7 @@
 #include "ClawController.h"
 #include "CANMsg.h"
 #include "CANBuffer.h"
+#include "Servo.h"
 
 /*** ARM COMPONENTS ***/
 /**********************/
@@ -22,6 +23,7 @@ Motor elbowMotor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
 Motor wristLeftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 Motor wristRightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 Motor clawMotor(MTR_PWM_CLAW, MTR_DIR_CLAW, false);
+Servo clawTooltipServo(SRVO_PWM_CLAW, Servo::LIM_SERVO, 180.0, 2.0, 1.0);
 
 // Encoders
 EncoderAbsolute_PWM turnTableEncoder(ArmConfig::turnTableEncoderConfig);
@@ -53,10 +55,38 @@ ActuatorController wristRightActuator(ArmConfig::wristRightActuatorConfig, wrist
 
 // Complex controllers
 DifferentialWristController wristController(wristLeftActuator, wristRightActuator, wristLimUp, wristLimCenter, wristLimDown);
-ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor);
+ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor, clawTooltipServo, 180.0, 0.0);
 
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
+
+static mbed_error_status_t setOverrideFlags(CANMsg &msg) {
+    uint8_t flags;
+    msg.getPayload(flags);
+
+    if (flags & FLAG_DISABLE_LIMIT_SWITCH_CHECKS) {
+        // TODO
+    } 
+    else {
+
+    }
+
+    if (flags & FLAG_DISABLE_ANGLE_BOUNDS_CHECKS) {
+        // TODO
+    }
+    else {
+
+    }
+
+    if (flags & FLAG_DISABLE_FEEDBACK) {
+        // TODO
+    }
+    else {
+        
+    }
+
+    return MBED_SUCCESS;
+}
 
 // Set the control mode of a joint (motor power / velocity / position)
 static mbed_error_status_t setControlMode(CANMsg &msg) {
@@ -77,6 +107,8 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
+
+    return MBED_SUCCESS;
 }
 
 // Set the motion data (motor power / velocity / position) of a joint
@@ -100,6 +132,8 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
+
+    return MBED_SUCCESS;
 }
 
 // Run wrist calibration routine
@@ -128,7 +162,15 @@ static mbed_error_status_t runClawCalibration(CANMsg &msg) {
 
 // Deploy or retract tool tip
 static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
-    return MBED_SUCCESS; // TODO
+    bool extend;
+    msg.getPayload(extend);
+
+    if (extend) {
+        return clawController.extendToolTip();
+    }
+    else {
+        return clawController.retractToolTip();
+    }
 }
 
 // Enable or disable PID tuning mode10
@@ -143,6 +185,8 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
 
 // Handler function mappings
 static CANMsg::CANMsgHandlerMap canHandlerMap = {
+    {CANID::SET_OVERRIDE_FLAGS,         &setOverrideFlags},
+
     {CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
     {CANID::SET_SHOULDER_CONTROL_MODE,  &setControlMode},
     {CANID::SET_ELBOW_CONTROL_MODE,     &setControlMode},
@@ -201,51 +245,71 @@ void rxCANProcessor() {
         //     }
         // }
         
-        ThisThread::sleep_for(8);
+        ThisThread::sleep_for(2);
     }
 }
 
 // Outgoing message processor
 void txCANProcessor() {
-    const int txPeriod_millisec = 500;
+    const int txInterdelay_millisec = 2;
+    const int txPeriod_millisec = 10;
 
     CANMsg txMsg;
 
+    struct __attribute__((__packed__)) motionReport {
+        float position;
+        float velocity;
+    } motionReport;
+
     while (true) {
-        txMsg.id = TURNTABLE_POSITION;
-        txMsg.setPayload(turnTableActuator.getAngle_Degrees());
+        txMsg.id = REPORT_TURNTABLE_MOTION;
+        motionReport.position = turnTableActuator.getAngle_Degrees();
+        motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
-        txMsg.id = SHOULDER_POSITION;
-        txMsg.setPayload(shoulderActuator.getAngle_Degrees());
+        txMsg.id = REPORT_SHOULDER_MOTION;
+        motionReport.position = shoulderActuator.getAngle_Degrees();
+        motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
-        txMsg.id = ELBOW_POSITION;
-        txMsg.setPayload(elbowActuator.getAngle_Degrees());
+        txMsg.id = REPORT_ELBOW_MOTION;
+        motionReport.position = elbowActuator.getAngle_Degrees();
+        motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
-        txMsg.id = WRIST_PITCH_POSITION;
-        txMsg.setPayload(wristController.getPitchAngle_Degrees());
+        txMsg.id = REPORT_WRIST_PITCH_MOTION;
+        motionReport.position = wristController.getPitchAngle_Degrees();
+        motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
-        txMsg.id = WRIST_ROLL_POSITION;
-        txMsg.setPayload(wristController.getRollAngle_Degrees());
+        txMsg.id = REPORT_WRIST_PITCH_MOTION;
+        motionReport.position = wristController.getRollAngle_Degrees();
+        motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
-        ThisThread::sleep_for(txPeriod_millisec);
+        ThisThread::sleep_for(txInterdelay_millisec);
 
-        txMsg.id = CLAW_POSITION;
-        txMsg.setPayload(clawController.getGapDistance_Cm());
+        txMsg.id = REPORT_CLAW_MOTION;
+        motionReport.position = clawController.getGapDistance_Cm();
+        motionReport.velocity = clawController.getGapVelocity_CmPerSec();
+        txMsg.setPayload(motionReport);
         can1.write(txMsg);
+        ThisThread::sleep_for(txInterdelay_millisec);
+
         ThisThread::sleep_for(txPeriod_millisec);
     }
 }
 
-Thread rxCANProcessorThread;
-Thread txCANProcessorThread;
+Thread rxCANProcessorThread(osPriorityAboveNormal);
+Thread txCANProcessorThread(osPriorityBelowNormal);
 
 DigitalOut led1(LED1);
 
