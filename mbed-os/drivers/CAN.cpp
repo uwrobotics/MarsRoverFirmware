@@ -76,9 +76,9 @@ int CAN::write(CANMessage msg)
 
 int CAN::read(CANMessage &msg, int handle)
 {
-    lock();
+    // lock();
     int ret = can_read(&_can, &msg, handle);
-    unlock();
+    // unlock();
     return ret;
 }
 
