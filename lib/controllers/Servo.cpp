@@ -1,9 +1,7 @@
-#include "mbed.h"
 #include "Servo.h"
 #include "cstdlib"
 
-Servo::Servo():
-pin(NC), pwm(NC) {
+Servo::Servo() : pin(NC), pwm(NC) {
 }
 
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_): 

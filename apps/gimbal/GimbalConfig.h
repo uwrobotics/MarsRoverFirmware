@@ -11,8 +11,7 @@ namespace GimbConfig {
 
     static Encoder::t_encoderConfig panEncoderConfig = {
         .pin_PWM = ENC_PWM_GIMB,
-        .degreesPerUnit = 360.0,
-        .inverted = false
+        .degreesPerUnit = 360.0
     };
 
     /*** MOTOR CONFIG***/
