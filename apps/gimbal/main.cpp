@@ -1,5 +1,3 @@
-#include "../targets/gimbal/pinNames.h"
-
 #include "mbed.h"
 #include "mbed_error.h"
 #include "mbed_config.h"

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../targets/gimbal/pinNames.h"
 #include "Encoder.h"
 #include "ActuatorController.h"
 #include "mbed.h"
