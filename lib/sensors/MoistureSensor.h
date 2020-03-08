@@ -6,6 +6,7 @@ class MoistureSensor {
         MoistureSensor(PinName sda, PinName scl);
         ~MoistureSensor() = default;
 
+        int Read_HW_ID();
         bool Is_Initialized();
 
         uint16_t Read_Moisture();

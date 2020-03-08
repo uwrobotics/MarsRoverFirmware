@@ -7,7 +7,8 @@ constexpr int Sensor_Status_Base = 0x00;                                    //Ba
 constexpr int Sensor_Moisture_Base = 0x0F;
 
 constexpr int Sensor_Status_HW_ID = 0x01;                                   //Function address register for the sensor's HW ID
-constexpr int Sensor_HW_ID_Code = 0x55;                                     //Expected value for sensor HW ID
+constexpr int Sensor_HW_ID_Code = 0x68;                                     //Expected value for sensor HW ID; NOTE: This is not the expected value as specified by the datasheet,
+                                                                            //it's just what I found through my own testing. It sometimes fluctuates on its own, so it's hard to trust :(
 
 constexpr int Sensor_Moisture_Function = 0x10;                              //Function address registers for moisture and temperature modules        
 constexpr int Sensor_Temp_Function = 0x04;  
@@ -15,6 +16,14 @@ constexpr int Sensor_Temp_Function = 0x04;
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl){}
 
 bool MoistureSensor::Is_Initialized(){
+    if(this->Read_HW_ID() == Sensor_HW_ID_Code){                            //compare received HW ID Code to correct one
+        return true;
+    }
+
+    return false;
+}
+
+int MoistureSensor::Read_HW_ID(){
     char cmd[2];
     cmd[0] = Sensor_Status_Base;
     cmd[1] = Sensor_Status_HW_ID;
@@ -25,17 +34,15 @@ bool MoistureSensor::Is_Initialized(){
 
     i2c_.read(Sensor_I2C_Address, check, 1);                                //read device ID
 
-    if(check[0] == Sensor_HW_ID_Code){                                      //compare received HW ID Code to correct one
-        return true;
-    }
-
-    return false;
+    return check[0];
 }
 
 uint16_t MoistureSensor::Read_Moisture(){
+    /*
     if(!(this->Is_Initialized())){                                          //checks if device is initialized, returns 65534 if there is an issue
-        return 65534;
+        return 65534;                                                       //this is commented out because the HW_ID reading isn't consistent currently
     }
+    */
 
     char cmd[2];
     cmd[0] = Sensor_Moisture_Base;
@@ -61,10 +68,12 @@ uint16_t MoistureSensor::Read_Moisture(){
 }
 
 float MoistureSensor::Read_Temperature(){
+    /*
     if(!(this->Is_Initialized())){                                          //checks if device is initialized, returns -273.0 if there is an issue
-        return -273.0;
+        return -273.0;                                                      //this is commented out because the HW_ID reading isn't consistent currently
     }
-    
+    */
+
     char cmd[2];
     cmd[0] = Sensor_Status_Base;
     cmd[1] = Sensor_Temp_Function;
