@@ -16,7 +16,7 @@ POTENTIAL FIX: CHECK BIT SHFITING RELATED STUFF
 //    SPI enc(CONTROL, READ, CLOCK);
     SPI enc(NC, SPI1_MISO, SPI1_SCK);
     enc.format(12,3);
-    enc.frequency(1000);
+    enc.frequency(100000);
 
     wait_ms(100);
 
@@ -25,14 +25,16 @@ POTENTIAL FIX: CHECK BIT SHFITING RELATED STUFF
     char send[3] = {0x00, 0x00};
     char recieve[3] = {0x00, 0x00};
 
-    while(1){
+    while(1) {
         cs = 0;
 
         //write low for wait bit
-        wait_ns(500);
+        ThisThread::sleep_for(1);
 
         //write 12 low dummy bits to recieve
         pos = enc.write(send, 2, recieve, 2);
+
+        // Next step to use async SPI
 
         //bring CONTROL back to HIGH to stop signaling
         cs = 1;
@@ -43,6 +45,6 @@ POTENTIAL FIX: CHECK BIT SHFITING RELATED STUFF
 
         printf("%02X %02X %d\r\n", recieve[1], recieve[0], value);
 
-        wait_ms(100);
+        ThisThread::sleep_for(1);
     }
 }
