@@ -57,32 +57,32 @@ void BlockingNeopixel::writeByte(const int buffer[8]) {
     n = no colour/off
 */
 void BlockingNeopixel::showColour(char colour) {
-  for (int i = 0; i < pixelNum; i++) {
+  for (int i = 0; i < m_pixelNum; i++) {
     switch (colour) {
     case 'g':
-      writeByte(on_buffer);
-      writeByte(off_buffer);
-      writeByte(off_buffer);
+      writeByte(m_on_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
       break;
     case 'b':
-      writeByte(off_buffer);
-      writeByte(off_buffer);
-      writeByte(on_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_on_buffer);
       break;
     case 'r':
-      writeByte(off_buffer);
-      writeByte(on_buffer);
-      writeByte(off_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_on_buffer);
+      writeByte(m_off_buffer);
       break;
     case 'w':
-      writeByte(on_buffer);
-      writeByte(on_buffer);
-      writeByte(on_buffer);
+      writeByte(m_on_buffer);
+      writeByte(m_on_buffer);
+      writeByte(m_on_buffer);
       break;
     case 'n':
-      writeByte(off_buffer);
-      writeByte(off_buffer);
-      writeByte(off_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
       break;
 
     // can possibly add more colours but will need custom byte data so send
@@ -95,11 +95,11 @@ void BlockingNeopixel::showColour(char colour) {
 // tells pixels to turn on and off n times
 void BlockingNeopixel::blinkPixels(int flashes, char colour) {
   for (int i = 0; i < flashes; i++) {
-    for (int i = 0; i < pixelNum; i++) {
+    for (int i = 0; i < m_pixelNum; i++) {
       showColour(colour);
     }
     wait(0.5);
-    for (int i = 0; i < pixelNum; i++) {
+    for (int i = 0; i < m_pixelNum; i++) {
       showColour('n');
     }
     wait(0.5);
@@ -132,7 +132,7 @@ void BlockingNeopixel::writeAnyRGBall(const int colour[3]) {
     }
   }
 
-  for (int k = 0; k < pixelNum; k++) {
+  for (int k = 0; k < m_pixelNum; k++) {
     writeByte(buffer[0]);
     writeByte(buffer[1]);
     writeByte(buffer[2]);
@@ -157,37 +157,3 @@ void BlockingNeopixel::displayBlue() { showColour('b'); }
 
 // turn off all pixels
 void BlockingNeopixel::shutdown() { showColour('n'); }
-
-void BlockingNeopixel::overwriteFirstBit(char colour) {
-  switch (colour) {
-  case 'g':
-    writeByte(on_buffer);
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    break;
-  case 'b':
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    writeByte(on_buffer);
-    break;
-  case 'r':
-    writeByte(off_buffer);
-    writeByte(on_buffer);
-    writeByte(off_buffer);
-    break;
-  case 'w':
-    writeByte(on_buffer);
-    writeByte(on_buffer);
-    writeByte(on_buffer);
-    break;
-  case 'n':
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    break;
-
-  // can possibly add more colours but will need custom byte data so send
-  default:
-    break;
-  }
-}

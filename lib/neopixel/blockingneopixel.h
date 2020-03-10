@@ -9,10 +9,10 @@
 class BlockingNeopixel
 {
 private:
-    int pixelNum;
-    int on_buffer[8] = {1,1,1,1,1,1,1,1};
-    int off_buffer[8] = {0};
-    
+    int m_pixelNum;
+    int m_on_buffer[8] = {1,1,1,1,1,1,1,1};
+    int m_off_buffer[8] = {0};
+    int enum
 public:
     BlockingNeopixel(int numPixels);
     ~BlockingNeopixel();
