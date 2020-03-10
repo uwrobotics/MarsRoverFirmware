@@ -7,11 +7,12 @@ constexpr int Sensor_Status_Base = 0x00;                                    //Ba
 constexpr int Sensor_Moisture_Base = 0x0F;
 
 constexpr int Sensor_Status_HW_ID = 0x01;                                   //Function address register for the sensor's HW ID
-constexpr int Sensor_HW_ID_Code = 0x68;                                     //Expected value for sensor HW ID; NOTE: This is not the expected value as specified by the datasheet,
-                                                                            //it's just what I found through my own testing. It sometimes fluctuates on its own, so it's hard to trust :(
+constexpr int Sensor_HW_ID_Code = 0x55;                                     //Expected value for sensor HW ID
 
-constexpr int Sensor_Moisture_Function = 0x10;                              //Function address registers for moisture and temperature modules        
+constexpr int Sensor_Moisture_Function = 0x10;                              //Function address registers for various modules       
 constexpr int Sensor_Temp_Function = 0x04;  
+constexpr int Sensor_Status_Reset = 0x7F;
+
 
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl){}
 
@@ -23,7 +24,16 @@ bool MoistureSensor::Is_Initialized(){
     return false;
 }
 
-int MoistureSensor::Read_HW_ID(){
+void MoistureSensor::Reset_Sensor(){
+    char cmd[3];
+    cmd[0] = Sensor_Status_Base;                                            //initialize registers for clearing sensor memory
+    cmd[1] = Sensor_Status_Reset;
+    cmd[2] = 0xFF;
+
+    i2c_.write(Sensor_I2C_Address, cmd, 3);                                 //set all registers on sensor to default values
+}
+
+uint8_t MoistureSensor::Read_HW_ID(){
     char cmd[2];
     cmd[0] = Sensor_Status_Base;
     cmd[1] = Sensor_Status_HW_ID;
@@ -32,17 +42,17 @@ int MoistureSensor::Read_HW_ID(){
 
     i2c_.write(Sensor_I2C_Address, cmd, 2);                                 //initialize registers for checking device ID
 
+    ThisThread::sleep_for(125);
+
     i2c_.read(Sensor_I2C_Address, check, 1);                                //read device ID
 
     return check[0];
 }
 
 uint16_t MoistureSensor::Read_Moisture(){
-    /*
     if(!(this->Is_Initialized())){                                          //checks if device is initialized, returns 65534 if there is an issue
-        return 65534;                                                       //this is commented out because the HW_ID reading isn't consistent currently
+        return 65534;                                                       
     }
-    */
 
     char cmd[2];
     cmd[0] = Sensor_Moisture_Base;
@@ -51,28 +61,29 @@ uint16_t MoistureSensor::Read_Moisture(){
     char buf[2];
     uint16_t ret = 65535;
 
+    uint8_t counter = 10;                                                   //initialize counter to break out of loop if reading isn't working (prevent infinite looping)
+
     do{
-        wait_ms(1);
+        ThisThread::sleep_for(1);
 
         i2c_.write(Sensor_I2C_Address, cmd, 2);                             //initialize registers for reading moisture
 
-        wait_ms(1);
+        ThisThread::sleep_for(1000);
 
         i2c_.read(Sensor_I2C_Address, buf, 2);                              //read moisture
 
         ret = ((uint16_t)buf[0] << 8 | buf[1]);                             //concatenate bytes together
 
-    } while(ret == 65535);                                                  //repeat until value has been measured
+        counter--;
+    } while(ret == 65535 && counter != 0);                                  //repeat until value has been measured, or until loop has run 10 times (breaks out regardless of if read works or not)
 
     return ret;
 }
 
 float MoistureSensor::Read_Temperature(){
-    /*
     if(!(this->Is_Initialized())){                                          //checks if device is initialized, returns -273.0 if there is an issue
-        return -273.0;                                                      //this is commented out because the HW_ID reading isn't consistent currently
+        return -273.0;                                                      
     }
-    */
 
     char cmd[2];
     cmd[0] = Sensor_Status_Base;
@@ -82,7 +93,7 @@ float MoistureSensor::Read_Temperature(){
 
     i2c_.write(Sensor_I2C_Address, cmd, 2);                                 //initialize registers for reading temperature
 
-    wait_ms(1);
+    ThisThread::sleep_for(1000);
 
     i2c_.read(Sensor_I2C_Address, buf, 4);                                  //read temp
 
