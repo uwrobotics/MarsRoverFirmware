@@ -9,3 +9,6 @@ build
 # VS Code pollution
 firmware.code-workspace
 .vscode
+
+# Clion
+*.idea/

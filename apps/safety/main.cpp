@@ -25,8 +25,6 @@ requires logic to:
 2. Read voltage
 3. read temperature
 4. decide if readings are correct
-
-
 */
 
 float processCurrentData();
@@ -61,14 +59,13 @@ float processCurrentData()
 
 }
 
+
 float readThermosistor()
 {
     //voltage divider
-    float rthermo=rresistor *((vin/vout)-1);
+    float rthermo = rresistor *((vin/vout)-1);
 
     //convert resistance to temp (steinhart and hart eqn)
     float temperature = 1/(A+B*log(rthermo)+C*exp(log(rthermo),3));
     return temperature;
-
-
 }
