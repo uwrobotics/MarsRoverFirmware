@@ -8,10 +8,10 @@ DigitalOut led(PinName::LED1);
 
 int main() {
 	while(1) {
-		if(force_sensor.getValue() < 0.1 && led){
+		if(force_sensor.getValue() > 0.8 && led){
 			led = 0;
 		}
-		if(force_sensor.getValue() > 0.1 && !led){
+		if(force_sensor.getValue() < 0.8 && !led){
 			led = 1;
 		}
 	}
