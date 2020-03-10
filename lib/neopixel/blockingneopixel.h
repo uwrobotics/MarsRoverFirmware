@@ -1,5 +1,6 @@
 #ifndef BLOCKINGNEOPIXEL_H
 #define BLOCKINGNEOPIXEL_H
+#include "mbed.h"
 
 /*
     Data is written in G -> R -> B
@@ -12,9 +13,9 @@ private:
     int pixelNum;
     int on_buffer[8] = {1,1,1,1,1,1,1,1};
     int off_buffer[8] = {0};
-    DigitalOut out();
+    DigitalOut out;
 public:
-    BlockingNeopixel(int numPixels, pinName name);
+    BlockingNeopixel(int numPixels, PinName mtrxPinName);
     ~BlockingNeopixel();
     void pulse_1();
     void pulse_0();

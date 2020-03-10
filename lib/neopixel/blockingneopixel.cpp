@@ -6,10 +6,7 @@ constexpr uint16_t H_0_NS = 200;
 constexpr uint16_t H_1_NS = 550;
 constexpr uint16_t L_NS = 450;
 
-BlockingNeopixel::BlockingNeopixel(int numPixels, pinName name) {
-  pixelNum = numPixels;
-  out(name) = new DigitalOut(name);
-  }
+BlockingNeopixel::BlockingNeopixel(int numPixels, PinName mtrxPinName):pixelNum(numPixels),out(mtrxPinName) {}
 
 BlockingNeopixel::~BlockingNeopixel() {}
 
