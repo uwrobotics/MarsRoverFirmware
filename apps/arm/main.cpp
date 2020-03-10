@@ -12,6 +12,7 @@
 #include "CANMsg.h"
 #include "CANBuffer.h"
 #include "Servo.h"
+#include "FSR.h"
 
 /*** ARM COMPONENTS ***/
 /**********************/
@@ -44,7 +45,7 @@ DigitalIn wristLimCenter(LIM_WRST_CNTR);
 DigitalIn clawLimOpen(LIM_CLAW_OPEN);
 
 // Analog inputs
-AnalogIn clawForceSensor(FORCE_CLAW);
+FSR clawForceSensor(FSR_OUT);
 
 // Rotary actuators
 ActuatorController turnTableActuator(ArmConfig::turnTableActuatorConfig, turnTableMotor, turnTableEncoder, turnTableLimRight, turnTableLimLeft);

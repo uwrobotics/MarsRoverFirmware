@@ -2,7 +2,7 @@
 
 ClawController::ClawController(t_actuatorConfig actuatorConfig, 
                        Motor &motor, Encoder &encoder,  
-                       DigitalIn &limSwitchMax, AnalogIn &forceSensor, Servo &tooltipServo,
+                       DigitalIn &limSwitchMax, FSR &forceSensor, Servo &tooltipServo,
                        float tooltipExtendedAngle_Degrees, float tooltipRetractedAngle_Degrees, float calibrationTimeout_Seconds) : 
         ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax), r_forceSensor(forceSensor), r_tooltipServo(tooltipServo),
         m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees), m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees),
@@ -78,6 +78,14 @@ mbed_error_status_t ClawController::retractToolTip() {
     return err_status;
 }
 
+mbed_error_status_t ClawController::update(){
+    if(getGripForce_Newtons() > m_actuatorConfig.max_force_fsr_newtons){
+        r_motor.setPower(0.0);
+        return MBED_ERROR_OPERATION_PROHIBITED;
+    }
+    return ActuatorController::update();
+}
+
 float ClawController::getGapVelocity_CmPerSec() {
     return convertShaftVelocityDegreesToGapVelocityCm(getVelocity_DegreesPerSec());
 }
@@ -86,7 +94,7 @@ float ClawController::getGapDistance_Cm() {
 }
 
 float ClawController::getGripForce_Newtons() {
-    return 0.0; // TODO
+    return r_forceSensor.getValue(); // TODO: Convert to newtons
 }
 
 mbed_error_status_t ClawController::runPositionCalibration() {
@@ -141,4 +149,3 @@ float ClawController::convertGapVelocityCmToShaftVelocityDegrees(float gap_cmPer
     return 2*(1.573564198)*gap_cmPerSec - 158.4968661;
     // return 4*(8.282382533e-3)*(gap_cmPerSec*gap_cmPerSec*gap_cmPerSec) - 3*(2.986760459e-1)*(gap_cmPerSec*gap_cmPerSec) + 2*(5.007842722)*gap_cmPerSec - 171.560244; // High precision 
 }
-

@@ -252,7 +252,7 @@ typedef enum {
     ENC_QUAD_WRST_RHS_B = PC_7,
 
     /**** Other Sensor Pins ****/
-    FORCE_CLAW = PC_1,
+    FSR_OUT = PC_1,
 
     /**** Serial Interface Pins ****/
     CAN1_TX    = PA_12,
