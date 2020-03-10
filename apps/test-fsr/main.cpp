@@ -1,18 +1,23 @@
 #include "mbed.h"
 #include "FSR.h"
 
-FSR force_sensor(PinName::FSR_OUT);
+FSR force_sensor(FSR_OUT);
 
-DigitalOut led(PinName::LED1);
+DigitalOut led_1(LED1);
+DigitalOut led_2(LED2);
 
 
 int main() {
+	led_1 = 0;
+	led_2 = 0;
 	while(1) {
-		if(force_sensor.getValue() > 0.8 && led){
-			led = 0;
+		if(force_sensor.getValue() > 0.7){
+			led_1 = 0;
+			led_2 = 0;
 		}
-		if(force_sensor.getValue() < 0.8 && !led){
-			led = 1;
+		if(force_sensor.getValue() < 0.7){
+			led_1 = 1;
+			led_2 = 1;
 		}
 	}
 }
