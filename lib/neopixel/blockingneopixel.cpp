@@ -1,4 +1,4 @@
-#include "blockingneopixel.h"
+#include "BlockingNeopixel.h"
 #include "mbed.h"
 
 // constexpr T0H
