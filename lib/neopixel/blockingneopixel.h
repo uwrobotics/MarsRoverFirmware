@@ -12,9 +12,9 @@ private:
     int pixelNum;
     int on_buffer[8] = {1,1,1,1,1,1,1,1};
     int off_buffer[8] = {0};
-    
+    DigitalOut out();
 public:
-    BlockingNeopixel(int numPixels);
+    BlockingNeopixel(int numPixels, pinName name);
     ~BlockingNeopixel();
     void pulse_1();
     void pulse_0();
