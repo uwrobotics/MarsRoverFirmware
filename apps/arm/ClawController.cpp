@@ -3,10 +3,10 @@
 ClawController::ClawController(t_actuatorConfig actuatorConfig, 
                        Motor &motor, Encoder &encoder,  
                        DigitalIn &limSwitchMax, FSR &forceSensor, Servo &tooltipServo,
-                       float tooltipExtendedAngle_Degrees, float tooltipRetractedAngle_Degrees, float calibrationTimeout_Seconds) : 
+                       float tooltipExtendedAngle_Degrees, float tooltipRetractedAngle_Degrees, float calibrationTimeout_Seconds, float maxForceFSR_Newtons) : 
         ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax), r_forceSensor(forceSensor), r_tooltipServo(tooltipServo),
         m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees), m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees),
-        m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {};
+        m_calibrationTimeout_Seconds(calibrationTimeout_Seconds), m_max_force_fsr_newtons(maxForceFSR_Newtons){};
 
 mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {
 
@@ -79,9 +79,26 @@ mbed_error_status_t ClawController::retractToolTip() {
 }
 
 mbed_error_status_t ClawController::update(){
-    if(getGripForce_Newtons() > m_actuatorConfig.max_force_fsr_newtons){
-        r_motor.setPower(0.0);
-        return MBED_ERROR_OPERATION_PROHIBITED;
+    if(getGripForce_Newtons() > m_max_force_fsr_newtons){
+        switch(getControlMode()) {
+            case t_actuatorControlMode::motorPower:
+                if(ActuatorController::getMotorPower_Percentage() > 0.0){
+                    return setMotorPower_Percentage(0.0);
+                }
+            case t_actuatorControlMode::velocity:
+                if(ActuatorController::getVelocity_DegreesPerSec() > 0.0){
+                    return setGapVelocity_CmPerSec(0.0);
+                }
+                
+            //TODO: Determine how to handle angle control mode
+
+            // case t_actuatorControlMode::position:
+            //     if(ActuatorController::getAngle_Degrees() > 0.0){
+            //         return setGapDistance_Cm(0.0);
+            //     }
+            default: 
+                return MBED_ERROR_INVALID_ARGUMENT;
+        }
     }
     return ActuatorController::update();
 }
@@ -94,7 +111,7 @@ float ClawController::getGapDistance_Cm() {
 }
 
 float ClawController::getGripForce_Newtons() {
-    return r_forceSensor.getValue(); // TODO: Convert to newtons
+    return r_forceSensor.get_force_newtons();
 }
 
 mbed_error_status_t ClawController::runPositionCalibration() {

@@ -10,9 +10,9 @@ class FSR{
 public:
 	FSR(PinName pin);
 
-	float getValue();
-	//returns a value from 1 to 0
-	//0 is lowest force, 1 is highest
+	float get_raw_ADC();
+	float get_force_newtons();
+	//returns a value from 0 to 1
 
 
 private:

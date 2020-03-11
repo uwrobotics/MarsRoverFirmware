@@ -24,9 +24,6 @@ public:
 		float minMotorPower_Percentage = -1.0, maxMotorPower_Percentage = +1.0;
 		float minVelocity_DegreesPerSec = -10.0, maxVelocity_DegreesPerSec = +10.0;
 		float minAngle_Degrees = -90, maxAngle_Degrees = +90;
-
-		float max_force_fsr_newtons = 40; //TODO: Determine this value
-
 		PID::t_pidConfig velocityPID, positionPID;
 
 		float watchDogTimeout_Seconds = 3.0;
@@ -60,8 +57,7 @@ public:
 	bool isPastMinAngle();
 	bool isPastMaxAngle();
 
-protected:
-
+private:
 	t_actuatorControlMode m_controlMode;
 	t_actuatorConfig m_actuatorConfig;
 

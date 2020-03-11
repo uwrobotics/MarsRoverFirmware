@@ -12,7 +12,7 @@ public:
                        Motor &motor, Encoder &encoder,  
                        DigitalIn &limSwitchMax, FSR &forceSensor, Servo &tooltipServo,
                        float tooltipExtendedAngle_Degrees = 180.0, float tooltipRetractedAngle_Degrees = 0.0,
-                       float calibrationTimeout_Seconds = 10.0);
+                       float calibrationTimeout_Seconds = 10.0, float maxForceFSR_Newtons = 40.0);
 
     mbed_error_status_t setMotorPower_Percentage(float percentage);
 
@@ -38,6 +38,7 @@ private:
     FSR &r_forceSensor;
     Servo    &r_tooltipServo;
 
+    float m_max_force_fsr_newtons;
     float m_tooltipExtendedAngle_Degrees;
     float m_tooltipRetractedAngle_Degrees;
 

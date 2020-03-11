@@ -161,7 +161,6 @@ namespace ArmConfig {
             .bias = 0.0,
             .deadZoneError = 0.1
         }
-        
     };
 
 };
