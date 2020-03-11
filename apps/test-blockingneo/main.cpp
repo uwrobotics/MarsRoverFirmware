@@ -1,5 +1,5 @@
 #include "mbed.h"
-#include "blockingneopixel.h"
+#include "Neopixel_Blocking.h"
 #include "PinNames.h"
 
 int main(){
@@ -11,6 +11,7 @@ int main(){
             wait(1);
             pixels.displayBlue();
             wait(1);
+            pixels.flashGreen(2,1);
         }
         
     return 1;
