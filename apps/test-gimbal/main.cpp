@@ -8,7 +8,7 @@
 #include "Servo.h"
 #include "PwmOut.h"
 
-#define TIME_ERROR_FACTOR 3.15776
+#define TIME_ERROR_FACTOR 1
 
 // Init. Components
 
