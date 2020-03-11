@@ -11,11 +11,11 @@ int main() {
 	led_1 = 0;
 	led_2 = 0;
 	while(1) {
-		if(force_sensor.getValue() > 0.9){
+		if(force_sensor.get_raw_ADC() > 0.9){
 			led_1 = 0;
 			led_2 = 0;
 		}
-		if(force_sensor.getValue() < 0.9){
+		if(force_sensor.get_raw_ADC() < 0.9){
 			led_1 = 1;
 			led_2 = 1;
 		}
