@@ -1,22 +1,19 @@
-#include "blockingneopixel.h"
+#include "Neopixel_Blocking.h"
 #include "mbed.h"
 
-// constexpr T0H
 constexpr uint16_t H_0_NS = 200;
 constexpr uint16_t H_1_NS = 550;
 constexpr uint16_t L_NS = 450;
 
-DigitalOut out(PA_2);
+Neopixel_Blocking::Neopixel_Blocking(int numPixels, PinName mtrxPinName):pixelNum(numPixels),out(mtrxPinName) {}
 
-BlockingNeopixel::BlockingNeopixel(int numPixels) { pixelNum = numPixels; }
-
-BlockingNeopixel::~BlockingNeopixel() {}
+Neopixel_Blocking::~Neopixel_Blocking() {}
 
 /*
     Writes 1 to the neopixels
     delay is based on the NRZ timing
 */
-void BlockingNeopixel::pulse_1() {
+void Neopixel_Blocking::pulse_1() {
   out.write(1);
   wait_ns(H_1_NS);
   out.write(0);
@@ -27,7 +24,7 @@ void BlockingNeopixel::pulse_1() {
     Writes 0 to the neopixels
     delay is based on the NRZ timing
 */
-void BlockingNeopixel::pulse_0() {
+void Neopixel_Blocking::pulse_0() {
   out.write(1);
   wait_ns(H_0_NS);
   out.write(0);
@@ -38,7 +35,7 @@ void BlockingNeopixel::pulse_0() {
 Writes a byte of data to the pixels. Pixels require 3 bytes of data to be sent
 Each byte written is the intensity of each led on each pixel
 */
-void BlockingNeopixel::writeByte(const int buffer[8]) {
+void Neopixel_Blocking::writeByte(const int buffer[8]) {
   for (int i = 7; i >= 0; i--) {
     if (buffer[i] == 1)
       // while bit value is 1
@@ -56,7 +53,7 @@ void BlockingNeopixel::writeByte(const int buffer[8]) {
     w = white
     n = no colour/off
 */
-void BlockingNeopixel::showColour(char colour) {
+void Neopixel_Blocking::showColour(char colour) {
   for (int i = 0; i < pixelNum; i++) {
     switch (colour) {
     case 'g':
@@ -93,7 +90,7 @@ void BlockingNeopixel::showColour(char colour) {
 }
 
 // tells pixels to turn on and off n times
-void BlockingNeopixel::blinkPixels(int flashes, char colour) {
+void Neopixel_Blocking::blinkPixels(int flashes, char colour) {
   for (int i = 0; i < flashes; i++) {
     for (int i = 0; i < pixelNum; i++) {
       showColour(colour);
@@ -108,7 +105,7 @@ void BlockingNeopixel::blinkPixels(int flashes, char colour) {
 
 // Provided an array of integers of the RGB values (in GRB order), shows those
 // colours on the pixels
-void BlockingNeopixel::writeAnyRGB(const int colour[3]) {
+void Neopixel_Blocking::writeAnyRGB(const int colour[3]) {
   int colourBuffer[3] = {colour[0], colour[1], colour[2]};
   int buffer[][8] = {{}, {}, {}};
   for (int j = 0; j < 3; j++) {
@@ -122,7 +119,7 @@ void BlockingNeopixel::writeAnyRGB(const int colour[3]) {
   writeByte(buffer[2]);
 }
 
-void BlockingNeopixel::writeAnyRGBall(const int colour[3]) {
+void Neopixel_Blocking::writeAnyRGBall(const int colour[3]) {
   int colourBuffer[3] = {colour[0], colour[1], colour[2]};
   int buffer[][8] = {{}, {}, {}};
   for (int j = 0; j < 3; j++) {
@@ -140,7 +137,7 @@ void BlockingNeopixel::writeAnyRGBall(const int colour[3]) {
 }
 
 // Flashing Green
-void BlockingNeopixel::flashGreen(int numFlashes, float delay_s) {
+void Neopixel_Blocking::flashGreen(int numFlashes, float delay_s) {
   for (int i = 0; i < numFlashes; i++) {
     showColour('g');
     wait(delay_s);
@@ -150,15 +147,15 @@ void BlockingNeopixel::flashGreen(int numFlashes, float delay_s) {
 }
 
 // show solid red on all pixels
-void BlockingNeopixel::displayRed() { showColour('r'); }
+void Neopixel_Blocking::displayRed() { showColour('r'); }
 
 // show solid blue on all pixels
-void BlockingNeopixel::displayBlue() { showColour('b'); }
+void Neopixel_Blocking::displayBlue() { showColour('b'); }
 
 // turn off all pixels
-void BlockingNeopixel::shutdown() { showColour('n'); }
+void Neopixel_Blocking::shutdown() { showColour('n'); }
 
-void BlockingNeopixel::overwriteFirstBit(char colour) {
+void Neopixel_Blocking::overwriteFirstBit(char colour) {
   switch (colour) {
   case 'g':
     writeByte(on_buffer);
