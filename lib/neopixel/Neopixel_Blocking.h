@@ -1,21 +1,22 @@
-#ifndef BLOCKINGNEOPIXEL_H
-#define BLOCKINGNEOPIXEL_H
+#ifndef NEOPIXEL_BLOCKING_H
+#define NEOPIXEL_BLOCKING_H
+#include "mbed.h"
 
 /*
     Data is written in G -> R -> B
     Each byte is a number value from 0-255 of the intensity of that individual LED light
 */
 
-class BlockingNeopixel
+class Neopixel_Blocking
 {
 private:
-    int m_pixelNum;
-    int m_on_buffer[8] = {1,1,1,1,1,1,1,1};
-    int m_off_buffer[8] = {0};
-    enum colour {Red, Blue, Green, Off, White};
+    int pixelNum;
+    int on_buffer[8] = {1,1,1,1,1,1,1,1};
+    int off_buffer[8] = {0};
+    DigitalOut out;
 public:
-    BlockingNeopixel(int numPixels);
-    ~BlockingNeopixel();
+    Neopixel_Blocking(int numPixels, PinName mtrxPinName);
+    ~Neopixel_Blocking();
     void pulse_1();
     void pulse_0();
     void writeByte(const int buffer[8]);
@@ -30,4 +31,4 @@ public:
     void shutdown();
 };
 
-#endif /* BLOCKINGNEOPIXEL_H */
+#endif /* Neopixel_Blocking_H */
