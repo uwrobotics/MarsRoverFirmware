@@ -1,5 +1,5 @@
-#ifndef BLOCKINGNEOPIXEL_H
-#define BLOCKINGNEOPIXEL_H
+#ifndef NEOPIXEL_BLOCKING_H
+#define NEOPIXEL_BLOCKING_H
 #include "mbed.h"
 
 /*
@@ -7,7 +7,7 @@
     Each byte is a number value from 0-255 of the intensity of that individual LED light
 */
 
-class BlockingNeopixel
+class Neopixel_Blocking
 {
 private:
     int pixelNum;
@@ -15,8 +15,8 @@ private:
     int off_buffer[8] = {0};
     DigitalOut out;
 public:
-    BlockingNeopixel(int numPixels, PinName mtrxPinName);
-    ~BlockingNeopixel();
+    Neopixel_Blocking(int numPixels, PinName mtrxPinName);
+    ~Neopixel_Blocking();
     void pulse_1();
     void pulse_0();
     void writeByte(const int buffer[8]);
@@ -33,4 +33,4 @@ public:
     void overwriteFirstBit(char colour);
 };
 
-#endif /* BLOCKINGNEOPIXEL_H */
+#endif /* Neopixel_Blocking_H */
