@@ -6,14 +6,14 @@
     Data is written in G -> R -> B
     Each byte is a number value from 0-255 of the intensity of that individual LED light
 */
-
 class Neopixel_Blocking
 {
 private:
     int pixelNum;
-    int on_buffer[8] = {1,1,1,1,1,1,1,1};
-    int off_buffer[8] = {0};
+    int m_on_buffer[8] = {1,1,1,1,1,1,1,1};
+    int m_off_buffer[8] = {0};
     DigitalOut out;
+    enum colour{Green, Red, Blue, White, Off}
 public:
     Neopixel_Blocking(int numPixels, PinName mtrxPinName);
     ~Neopixel_Blocking();
