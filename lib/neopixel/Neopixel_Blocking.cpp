@@ -90,16 +90,12 @@ void Neopixel_Blocking::showColour(colour selectedColour) {
 }
 
 // tells pixels to turn on and off n times
-void Neopixel_Blocking::blinkPixels(int flashes, colour selectedColour) {
-  for (int i = 0; i < flashes; i++) {
-    for (int i = 0; i < m_pixelNum; i++) {
-      showColour(selectedColour);
-    }
-    wait(0.5);
-    for (int i = 0; i < m_pixelNum; i++) {
-      showColour(Off);
-    }
-    wait(0.5);
+void Neopixel_Blocking::blinkPixels(int numflashes,float delay_s, colour selectedColour) {
+  for (int i = 0; i < numflashes; i++) {
+    showColour(selectedColour);
+    wait(delay_s);
+    showColour(Off);
+    wait(delay_s);
   }
 }
 

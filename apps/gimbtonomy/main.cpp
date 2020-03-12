@@ -41,7 +41,7 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg){
         break;
     case 2:
         pc.printf("Setting neo pixels to flashing green\r\n");
-        neopixel.flashGreen(10,2);
+        neopixel.blinkPixels(10,2, Green);
         break;
     default:
         pc.printf("Neo pixels tried to be set to unknow mode\r\n");
