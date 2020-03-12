@@ -10,6 +10,7 @@ int main(){
             wait(1);
             pixels.displayBlue();
             wait(1);
+            pixels.flashGreen();
         }
         
     return 1;

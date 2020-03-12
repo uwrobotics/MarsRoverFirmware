@@ -56,30 +56,30 @@ void BlockingNeopixel::writeByte(const int buffer[8]) {
     w = white
     n = no colour/off
 */
-void BlockingNeopixel::showColour(char colour) {
+void BlockingNeopixel::showColour(colour selectedColour) {
   for (int i = 0; i < m_pixelNum; i++) {
     switch (colour) {
-    case 'g':
+    case Green:
       writeByte(m_on_buffer);
       writeByte(m_off_buffer);
       writeByte(m_off_buffer);
       break;
-    case 'b':
+    case Blue:
       writeByte(m_off_buffer);
       writeByte(m_off_buffer);
       writeByte(m_on_buffer);
       break;
-    case 'r':
+    case Red:
       writeByte(m_off_buffer);
       writeByte(m_on_buffer);
       writeByte(m_off_buffer);
       break;
-    case 'w':
+    case White:
       writeByte(m_on_buffer);
       writeByte(m_on_buffer);
       writeByte(m_on_buffer);
       break;
-    case 'n':
+    case Off:
       writeByte(m_off_buffer);
       writeByte(m_off_buffer);
       writeByte(m_off_buffer);
@@ -93,7 +93,7 @@ void BlockingNeopixel::showColour(char colour) {
 }
 
 // tells pixels to turn on and off n times
-void BlockingNeopixel::blinkPixels(int flashes, char colour) {
+void BlockingNeopixel::blinkPixels(int flashes, colour selectedColour) {
   for (int i = 0; i < flashes; i++) {
     for (int i = 0; i < m_pixelNum; i++) {
       showColour(colour);
@@ -109,20 +109,6 @@ void BlockingNeopixel::blinkPixels(int flashes, char colour) {
 // Provided an array of integers of the RGB values (in GRB order), shows those
 // colours on the pixels
 void BlockingNeopixel::writeAnyRGB(const int colour[3]) {
-  int colourBuffer[3] = {colour[0], colour[1], colour[2]};
-  int buffer[][8] = {{}, {}, {}};
-  for (int j = 0; j < 3; j++) {
-    for (int i = 0; i < 8; i++) {
-      buffer[j][i] = colourBuffer[j] % 2;
-      colourBuffer[j] /= 2;
-    }
-  }
-  writeByte(buffer[0]);
-  writeByte(buffer[1]);
-  writeByte(buffer[2]);
-}
-
-void BlockingNeopixel::writeAnyRGBall(const int colour[3]) {
   int colourBuffer[3] = {colour[0], colour[1], colour[2]};
   int buffer[][8] = {{}, {}, {}};
   for (int j = 0; j < 3; j++) {
@@ -150,10 +136,10 @@ void BlockingNeopixel::flashGreen(int numFlashes, float delay_s) {
 }
 
 // show solid red on all pixels
-void BlockingNeopixel::displayRed() { showColour('r'); }
+void BlockingNeopixel::displayRed() { showColour(Red); }
 
 // show solid blue on all pixels
-void BlockingNeopixel::displayBlue() { showColour('b'); }
+void BlockingNeopixel::displayBlue() { showColour(Blue); }
 
 // turn off all pixels
-void BlockingNeopixel::shutdown() { showColour('n'); }
+void BlockingNeopixel::shutdown() { showColour(Off); }
