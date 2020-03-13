@@ -118,7 +118,7 @@ void Neopixel_Blocking::writeAnyRGB(const int colour[3]) {
   }
 }
 
-// Flashing Green
+// Flashing Green to be phased out
 void Neopixel_Blocking::flashGreen(int numFlashes, float delay_s) {
   for (int i = 0; i < numFlashes; i++) {
     showColour(Green);
