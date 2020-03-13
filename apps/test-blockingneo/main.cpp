@@ -11,7 +11,8 @@ int main(){
             wait(1);
             pixels.displayBlue();
             wait(1);
-            pixels.blinkPixels(2,1, Green);
+            //pixels.blinkPixels(2,1, Green);
+            pixels.flashGreen(2,1);
         }
         
     return 1;
