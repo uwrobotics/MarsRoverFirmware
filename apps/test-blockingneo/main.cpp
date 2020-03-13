@@ -1,6 +1,6 @@
 #include "mbed.h"
 #include "Neopixel_Blocking.h"
-#include "PinNames.h"
+#include "rover_config.h"
 
 int main(){
         Neopixel_Blocking pixels(16, LED_MTRX);
