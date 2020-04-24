@@ -14,7 +14,6 @@ CAN                   can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 CANMsg                rxMsg, txMsg;
 BlockingNeopixel      neopixel(16);
 
-// 0x794 is the CANID for updating neopixels
 // Color is specified by the data inside the packet
 // 0 is solid red
 // 1 is solid blue
