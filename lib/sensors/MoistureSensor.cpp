@@ -1,4 +1,3 @@
-#include "mbed.h"
 #include "MoistureSensor.h"
 
 constexpr int Sensor_I2C_Address = 0x36 << 1;                               //MBED I2C uses 8 bit addressing, so addresses are left shifted by 1 (may need to be shifted by 2) 
@@ -17,11 +16,7 @@ constexpr int Sensor_Status_Reset = 0x7F;
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl){}
 
 bool MoistureSensor::Is_Initialized(){
-    if(this->Read_HW_ID() == Sensor_HW_ID_Code){                            //compare received HW ID Code to correct one
-        return true;
-    }
-
-    return false;
+    return (this->Read_HW_ID() == Sensor_HW_ID_Code);                       //compare received HW ID Code to correct one
 }
 
 void MoistureSensor::Reset_Sensor(){
@@ -41,9 +36,7 @@ uint8_t MoistureSensor::Read_HW_ID(){
     char check[1];
 
     i2c_.write(Sensor_I2C_Address, cmd, 2);                                 //initialize registers for checking device ID
-
     ThisThread::sleep_for(125);
-
     i2c_.read(Sensor_I2C_Address, check, 1);                                //read device ID
 
     return check[0];
@@ -59,17 +52,15 @@ uint16_t MoistureSensor::Read_Moisture(){
     cmd[1] = Sensor_Moisture_Function;
 
     char buf[2];
+
     uint16_t ret = 65535;
 
     uint8_t counter = 10;                                                   //initialize counter to break out of loop if reading isn't working (prevent infinite looping)
 
     do{
         ThisThread::sleep_for(1);
-
         i2c_.write(Sensor_I2C_Address, cmd, 2);                             //initialize registers for reading moisture
-
         ThisThread::sleep_for(1000);
-
         i2c_.read(Sensor_I2C_Address, buf, 2);                              //read moisture
 
         ret = ((uint16_t)buf[0] << 8 | buf[1]);                             //concatenate bytes together
@@ -88,13 +79,11 @@ float MoistureSensor::Read_Temperature(){
     char cmd[2];
     cmd[0] = Sensor_Status_Base;
     cmd[1] = Sensor_Temp_Function;
-
+    
     char buf[4];
 
     i2c_.write(Sensor_I2C_Address, cmd, 2);                                 //initialize registers for reading temperature
-
     ThisThread::sleep_for(1000);
-
     i2c_.read(Sensor_I2C_Address, buf, 4);                                  //read temp
 
     int32_t ret = ((uint32_t)buf[0] << 24) | ((uint32_t)buf[1] << 16) |     //concatenate bytes together

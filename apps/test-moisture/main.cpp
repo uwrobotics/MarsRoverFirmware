@@ -21,12 +21,7 @@ int main(){
 
         ThisThread::sleep_for(500);
 
-        if(sensor.Is_Initialized()){                                                                        //turn on LED if the sensor's HW_ID code matches the known value
-            led1 = 1;                                                                                       
-        }
-        else{
-            led1 = 0;
-        }
+        led1 = (sensor.Is_Initialized());                                                                   //turn on LED if the sensor's HW_ID code matches the known value
 
         pc.printf("\r\nChecking Device ID...\r\n");                                                         //read device HW_ID, reading of 85 is expected
         HW_ID = sensor.Read_HW_ID();
