@@ -13,68 +13,55 @@
 #include "Servo.h"
 #include "PwmOut.h"
 
-#define TIME_ERROR_FACTOR 3.15776
+#define POS_TOL 1
 
 // Init. Components
-
 // Servos
 Servo panServo(SRVO_PWM_CR, Servo::CONT_SERVO, 44.0, 2.1, 0.9); //44 RPM at 4.8V, max->2100us PW, min->900us PW
-Servo tiltServo(SRVO_PWM_MG, Servo::LIM_SERVO, 180, 2.1, 0.9);
-/*
-// Motors
-Motor panServoMotor(GimbConfig::panMotorConfig, Motor::cont_servo);
-Motor tiltServoMotor(GimbConfig::tiltMotorConfig, Motor::lim_servo);
-*/
-// Encoders
+Servo pitchServo(SRVO_PWM_MG, Servo::LIM_SERVO, 180, 2.1, 0.9);
+
 EncoderAbsolute_PWM panEncoder(GimbConfig::panEncoderConfig);
 
-// Limit switche
+// Limit switch
 DigitalIn tiltLimUp(LIM_GIMB);
 
-/*
-// Rotary actuator
-ActuatorController panActuator(GimbConfig::panActuatorConfig, panServoMotor, panEncoder);
-ActuatorController tiltActuator(GimbConfig::tiltActuatorConfig, tiltServoMotor, panEncoder); // panEncoder as placeholder, will not be called.
-*/
-
+// CAN Object
 CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
-Serial pc (PC_10, PC_11, 8000);
 
-/*
+// RTOS Queue
+Queue<float, 3> pos_data;
+
+// CAN LED Debugger
+DigitalOut can_debug(LED3);
+
+// Threads
+Thread rxCANProcessorThread;
+Thread moveThread;
+
+// CAN Message Processor 
 void rxCANProcessor() {
     CANMsg rxMsg;
 
+    // Position
+    float pan_pos = 0, 
+        pan_speed = 0,
+        pitch_pos = 0;
+
     while(true) {
         if (can1.read(rxMsg)) {
-            float val;
-            ActuatorController::t_actuatorControlMode mode;
-
             switch (rxMsg.id)
             {
             case SET_GIMBAL_PAN_POS :
-                if(panActuator.getControlMode() == ActuatorController::position) {
-                    rxMsg.getPayload(val);
-                    panActuator.setMotionData(val);                    
-                }
-
+                rxMsg.getPayload(pan_pos);
+                can_debug.write(1);
                 break;
             
             case SET_GIMBAL_PAN_SPEED :
-                if(panActuator.getControlMode() == ActuatorController::velocity) {
-                    rxMsg.getPayload(val);
-                    panActuator.setMotionData(val);    
-                }
-                
+                rxMsg.getPayload(pan_speed);    
                 break;
             
             case SET_GIMBAL_PITCH_POS :
-                rxMsg.getPayload(val);
-                tiltActuator.setMotionData(val);
-                break;
-
-            case SET_GIMBAL_PAN_MODE :
-                rxMsg.getPayload(mode);
-                panActuator.setControlMode(mode);
+                rxMsg.getPayload(pitch_pos);
                 break;
 
             default :
@@ -82,52 +69,48 @@ void rxCANProcessor() {
             }
         }
 
-        ThisThread::sleep_for(1000);
+        pos_data.put(&pan_pos);
+        pos_data.put(&pan_speed);
+        pos_data.put(&pitch_pos);
+
+        moveThread.signal_set(0x00);
+        ThisThread::sleep_for(5); // Sleep CAN processor for 5 ms
+    }
+}
+
+// Move servos to determined locations
+
+void move() {
+    while(true) {
+        Thread::signal_wait(0x00); // moveThread does not sleep, but only executes if signaled by can processor
+    
+        // Set pitch pos
+        pitchServo.setPosition(*((float*)(pos_data.get().value.p))); // Cast float to evt ptr and dereference float ptr
+
+        // Set pan speed
+        panServo.setSpeed(*((float*)(pos_data.get().value.p))); // Cast float to evt ptr and dereference float ptr
+
+        // Set pan pos - stops panServo once it is within tolerance of set position while traveling at designated speed
+        float target_pan_pos = (*((float*)(pos_data.get().value.p))),
+            cur_pan_pos = panEncoder.getAngle_Degrees();
+
+        if((cur_pan_pos >= target_pan_pos - POS_TOL) && (cur_pan_pos <= target_pan_pos + POS_TOL))
+            panServo.setSpeed(0);
     }
 }
 
 
-
-void move() {
-    panActuator.update();
-    tiltActuator.update();
-    ThisThread::sleep_for(10);
-}
-
-*/
-
-Thread rxCANProcessorThread;
-Thread moveThread;
-
-
 int main()
-{
-    wait_ms(100);
-    printf("\r\n\r\n");
-    printf("GIMBAL APPLICATION STARTED \r\n");
-    printf("==========================");
-
-/*
-    rxCANProcessorThread.set_priority(osPriorityNormal);
-    moveThread.set_priority(osPriorityAboveNormal);
-
+{ 
     rxCANProcessorThread.start(rxCANProcessor);
     moveThread.start(move);
-*/
-
-    PwmOut servo (SRVO_PWM_MG);
-    servo.period_ms(1000*TIME_ERROR_FACTOR);
-    servo.write(0.5);
-
-    DigitalOut temp(SRVO_PWM_CR);
+    
+    rxCANProcessorThread.set_priority(osPriorityAboveNormal);
+    moveThread.set_priority(osPriorityNormal);
     while(1){
-        printf("1");
-        wait_ms(100);
-        /*
-        if(temp.read()==1)
-            temp.write(0);
-        else
-            temp.write(1);
-            */
+        // Output info over serial
+        printf("%f \r\n", pitchServo.read());
+        printf("%f \r\n", panServo.read());
+        ThisThread::sleep_for(100);
     }
 }

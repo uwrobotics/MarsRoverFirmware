@@ -52,16 +52,12 @@ Motor& Motor::operator=(int dutyCycle) {
         this->setPower(dutyCycle);
         return *this;
     }
- 
 }
 
 float Motor::getPower() {
-    if (m_dir) {
-        return m_pwm.read();
-    }
-    else {
-        return -m_pwm.read();
-    }
+    float temp;
+    m_dir?temp = m_pwm.read():temp = -m_pwm.read();
+    return temp;
 }
 
 Motor::t_motorType Motor::getType() {
