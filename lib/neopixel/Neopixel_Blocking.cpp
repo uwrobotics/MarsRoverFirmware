@@ -82,7 +82,7 @@ void Neopixel_Blocking::showColour(colour selectedColour) {
       writeByte(m_off_buffer);
       break;
 
-    // can possibly add more colours but will need custom byte data so send
+    // can possibly add more colours but will need custom byte data to send
     default:
       break;
     }
