@@ -34,14 +34,12 @@ Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value):
     if(rotate_type == SERVO_TYPE::LIM_SERVO){
         range = value;
         pos = 0;
-
         max_speed = -1;
         speed = -1;
     }
     else{
         max_speed = value;
         speed = 0;
-
         range = -1;
         pos = -1;
     }
@@ -96,6 +94,7 @@ bool Servo::setPosition(float angle){
     if(rotate_type == LIM_SERVO){ 
         pos = angle;
         pwm.pulsewidth_us(int(((max_pulse_ms - min_pulse_ms) * angle/180 + min_pulse_ms)*1000));
+        return true;
     }
     else
         return false;
@@ -108,6 +107,7 @@ bool Servo::setSpeed(float speed_){
 
         speed = speed_;
         pwm.pulsewidth_us(int(((max_pulse_ms-min_pulse_ms)/2 * speed/max_speed + min_pulse_ms + (max_pulse_ms-min_pulse_ms)/2)*1000));
+        return true;
     }
     else
         return false;
