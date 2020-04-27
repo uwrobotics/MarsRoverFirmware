@@ -188,6 +188,18 @@ void PID::setTunings(float Kc, float tauI, float tauD) {
 
 }
 
+void PID::setKc(float Kc){
+    Kc_ = Kc;
+}
+
+void PID::setTauR(float tauI){
+    tauR_ = tauI;
+}
+
+void PID::setTauD(float tauD){
+    tauD_ = tauD;
+}
+
 void PID::reset(void) {
 
     float scaledBias = 0.0;

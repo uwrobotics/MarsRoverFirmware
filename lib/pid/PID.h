@@ -126,6 +126,33 @@ public:
     void setTunings(float Kc, float tauI, float tauD);
 
     /**
+     * Changes proportional parameter (Kc) only
+     * 
+     * Not suited for auto tuning mode
+     * 
+     * @param Kc - Proportional Tuning parameter
+     */
+    void setKc(float Kc);
+
+    /**
+     * Changes integration parameter (tauR) only
+     * 
+     * Not suited for auto tuining mode
+     * 
+     * @param Kc - Proportional Tuning parameter
+     */
+    void setTauR(float tauI);
+
+    /**
+     * Changes derivative parameter (tauD) only
+     * 
+     * Not suited for auto tuining mode
+     * 
+     * @param Kc - Proportional Tuning parameter
+     */
+    void setTauD(float tauI);
+
+    /**
      * Reinitializes controller internals. Automatically
      * called on a manual to auto transition.
      */

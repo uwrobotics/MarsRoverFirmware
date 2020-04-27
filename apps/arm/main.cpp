@@ -13,6 +13,13 @@
 #include "CANBuffer.h"
 #include "Servo.h"
 
+// maybe these can be defined more formally in some config file?
+#define TURNTABLEACTUATORID   0
+#define SHOULDERACTUATORID    1
+#define ELBOWACTUATORID       2
+#define WRISTLEFTACTUATORID   3
+#define WRISTRIGHTACTUATORID  4
+
 /*** ARM COMPONENTS ***/
 /**********************/
 
@@ -180,7 +187,25 @@ static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-    return MBED_SUCCESS; // TODO
+    // ASSUME PAYLOAD IS 32 BITS LONG
+    int32_t payload(0);
+    msg >> payload;
+    // The actuatorID is made of the 4 LSBs of the payload
+    uint8_t actuatorID = (payload & 15);
+    // 5th LSB indicates whether we are tuning velocity, if false, we are tuning position
+    bool velocitytuning = (payload & 16) >> 4;
+    // actual value is bits[5:] The And mask is 27 1s followed by 5 0s. Divide by 1000 for accuracy
+    int32_t value = (payload & 4294967264) >> 5;
+    switch (msg.id){
+        case CANID::SET_JOINT_PID_P:
+            switch (actuatorID){
+                case TURNTABLEACTUATORID:
+                    // TO DO: define functions
+                    velocitytuning ? updatepforvelocity(value/1000.0) : updatepforposition(value/1000.0);
+            }
+        // TO DO: REPEAT FOR I AND D AND FOR EACH MOTOR AND ADD DEFAULTS
+    }
+    return MBED_SUCCESS;
 }
 
 // Handler function mappings
