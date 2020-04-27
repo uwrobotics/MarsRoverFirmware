@@ -1,5 +1,5 @@
 # Mars Rover 2020 Firmware Repository
-[![Build Status](https://travis-ci.org/uwrobotics/MarsRover2020-firmware.svg?branch=master)](https://travis-ci.org/uwrobotics/MarsRover2020-firmware)
+![CI](https://github.com/uwrobotics/MarsRover2020-firmware/workflows/CI/badge.svg)
 
 ## Platform: [STM32F446xE](https://www.st.com/resource/en/datasheet/stm32f446re.pdf) / [NUCLEO-F446RE](https://os.mbed.com/platforms/ST-Nucleo-F446RE/)
 

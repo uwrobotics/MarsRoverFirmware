@@ -1,0 +1,59 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  ARM_TOOLS_URL: https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+  ARM_TOOLS_DIR: gcc-arm-none-eabi-9-2019-q4-major
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        env:
+          - {APP: test-blinky, TARGET: nucleo}
+          - {APP: test-blinky, TARGET: arm}
+          - {APP: test-blinky, TARGET: science}
+          - {APP: test-blinky, TARGET: safety}
+          - {APP: test-blinky, TARGET: gimbtonomy}
+          - {APP: arm        , TARGET: arm}
+          - {APP: science    , TARGET: science}
+          - {APP: safety     , TARGET: safety}
+          - {APP: gimbtonomy , TARGET: gimbtonomy}
+
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set Working Directory as Home
+        shell: bash
+        run: echo "::set-env name=HOME::$HOME"
+
+      - name: Update Path with Toolchain
+        run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
+
+      - name: Load Cached Arm Toolchain
+        uses: actions/cache@v1
+        id: toolchain-cache
+        with:
+          path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
+          key: ${{ env.ARM_TOOLS_DIR }}
+
+      - name: Install Toolchain (if not cached)
+        if: steps.toolchain-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xvf /tmp/arm-tools.tar.gz -C ${{ env.HOME }}
+
+      - name: Print Toolchain Versions
+        shell: bash
+        run: |
+          arm-none-eabi-gcc --version
+          make --version
+          ls -la ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin
+
+      - name: Make
+        shell: bash
+        env: ${{matrix.env}}
+        run: make APP=${{ env.APP }} TARGET=${{ env.TARGET }}
