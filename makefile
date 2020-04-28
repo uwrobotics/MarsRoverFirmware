@@ -12,7 +12,8 @@
 BUILD_PATH    := build
 TARGETS_PATH  := targets
 APPS_PATH	  := apps
-APP_OUT_PATH  := ../$(BUILD_PATH)/$(APP)
+APP_OUT_PATH  := ../$(BUILD_PATH)/$(APPS_PATH)/$(APP)
+OBJ_PATH      := ../$(BUILD_PATH)/obj
 TARGET_PATH   := ../$(TARGETS_PATH)/$(TARGET)
 APP_PATH      := ../$(APPS_PATH)/$(APP)
 LIB_PATH      := ../lib
@@ -85,12 +86,12 @@ clean-mbed :
 
 clean-all :
 	$(call RM_DIR,$(BUILD_PATH))
-	$(call RM_FILE_TYPE,..,*.d)
-	$(call RM_FILE_TYPE,..,*.o)
+	$(call RM_FILE_TYPE,.,*.d)
+	$(call RM_FILE_TYPE,.,*.o)
 
 else
 
-# Trick rules into thinking we are in the root, when we are in the bulid dir
+# Trick rules into thinking we are in the root, when we are in the build dir
 VPATH = ..
 
 # Project settings
@@ -110,21 +111,33 @@ LIB_SRC_CPP += $(wildcard $(LIB_PATH)/*/*.cpp)
 APP_INC += -I$(APP_PATH)
 LIB_INC += $(addprefix -I,$(wildcard $(LIB_PATH)/*))
 
-SRC_FILES_C   = $(APP_SRC_C)   $(LIB_SRC_C)
-SRC_FILES_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
+UWRT_SRC_FILES_C   = $(APP_SRC_C)   $(LIB_SRC_C)
+UWRT_SRC_FILES_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
 
 include ${MBED_PATH}/mbedfile
 
 TARGET_OBJ += ${TARGET_PATH}/PeripheralPins.o
 TARGET_OBJ += ${TARGET_PATH}/system_clock.o
 
-OBJECTS += $(SRC_FILES_C:.c=.o) $(SRC_FILES_CPP:.cpp=.o) ${MBED_OBJ} ${TARGET_OBJ}
+UWRT_C_OBJECTS += $(UWRT_SRC_FILES_C:.c=.o)
+UWRT_CPP_OBJECTS += $(UWRT_SRC_FILES_CPP:.cpp=.o)
+
+UWRT_OBJECTS += ${UWRT_C_OBJECTS}
+UWRT_OBJECTS += ${UWRT_CPP_OBJECTS}
+
+THIRD_PARTY_OBJECTS += ${MBED_OBJ}
+THIRD_PARTY_OBJECTS += ${TARGET_OBJ}
+
+OBJECTS += ${UWRT_CPP_OBJECTS}
+OBJECTS += ${UWRT_C_OBJECTS}
+OBJECTS += ${THIRD_PARTY_OBJECTS}
 
 INCLUDE_PATHS += -I$(CONFIG_PATH)
 INCLUDE_PATHS += -I$(LIB_PATH)
-INCLUDE_PATHS += -I$(MBED_PATH)
-INCLUDE_PATHS += -I${TARGET_PATH}
-INCLUDE_PATHS += $(APP_INC) $(LIB_INC) $(MBED_INC)
+INCLUDE_PATHS += -isystem$(MBED_PATH)
+INCLUDE_PATHS += -isystem$(MBED_INC)
+INCLUDE_PATHS += -isystem${TARGET_PATH}
+INCLUDE_PATHS += $(APP_INC) $(LIB_INC)
 
 LINKER_SCRIPT ?= ${MBED_PATH}/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/TOOLCHAIN_GCC_ARM/STM32F446XE.ld
 
@@ -191,16 +204,21 @@ COMMON_FLAGS += -mcpu=cortex-m4
 COMMON_FLAGS += -mfloat-abi=softfp
 COMMON_FLAGS += -mfpu=fpv4-sp-d16
 COMMON_FLAGS += -MMD
+COMMON_FLAGS += -MP
 COMMON_FLAGS += -mthumb
 COMMON_FLAGS += -Os
-COMMON_FLAGS += -Wall
-COMMON_FLAGS += -Wextra
-COMMON_FLAGS += -Wpedantic
-# COMMON_FLAGS += -Werror
 COMMON_FLAGS += -include
 COMMON_FLAGS += ${TARGET_PATH}/mbed_config_target.h
 COMMON_FLAGS += -include
 COMMON_FLAGS += $(CONFIG_PATH)/mbed_config.h
+
+THIRD_PARTY_COMMON_FLAGS += -Wno-missing-field-initializers
+THIRD_PARTY_COMMON_FLAGS += -Wno-unused-parameter
+
+UWRT_COMMON_FLAGS += -Wall
+UWRT_COMMON_FLAGS += -Wextra
+UWRT_COMMON_FLAGS += -Wpedantic
+# UWRT_COMMON_FLAGS += -Werror # Uncomment this after resolving all warnings
 
 C_FLAGS += -std=gnu11
 C_FLAGS += ${DEFINITIONS}
@@ -225,31 +243,47 @@ ASM_FLAGS += ${COMMON_FLAGS}
 
 all: $(APP_OUT_PATH)/$(PROJECT).bin # $(APP_OUT_PATH)/$(PROJECT).hex size
 
+$(UWRT_C_OBJECTS): %.o: %.c
+	C_FLAGS += ${UWRT_COMMON_FLAGS}
+	+@$(call MAKE_DIR,$(dir $@))
+	+@echo "Compile(C): $(notdir $<)"
+	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) $< -o $@
+$(UWRT_C_OBJECTS): C_FLAGS += ${UWRT_COMMON_FLAGS}
 
-.s.o:
+
+$(UWRT_CPP_OBJECTS): %.o: %.cpp
+	+@$(call MAKE_DIR,$(dir $@))
+	+@echo "Compile(CPP): $(notdir $<)"
+	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
+$(UWRT_CPP_OBJECTS): CXX_FLAGS += ${UWRT_COMMON_FLAGS}
+
+%.o: %.s
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Assemble: $(notdir $<)"
-	@$(AS) -c $(ASM_FLAGS) -o $@ $<
+	@$(AS) -c $(ASM_FLAGS) $< -o $@
 
-.S.o:
+%.o: %.S
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Assemble: $(notdir $<)"
-	@$(AS) -c $(ASM_FLAGS) -o $@ $<
+	@$(AS) -c $(ASM_FLAGS) $< -o $@
 
-.c.o:
+%.o: %.c
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
-	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) -o $@ $<
+	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) $< -o $@
+%.o: C_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 
-.cpp.o:
+%.o: %.cpp
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
-	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) -o $@ $<
+	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
+%.o: CXX_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 
 $(APP_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
+	+@$(call MAKE_DIR,$(dir $@))
 	@$(PREPROC) $< -o $@
 
-$(APP_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(APP_OUT_PATH)/$(PROJECT).link_script.ld
+$(APP_OUT_PATH)/$(PROJECT).elf: $(UWRT_OBJECTS) $(THIRD_PARTY_OBJECTS) $(APP_OUT_PATH)/$(PROJECT).link_script.ld
 	+@echo "$(filter %.o, $^)" > .link_options.txt
 	+@echo "Link: $(notdir $@)"
 	@$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
