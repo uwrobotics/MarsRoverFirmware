@@ -226,3 +226,27 @@ bool ActuatorController::isPastMinAngle() {
 bool ActuatorController::isPastMaxAngle() {
 	return (getAngle_Degrees() > m_actuatorConfig.maxAngle_Degrees || isLimSwitchMaxTriggered());
 }
+
+void ActuatorController::setVelocityPID_P(float P){
+	m_velocityPIDController.setKc(P);
+}
+
+void ActuatorController::setVelocityPID_I(float I){
+	m_velocityPIDController.setTauR(I);
+} 
+
+void ActuatorController::setVelocityPID_D(float D){
+	m_velocityPIDController.setTauD(D);
+}
+
+void ActuatorController::setPositionPID_P(float P){
+	m_positionPIDController.setKc(P);
+}
+
+void ActuatorController::setPositionPID_I(float I){
+	m_positionPIDController.setTauR(I);
+} 
+
+void ActuatorController::setPositionPID_D(float D){
+	m_positionPIDController.setTauD(D);
+}

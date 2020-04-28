@@ -19,6 +19,9 @@
 #define ELBOWACTUATORID       2
 #define WRISTLEFTACTUATORID   3
 #define WRISTRIGHTACTUATORID  4
+#define P                     0
+#define I                     1
+#define D                     2
 
 /*** ARM COMPONENTS ***/
 /**********************/
@@ -187,25 +190,76 @@ static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-    // ASSUME PAYLOAD IS 32 BITS LONG
-    int32_t payload(0);
-    msg >> payload;
-    // The actuatorID is made of the 4 LSBs of the payload
-    uint8_t actuatorID = (payload & 15);
-    // 5th LSB indicates whether we are tuning velocity, if false, we are tuning position
-    bool velocitytuning = (payload & 16) >> 4;
-    // actual value is bits[5:] The And mask is 27 1s followed by 5 0s. Divide by 1000 for accuracy
-    int32_t value = (payload & 4294967264) >> 5;
-    switch (msg.id){
-        case CANID::SET_JOINT_PID_P:
-            switch (actuatorID){
-                case TURNTABLEACTUATORID:
-                    // TO DO: define functions
-                    velocitytuning ? updatepforvelocity(value/1000.0) : updatepforposition(value/1000.0);
-            }
-        // TO DO: REPEAT FOR I AND D AND FOR EACH MOTOR AND ADD DEFAULTS
+    /** ---------------------------------------------------------
+     * | 24 bits  | 32 bits  | 3 bits   | 1 bit   |  4 bits      |
+     * | unused   | data     | param    | vel/pos |  Actuator ID |
+     *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    */
+    // Prepare bitfield to break down CAN data
+    struct{
+        // ID referring to which Actuator should be changed
+        // Param is Kp, Ki, Kd
+        unsigned int actuatorID : 4, param : 3;
+        // Bool for specifying velocity or position pid
+        bool velocity : 1;
+        // Actual value to be set. Bitfields can't have floats, use union
+        int32_t value : 32;
+    } payload;
+    union {
+        float float_value;
+        int32_t int_value;
+    }int_to_float;
+    int64_t data(0);
+    msg >> data;
+    payload.actuatorID = (data & 15);
+    payload.velocity = (data & 16) >> 4;
+    payload.param = (data & 224) >> 5;
+    payload.value = (data & 1099511627520) >> 8;
+    int_to_float.int_value = payload.value;
+    // determine which actuator is of interest in order to avoid repetition
+    ActuatorController *temp = nullptr;
+    switch(payload.actuatorID){
+        case TURNTABLEACTUATORID:
+            temp = &turnTableActuator;
+            break;
+        case SHOULDERACTUATORID:
+            temp = &shoulderActuator;
+            break;
+        case ELBOWACTUATORID:
+            temp = &elbowActuator;
+            break;
+        case WRISTLEFTACTUATORID:
+            temp = &wristLeftActuator;
+            break;
+        case WRISTRIGHTACTUATORID:
+            temp = &wristRightActuator;
+            break;
+        default:
+            return MBED_ERROR_INVALID_ARGUMENT;
+        
     }
-    return MBED_SUCCESS;
+    switch (msg.id){
+        case CANID::SET_JOINT_PID:
+            switch(payload.param){
+                case P:
+                    payload.velocity ? temp->setVelocityPID_P(int_to_float.float_value) :
+                    temp->setPositionPID_P(int_to_float.float_value);
+                    return MBED_SUCCESS;
+                case I:
+                    payload.velocity ? temp->setVelocityPID_I(int_to_float.float_value) :
+                    temp->setPositionPID_I(int_to_float.float_value);
+                    return MBED_SUCCESS;
+                case D:
+                    payload.velocity ? temp->setVelocityPID_D(int_to_float.float_value) :
+                    temp->setPositionPID_D(int_to_float.float_value);
+                    return MBED_SUCCESS;
+                default:
+                    return MBED_ERROR_INVALID_ARGUMENT;
+            }
+        default:
+            // Unimplemented
+            return MBED_ERROR_INVALID_ARGUMENT;
+    }
 }
 
 // Handler function mappings
@@ -230,11 +284,8 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
     {CANID::RUN_CLAW_CALIBRATION,       &runClawCalibration},
 
     {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
-
     {CANID::SET_PID_DEADZONE,           &setPIDParameter},
-    {CANID::SET_JOINT_PID_P,            &setPIDParameter},
-    {CANID::SET_JOINT_PID_I,            &setPIDParameter},
-    {CANID::SET_JOINT_PID_D,            &setPIDParameter},
+    {CANID::SET_JOINT_PID,              &setPIDParameter},
     {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
 };
 

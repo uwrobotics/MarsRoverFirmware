@@ -59,6 +59,14 @@ public:
 	bool isPastMinAngle();
 	bool isPastMaxAngle();
 
+	void setVelocityPID_P(float P);
+	void setVelocityPID_I(float I);
+	void setVelocityPID_D(float D);
+
+	void setPositionPID_P(float P);
+	void setPositionPID_I(float I);
+	void setPositionPID_D(float D);	
+
 private:
 
 	t_actuatorControlMode m_controlMode;

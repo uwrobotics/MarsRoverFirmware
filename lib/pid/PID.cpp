@@ -74,7 +74,7 @@
  */
 
 #include "PID.h"
-
+// Uses standard form of equation, hence tauI and tauD
 PID::PID(float Kc, float tauI, float tauD, float interval) {
 
     usingFeedForward = false;
@@ -189,15 +189,15 @@ void PID::setTunings(float Kc, float tauI, float tauD) {
 }
 
 void PID::setKc(float Kc){
-    Kc_ = Kc;
+    setTunings(Kc, tauR_, tauD_);
 }
 
 void PID::setTauR(float tauI){
-    tauR_ = tauI;
+    setTunings(Kc_, tauI, tauD_);
 }
 
 void PID::setTauD(float tauD){
-    tauD_ = tauD;
+    setTunings(Kc_, tauR_, tauD);
 }
 
 void PID::reset(void) {
