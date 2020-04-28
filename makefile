@@ -11,8 +11,8 @@
 
 BUILD_PATH    := build
 TARGETS_PATH  := targets
-APPS_PATH	  := apps
-APP_OUT_PATH  := ../$(BUILD_PATH)/$(APPS_PATH)/$(APP)
+APPS_PATH     := apps
+APP_OUT_PATH  := ../$(BUILD_PATH)/bin/$(APPS_PATH)/$(APP)
 OBJ_PATH      := ../$(BUILD_PATH)/obj
 TARGET_PATH   := ../$(TARGETS_PATH)/$(TARGET)
 APP_PATH      := ../$(APPS_PATH)/$(APP)
@@ -75,14 +75,14 @@ makefile : ;
 
 clean :
 	$(call RM_DIR,$(BUILD_PATH))
-	$(call RM_FILE_TYPE,$(APPS_PATH),*.o)
 	$(call RM_FILE_TYPE,$(APPS_PATH),*.d)
+	$(call RM_FILE_TYPE,$(APPS_PATH),*.o)
 	$(call RM_FILE_TYPE,lib,*.d)
 	$(call RM_FILE_TYPE,lib,*.o)
 
 clean-mbed : 
-	$(call RM_FILE_TYPE,mbed-os,*.d)
-	$(call RM_FILE_TYPE,mbed-os,*.o)
+	$(call RM_DIR,$(BUILD_PATH)/obj/mbed-os)
+
 
 clean-all :
 	$(call RM_DIR,$(BUILD_PATH))
@@ -102,35 +102,33 @@ PROJECT := $(APP).$(TARGET)
 # Objects and Paths
 ###############################################################################
 
+APP_INC += -I$(APP_PATH)
+LIB_INC += $(addprefix -I,$(wildcard $(LIB_PATH)/*))
+
 APP_SRC_C += $(wildcard $(APP_PATH)/*.c)
 LIB_SRC_C += $(wildcard $(LIB_PATH)/*/*.c)
 
 APP_SRC_CPP += $(wildcard $(APP_PATH)/*.cpp)
 LIB_SRC_CPP += $(wildcard $(LIB_PATH)/*/*.cpp)
 
-APP_INC += -I$(APP_PATH)
-LIB_INC += $(addprefix -I,$(wildcard $(LIB_PATH)/*))
+UWRT_SRC_C   = $(APP_SRC_C)   $(LIB_SRC_C)
+UWRT_SRC_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
 
-UWRT_SRC_FILES_C   = $(APP_SRC_C)   $(LIB_SRC_C)
-UWRT_SRC_FILES_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
+TARGET_SRC += ${TARGET_PATH}/PeripheralPins.c
+TARGET_SRC += ${TARGET_PATH}/system_clock.c
 
 include ${MBED_PATH}/mbedfile
 
-TARGET_OBJ += ${TARGET_PATH}/PeripheralPins.o
-TARGET_OBJ += ${TARGET_PATH}/system_clock.o
+UWRT_C_OBJ := $(subst ../,${OBJ_PATH}/,$(UWRT_SRC_C:.c=.o))
+UWRT_CPP_OBJECTS := $(subst ../,${OBJ_PATH}/,$(UWRT_SRC_CPP:.cpp=.o))
+TARGET_OBJ := $(subst ../,${OBJ_PATH}/,$(TARGET_SRC:.c=.o))
+MBED_OBJ := $(subst ../,${OBJ_PATH}/,$(MBED_OBJ))
 
-UWRT_C_OBJECTS += $(UWRT_SRC_FILES_C:.c=.o)
-UWRT_CPP_OBJECTS += $(UWRT_SRC_FILES_CPP:.cpp=.o)
-
-UWRT_OBJECTS += ${UWRT_C_OBJECTS}
-UWRT_OBJECTS += ${UWRT_CPP_OBJECTS}
-
-THIRD_PARTY_OBJECTS += ${MBED_OBJ}
-THIRD_PARTY_OBJECTS += ${TARGET_OBJ}
-
+OBJECTS += ${UWRT_C_OBJ}
 OBJECTS += ${UWRT_CPP_OBJECTS}
-OBJECTS += ${UWRT_C_OBJECTS}
-OBJECTS += ${THIRD_PARTY_OBJECTS}
+OBJECTS += ${TARGET_OBJ}
+OBJECTS += ${MBED_OBJ}
+
 
 INCLUDE_PATHS += -I$(CONFIG_PATH)
 INCLUDE_PATHS += -I$(LIB_PATH)
@@ -243,50 +241,48 @@ ASM_FLAGS += ${COMMON_FLAGS}
 
 all: $(APP_OUT_PATH)/$(PROJECT).bin # $(APP_OUT_PATH)/$(PROJECT).hex size
 
-$(UWRT_C_OBJECTS): %.o: %.c
-	C_FLAGS += ${UWRT_COMMON_FLAGS}
-	+@$(call MAKE_DIR,$(dir $@))
-	+@echo "Compile(C): $(notdir $<)"
-	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) $< -o $@
-$(UWRT_C_OBJECTS): C_FLAGS += ${UWRT_COMMON_FLAGS}
-
-
-$(UWRT_CPP_OBJECTS): %.o: %.cpp
-	+@$(call MAKE_DIR,$(dir $@))
-	+@echo "Compile(CPP): $(notdir $<)"
-	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
-$(UWRT_CPP_OBJECTS): CXX_FLAGS += ${UWRT_COMMON_FLAGS}
-
-%.o: %.s
+$(OBJ_PATH)/%.o: ../%.s
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Assemble: $(notdir $<)"
 	@$(AS) -c $(ASM_FLAGS) $< -o $@
 
-%.o: %.S
+$(OBJ_PATH)/%.o: ../%.S
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Assemble: $(notdir $<)"
 	@$(AS) -c $(ASM_FLAGS) $< -o $@
 
-%.o: %.c
+$(OBJ_PATH)/%.o: ../%.c
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
 	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) $< -o $@
 %.o: C_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 
-%.o: %.cpp
+$(OBJ_PATH)/%.o: ../%.cpp
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
 	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
 %.o: CXX_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 
+$(UWRT_C_OBJ): $(OBJ_PATH)/%.o: ../%.c
+	+@$(call MAKE_DIR,$(dir $@))
+	+@echo "Compile: $(notdir $<)"
+	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) $< -o $@
+$(UWRT_C_OBJ): C_FLAGS += ${UWRT_COMMON_FLAGS}
+
+$(UWRT_CPP_OBJECTS): $(OBJ_PATH)/%.o: ../%.cpp
+	+@$(call MAKE_DIR,$(dir $@))
+	+@echo "Compile: $(notdir $<)"
+	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
+$(UWRT_CPP_OBJECTS): CXX_FLAGS += ${UWRT_COMMON_FLAGS}
+
 $(APP_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
 	+@$(call MAKE_DIR,$(dir $@))
 	@$(PREPROC) $< -o $@
 
-$(APP_OUT_PATH)/$(PROJECT).elf: $(UWRT_OBJECTS) $(THIRD_PARTY_OBJECTS) $(APP_OUT_PATH)/$(PROJECT).link_script.ld
-	+@echo "$(filter %.o, $^)" > .link_options.txt
+$(APP_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(APP_OUT_PATH)/$(PROJECT).link_script.ld
+	+@echo "$(filter %.o, $^)" > $(APP_OUT_PATH)/.link_options.txt
 	+@echo "Link: $(notdir $@)"
-	@$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
+	$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @$(APP_OUT_PATH)/.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
 
 $(APP_OUT_PATH)/$(PROJECT).bin: $(APP_OUT_PATH)/$(PROJECT).elf
 	+@$(ELF2BIN) -O binary $< $@

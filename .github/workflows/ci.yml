@@ -43,8 +43,7 @@ jobs:
       - name: Install Toolchain (if not cached)
         if: steps.toolchain-cache.outputs.cache-hit != 'true'
         shell: bash
-        run: |
-          wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xvf /tmp/arm-tools.tar.gz -C ${{ env.HOME }}
+        run: wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xvf /tmp/arm-tools.tar.gz -C ${{ env.HOME }}
 
       - name: Print Toolchain Versions
         shell: bash
