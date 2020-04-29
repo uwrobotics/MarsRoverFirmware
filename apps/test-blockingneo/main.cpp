@@ -1,8 +1,9 @@
 #include "mbed.h"
-#include "blockingneopixel.h"
+#include "Neopixel_Blocking.h"
+#include "rover_config.h"
 
 int main(){
-        BlockingNeopixel pixels(16);
+        Neopixel_Blocking pixels(16, LED_MTRX);
 
         while (1)       
         {
@@ -10,6 +11,7 @@ int main(){
             wait(1);
             pixels.displayBlue();
             wait(1);
+            pixels.blinkPixels(2,1, pixels.Green);
         }
         
     return 1;

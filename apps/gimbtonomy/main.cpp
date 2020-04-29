@@ -6,13 +6,13 @@
 #include "mbed.h"
 #include "CANMsg.h"
 #include "rover_config.h"
-#include "blockingneopixel.h"
+#include "Neopixel_Blocking.h"
 
 Serial        pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 // CAN_RX = PB_8, CAN_TX = PB_9
 CAN           can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 CANMsg        rxMsg;
-BlockingNeopixel      neopixel(16);
+Neopixel_Blocking      neopixel(16, LED_MTRX);
 
 // 0x794 CAN ID for change to a neo pixel.
 // Color is specified by the data inside the packet
@@ -41,7 +41,7 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg){
         break;
     case 2:
         pc.printf("Setting neo pixels to flashing green\r\n");
-        neopixel.flashGreen(10,2);
+        neopixel.blinkPixels(10,2, neopixel.Green);
         break;
     default:
         pc.printf("Neo pixels tried to be set to unknow mode\r\n");
