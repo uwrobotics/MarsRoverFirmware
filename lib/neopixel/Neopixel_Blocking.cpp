@@ -5,7 +5,7 @@ constexpr uint16_t H_0_NS = 200;
 constexpr uint16_t H_1_NS = 550;
 constexpr uint16_t L_NS = 450;
 
-Neopixel_Blocking::Neopixel_Blocking(int numPixels, PinName mtrxPinName):pixelNum(numPixels),out(mtrxPinName) {}
+Neopixel_Blocking::Neopixel_Blocking(int numPixels, PinName mtrxPinName):m_pixelNum(numPixels),out(mtrxPinName) {}
 
 Neopixel_Blocking::~Neopixel_Blocking() {}
 
@@ -53,36 +53,36 @@ void Neopixel_Blocking::writeByte(const int buffer[8]) {
     w = white
     n = no colour/off
 */
-void Neopixel_Blocking::showColour(char colour) {
-  for (int i = 0; i < pixelNum; i++) {
-    switch (colour) {
-    case 'g':
-      writeByte(on_buffer);
-      writeByte(off_buffer);
-      writeByte(off_buffer);
+void Neopixel_Blocking::showColour(colour selectedColour) {
+  for (int i = 0; i < m_pixelNum; i++) {
+    switch (selectedColour) {
+    case Green:
+      writeByte(m_on_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
       break;
-    case 'b':
-      writeByte(off_buffer);
-      writeByte(off_buffer);
-      writeByte(on_buffer);
+    case Blue:
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_on_buffer);
       break;
-    case 'r':
-      writeByte(off_buffer);
-      writeByte(on_buffer);
-      writeByte(off_buffer);
+    case Red:
+      writeByte(m_off_buffer);
+      writeByte(m_on_buffer);
+      writeByte(m_off_buffer);
       break;
-    case 'w':
-      writeByte(on_buffer);
-      writeByte(on_buffer);
-      writeByte(on_buffer);
+    case White:
+      writeByte(m_on_buffer);
+      writeByte(m_on_buffer);
+      writeByte(m_on_buffer);
       break;
-    case 'n':
-      writeByte(off_buffer);
-      writeByte(off_buffer);
-      writeByte(off_buffer);
+    case Off:
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
+      writeByte(m_off_buffer);
       break;
 
-    // can possibly add more colours but will need custom byte data so send
+    // can possibly add more colours but will need custom byte data to send
     default:
       break;
     }
@@ -90,16 +90,12 @@ void Neopixel_Blocking::showColour(char colour) {
 }
 
 // tells pixels to turn on and off n times
-void Neopixel_Blocking::blinkPixels(int flashes, char colour) {
-  for (int i = 0; i < flashes; i++) {
-    for (int i = 0; i < pixelNum; i++) {
-      showColour(colour);
-    }
-    wait(0.5);
-    for (int i = 0; i < pixelNum; i++) {
-      showColour('n');
-    }
-    wait(0.5);
+void Neopixel_Blocking::blinkPixels(int numflashes,float delay_s, colour selectedColour) {
+  for (int i = 0; i < numflashes; i++) {
+    showColour(selectedColour);
+    wait(delay_s);
+    showColour(Off);
+    wait(delay_s);
   }
 }
 
@@ -114,77 +110,29 @@ void Neopixel_Blocking::writeAnyRGB(const int colour[3]) {
       colourBuffer[j] /= 2;
     }
   }
-  writeByte(buffer[0]);
-  writeByte(buffer[1]);
-  writeByte(buffer[2]);
-}
 
-void Neopixel_Blocking::writeAnyRGBall(const int colour[3]) {
-  int colourBuffer[3] = {colour[0], colour[1], colour[2]};
-  int buffer[][8] = {{}, {}, {}};
-  for (int j = 0; j < 3; j++) {
-    for (int i = 0; i < 8; i++) {
-      buffer[j][i] = colourBuffer[j] % 2;
-      colourBuffer[j] /= 2;
-    }
-  }
-
-  for (int k = 0; k < pixelNum; k++) {
+  for (int k = 0; k < m_pixelNum; k++) {
     writeByte(buffer[0]);
     writeByte(buffer[1]);
     writeByte(buffer[2]);
   }
 }
 
-// Flashing Green
+// Flashing Green to be phased out
 void Neopixel_Blocking::flashGreen(int numFlashes, float delay_s) {
   for (int i = 0; i < numFlashes; i++) {
-    showColour('g');
+    showColour(Green);
     wait(delay_s);
-    showColour('n');
+    showColour(Off);
     wait(delay_s);
   }
 }
 
 // show solid red on all pixels
-void Neopixel_Blocking::displayRed() { showColour('r'); }
+void Neopixel_Blocking::displayRed() { showColour(Red); }
 
 // show solid blue on all pixels
-void Neopixel_Blocking::displayBlue() { showColour('b'); }
+void Neopixel_Blocking::displayBlue() { showColour(Blue); }
 
 // turn off all pixels
-void Neopixel_Blocking::shutdown() { showColour('n'); }
-
-void Neopixel_Blocking::overwriteFirstBit(char colour) {
-  switch (colour) {
-  case 'g':
-    writeByte(on_buffer);
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    break;
-  case 'b':
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    writeByte(on_buffer);
-    break;
-  case 'r':
-    writeByte(off_buffer);
-    writeByte(on_buffer);
-    writeByte(off_buffer);
-    break;
-  case 'w':
-    writeByte(on_buffer);
-    writeByte(on_buffer);
-    writeByte(on_buffer);
-    break;
-  case 'n':
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    writeByte(off_buffer);
-    break;
-
-  // can possibly add more colours but will need custom byte data so send
-  default:
-    break;
-  }
-}
+void Neopixel_Blocking::shutdown() { showColour(Off); }
