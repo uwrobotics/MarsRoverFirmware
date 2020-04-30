@@ -142,6 +142,7 @@ float getCurrentData()
 {
     //some conversion factor for current data
     float conversionFactor = 1;
+    //may need char16_t?
     char cmd[3] = {CURRENT_REGISTER};
     
     i2c.write(SENSOR_SLAVE_ADDRESS, cmd, 2);
@@ -176,7 +177,7 @@ float readThermosistor(float vin, float vout)
     float rthermo = rResistor *((vin/vout)-1);
 
     //convert resistance to temp (steinhart and hart eqn)
-    return 1/(A+B*log(rthermo)+C*pow(log(rthermo),3));
+    return 1/(A + B * log(rthermo) + C * pow(log(rthermo),3));
 }
 
 int configureSensor(configurationMode operationMode, int resetRegisters)
