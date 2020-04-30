@@ -62,7 +62,7 @@ ifeq ($(filter $(TARGET), $(patsubst $(TARGETS_PATH)/%/,%,$(sort $(dir $(wildcar
 	$(error TARGET is not set or is not supported. ${\n}Select a target with TARGET=board_name:${\n}${\n}$(subst ${ },${\n},$(patsubst $(TARGETS_PATH)/%/,%,$(sort $(dir $(wildcard $(TARGETS_PATH)/*/)))))${\n}${\n})
 endif
 
-	+@$(call MAKE_DIR,$(BUILD_PATH)/$(APP))
+	+@$(call MAKE_DIR,$(BUILD_PATH))
 	+@$(MAKETARGET)
 
 $(BUILD_PATH): all
@@ -251,29 +251,29 @@ $(OBJ_PATH)/%.o: ../%.S
 	+@echo "Assemble: $(notdir $<)"
 	@$(AS) -c $(ASM_FLAGS) $< -o $@
 
+%.o: C_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 $(OBJ_PATH)/%.o: ../%.c
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
 	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) $< -o $@
-%.o: C_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 
+%.o: CXX_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 $(OBJ_PATH)/%.o: ../%.cpp
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
 	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
-%.o: CXX_FLAGS += ${THIRD_PARTY_COMMON_FLAGS}
 
+$(UWRT_C_OBJ): C_FLAGS += ${UWRT_COMMON_FLAGS}
 $(UWRT_C_OBJ): $(OBJ_PATH)/%.o: ../%.c
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
 	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) $< -o $@
-$(UWRT_C_OBJ): C_FLAGS += ${UWRT_COMMON_FLAGS}
 
+$(UWRT_CPP_OBJECTS): CXX_FLAGS += ${UWRT_COMMON_FLAGS}
 $(UWRT_CPP_OBJECTS): $(OBJ_PATH)/%.o: ../%.cpp
 	+@$(call MAKE_DIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
 	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
-$(UWRT_CPP_OBJECTS): CXX_FLAGS += ${UWRT_COMMON_FLAGS}
 
 $(APP_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
 	+@$(call MAKE_DIR,$(dir $@))
@@ -282,7 +282,7 @@ $(APP_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
 $(APP_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(APP_OUT_PATH)/$(PROJECT).link_script.ld
 	+@echo "$(filter %.o, $^)" > $(APP_OUT_PATH)/.link_options.txt
 	+@echo "Link: $(notdir $@)"
-	$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @$(APP_OUT_PATH)/.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
+	@$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @$(APP_OUT_PATH)/.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
 
 $(APP_OUT_PATH)/$(PROJECT).bin: $(APP_OUT_PATH)/$(PROJECT).elf
 	+@$(ELF2BIN) -O binary $< $@
