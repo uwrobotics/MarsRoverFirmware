@@ -52,6 +52,13 @@ public:
 
 	mbed_error_status_t update();
 
+	mbed_error_status_t resetEncoder();
+
+	bool isLimSwitchMinTriggered();
+	bool isLimSwitchMaxTriggered();
+	bool isPastMinAngle();
+	bool isPastMaxAngle();
+
 private:
 
 	t_actuatorControlMode m_controlMode;
@@ -71,9 +78,4 @@ private:
 	Timer m_updateTimer;
 
 	void initializePIDControllers();
-
-	bool isLimSwitchMinTriggered();
-	bool isLimSwitchMaxTriggered();
-	bool isPastMinAngle();
-	bool isPastMaxAngle();
 };

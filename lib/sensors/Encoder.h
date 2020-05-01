@@ -30,11 +30,12 @@ public:
 		PinName pin_ChannelB = NC;
 		PinName pin_Index    = NC;
 
-		float degreesPerUnit = 1.0;
-		bool inverted = false;
+		float degreesPerUnit = 1.0; // If encoder is inverted, set to negative value
+		float zeroOffset_Degrees = 0.0; // Offset after inversion
 
 		// Encoding type (for quadrature encoders)
 		t_quadratureEncodingType quadratureEncodingType = x2_encoding;
+		
 	} t_encoderConfig;
 
 	Encoder(t_encoderConfig encoderConfig) {};
