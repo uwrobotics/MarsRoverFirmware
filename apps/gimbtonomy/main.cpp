@@ -12,7 +12,6 @@ constexpr uint16_t    NEOPIXEL_CAN_ID_INCOMING = 0x784;
 constexpr uint16_t    NEOPIXEL_CAN_ID_OUTGOING = 0x785;
 CAN                   can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 CANMsg                rxMsg, txMsg;
-BlockingNeopixel      neopixel(16);
 // CAN_RX = PB_8, CAN_TX = PB_9
 Neopixel_Blocking      neopixel(16, LED_MTRX);
 
