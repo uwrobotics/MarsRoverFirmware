@@ -6,7 +6,7 @@ os:
 # Only trigger builds on master
 branches:
   only:
-  - master # Build all commits and PR's on master
+    - master # Build all commits and PR's on master
 
 # Cache ARM toolchain
 cache:
@@ -24,11 +24,11 @@ env:
     - APP=test-blinky  TARGET=arm
     - APP=test-blinky  TARGET=science
     - APP=test-blinky  TARGET=safety
-    - APP=test-blinky  TARGET=gimbal
+    - APP=test-blinky  TARGET=gimbtonomy
     - APP=arm          TARGET=arm
     - APP=science      TARGET=science
     - APP=safety       TARGET=safety
-    - APP=gimbal       TARGET=gimbal
+    - APP=gimbtonomy   TARGET=gimbtonomy
 
 # Install tools needed by build
 install:
@@ -47,7 +47,7 @@ before_script:
 
 # Build with matrix
 script:
-  - make APP=$APP TARGET=$TARGET -j4
+  - make APP=$APP TARGET=$TARGET -j $(nproc)
 
 # Log diagnostic info
 after_script:
