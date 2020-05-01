@@ -5,16 +5,11 @@ build
 
 # MacOS pollution
 *.DS_store
-<<<<<<< HEAD
 
 # VS Code pollution
 firmware.code-workspace
 .vscode
-<<<<<<< HEAD
-=======
->>>>>>> origin/tony/servoAPI
-=======
 
 # Clion
 *.idea/
->>>>>>> master
+
