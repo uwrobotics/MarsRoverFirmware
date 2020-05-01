@@ -211,10 +211,10 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     }int_to_float;
     int64_t data(0);
     msg >> data;
-    payload.actuatorID = (data & 15);
-    payload.velocity = (data & 16) >> 4;
-    payload.param = (data & 224) >> 5;
-    payload.value = (data & 1099511627520) >> 8;
+    payload.actuatorID = (data & 0xF);
+    payload.velocity = (data & 0x10) >> 4;
+    payload.param = (data & 0xE0) >> 5;
+    payload.value = (data & 0xFFFFFFFF00) >> 8;
     int_to_float.int_value = payload.value;
     // determine which actuator is of interest in order to avoid repetition
     ActuatorController *temp = nullptr;
