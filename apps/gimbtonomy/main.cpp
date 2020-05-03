@@ -22,7 +22,7 @@ void initCAN() {
 }
 
 void handleSetNeoPixelColor(CANMsg *p_newMsg){
-    enum mode{
+    enum mode : uint8_t{
         solidRed, solidBlue, flashingGreen, off
     };
     uint8_t neoPixelMode = 0;
