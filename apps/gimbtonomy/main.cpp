@@ -5,11 +5,10 @@
 
 #include "mbed.h"
 #include "CANMsg.h"
+#include "can_config.h"
 #include "rover_config.h"
 #include "Neopixel_Blocking.h"
 
-constexpr uint16_t    NEOPIXEL_CAN_ID_INCOMING = 0x784;
-constexpr uint16_t    NEOPIXEL_CAN_ID_OUTGOING = 0x785;
 CAN                   can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 CANMsg                rxMsg, txMsg;
 // CAN_RX = PB_8, CAN_TX = PB_9
@@ -52,11 +51,11 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg){
 
 void processCANMsg(CANMsg *p_newMsg){
     switch (p_newMsg->id){
-        case NEOPIXEL_CAN_ID_INCOMING:
+        case CANID::SET_NEOPIXEL:
             // Send an acknowledgement CANMsg back to the Jetson
             printf("Sending acknowledgement message\r\n");
             txMsg.clear();
-            txMsg.id = NEOPIXEL_CAN_ID_OUTGOING;
+            txMsg.id = CANID::NEOPIXEL_ACK;
             txMsg << true;
             can.write(txMsg);
             printf("Updating neo pixels\r\n");
