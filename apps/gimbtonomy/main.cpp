@@ -16,33 +16,31 @@ CANMsg                rxMsg, txMsg;
 Neopixel_Blocking      neopixel(16, LED_MTRX);
 
 // Color is specified by the data inside the packet
-// 0 is solid red
-// 1 is solid blue
-// 2 is flashing green
-// 3 is off
 
 void initCAN() {
     can.filter(ROVER_CANID_FIRST_GIMBTONOMY_RX, ROVER_CANID_FILTER_MASK, CANStandard);
 }
 
 void handleSetNeoPixelColor(CANMsg *p_newMsg){
-    // 0 = solid red, 1 = solid blue, 2 = flashing green, 3 = off
+    enum mode{
+        solidRed, solidBlue, flashingGreen, off
+    };
     uint8_t neoPixelMode = 0;
     *p_newMsg >> neoPixelMode;
     switch (neoPixelMode){
-    case 0:
+    case solidRed:
         printf("Setting neo pixels to solid red\r\n");
         neopixel.displayRed();
         break;
-    case 1:
+    case solidBlue:
         printf("Setting neo pixels to solid blue\r\n");
         neopixel.displayBlue();
         break;
-    case 2:
+    case flashingGreen:
         printf("Setting neo pixels to flashing green\r\n");
         neopixel.blinkPixels(10,2, neopixel.Green);
         break;
-    case 3:
+    case off:
         printf("Turning neo pixels off\r\n");
         neopixel.shutdown();
         break;
