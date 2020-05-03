@@ -230,7 +230,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
         
     }
     switch (msg.id){
-        case CANID::SET_JOINT_PID:
+        case CANID::SET_JOINT_PID_PID:
             switch(payload.param){
                 case ROSID::P:
                     payload.velocity ? temp->setVelocityPID_P(int_to_float.float_value) :
@@ -284,7 +284,7 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
     {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
 
     {CANID::SET_JOINT_PID_DEADZONE,     &setPIDParameter},
-    {CANID::SET_JOINT_PID,              &setPIDParameter},
+    {CANID::SET_JOINT_PID_PID,          &setPIDParameter},
     {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
 };
 
