@@ -22,6 +22,8 @@
 #define P                     0
 #define I                     1
 #define D                     2
+#define BIAS                  3
+#define DEADZONEERROR         4
 
 /*** ARM COMPONENTS ***/
 /**********************/
@@ -253,6 +255,14 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
                     payload.velocity ? temp->setVelocityPID_D(int_to_float.float_value) :
                     temp->setPositionPID_D(int_to_float.float_value);
                     return MBED_SUCCESS;
+                case BIAS:
+                    payload.velocity ? temp->setVelocityPID_bias(int_to_float.float_value) :
+                    temp->setPositionPID_bias(int_to_float.float_value);
+                    return MBED_SUCCESS;
+                case DEADZONEERROR:
+                    payload.velocity ? temp->setVelocityPID_DeadZoneError(int_to_float.float_value) : 
+                    temp->setPositionPID_DeadZoneError(int_to_float.float_value);
+                    return MBED_SUCCESS;
                 default:
                     return MBED_ERROR_INVALID_ARGUMENT;
             }
@@ -284,9 +294,7 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
     {CANID::RUN_CLAW_CALIBRATION,       &runClawCalibration},
 
     {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
-    {CANID::SET_PID_DEADZONE,           &setPIDParameter},
     {CANID::SET_JOINT_PID,              &setPIDParameter},
-    {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
 };
 
 /*** ARM CANBus ***/

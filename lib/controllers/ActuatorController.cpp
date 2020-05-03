@@ -239,6 +239,14 @@ void ActuatorController::setVelocityPID_D(float D){
 	m_velocityPIDController.setTauD(D);
 }
 
+void ActuatorController::setVelocityPID_bias(float bias){
+	m_velocityPIDController.setBias(bias);
+}
+
+void ActuatorController::setVelocityPID_DeadZoneError(float DeadZoneError){
+	m_velocityPIDController.setDeadZoneError(DeadZoneError);
+}
+
 void ActuatorController::setPositionPID_P(float P){
 	m_positionPIDController.setKc(P);
 }
@@ -249,4 +257,12 @@ void ActuatorController::setPositionPID_I(float I){
 
 void ActuatorController::setPositionPID_D(float D){
 	m_positionPIDController.setTauD(D);
+}
+
+void ActuatorController::setPositionPID_bias(float bias){
+	m_positionPIDController.setBias(bias);
+}
+
+void ActuatorController::setPositionPID_DeadZoneError(float DeadZoneError){
+	m_positionPIDController.setDeadZoneError(DeadZoneError);
 }

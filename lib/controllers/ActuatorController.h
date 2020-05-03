@@ -62,10 +62,14 @@ public:
 	void setVelocityPID_P(float P);
 	void setVelocityPID_I(float I);
 	void setVelocityPID_D(float D);
+	void setVelocityPID_bias(float bias);
+	void setVelocityPID_DeadZoneError(float DeadZoneError);
 
 	void setPositionPID_P(float P);
 	void setPositionPID_I(float I);
 	void setPositionPID_D(float D);	
+	void setPositionPID_bias(float bias);
+	void setPositionPID_DeadZoneError(float DeadZoneError);
 
 private:
 
