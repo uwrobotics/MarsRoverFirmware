@@ -1,6 +1,7 @@
 #include "mbed.h"
 #include "mbed_config.h"
 #include "can_config.h"
+#include "ros_config.h"
 
 #include "ArmConfig.h"
 #include "Encoder.h"
@@ -12,18 +13,6 @@
 #include "CANMsg.h"
 #include "CANBuffer.h"
 #include "Servo.h"
-
-// maybe these can be defined more formally in some config file?
-#define TURNTABLEACTUATORID   0
-#define SHOULDERACTUATORID    1
-#define ELBOWACTUATORID       2
-#define WRISTLEFTACTUATORID   3
-#define WRISTRIGHTACTUATORID  4
-#define P                     0
-#define I                     1
-#define D                     2
-#define BIAS                  3
-#define DEADZONEERROR         4
 
 /*** ARM COMPONENTS ***/
 /**********************/
@@ -221,19 +210,19 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     // determine which actuator is of interest in order to avoid repetition
     ActuatorController *temp = nullptr;
     switch(payload.actuatorID){
-        case TURNTABLEACTUATORID:
+        case ROSID::TURNTABLEACTUATORID:
             temp = &turnTableActuator;
             break;
-        case SHOULDERACTUATORID:
+        case ROSID::SHOULDERACTUATORID:
             temp = &shoulderActuator;
             break;
-        case ELBOWACTUATORID:
+        case ROSID::ELBOWACTUATORID:
             temp = &elbowActuator;
             break;
-        case WRISTLEFTACTUATORID:
+        case ROSID::WRISTLEFTACTUATORID:
             temp = &wristLeftActuator;
             break;
-        case WRISTRIGHTACTUATORID:
+        case ROSID::WRISTRIGHTACTUATORID:
             temp = &wristRightActuator;
             break;
         default:
@@ -243,31 +232,30 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     switch (msg.id){
         case CANID::SET_JOINT_PID:
             switch(payload.param){
-                case P:
+                case ROSID::P:
                     payload.velocity ? temp->setVelocityPID_P(int_to_float.float_value) :
                     temp->setPositionPID_P(int_to_float.float_value);
                     return MBED_SUCCESS;
-                case I:
+                case ROSID::I:
                     payload.velocity ? temp->setVelocityPID_I(int_to_float.float_value) :
                     temp->setPositionPID_I(int_to_float.float_value);
                     return MBED_SUCCESS;
-                case D:
+                case ROSID::D:
                     payload.velocity ? temp->setVelocityPID_D(int_to_float.float_value) :
                     temp->setPositionPID_D(int_to_float.float_value);
-                    return MBED_SUCCESS;
-                case BIAS:
-                    payload.velocity ? temp->setVelocityPID_bias(int_to_float.float_value) :
-                    temp->setPositionPID_bias(int_to_float.float_value);
-                    return MBED_SUCCESS;
-                case DEADZONEERROR:
-                    payload.velocity ? temp->setVelocityPID_DeadZoneError(int_to_float.float_value) : 
-                    temp->setPositionPID_DeadZoneError(int_to_float.float_value);
-                    return MBED_SUCCESS;
+                    return MBED_SUCCESS;                    
                 default:
                     return MBED_ERROR_INVALID_ARGUMENT;
             }
+        case CANID::SET_JOINT_PID_DEADZONE:
+            payload.velocity ? temp->setVelocityPID_DeadZoneError(int_to_float.float_value) : 
+            temp->setPositionPID_DeadZoneError(int_to_float.float_value);
+            return MBED_SUCCESS;
+        case CANID::SET_JOINT_PID_BIAS:
+            payload.velocity ? temp->setVelocityPID_bias(int_to_float.float_value) :
+            temp->setPositionPID_bias(int_to_float.float_value);
+            return MBED_SUCCESS;
         default:
-            // Unimplemented
             return MBED_ERROR_INVALID_ARGUMENT;
     }
 }
@@ -294,7 +282,10 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
     {CANID::RUN_CLAW_CALIBRATION,       &runClawCalibration},
 
     {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
+
+    {CANID::SET_JOINT_PID_DEADZONE,     &setPIDParameter},
     {CANID::SET_JOINT_PID,              &setPIDParameter},
+    {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
 };
 
 /*** ARM CANBus ***/
