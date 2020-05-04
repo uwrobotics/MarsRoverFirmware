@@ -23,6 +23,17 @@ const float VOLTAGE_LOWER_LIM = 0;
 const float TEMP_UPPER_LIM = 1;
 const float TEMP_LOWER_LIM = 0;
 
+// temperature conversion constexprants
+constexpr float B = 4700; //kelvins. Based on Resistances of 25 and 50 
+constexpr float VIN = 5;
+//need expected room temp. 22 celcius?
+constexpr float ROOM_TEMP = 0;
+constexpr float REFERENCE_RESISTANCE = 0;
+    
+
+AnalogIn thermistor_voltage_;
+
+
 void initCAN();
 //TODO may need more functions to deal with different CAN message contents
 void validateCANMsg(CANMsg *p_newMsg);
@@ -35,9 +46,9 @@ int main()
     initCAN();
 
     // turn led off, turn on if issue occurs
-    safetyBoard.led1 = 0;
-    safetyBoard.led2 = 0;
-    safetyBoard.led3 = 0;
+    safetyBoard.led1_ = 0;
+    safetyBoard.led2_ = 0;
+    safetyBoard.led3_ = 0;
 
     Safety_Board::calibrateSensor();
 
@@ -55,14 +66,14 @@ int main()
         float measuredCurrent = safetyBoard.getCurrentData();
         if (!inRange(CURRENT_UPPER_LIM, CURRENT_LOWER_LIM, measuredCurrent))
         {
-            safetyBoard.led1 = 1;
+            safetyBoard.led1_ = 1;
             pc.printf("Measured Current is NOT within expected limits!\r\n");
         }
 
         float measuredVoltage = safetyBoard.getVoltageData();
         if (!inRange(CURVOLTAGE_UPPER_LIM, VOLTAGE_LOWER_LIM, measuredVoltage))
         {
-            safetyBoard.led2 = 1;
+            safetyBoard.led2_ = 1;
             pc.printf("Measured Voltage is NOT within expected limits!\r\n");
         }
 
@@ -70,15 +81,15 @@ int main()
         float measuredTemp = safetyBoard.readThermistor(safetyBoard.VIN, vout);
         if(!inRange(TEMP_UPPER_LIM, TEMP_LOWER_LIM, measuredTemp))
         {
-            safetyBoard.led3 = 1;
+            safetyBoard.led3_ = 1;
             pc.printf("Measured Temperature is NOT within expected limits!\r\n");
         }
 
         //shutoff all LED's for next round of checks after 2 seconds
         wait(2);
-        safetyBoard.led1 = 0;
-        safetyBoard.led2 = 0;
-        safetyBoard.led3 = 0;
+        safetyBoard.led1_ = 0;
+        safetyBoard.led2_ = 0;
+        safetyBoard.led3_ = 0;
     }
 }
 
@@ -107,4 +118,28 @@ int inRange(float upperLim, float lowerLim, float val)
 {
     int inRange = (val > upperLim || val< lowerLim) ? 0: 1;
     return inRange;
+}
+
+float Safety_Board::readThermistor(float vin, float vout)
+{
+    pc.printf("Retrieving Temperature of Board\r\n");
+
+    //voltage divider to find resistance of thermister
+    //TODO determine what rResistor is
+    float thermisterResistance = rResistor *((vin/vout)-1);
+
+    /*  convert resistance to temp (steinhart and hart eqn)
+        A,B,C are Stienhart-hart coefficients which depend on the thermistor
+        (https://industrial.panasonic.com/cdbs/www-data/pdf/AUA0000/AUA0000C8.pdf)
+        and the temperature range of interest. 
+        https://en.wikipedia.org/wiki/Steinhart%E2%80%93Hart_equation 
+        Need to test the thermistor for resistance at 3 different temperatures and use 
+        those values to compute A,B,C
+
+        Alernatively use B value from datasheet which is less accurate but does not require experimetnal data
+        https://www.allaboutcircuits.com/projects/measuring-temperature-with-an-ntc-thermistor/
+    */ 
+
+    return 1/((1/ROOM_TEMP) + (1/B)*log((thermisterResistance/REFERENCE_RESISTANCE))); // uses B from datasheet
+    //return 1/(A + B * log(thermisterResistance) + C * pow(log(thermisterResistance),3)); // uses experimental results
 }
