@@ -1,5 +1,5 @@
-#ifndef SAFETY_BOARD_H
-#include SAFETY_BOARD_H
+#ifndef INA_226_H
+#include INA_226_H
 #include "mbed.h"
 #include "math.h"
 #include "rover_config.h"
@@ -22,13 +22,10 @@ class INA_226{
         constexpr u_int8_t CURRENT_REGISTER 0x04;
         constexpr u_int8_t CALIBRATION_REGISTER 0x05;
 
-        //TODO Where do I initialize the serial communication if the application also uses serial?
-        Serial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);    
-
         //  I2C bus initialization
         I2C i2c_;
         //may need to adjust function to take sensor slave addresses as there many be many current sensors
-        u_int8_t sensor_address_ = 0x1c << 1;
+        u_int8_t sensor_address_;
 
         enum CONFIGURATIONMODE{
             powerReset = 0,
@@ -56,5 +53,5 @@ class INA_226{
         int configureSensor(CONFIGURATIONMODE operation_mode, int reset_registers);
 };
 
-#endif /* SAFETY_BOARD_H */
+#endif /* INA_226_H */
 

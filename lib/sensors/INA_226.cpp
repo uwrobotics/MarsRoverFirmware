@@ -16,8 +16,6 @@ INA_226::~INA_226(){}
 //TODO: may need to adjust function to take sensor slave addresses as there many be many current sensors
 float Safety_Board::getCurrentData()
 {
-    pc.printf("Retrieving Current\r\n");
-
     //may need char16_t?
     u_int8_t cmd[3] = {CURRENT_REGISTER};
     
@@ -32,8 +30,6 @@ float Safety_Board::getCurrentData()
 
 float Safety_Board::getVoltageData()
 {
-    pc.printf("Retrieving Voltage\r\n");
-
     u_int8_t cmd[3] = {VOLTAGE_REGISTER};
     
     i2c_.write(sensor_address_, cmd, 1);
@@ -44,21 +40,21 @@ float Safety_Board::getVoltageData()
     return voltage_data;
 }
 
-int Safety_Board::configureSensor(CONFIGURATIONMODE operationMode, int resetRegisters)
+int Safety_Board::configureSensor(CONFIGURATIONMODE operation_mode, int reset_registers)
 {
     u_int8_t cmd[3] = {CONFIG_REGISTER, 0x00, 0x00};
     u_int16_t dataByte = 0x00;
 
     //fill up register with configuration data, can be powered, continous, triggered
-    dataByte |= operationMode;
+    dataByte |= operation_mode;
     
     // averaging mode default is 0 so not setting is needed
     dataByte |= (SHUNT_VOLTAGE_CONVERSION_TIME << 3);
     dataByte |= (BUS_VOLTAGE_CONVERSION_TIME << 6);
     
-    if (resetRegisters)
+    if (reset_registers)
     {
-        dataByte |= (resetRegisters << 15);
+        dataByte |= (reset_registers << 15);
     }
     
     cmd[1] = dataByte & 0xFF;
@@ -71,7 +67,6 @@ int Safety_Board::configureSensor(CONFIGURATIONMODE operationMode, int resetRegi
 //may need to pass in shunt_resistance
 int Safety_Board::calibrateSensor()
 {
-    pc.printf("Calibrating INA226\r\n");
     float cal  = 0.00512/(current_lsb_ * shunt_resistance_); //calibration register, multiplied w/ current register value to get actual current in Amps
 
     u_int8_t cmd[3] = {CALIBRATION_REGISTER};
