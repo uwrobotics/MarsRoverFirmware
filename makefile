@@ -9,16 +9,20 @@
 #
 ###############################################################################
 
-BUILD_PATH    := build
-TARGETS_PATH  := targets
-APPS_PATH     := apps
-APP_OUT_PATH  := ../$(BUILD_PATH)/bin/$(APPS_PATH)/$(APP)
-OBJ_PATH      := ../$(BUILD_PATH)/obj
-TARGET_PATH   := ../$(TARGETS_PATH)/$(TARGET)
-APP_PATH      := ../$(APPS_PATH)/$(APP)
-LIB_PATH      := ../lib
-MBED_PATH     := ../mbed-os
-CONFIG_PATH   := ../config
+BUILD_FOLDER   := build
+BIN_FOLDER     := bin
+TARGETS_FOLDER := targets
+APPS_FOLDER    := apps
+OBJS_FOLDER    := obj
+BIN_OUT_PATH   := ../$(BUILD_FOLDER)/$(APPS_FOLDER)/$(BIN_FOLDER)/$(APP)
+OBJ_PATH       := ../$(BUILD_FOLDER)/$(OBJS_FOLDER)
+TARGET_PATH    := ../$(TARGETS_FOLDER)/$(TARGET)
+APP_PATH       := ../$(APPS_FOLDER)/$(APP)
+LIB_PATH       := ../lib
+MBED_PATH      := ../mbed-os
+CONFIG_PATH    := ../config
+
+LAST_BOARD_TARGET := $(shell cat $(BUILD_FOLDER)/LAST_BOARD_TARGET 2>/dev/null)# ignores non-existant file error
 
 # Utility
 ###############################################################################
@@ -44,48 +48,40 @@ define \n
 
 endef
 
-# Move to the build directory
-ifeq (,$(filter $(BUILD_PATH),$(notdir $(CURDIR))))
-.SUFFIXES:
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-MAKETARGET = '$(MAKE)' --no-print-directory -C $(BUILD_PATH) -f '$(mkfile_path)' \
-		'SRCDIR=$(CURDIR)' $(MAKECMDGOALS)
+# If not in build directory, move to the build directory
+ifneq ($(BUILD_FOLDER),$(notdir $(CURDIR)))
 
-.PHONY: $(BUILD_PATH) clean
+.PHONY: $(BUILD_FOLDER) clean
 all:
-
-ifeq ($(filter $(APP), $(patsubst $(APPS_PATH)/%/,%,$(sort $(dir $(wildcard $(APPS_PATH)/*/))))),)
-	$(error APP is not set or is not supported. ${\n}Select an app to build with APP=app_name:${\n}${\n}$(subst ${ },${\n},$(patsubst $(APPS_PATH)/%/,%,$(sort $(dir $(wildcard $(APPS_PATH)/*/)))))${\n}${\n})
+	+@$(call MAKE_DIR,$(BUILD_FOLDER))
+ifeq (,$(findstring $(APP), $(patsubst $(APPS_FOLDER)/%/,%,$(sort $(dir $(wildcard $(APPS_FOLDER)/*/))))))
+	$(error APP is not set or is not supported. ${\n}Select an app to build with APP=app_name:${\n}${\n}$(subst ${ },${\n},$(patsubst $(APPS_FOLDER)/%/,%,$(sort $(dir $(wildcard $(APPS_FOLDER)/*/)))))${\n}${\n})
 endif
-
-ifeq ($(filter $(TARGET), $(patsubst $(TARGETS_PATH)/%/,%,$(sort $(dir $(wildcard $(TARGETS_PATH)/*/))))),)
-	$(error TARGET is not set or is not supported. ${\n}Select a target with TARGET=board_name:${\n}${\n}$(subst ${ },${\n},$(patsubst $(TARGETS_PATH)/%/,%,$(sort $(dir $(wildcard $(TARGETS_PATH)/*/)))))${\n}${\n})
+ifeq (,$(findstring $(TARGET), $(patsubst $(TARGETS_FOLDER)/%/,%,$(sort $(dir $(wildcard $(TARGETS_FOLDER)/*/))))))
+	$(error TARGET is not set or is not supported. ${\n}Select a target with TARGET=board_name:${\n}${\n}$(subst ${ },${\n},$(patsubst $(TARGETS_FOLDER)/%/,%,$(sort $(dir $(wildcard $(TARGETS_FOLDER)/*/)))))${\n}${\n})
 endif
+ifneq ($(TARGET),$(LAST_BOARD_TARGET))
+	$(info New TARGET detected. Recompiling all files.)
+	$(call RM_DIR,$(BUILD_FOLDER)/$(OBJS_FOLDER))
+	+@echo $(TARGET) > $(BUILD_FOLDER)/LAST_BOARD_TARGET
+endif
+	+@$(MAKE) --directory=$(BUILD_FOLDER) --file=$(abspath $(lastword $(MAKEFILE_LIST))) $(MAKECMDGOALS)
 
-	+@$(call MAKE_DIR,$(BUILD_PATH))
-	+@$(MAKETARGET)
-
-$(BUILD_PATH): all
-
-Makefile : ;
-% :: $(BUILD_PATH) ; :
-
-makefile : ;
-% :: $(BUILD_PATH) ; :
+$(BUILD_FOLDER): all
 
 clean :
-	$(call RM_DIR,$(BUILD_PATH))
-	$(call RM_FILE_TYPE,$(APPS_PATH),*.d)
-	$(call RM_FILE_TYPE,$(APPS_PATH),*.o)
+	$(call RM_DIR,$(BUILD_FOLDER))
+	$(call RM_FILE_TYPE,$(APPS_FOLDER),*.d)
+	$(call RM_FILE_TYPE,$(APPS_FOLDER),*.o)
 	$(call RM_FILE_TYPE,lib,*.d)
 	$(call RM_FILE_TYPE,lib,*.o)
 
 clean-mbed : 
-	$(call RM_DIR,$(BUILD_PATH)/obj/mbed-os)
+	$(call RM_DIR,$(BUILD_FOLDER)/obj/mbed-os)
 
 
 clean-all :
-	$(call RM_DIR,$(BUILD_PATH))
+	$(call RM_DIR,$(BUILD_FOLDER))
 	$(call RM_FILE_TYPE,.,*.d)
 	$(call RM_FILE_TYPE,.,*.o)
 
@@ -238,8 +234,7 @@ ASM_FLAGS += ${COMMON_FLAGS}
 ###############################################################################
 
 .PHONY: all
-
-all: $(APP_OUT_PATH)/$(PROJECT).bin # $(APP_OUT_PATH)/$(PROJECT).hex size
+all: $(BIN_OUT_PATH)/$(PROJECT).bin
 
 $(OBJ_PATH)/%.o: ../%.s
 	+@$(call MAKE_DIR,$(dir $@))
@@ -275,23 +270,20 @@ $(UWRT_CPP_OBJECTS): $(OBJ_PATH)/%.o: ../%.cpp
 	+@echo "Compile: $(notdir $<)"
 	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) $< -o $@
 
-$(APP_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
+$(BIN_OUT_PATH)/$(PROJECT).link_script.ld: $(LINKER_SCRIPT)
 	+@$(call MAKE_DIR,$(dir $@))
 	@$(PREPROC) $< -o $@
 
-$(APP_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(APP_OUT_PATH)/$(PROJECT).link_script.ld
-	+@echo "$(filter %.o, $^)" > $(APP_OUT_PATH)/.link_options.txt
+$(BIN_OUT_PATH)/$(PROJECT).elf: $(OBJECTS) $(BIN_OUT_PATH)/$(PROJECT).link_script.ld
+	+@echo "$(filter %.o, $^)" > $(BIN_OUT_PATH)/.link_options.txt
 	+@echo "Link: $(notdir $@)"
-	@$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @$(APP_OUT_PATH)/.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
+	@$(LD) $(LD_FLAGS) -T $(filter-out %.o, $^) $(LIBRARY_PATHS) --output $@ @$(BIN_OUT_PATH)/.link_options.txt $(LIBRARIES) $(LD_SYS_LIBS)
 
-$(APP_OUT_PATH)/$(PROJECT).bin: $(APP_OUT_PATH)/$(PROJECT).elf
+$(BIN_OUT_PATH)/$(PROJECT).bin: $(BIN_OUT_PATH)/$(PROJECT).elf
 	+@$(ELF2BIN) -O binary $< $@
 	+@echo "Generate Binary: $(notdir $@)\n"
 	+@echo "============== BIN FILE READY TO FLASH ==============\n $(@:../%=%)"
 	+@echo "====================================================="
-
-# $(APP_OUT_PATH)/$(PROJECT).hex: $(APP_OUT_PATH)/$(PROJECT).elf
-# 	$(ELF2BIN) -O ihex $< $@
 
 # Dependencies
 ###############################################################################
