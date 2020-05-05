@@ -1,5 +1,5 @@
 # Mars Rover 2020 Firmware Repository
-[![Build Status](https://travis-ci.org/uwrobotics/MarsRover2020-firmware.svg?branch=master)](https://travis-ci.org/uwrobotics/MarsRover2020-firmware)
+![CI](https://github.com/uwrobotics/MarsRover2020-firmware/workflows/CI/badge.svg)
 
 ## Platform: [STM32F446xE](https://www.st.com/resource/en/datasheet/stm32f446re.pdf) / [NUCLEO-F446RE](https://os.mbed.com/platforms/ST-Nucleo-F446RE/)
 
@@ -10,18 +10,17 @@ This repository contains:
 - Test applications for testing code components [[apps/test_xxxx](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps)]
 - Configuration files for each target hardware [[targets](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/targets)]
 - Miscellaneous items [[misc](https://github.com/uwrobotics/MarsRover2020-firmware/tree/alex/add-readme/misc)]
-- Travis CI configuration for automatic build testing [[travis.yml](https://github.com/uwrobotics/MarsRover2020-firmware/blob/alex/add-readme/.travis.yml)]
-- Makefile [[makefile](https://github.com/uwrobotics/MarsRover2020-firmware/blob/alex/add-readme/makefile)]
+- Github Actions configurations for automatic build testing [[.github](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/.github)]
+- Makefile [[makefile](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/makefile)]
 
 ## Best Contribution Practices and Tips
 
-- Create a branch in the format `yourName/featureName` for every feature you are working on
+- Create a branch in the format `yourName/#<issue-number>/featureName` for every feature you are working on
 - Rebase onto master and test on hardware before merging into master
-- Add a Travis CI build target for your application if it is not a test application
+- Add a Github Actions build target for your application if it is not a test application
 - Create a pull request to merge any branch into master and select everyone else working on the feature as reviewers
-  - Name the pull request `issueNumber: FeatureTitle`
+  - Name the pull request `Closes #<issue-number>: FeatureTitle`
 - When merging a pull request that fixes an issue title the commit `Fixes #issueNumber: FeatureTitle`
-  - Adding `Fixes #1: ...` will automatically closes the associated issue, in this example issue #1
 - Clean binaries between making changes to the makefile
 - There seems to be an annoying mix of CamelCase and snake_case in MBED but just try to be consistent with whatever code is nearby
 - Squash when merging pull requests
@@ -83,7 +82,7 @@ This repository contains:
     After compiling an application you should see a message similar to the following:  
     `===== bin file ready to flash: ../build/test_serial/test_serial_nucleo.bin =====`
     
-    **PRO TIP:** Add the flag `-j4` to your `make` command to allow multiple threads to be used for compilation, significantly speeding up compile time. You can use a number other than 4 to customize the number of threads.
+    **Note:** Our makefile automatically detects the number of available execution threads and uses them all to significantly speed up compile time.
 
 5. Deploy onto board (see below for how to connect to a rover control board)
 
