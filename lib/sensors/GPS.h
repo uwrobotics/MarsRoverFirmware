@@ -22,7 +22,7 @@ typedef enum
 } ublox_packet_validity_e;
 
 // Identify which packet buffer is in use:
-// packetCfg (or a custom packet), packetAck or packetBuf
+// packetCfg (or a custom packet), packetAck or m_packetBuf
 typedef enum
 {
 	UBLOX_PACKET_PACKETCFG,
@@ -243,10 +243,10 @@ class GPS {
 	GPS(PinName tx, PinName rx, uint32_t baud_rate);
 	void configure(); //configures the GPS (note that serial loop must be started before this is run)
 	void saveConfiguration(); //saves configuration to persistent memory
-	double get_gps_lat();
-	double get_gps_long();
-	double get_gps_alt();
-	double get_gps_time();
+	double getLat();
+	double getLong();
+	double getAlt();
+	double getTime();
 
 
  private:
@@ -281,16 +281,16 @@ class GPS {
 	uint8_t payloadBuf[2]{}; // Temporary buffer used to screen incoming packets or dump unrequested packets
 
 	//packet structures (for processing)
-	ubxPacket packetAck = {0, 0, 0, 0, 0, payloadAck, 0, 0, UBLOX_PACKET_VALIDITY_NOT_DEFINED, UBLOX_PACKET_VALIDITY_NOT_DEFINED};
-	ubxPacket packetCfg = {0, 0, 0, 0, 0, payloadCfg, 0, 0, UBLOX_PACKET_VALIDITY_NOT_DEFINED, UBLOX_PACKET_VALIDITY_NOT_DEFINED};
-	ubxPacket packetBuf = {0, 0, 0, 0, 0, payloadBuf, 0, 0, UBLOX_PACKET_VALIDITY_NOT_DEFINED, UBLOX_PACKET_VALIDITY_NOT_DEFINED};
+	ubxPacket m_packetAck = {0, 0, 0, 0, 0, payloadAck, 0, 0, UBLOX_PACKET_VALIDITY_NOT_DEFINED, UBLOX_PACKET_VALIDITY_NOT_DEFINED};
+	ubxPacket m_packetCfg = {0, 0, 0, 0, 0, payloadCfg, 0, 0, UBLOX_PACKET_VALIDITY_NOT_DEFINED, UBLOX_PACKET_VALIDITY_NOT_DEFINED};
+	ubxPacket m_packetBuf = {0, 0, 0, 0, 0, payloadBuf, 0, 0, UBLOX_PACKET_VALIDITY_NOT_DEFINED, UBLOX_PACKET_VALIDITY_NOT_DEFINED};
 
 	//helper variables for processing functions
-	uint8_t rollingChecksumA; //Rolls forward as we receive incoming bytes. Checked against the last two A/B checksum bytes
-	uint8_t rollingChecksumB; //Rolls forward as we receive incoming bytes. Checked against the last two A/B checksum bytes
-	uint16_t ubxFrameCounter;
-	ublox_packet_buffer_e activePacketBuffer = UBLOX_PACKET_PACKETBUF;
-	bool ignoreThisPayload;
+	uint8_t m_rollingChecksumA; //Rolls forward as we receive incoming bytes. Checked against the last two A/B checksum bytes
+	uint8_t m_rollingChecksumB; //Rolls forward as we receive incoming bytes. Checked against the last two A/B checksum bytes
+	uint16_t m_ubxFrameCounter;
+	ublox_packet_buffer_e m_activePacketBuffer = UBLOX_PACKET_PACKETBUF;
+	bool m_ignoreThisPayload;
 
 	//navigation data struct
 	//TODO: check if each member needs to be volatile, or just the struct itself
@@ -307,15 +307,15 @@ class GPS {
 		int32_t altitude;		 //Number of mm above ellipsoid
 		int32_t groundSpeed;	 //mm/s
 		int32_t headingOfMotion; //Degrees * 10^-5
-	} nav_data{};
+	} m_nav_data{};
 
 	//ack signaling flags
-	volatile bool ack_flag;
-	volatile bool nack_flag;
+	volatile bool m_ack_flag;
+	volatile bool m_nack_flag;
 
 	//class and msg ID targets
-	uint8_t target_class;
-	uint8_t target_msgID;
+	uint8_t m_target_class;
+	uint8_t m_target_msgID;
 
 	//serial interface
 	Serial m_uart;

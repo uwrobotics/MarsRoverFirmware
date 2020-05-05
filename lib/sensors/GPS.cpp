@@ -4,15 +4,15 @@
 
 #include "GPS.h"
 GPS::GPS(PinName tx, PinName rx, uint32_t baud_rate) : m_uart(tx, rx, DEFAULT_BAUD_RATE) {
-	rollingChecksumA = 0;
-	rollingChecksumB = 0;
-	ubxFrameCounter = 0;
-	ignoreThisPayload = false;
-	ack_flag = false;
-	nack_flag = false;
+	m_rollingChecksumA = 0;
+	m_rollingChecksumB = 0;
+	m_ubxFrameCounter = 0;
+	m_ignoreThisPayload = false;
+	m_ack_flag = false;
+	m_nack_flag = false;
 	//TODO: verify that ACKs get read no matter what target class/id is selected
-	target_class = UBX_CLASS_NAV; //default class target
-	target_msgID = UBX_NAV_PVT; //default id target
+	m_target_class = UBX_CLASS_NAV; //default class target
+	m_target_msgID = UBX_NAV_PVT; //default id target
 	setSerialRate(baud_rate, COM_PORT_UART1);
 	m_uart.baud(baud_rate);
 	wait_ms(50); //ACK gets lost during baud rate change, so no way to verify here
@@ -47,20 +47,20 @@ void GPS::configure() {
 
 bool GPS::waitForAck() {
 	//TODO: need error checking for failed checksums, etc
-	while (!ack_flag) { //wait for ack
-		if (nack_flag) {
-			nack_flag = false;
+	while (!m_ack_flag) { //wait for ack
+		if (m_nack_flag) {
+			m_nack_flag = false;
 			return false;
 		}
 	}
-	ack_flag = false;
+	m_ack_flag = false;
 	return true;
 }
 
 void GPS::onByteReceive() {
-	process(m_uart.getc(), (activePacketBuffer == UBLOX_PACKET_PACKETCFG ? &packetCfg :
-					   activePacketBuffer == UBLOX_PACKET_PACKETACK ? &packetAck : &packetBuf),
-			target_class, target_msgID);
+	process(m_uart.getc(), (m_activePacketBuffer == UBLOX_PACKET_PACKETCFG ? &m_packetCfg :
+					   m_activePacketBuffer == UBLOX_PACKET_PACKETACK ? &m_packetAck : &m_packetBuf),
+			m_target_class, m_target_msgID);
 }
 
 void GPS::sendSerialCommand(ubxPacket *outgoingUBX) {
@@ -91,82 +91,82 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 		{
 			//This is the start of a binary sentence. Reset flags.
 			//We still don't know the response class
-			ubxFrameCounter = 0;
+			m_ubxFrameCounter = 0;
 			currentSentence = UBX;
-			packetBuf.counter = 0;
-			ignoreThisPayload = false; //We should not ignore this payload - yet
-			//Store data in packetBuf until we know if we have a requested class and ID match
+			m_packetBuf.counter = 0;
+			m_ignoreThisPayload = false; //We should not ignore this payload - yet
+			//Store data in m_packetBuf until we know if we have a requested class and ID match
 			//Or we see that the data is an ACK
-			activePacketBuffer = UBLOX_PACKET_PACKETBUF;
+			m_activePacketBuffer = UBLOX_PACKET_PACKETBUF;
 		} else {
 			//TODO: handle failure case (missed sentence start)
 		}
 	}
 
 	//non-payload bytes if/else chain
-	if (((ubxFrameCounter == 0) && (incoming != 0xB5)) ||     //'μ'
-			((ubxFrameCounter == 1) && (incoming != 0x62)))  //'b'
+	if (((m_ubxFrameCounter == 0) && (incoming != 0xB5)) ||     //'μ'
+			((m_ubxFrameCounter == 1) && (incoming != 0x62)))  //'b'
 		currentSentence = NONE;        //Something went wrong. Reset.
-	else if (ubxFrameCounter == 2) //Class
+	else if (m_ubxFrameCounter == 2) //Class
 	{
-		rollingChecksumA = 0; //Reset our rolling checksums
-		rollingChecksumB = 0;
-		packetBuf.counter = 0; //Reset the packetBuf.counter
-		packetBuf.valid = UBLOX_PACKET_VALIDITY_NOT_DEFINED; // Reset the packet validity
-		packetBuf.startingSpot = incomingUBX->startingSpot; //Copy the startingSpot
-	} else if (ubxFrameCounter == 3) { //ID
+		m_rollingChecksumA = 0; //Reset our rolling checksums
+		m_rollingChecksumB = 0;
+		m_packetBuf.counter = 0; //Reset the m_packetBuf.counter
+		m_packetBuf.valid = UBLOX_PACKET_VALIDITY_NOT_DEFINED; // Reset the packet validity
+		m_packetBuf.startingSpot = incomingUBX->startingSpot; //Copy the startingSpot
+	} else if (m_ubxFrameCounter == 3) { //ID
 		//We can now identify the type of response
 		//If the packet we are receiving is not an ACK then check for a class and ID match
-		if (packetBuf.cls != UBX_CLASS_ACK) {
-			if ((packetBuf.cls == requestedClass) && (packetBuf.id == requestedID)) {
+		if (m_packetBuf.cls != UBX_CLASS_ACK) {
+			if ((m_packetBuf.cls == requestedClass) && (m_packetBuf.id == requestedID)) {
 				//This is not an ACK and we have a class and ID match
 				//So start diverting data into incomingUBX
-				activePacketBuffer = UBLOX_PACKET_PACKETCFG;
-				incomingUBX->cls = packetBuf.cls; //Copy fields into incomingUBX
-				incomingUBX->id = packetBuf.id;
-				incomingUBX->counter = packetBuf.counter;
+				m_activePacketBuffer = UBLOX_PACKET_PACKETCFG;
+				incomingUBX->cls = m_packetBuf.cls; //Copy fields into incomingUBX
+				incomingUBX->id = m_packetBuf.id;
+				incomingUBX->counter = m_packetBuf.counter;
 			} else {
 				//This is not an ACK and we do not have a class and ID match
 				//so we do not care about the message contents and
-				ignoreThisPayload = true;
+				m_ignoreThisPayload = true;
 			}
 		}
-	} else if (ubxFrameCounter == 6 && (activePacketBuffer == UBLOX_PACKET_PACKETBUF)) {
+	} else if (m_ubxFrameCounter == 6 && (m_activePacketBuffer == UBLOX_PACKET_PACKETBUF)) {
 		//This should be the first byte of the payload unless .len is zero
 		//Only execute this if we are not already processing a data packet
-		if (packetBuf.len == 0) { // Check if length is zero (hopefully this is impossible!)
+		if (m_packetBuf.len == 0) { // Check if length is zero (hopefully this is impossible!)
 			//If length is zero (!) this will be the first byte of the checksum so record it
-			packetBuf.checksumA = incoming;
+			m_packetBuf.checksumA = incoming;
 		} else {
 			//The length is not zero so record this byte in the payload
-			packetBuf.payload[0] = incoming;
+			m_packetBuf.payload[0] = incoming;
 		}
-	} else if (ubxFrameCounter == 7 && (activePacketBuffer == UBLOX_PACKET_PACKETBUF)) {
+	} else if (m_ubxFrameCounter == 7 && (m_activePacketBuffer == UBLOX_PACKET_PACKETBUF)) {
 		//This should be the second byte of the payload unless .len is zero or one
 		//Only execute this if we are not already processing a data packet
-		if (packetBuf.len == 0) // Check if length is zero (hopefully this is impossible!)
+		if (m_packetBuf.len == 0) // Check if length is zero (hopefully this is impossible!)
 		{
 			//If length is zero (!) this will be the second byte of the checksum so record it
-			packetBuf.checksumB = incoming;
-		} else if (packetBuf.len == 1) {// Check if length is one
+			m_packetBuf.checksumB = incoming;
+		} else if (m_packetBuf.len == 1) {// Check if length is one
 			//The length is one so this is the first byte of the checksum
-			packetBuf.checksumA = incoming;
+			m_packetBuf.checksumA = incoming;
 		} else { // Length is >= 2 so this must be a payload byte
-			packetBuf.payload[1] = incoming;
+			m_packetBuf.payload[1] = incoming;
 		}
 		// Now that we have received two payload bytes, we can check for a matching ACK/NACK
-		if ((packetBuf.cls == UBX_CLASS_ACK)                  // if this is an ACK/NACK
-				&& (packetBuf.payload[0] == requestedClass)  // and if the class matches
-				&& (packetBuf.payload[1] == requestedID)) { // and if the ID matches
-			if (packetBuf.len == 2) {
-				// Then this is a matching ACK so copy it into packetAck
-				activePacketBuffer = UBLOX_PACKET_PACKETACK;
-				packetAck.cls = packetBuf.cls;
-				packetAck.id = packetBuf.id;
-				packetAck.len = packetBuf.len;
-				packetAck.counter = packetBuf.counter;
-				packetAck.payload[0] = packetBuf.payload[0];
-				packetAck.payload[1] = packetBuf.payload[1];
+		if ((m_packetBuf.cls == UBX_CLASS_ACK)                  // if this is an ACK/NACK
+				&& (m_packetBuf.payload[0] == requestedClass)  // and if the class matches
+				&& (m_packetBuf.payload[1] == requestedID)) { // and if the ID matches
+			if (m_packetBuf.len == 2) {
+				// Then this is a matching ACK so copy it into m_packetAck
+				m_activePacketBuffer = UBLOX_PACKET_PACKETACK;
+				m_packetAck.cls = m_packetBuf.cls;
+				m_packetAck.id = m_packetBuf.id;
+				m_packetAck.len = m_packetBuf.len;
+				m_packetAck.counter = m_packetBuf.counter;
+				m_packetAck.payload[0] = m_packetBuf.payload[0];
+				m_packetAck.payload[1] = m_packetBuf.payload[1];
 			} else {
 				//TODO: cover error if length is not 2 (may impact waitForAck)
 			}
@@ -174,15 +174,15 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 	}
 
 	//Process incoming data using the proper buffer
-	if (activePacketBuffer == UBLOX_PACKET_PACKETACK) {                    //ACK/NACK
-		processUBX(incoming, &packetAck, requestedClass, requestedID);
-	} else if (activePacketBuffer == UBLOX_PACKET_PACKETCFG) {               //data packet
+	if (m_activePacketBuffer == UBLOX_PACKET_PACKETACK) {                    //ACK/NACK
+		processUBX(incoming, &m_packetAck, requestedClass, requestedID);
+	} else if (m_activePacketBuffer == UBLOX_PACKET_PACKETCFG) {               //data packet
 		processUBX(incoming, incomingUBX, requestedClass, requestedID);
 	} else {                                                              //not yet known
-		processUBX(incoming, &packetBuf, requestedClass, requestedID);
+		processUBX(incoming, &m_packetBuf, requestedClass, requestedID);
 	}
 	//increment the frame counter
-	ubxFrameCounter++;
+	m_ubxFrameCounter++;
 }
 
 //Given a character, file it away into the uxb packet structure
@@ -191,7 +191,7 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 //size is MAX_PAYLOAD_SIZE bytes. startingSpot can be set so we only record
 //a subset of bytes within a larger packet.
 void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedClass, uint8_t requestedID) {
-	//Note that incomingUBX->counter == (ubxFrameCounter - 2)
+	//Note that incomingUBX->counter == (m_ubxFrameCounter - 2)
 	//Add all incoming bytes to the rolling checksum
 	//Stop at len+4, as these are the checksum bytes
 	if (incomingUBX->counter < incomingUBX->len + 4) {
@@ -213,7 +213,7 @@ void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requested
 		currentSentence = NONE; //reset the current sentence, next byte will start the process again
 
 		//Validate this sentence
-		if ((incomingUBX->checksumA == rollingChecksumA) && (incomingUBX->checksumB == rollingChecksumB)) {
+		if ((incomingUBX->checksumA == m_rollingChecksumA) && (incomingUBX->checksumB == m_rollingChecksumB)) {
 			incomingUBX->valid = UBLOX_PACKET_VALIDITY_VALID; // Flag the packet as valid
 
 			//Verifying class and ID match (for data or ACK packet)
@@ -233,7 +233,7 @@ void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requested
 			}
 
 			//The packet is valid, now process it (unless we are ignoring it)
-			if (!ignoreThisPayload) {
+			if (!m_ignoreThisPayload) {
 				processUBXpacket(incomingUBX);
 			}
 		} else {  // Checksum failure
@@ -255,7 +255,7 @@ void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requested
 			}
 		}
 	} else { //payload byte
-		if (!ignoreThisPayload) {
+		if (!m_ignoreThisPayload) {
 			//If a UBX_NAV_PVT packet comes in asynchronously, we need to fudge the startingSpot
 			uint16_t tmp_startingSpot = incomingUBX->startingSpot;
 			if (incomingUBX->cls == UBX_CLASS_NAV && incomingUBX->id == UBX_NAV_PVT)
@@ -283,21 +283,21 @@ void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requested
 void GPS::processUBXpacket(ubxPacket *msg) {
 	if (msg->id == UBX_NAV_PVT && msg->len == 92) {
 		//Parse various byte fields
-		nav_data.year = extractInt(4);
-		nav_data.month = extractByte(6);
-		nav_data.day = extractByte(7);
-		nav_data.hour = extractByte(8);
-		nav_data.minute = extractByte(9);
-		nav_data.second = extractByte(10);
-		nav_data.nanosecond = extractLong(16); //Includes milliseconds
+		m_nav_data.year = extractInt(4);
+		m_nav_data.month = extractByte(6);
+		m_nav_data.day = extractByte(7);
+		m_nav_data.hour = extractByte(8);
+		m_nav_data.minute = extractByte(9);
+		m_nav_data.second = extractByte(10);
+		m_nav_data.nanosecond = extractLong(16); //Includes milliseconds
 
-		nav_data.longitude = extractLong(24);
-		nav_data.latitude = extractLong(28);
-		nav_data.altitude = extractLong(32);
-		nav_data.groundSpeed = extractLong(60);
-		nav_data.headingOfMotion = extractLong(64);
+		m_nav_data.longitude = extractLong(24);
+		m_nav_data.latitude = extractLong(28);
+		m_nav_data.altitude = extractLong(32);
+		m_nav_data.groundSpeed = extractLong(60);
+		m_nav_data.headingOfMotion = extractLong(64);
 	} else if (msg->cls == UBX_CLASS_ACK) {
-		(msg->id == UBX_ACK_ACK ? ack_flag : nack_flag) = true;
+		(msg->id == UBX_ACK_ACK ? m_ack_flag : m_nack_flag) = true;
 	}
 	//TODO: Cover Failure Case
 	//note that we don't care about any other message types for our localization
@@ -326,17 +326,17 @@ void GPS::calcChecksum(ubxPacket *msg) {
 	}
 }
 void GPS::addToChecksum(uint8_t incoming) {
-	rollingChecksumA += incoming;
-	rollingChecksumB += rollingChecksumA;
+	m_rollingChecksumA += incoming;
+	m_rollingChecksumB += m_rollingChecksumA;
 }
 
 void GPS::setSerialRate(uint32_t baudrate, uint8_t uartPort) {
 	//Get the current config values for the UART port
 	getPortSettings(uartPort); //This will load the payloadCfg array with current port settings
-	packetCfg.cls = UBX_CLASS_CFG;
-	packetCfg.id = UBX_CFG_PRT;
-	packetCfg.len = 20;
-	packetCfg.startingSpot = 0;
+	m_packetCfg.cls = UBX_CLASS_CFG;
+	m_packetCfg.id = UBX_CFG_PRT;
+	m_packetCfg.len = 20;
+	m_packetCfg.startingSpot = 0;
 
 	//payloadCfg is now loaded with current bytes. Change only the ones we need to
 	payloadCfg[8] = baudrate;
@@ -344,7 +344,7 @@ void GPS::setSerialRate(uint32_t baudrate, uint8_t uartPort) {
 	payloadCfg[10] = baudrate >> 16;
 	payloadCfg[11] = baudrate >> 24;
 
-	sendSerialCommand(&packetCfg);
+	sendSerialCommand(&m_packetCfg);
 }
 
 //Configure a given port to output UBX, NMEA, RTCM3 or a combination thereof
@@ -353,13 +353,13 @@ void GPS::setSerialRate(uint32_t baudrate, uint8_t uartPort) {
 void GPS::setPortOutput(uint8_t portID, uint8_t outStreamSettings) {
 	//Get the current config values for this port ID, loads payloadCfg array
 	getPortSettings(portID);
-	packetCfg.cls = UBX_CLASS_CFG;
-	packetCfg.id = UBX_CFG_PRT;
-	packetCfg.len = 20;
-	packetCfg.startingSpot = 0;
+	m_packetCfg.cls = UBX_CLASS_CFG;
+	m_packetCfg.id = UBX_CFG_PRT;
+	m_packetCfg.len = 20;
+	m_packetCfg.startingSpot = 0;
 	//payloadCfg is now loaded with current bytes. Change only the ones we need to
 	payloadCfg[14] = outStreamSettings;
-	sendSerialCommand(&packetCfg);
+	sendSerialCommand(&m_packetCfg);
 }
 
 //Configure a given port to accept UBX, NMEA, RTCM3 or a combination thereof
@@ -367,23 +367,23 @@ void GPS::setPortOutput(uint8_t portID, uint8_t outStreamSettings) {
 //Settings: 	use COM_TYPE_ constants
 void GPS::setPortInput(uint8_t portID, uint8_t inStreamSettings) {
 	//Get the current config values for this port ID, loads payloadCfg array
-	packetCfg.cls = UBX_CLASS_CFG;
-	packetCfg.id = UBX_CFG_PRT;
-	packetCfg.len = 20;
-	packetCfg.startingSpot = 0;
+	m_packetCfg.cls = UBX_CLASS_CFG;
+	m_packetCfg.id = UBX_CFG_PRT;
+	m_packetCfg.len = 20;
+	m_packetCfg.startingSpot = 0;
 	//payloadCfg is now loaded with current bytes. Change only the ones we need to
 	payloadCfg[12] = inStreamSettings;
-	sendSerialCommand(&packetCfg);
+	sendSerialCommand(&m_packetCfg);
 }
 
 void GPS::setNavigationFrequency(uint8_t navFreq) {
-	packetCfg.cls = UBX_CLASS_CFG;
-	packetCfg.id = UBX_CFG_RATE;
-	packetCfg.len = 0;
-	packetCfg.startingSpot = 0;
+	m_packetCfg.cls = UBX_CLASS_CFG;
+	m_packetCfg.id = UBX_CFG_RATE;
+	m_packetCfg.len = 0;
+	m_packetCfg.startingSpot = 0;
 
 	//This will load the payloadCfg array with current settings of the given register
-	sendSerialCommand(&packetCfg);
+	sendSerialCommand(&m_packetCfg);
 
 	uint16_t measurementRate = 1000 / navFreq;
 
@@ -391,26 +391,26 @@ void GPS::setNavigationFrequency(uint8_t navFreq) {
 	payloadCfg[0] = measurementRate & 0xFF; //measRate LSB
 	payloadCfg[1] = measurementRate >> 8;   //measRate MSB
 
-	sendSerialCommand(&packetCfg);
+	sendSerialCommand(&m_packetCfg);
 }
 
 void GPS::configureMessage(uint8_t msgClass, uint8_t msgID, uint8_t portID, uint8_t sendRate) {
-	packetCfg.cls = UBX_CLASS_CFG;
-	packetCfg.id = UBX_CFG_MSG;
-	packetCfg.len = 8;
-	packetCfg.startingSpot = 0;
+	m_packetCfg.cls = UBX_CLASS_CFG;
+	m_packetCfg.id = UBX_CFG_MSG;
+	m_packetCfg.len = 8;
+	m_packetCfg.startingSpot = 0;
 
 	//Clear packet payload
-	for (int x = 0; x < packetCfg.len; x++) {
-		packetCfg.payload[x] = 0;
+	for (int x = 0; x < m_packetCfg.len; x++) {
+		m_packetCfg.payload[x] = 0;
 	}
-	packetCfg.payload[0] = msgClass;
-	packetCfg.payload[1] = msgID;
+	m_packetCfg.payload[0] = msgClass;
+	m_packetCfg.payload[1] = msgID;
 	//Send rate is relative to the event a message is registered on.
 	// For example, if the rate of a navigation message is set to 2, the message is sent every 2nd navigation solution.
-	packetCfg.payload[2 + portID] = sendRate;
+	m_packetCfg.payload[2 + portID] = sendRate;
 
-	sendSerialCommand(&packetCfg);
+	sendSerialCommand(&m_packetCfg);
 }
 
 void GPS::saveConfiguration()
@@ -418,29 +418,29 @@ void GPS::saveConfiguration()
 // will allow configuration to persist through module resets
 // where initial configuration would not necessarily run again
 {
-	packetCfg.cls = UBX_CLASS_CFG;
-	packetCfg.id = UBX_CFG_CFG;
-	packetCfg.len = 12;
-	packetCfg.startingSpot = 0;
+	m_packetCfg.cls = UBX_CLASS_CFG;
+	m_packetCfg.id = UBX_CFG_CFG;
+	m_packetCfg.len = 12;
+	m_packetCfg.startingSpot = 0;
 
 	//Clear packet payload
 	//TODO: make sure replacing uint8_t with int didn't break anything here
-	for (int x = 0; x < packetCfg.len; x++) {
-		packetCfg.payload[x] = 0;
+	for (int x = 0; x < m_packetCfg.len; x++) {
+		m_packetCfg.payload[x] = 0;
 	}
 
-	packetCfg.payload[4] = 0xFF; //Setting saveMask bits
-	packetCfg.payload[5] = 0xFF;
+	m_packetCfg.payload[4] = 0xFF; //Setting saveMask bits
+	m_packetCfg.payload[5] = 0xFF;
 
-	sendSerialCommand(&packetCfg);
+	sendSerialCommand(&m_packetCfg);
 }
 
 //Current port settings helper function
 void GPS::getPortSettings(uint8_t portID) {
-	packetCfg.cls = UBX_CLASS_CFG;
-	packetCfg.id = UBX_CFG_PRT;
-	packetCfg.len = 1;
-	packetCfg.startingSpot = 0;
+	m_packetCfg.cls = UBX_CLASS_CFG;
+	m_packetCfg.id = UBX_CFG_PRT;
+	m_packetCfg.len = 1;
+	m_packetCfg.startingSpot = 0;
 	payloadCfg[0] = portID;
 }
 
@@ -463,6 +463,19 @@ uint16_t GPS::extractInt(uint8_t spotToStart) {
 //Given a spot, extract a byte from the payload
 uint8_t GPS::extractByte(uint8_t spotToStart) {
 	return (payloadCfg[spotToStart]);
+}
+
+double GPS::getLat(){
+	return m_nav_data.latitude * 10E-7; //degrees
+}
+double GPS::getLong(){
+	return m_nav_data.longitude * 10E-7; //degrees
+}
+double GPS::getAlt(){
+	return m_nav_data.altitude * 10E-3; //meters
+}
+double GPS::getTime(){
+	//TODO: implement this, not sure what format Azum wants
 }
 
 
