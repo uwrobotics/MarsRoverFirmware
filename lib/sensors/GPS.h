@@ -1,19 +1,24 @@
-//UBlox SAM-M8Q-0-10 GPS Sensor'
+//UBlox SAM-M8Q-0-10 GPS Sensor
 
-//https://github.com/sparkfun/SparkFun_Ublox_Arduino_Library/tree/master/src
+//
+//SparkFun Arduino Library: https://github.com/sparkfun/SparkFun_Ublox_Arduino_Library/tree/master/src
+//Datasheet: https://www.u-blox.com/sites/default/files/SAM-M8Q_DataSheet_%28UBX-16012619%29.pdf
+//Protocol Specification: https://www.u-blox.com/sites/default/files/products/documents/u-blox8-M8_ReceiverDescrProtSpec_%28UBX-13003221%29.pdf
+//
+
 /*
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-		associated documentation files (the "Software"), to deal in the Software without restriction,
+associated documentation files (the "Software"), to deal in the Software without restriction,
 including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of the Software, and to permit persons to whom the Software is furnished to
 do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial
-		portions of the Software.
+portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
 NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-		SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include <array>
 #include "mbed.h"
@@ -27,6 +32,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //Refresh frequency for new position data, in Hz
 //TODO: determine what frequency we want
 const uint8_t NAV_FREQUENCY = 5;
+const int ACK_TIMEOUT_MS = 2000;
 
 // ubxPacket validity
 typedef enum
@@ -55,13 +61,13 @@ const uint32_t DEFAULT_BAUD_RATE = 9600;
 
 //used in config to disable the default messages
 const std::array<const uint8_t, 7> DEFAULT_ENABLED_NMEA = {
-0x00,  //GxGGA (Global positioning system fix data)
-0x01,  //GxGLL (latitude and long, whith time of position fix and status)
-0x02,  //GxGSA (GNSS DOP and Active satellites)
-0x03,  //GxGSV (GNSS satellites in view)
-0x04,  //GxRMC (Recommended minimum data)
-0x05,  //GxVTG (course over ground and Ground speed)
-0x41  //GxTXT (text transmission)
+		0x00,  //GxGGA (Global positioning system fix data)
+		0x01,  //GxGLL (latitude and long, whith time of position fix and status)
+		0x02,  //GxGSA (GNSS DOP and Active satellites)
+		0x03,  //GxGSV (GNSS satellites in view)
+		0x04,  //GxRMC (Recommended minimum data)
+		0x05,  //GxVTG (course over ground and Ground speed)
+		0x41  //GxTXT (text transmission)
 };
 
 //oh boy here we go...
@@ -284,7 +290,7 @@ class GPS {
 	//serial functions
 	void sendSerialCommand(ubxPacket *outgoingUBX);
 	void onByteReceive();
-	bool waitForAck();
+	bool waitForAck(uint8_t msgClass, uint8_t msgID);
 
 	//bit manipulation functions
 	uint32_t extractLong(uint8_t spotToStart); //Combine four bytes from payload into long
@@ -330,10 +336,12 @@ class GPS {
 	volatile bool m_nack_flag;
 
 	//class and msg ID targets
-	uint8_t m_target_class;
-	uint8_t m_target_msgID;
+	volatile uint8_t m_target_class;
+	volatile uint8_t m_target_msgID;
+
+	//waitForAck timeout timer
+	Timer m_ack_timeout;
 
 	//serial interface
 	Serial m_uart;
 };
-
