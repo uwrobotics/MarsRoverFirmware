@@ -1,7 +1,6 @@
 #ifndef INA_226_H
 #include INA_226_H
 #include "mbed.h"
-#include "math.h"
 #include "rover_config.h"
 
 // Datasheet for INA226 http://www.ti.com/lit/ds/symlink/ina226.pdf
@@ -15,42 +14,71 @@
 // mask/enable register 06h
 //alert limit register 07h
 
+//configurations for sensor
+enum CONFIGURATIONMODE{
+    powerReset = 0,
+    triggered = 3,
+    continous = 7
+};
+
+//sample struct for component specific data
+struct ComponentConfig
+{   
+    PinName SDA_pinname; 
+    PinName SCL_pinname;
+    u_int8_t sensor_address;
+    float shunt_resistance;
+    float max_expected_current;
+};
+
+struct SensorModes{
+    u_int8_t bus_voltage_conversion_setting; 
+    u_int8_t shunt_voltage_conversion_setting;
+    u_int8_t average_mode_setting;
+    u_int8_t operation_mode;
+    u_int8_t reset_registers;
+}
+
 class INA_226{
     private:  
-        constexpr u_int8_t CONFIG_REGISTER 0x00;
-        constexpr u_int8_t VOLTAGE_REGISTER 0x01;
-        constexpr u_int8_t CURRENT_REGISTER 0x04;
-        constexpr u_int8_t CALIBRATION_REGISTER 0x05;
+        u_int8_t m_config_register;
+        u_int8_t m_voltage_register;
+        u_int8_t m_power_register;
+        u_int8_t m_current_register;
+        u_int8_t m_calibration_register;
+        u_int8_t m_mask_enable_register;
+        u_int8_t m_alert_limit_register;
 
-        //  I2C bus initialization
         I2C i2c_;
-        //may need to adjust function to take sensor slave addresses as there many be many current sensors
-        u_int8_t sensor_address_;
+        u_int8_t m_sensor_address;
 
-        enum CONFIGURATIONMODE{
-            powerReset = 0,
-            triggered = 3,
-            continous = 7
-        };
+        // //below are settings for the INA226 chip. The default values have been selected 
+        // //but different conversion times can be selected as well. See datasheet for other settings
+        // u_int8_t m_bus_voltage_conversion_setting; //sets the conversion time for bus voltage measurement(1.1 ms)
+        // u_int8_t m_shunt_voltage_conversion_setting; //sets the conversion time for shunt voltage measurement(1.1ms)
+        // u_int8_t m_average_mode_setting;
 
-        //below are settings for the INA226 chip. The default values have been selected 
-        //but different conversion times can be selected as well. See datasheet for other settings
-        constexpr int BUS_VOLTAGE_CONVERSION_TIME = 4; //sets the conversion time for bus voltage measurement(1.1 ms)
-        constexpr int SHUNT_VOLTAGE_CONVERSION_TIME = 4; //sets the conversion time for shunt voltage measurement(1.1ms)
-        constexpr int AVERAGE_MODE = 0;
-
-        //current conversion constexprants
-        float max_expected_current_ = 0; 
-        float current_lsb = max_expected_current_ / pow(2,15); 
-        float shunt_resistance_ = 0;
+        float m_max_expected_current; 
+        float m_current_lsb;
+        float m_shunt_resistance;
 
     public:
-        INA_226(int i2c_frequency, PinName SDA_pinname, PinName SCK_pinname, u_int8_t sensor_address_, float max_expected_current_, float shunt_resistance_);
+        INA_226(ComponentConfig component_config);
         ~INA_226();
         float getCurrentData();
         float getVoltageData();
+        float getPowerData();
         int calibrateSensor();
-        int configureSensor(CONFIGURATIONMODE operation_mode, int reset_registers);
+        int configureSensor(SensorModes configuration_bits);
+        int setMaskEnableRegister();
+        u_int16_t getAlertLimit();
+        int setAlertLimit();
+
+        /*not yet implemented yet
+
+        float getManufacturerID();
+        float getDieID();
+        */
 };
 
 #endif /* INA_226_H */

@@ -1,7 +1,7 @@
 #include "mbed.h"
 #include "CANMsg.h"
 #include "INA_226.h"
-#include "thermistor.h"
+#include "Voltage_Divider_Thermistor.h"
 #include "rover_config.h"
 
 // Datasheet for INA226 http://www.ti.com/lit/ds/symlink/ina226.pdf
@@ -13,25 +13,19 @@ Serial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 //CAN initialization 
 CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY); // dont know the actual CAN id's
 CANMsg rxMsg;
-//needs a specific CANID to update values
-constexpr unsigned int EXPECTED_CAN_ID = 0x000;
+//possible user commands
+constexpr unsigned int SET_ALERT_LIMIT = 0x00;
+constexpr unsigned int SET_CONFIGURATIONS = 0x00;
 
-//measurement thresholds, needs updating, comparison in celcius now
+//measurement thresholds, needs updating, comparison in celcius 
 constexpr float CURRENT_UPPER_LIM = 1;
 constexpr float CURRENT_LOWER_LIM = 0;
 constexpr float CURVOLTAGE_UPPER_LIM = 1;
 constexpr float VOLTAGE_LOWER_LIM = 0;
 constexpr float TEMP_UPPER_LIM = 1;
-constexpr float TEMP_LOWER_LIM = 0;    
+constexpr float TEMP_LOWER_LIM = 0;  
 
-//sample struct for component specific data
-struct elbow_data
-{
-    float shunt_resistance;
-    float max_expected_current;
-    u_int8_t sensor_address; 
-};
-
+constexpr int NUM_SAFETY_SENSORS = 6;
 
 void initCAN();
 //TODO may need more functions to deal with different CAN message contents
@@ -40,8 +34,27 @@ bool inRange(float upper_lim, float lower_lim, float val);
 
 int main()
 {
-    INA_226 elbow_current_sensor(); //example for elbow sensor, may initialize for each component
-    thermistor temp_sensor(TEMP_ANLG_IN); 
+    // SDA Pin, SCL pin, sensor address, shunt resistance, max expected current
+    //not sure if these values are correct
+    ComponentConfig elbow_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL, 0x00, 0.003, 28.75};
+    ComponentConfig claw_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.012, 6.325};
+    ComponentConfig wrist_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.01, 8.05};
+    ComponentConfig bicep_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.015, 5.75};
+    ComponentConfig allen_key_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.022, 3.45};
+    ComponentConfig turntable_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.00075, 60.95};
+
+    INA_226 safety_sensors[NUM_SAFETY_SENSORS] = {
+        INA_226 elbow_current_sensor(elbow_config), //example for elbow sensor, may initialize for each component
+        INA_226 claw_current_sensor(claw_config),
+        INA_226 wrist_current_sensor(wrist_config),
+        INA_226 bicep_current_sensor(bicep_config),
+        INA_226 allen_key_current_sensor(allen_key_config),
+        INA_226 turntable_current_sensor(turntable_config)
+    };
+
+    // thermistor pin, B constant, vin, expected room temp, thermistor room temp resistance, voltage divider resistance
+    VoltageDividerThermistorConfig safety_thermistor_config = {TEMP_ANLG_IN, 4700, 5, 295.15, 100000, 100000};
+    VoltageDividerThermistor temp_sensor(safety_thermistor_config); 
 
     initCAN();
 
@@ -55,25 +68,36 @@ int main()
             ValidateCANMsg(&rxMsg);
             rxMsg >> command;
             rxMsg.clear();
-        }
-        //going to need more functionality to select what to measure
-
-        float measured_current = elbow_current_sensor.getCurrentData();
-        if (!inRange(CURRENT_UPPER_LIM, CURRENT_LOWER_LIM, measured_current))
-        {
-            pc.printf("Measured Current is NOT within expected limits!\r\n");
-        }
-
-        float measured_voltage = elbow_current_sensor.getVoltageData();
-        if (!inRange(CURVOLTAGE_UPPER_LIM, VOLTAGE_LOWER_LIM, measured_voltage))
-        {
-            pc.printf("Measured Voltage is NOT within expected limits!\r\n");
+            // if (command == mask_enable)
+            // {
+            //     elbow_current_sensor.setMaskEnableRegister();            }
+            // }
+            // else if(command == configure_sensor)
+            // {
+            //     elbow_current_sensor.configureSensor(command);  
+            // }
         }
 
-        float measured_temp = temp_sensor.readThermistor();
-        if(!inRange(TEMP_UPPER_LIM, TEMP_LOWER_LIM, measured_temp))
+        //implement hardware indication of danger
+        for(int sensor_index = 0; sensor_index < NUM_SAFETY_SENSORS; sensor_index++)
         {
-            pc.printf("Measured Temperature is NOT within expected limits!\r\n");
+            float measured_current = safety_sensors[sensor_index].getCurrentData();
+            if (!inRange(CURRENT_UPPER_LIM, CURRENT_LOWER_LIM, measured_current))
+            {
+                pc.printf("Measured Current is NOT within expected limits!\r\n");
+            }
+
+            float measured_voltage = safety_sensors[sensor_index].getVoltageData();
+            if (!inRange(CURVOLTAGE_UPPER_LIM, VOLTAGE_LOWER_LIM, measured_voltage))
+            {
+                pc.printf("Measured Voltage is NOT within expected limits!\r\n");
+            }
+
+            float measured_temp = temp_sensor.readThermistor();
+            if(!inRange(TEMP_UPPER_LIM, TEMP_LOWER_LIM, measured_temp))
+            {
+                pc.printf("Measured Temperature is NOT within expected limits!\r\n");
+            }
         }
     }
 }
@@ -84,13 +108,18 @@ void initCAN()
     can.filter(CAN1_RX, CAN1_TX, ROVER_CANID_MASK, CANStandard);
 }
 
+//may change function name to reflect the processing of the can message when functionality to manipulate INA is made
 void validateCANMsg(CANMsg *p_newMsg)
 {
     // PRINT_INFO("Recieved CAN message with ID %X\r\n", p_newMsg->id);
-    // The specific can ID for configuring chip is ___
     switch (p_newMsg->id){
-        case EXPECTED_CAN_ID:
+        case SET_CONFIGURATIONS:
             pc.printf("Updating INA226 config\r\n");
+            //do stuff to update INA config register
+            break;
+        case SET_ALERT_LIMIT:
+            pc.printf("Updating Alert Limits\r\n");
+            //do stuff to update alert limit register
             break;
         default:
             pc.printf("Recieved unimplemented command\r\n");
@@ -101,7 +130,6 @@ void validateCANMsg(CANMsg *p_newMsg)
 //if in range returns 1, otherwise returns 0
 bool inRange(float upper_lim, float lower_lim, float val)
 {
-    bool in_range = (val > upper_lim || val< lower_lim) ? 0: 1;
-    return in_range;
+    return (val > upper_lim || val< lower_lim) ? 0: 1;
 }
 
