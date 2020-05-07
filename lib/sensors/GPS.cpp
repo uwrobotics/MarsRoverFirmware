@@ -59,7 +59,7 @@ bool GPS::waitForAck() {
 
 void GPS::onByteReceive() {
 	process(m_uart.getc(), (m_activePacketBuffer == UBLOX_PACKET_PACKETCFG ? &m_packetCfg :
-					   m_activePacketBuffer == UBLOX_PACKET_PACKETACK ? &m_packetAck : &m_packetBuf),
+							m_activePacketBuffer == UBLOX_PACKET_PACKETACK ? &m_packetAck : &m_packetBuf),
 			m_target_class, m_target_msgID);
 }
 
@@ -465,17 +465,17 @@ uint8_t GPS::extractByte(uint8_t spotToStart) {
 	return (payloadCfg[spotToStart]);
 }
 
-double GPS::getLat(){
+double GPS::getLat() {
 	return m_nav_data.latitude * 10E-7; //degrees
 }
-double GPS::getLong(){
+double GPS::getLong() {
 	return m_nav_data.longitude * 10E-7; //degrees
 }
-double GPS::getAlt(){
-	return m_nav_data.altitude * 10E-3; //meters
+double GPS::getAlt() {
+	return m_nav_data.altitude * 10E-3; //meters above elipsoid
 }
-double GPS::getTime(){
-	//TODO: implement this, not sure what format Azum wants
+double GPS::getTime() { //seconds since midnight
+	return m_nav_data.hour * 3600 + m_nav_data.minute * 60 + m_nav_data.second + m_nav_data.nanosecond * 10E-9;
 }
 
 

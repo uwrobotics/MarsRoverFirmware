@@ -243,10 +243,10 @@ class GPS {
 	GPS(PinName tx, PinName rx, uint32_t baud_rate);
 	void configure(); //configures the GPS (note that serial loop must be started before this is run)
 	void saveConfiguration(); //saves configuration to persistent memory
-	double getLat();
-	double getLong();
-	double getAlt();
-	double getTime();
+	double getLat(); //degrees
+	double getLong(); //degrees
+	double getAlt(); //meters above elipsoid
+	double getTime(); //seconds since midnight
 
 
  private:
