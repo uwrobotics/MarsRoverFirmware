@@ -29,7 +29,7 @@ This repository contains:
 
 1. Download the development toolchain (gcc and make) and serial interface software
    
-   For Ubuntu
+   For Ubuntu (18.04 preferred)
     - `sudo apt update`
     - `sudo apt install make`
     - `sudo apt install screen can-utils` for serial and CAN interfacing
