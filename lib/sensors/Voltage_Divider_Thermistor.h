@@ -1,5 +1,5 @@
-#ifndef THERMISTOR_H
-#include THERMISTOR_H
+#ifndef VOLTAGE_DIVIDER_THERMISTOR_H
+#define VOLTAGE_DIVIDER_THERMISTOR_H
 #include "mbed.h"
 
 struct VoltageDividerThermistorConfig
@@ -28,4 +28,4 @@ class VoltageDividerThermistor{
         float readThermistorCelcius();
 }
 
-#endif /* THERMISTOR_H */
+#endif /* VOLTAGE_DIVIDER_THERMISTOR_H */

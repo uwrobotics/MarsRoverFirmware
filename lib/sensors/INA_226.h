@@ -1,5 +1,5 @@
 #ifndef INA_226_H
-#include INA_226_H
+#define INA_226_H
 #include "mbed.h"
 #include "rover_config.h"
 
