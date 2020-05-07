@@ -31,7 +31,7 @@ This repository contains:
    
    For Ubuntu
     - `sudo apt update`
-    - `sudo apt install make gcc-arm-none-eabi`
+    - `sudo apt install make`
     - `sudo apt install screen can-utils` for serial and CAN interfacing
     - Install/update ARM GCC toolchain:
 
