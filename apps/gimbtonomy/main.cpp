@@ -5,69 +5,71 @@
 
 #include "mbed.h"
 #include "CANMsg.h"
+#include "can_config.h"
 #include "rover_config.h"
 #include "Neopixel_Blocking.h"
 
-Serial        pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
+CAN                   can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+CANMsg                rxMsg, txMsg;
 // CAN_RX = PB_8, CAN_TX = PB_9
-CAN           can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
-CANMsg        rxMsg;
 Neopixel_Blocking      neopixel(16, LED_MTRX);
 
-// 0x794 CAN ID for change to a neo pixel.
 // Color is specified by the data inside the packet
-// 0 is solid red
-// 1 is solid blue
-// 2 is flashing green
 
 void initCAN() {
-    // CANStandard is defined in CAN.h
     can.filter(ROVER_CANID_FIRST_GIMBTONOMY_RX, ROVER_CANID_FILTER_MASK, CANStandard);
 }
 
 void handleSetNeoPixelColor(CANMsg *p_newMsg){
-    // 0 = solid red, 1 = solid blue, 2 = flashing green
+    enum mode : uint8_t{
+        solidRed, solidBlue, flashingGreen, off
+    };
     uint8_t neoPixelMode = 0;
     *p_newMsg >> neoPixelMode;
-
     switch (neoPixelMode){
-    case 0:
-        pc.printf("Setting neo pixels to solid red\r\n");
+    case solidRed:
+        printf("Setting neo pixels to solid red\r\n");
         neopixel.displayRed();
         break;
-    case 1:
-        pc.printf("Setting neo pixels to solid blue\r\n");
+    case solidBlue:
+        printf("Setting neo pixels to solid blue\r\n");
         neopixel.displayBlue();
         break;
-    case 2:
-        pc.printf("Setting neo pixels to flashing green\r\n");
+    case flashingGreen:
+        printf("Setting neo pixels to flashing green\r\n");
         neopixel.blinkPixels(10,2, neopixel.Green);
         break;
+    case off:
+        printf("Turning neo pixels off\r\n");
+        neopixel.shutdown();
+        break;
     default:
-        pc.printf("Neo pixels tried to be set to unknow mode\r\n");
+        printf("Neo pixels tried to be set to unknow mode\r\n");
         break;
     }
 }
 
-void processCANMsg(CANMsg *p_newMsg) {
-    // PRINT_INFO("Recieved CAN message with ID %X\r\n", p_newMsg->id);
-    // The specific can ID for changing the color of the neopixels is 0x794
-    const unsigned int setNeoPixelMode = 0x794;
+void processCANMsg(CANMsg *p_newMsg){
     switch (p_newMsg->id){
-        //case setNeoPixelColorRed:
-        // Store 0x794 into vars that are stored in rover_config.h
-        case setNeoPixelMode:
-            pc.printf("Updating neo pixels\r\n");
+        case CANID::SET_NEOPIXEL:
+            // Send an acknowledgement CANMsg back to the Jetson
+            printf("Sending acknowledgement message\r\n");
+            txMsg.clear();
+            txMsg.id = CANID::NEOPIXEL_ACK;
+            txMsg << true;
+            can.write(txMsg);
+            printf("Updating neo pixels\r\n");
             handleSetNeoPixelColor(p_newMsg);
             break;
         default:
-            pc.printf("Recieved unimplemented command\r\n");
+            printf("Recieved unimplemented command for neopixels\r\n");
             break;
     }
 }
 
 // main() runs in its own thread in the OS
 int main(){
+    printf("Beginning neopixel fw app.\r\n");
     initCAN();
     while(1){
         if (can.read(rxMsg)){
@@ -75,4 +77,6 @@ int main(){
             rxMsg.clear();
         }
     }
+    return 1;
+
 }
