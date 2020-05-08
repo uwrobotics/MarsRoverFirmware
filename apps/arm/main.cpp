@@ -207,7 +207,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     payload.param = (data & 0xE0) >> 5;
     payload.value = (data & 0xFFFFFFFF00) >> 8;
     int_to_float.int_value = payload.value;
-    // determine which actuator is of interest in order to avoid repetition
+    // determine actuator of interest
     ActuatorController *temp = nullptr;
     switch(payload.actuatorID){
         case ROSID::TURNTABLEACTUATORID:
@@ -225,9 +225,11 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
         case ROSID::WRISTRIGHTACTUATORID:
             temp = &wristRightActuator;
             break;
+        case ROSID::CLAWACTUATORID:
+            temp = &clawController;
+            break;
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
-        
     }
     switch (msg.id){
         case CANID::SET_JOINT_PID_PID:
