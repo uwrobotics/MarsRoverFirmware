@@ -17,7 +17,7 @@ INA_226::INA_226(ComponentConfig component_config)
     m_shunt_resistance = component_config.shunt_resistance;
     m_sensor_address = component_config.sensor_address << 1; //7 bit address
 
-    i2c_(component_config.SDA_pinname, component_config.SCL_pinname);
+    m_i2c(component_config.SDA_pinname, component_config.SCL_pinname);
 
     m_config_register = 0x00;
     m_voltage_register = 0x01;
@@ -30,13 +30,14 @@ INA_226::INA_226(ComponentConfig component_config)
 
 INA_226::~INA_226(){}
 
+//TODO: confirm types
 float INA_226::getCurrentData()
 {
     //may need char16_t?
     u_int8_t cmd[2] = {m_current_register, 0x00};
     
-    i2c_.write(m_sensor_address, cmd, 1);
-    i2c_.read(m_sensor_address, cmd, 2, false);
+    m_i2c.write(m_sensor_address, cmd, 1);
+    m_i2c.read(m_sensor_address, cmd, 2, false);
     
     u_int16_t current_data = (cmd[1] << 8 | cmd[0]]);
 
@@ -47,8 +48,8 @@ float INA_226::getVoltageData()
 {
     u_int8_t cmd[2] = {m_voltage_register, 0x00};
     
-    i2c_.write(m_sensor_address, cmd, 1);
-    i2c_.read(m_sensor_address, cmd, 2, false);
+    m_i2c.write(m_sensor_address, cmd, 1);
+    m_i2c.read(m_sensor_address, cmd, 2, false);
     
     u_int16_t voltage_data = (cmd[1] << 8 | cmd[0]);
     
@@ -59,8 +60,8 @@ float INA_226::getPowerData()
 {
     u_int8_t cmd[2] = {m_power_register};
     
-    i2c_.write(m_sensor_address, cmd, 1);
-    i2c_.read(m_sensor_address, cmd, 2, false);
+    m_i2c.write(m_sensor_address, cmd, 1);
+    m_i2c.read(m_sensor_address, cmd, 2, false);
     
     u_int16_t power_data = (cmd[1] << 8 | cmd[0]);
     
@@ -89,7 +90,7 @@ int INA_226::configureSensor(SensorModes configuration_bits)
     cmd[1] = dataByte & 0xFF;
     cmd[2] = dataByte >> 8 & 0xFF;
 
-    i2c_.write(m_sensor_address, cmd, 3);
+    m_i2c.write(m_sensor_address, cmd, 3);
     return 0;
 }
 
@@ -102,7 +103,7 @@ int INA_226::calibrateSensor()
     cmd[1] = cal & 0xFF;
     cmd[2] = cal >> 8 & 0xFF;
 
-    i2c_.write(m_sensor_address, cmd, 3);
+    m_i2c.write(m_sensor_address, cmd, 3);
     
     return 0;
 }
@@ -127,7 +128,7 @@ int INA_226::setMaskEnableRegister(u_int16_t bits_to_set)
     cmd[1] = bits_to_set & 0xFF;
     cmd[2] = bits_to_set >> 8 & 0xFF;
 
-    i2c_.write(m_sensor_address, cmd, 3);
+    m_i2c.write(m_sensor_address, cmd, 3);
 
     return 0;
 }
@@ -138,8 +139,8 @@ u_int16_t INA_226::getAlertLimit()
 {
     u_int8_t cmd[2] = {m_alert_limit_register, 0x00};
     
-    i2c_.write(m_sensor_address, cmd, 1);
-    i2c_.read(m_sensor_address, cmd, 2, false);
+    m_i2c.write(m_sensor_address, cmd, 1);
+    m_i2c.read(m_sensor_address, cmd, 2, false);
     
     u_int16_t alert = (cmd[1] << 8 | cmd[0]);
     
@@ -153,7 +154,7 @@ int INA_226::setAlertLimit(u_int16_t alert_limit)
     cmd[1] = alert_limit & 0xFF;
     cmd[2] = alert_limit >> 8 & 0xFF;
 
-    i2c_.write(m_sensor_address, cmd, 3);
+    m_i2c.write(m_sensor_address, cmd, 3);
 
     return 0;
 }

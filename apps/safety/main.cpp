@@ -11,9 +11,9 @@
 Serial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 
 //CAN initialization 
-CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY); // dont know the actual CAN id's
+CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY); //TODO: dont know the actual CAN id's, find out can id for safety
 CANMsg rxMsg;
-//possible user commands
+//TODO: create possible user commands
 constexpr unsigned int SET_ALERT_LIMIT = 0x00;
 constexpr unsigned int SET_CONFIGURATIONS = 0x00;
 
@@ -35,7 +35,7 @@ bool inRange(float upper_lim, float lower_lim, float val);
 int main()
 {
     // SDA Pin, SCL pin, sensor address, shunt resistance, max expected current
-    //not sure if these values are correct
+    //TODO: confirm values for sensors
     ComponentConfig elbow_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL, 0x00, 0.003, 28.75};
     ComponentConfig claw_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.012, 6.325};
     ComponentConfig wrist_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.01, 8.05};
@@ -44,7 +44,7 @@ int main()
     ComponentConfig turntable_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.00075, 60.95};
 
     INA_226 safety_sensors[NUM_SAFETY_SENSORS] = {
-        INA_226 elbow_current_sensor(elbow_config), //example for elbow sensor, may initialize for each component
+        INA_226 elbow_current_sensor(elbow_config), 
         INA_226 claw_current_sensor(claw_config),
         INA_226 wrist_current_sensor(wrist_config),
         INA_226 bicep_current_sensor(bicep_config),
@@ -52,7 +52,7 @@ int main()
         INA_226 turntable_current_sensor(turntable_config)
     };
 
-    // thermistor pin, B constant, vin, expected room temp, thermistor room temp resistance, voltage divider resistance
+    //thermistor pin, B constant, vin, expected room temp, thermistor room temp resistance, voltage divider resistance
     VoltageDividerThermistorConfig safety_thermistor_config = {TEMP_ANLG_IN, 4700, 5, 295.15, 100000, 100000};
     VoltageDividerThermistor temp_sensor(safety_thermistor_config); 
 
@@ -78,7 +78,7 @@ int main()
             // }
         }
 
-        //implement hardware indication of danger
+        //TODO: implement hardware indication of danger
         for(int sensor_index = 0; sensor_index < NUM_SAFETY_SENSORS; sensor_index++)
         {
             float measured_current = safety_sensors[sensor_index].getCurrentData();
@@ -115,11 +115,11 @@ void validateCANMsg(CANMsg *p_newMsg)
     switch (p_newMsg->id){
         case SET_CONFIGURATIONS:
             pc.printf("Updating INA226 config\r\n");
-            //do stuff to update INA config register
+            //TODO: do stuff to update INA config register
             break;
         case SET_ALERT_LIMIT:
             pc.printf("Updating Alert Limits\r\n");
-            //do stuff to update alert limit register
+            //TODO: do stuff to update alert limit register
             break;
         default:
             pc.printf("Recieved unimplemented command\r\n");

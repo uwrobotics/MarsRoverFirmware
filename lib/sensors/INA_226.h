@@ -49,14 +49,8 @@ class INA_226{
         u_int8_t m_mask_enable_register;
         u_int8_t m_alert_limit_register;
 
-        I2C i2c_;
+        I2C m_i2c;
         u_int8_t m_sensor_address;
-
-        // //below are settings for the INA226 chip. The default values have been selected 
-        // //but different conversion times can be selected as well. See datasheet for other settings
-        // u_int8_t m_bus_voltage_conversion_setting; //sets the conversion time for bus voltage measurement(1.1 ms)
-        // u_int8_t m_shunt_voltage_conversion_setting; //sets the conversion time for shunt voltage measurement(1.1ms)
-        // u_int8_t m_average_mode_setting;
 
         float m_max_expected_current; 
         float m_current_lsb;
@@ -75,7 +69,6 @@ class INA_226{
         int setAlertLimit();
 
         /*not yet implemented yet
-
         float getManufacturerID();
         float getDieID();
         */
