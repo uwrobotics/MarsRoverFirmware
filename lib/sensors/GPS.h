@@ -290,7 +290,7 @@ class GPS {
 	//serial functions
 	void sendSerialCommand(ubxPacket *outgoingUBX);
 	void onByteReceive();
-	bool waitForAck();
+	bool waitForAck(uint8_t msgClass, uint8_t msgID);
 
 	//bit manipulation functions
 	uint32_t extractLong(uint8_t spotToStart); //Combine four bytes from payload into long
