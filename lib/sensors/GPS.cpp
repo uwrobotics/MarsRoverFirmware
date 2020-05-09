@@ -109,7 +109,7 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 
 	//non-payload bytes if/else chain
 	if (((m_ubxFrameCounter == 0) && (incoming != UBX_SYNCH_1)) ||
-			((m_ubxFrameCounter == 1) && (incoming != UBX_SYNCH_2))
+			((m_ubxFrameCounter == 1) && (incoming != UBX_SYNCH_2)))
 		currentSentence = NONE;        //error, reset sentence
 	else if (m_ubxFrameCounter == 2) //Class
 	{
