@@ -93,7 +93,7 @@ void GPS::sendSerialCommand(ubxPacket *outgoingUBX) {
 //I have my doubts that this works at all honestly, but I can't say for sure until I test it
 void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedClass, uint8_t requestedID) {
 	if (currentSentence == NONE) {
-		if (incoming == 0xB5) //UBX binary frames start with 0xB5, aka μ
+		if (incoming == UBX_SYNCH_1) //first char of message
 		{
 			//start of sentence
 			m_ubxFrameCounter = 0;
@@ -108,8 +108,8 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 	}
 
 	//non-payload bytes if/else chain
-	if (((m_ubxFrameCounter == 0) && (incoming != 0xB5)) ||     //'μ'
-			((m_ubxFrameCounter == 1) && (incoming != 0x62)))  //'b'
+	if (((m_ubxFrameCounter == 0) && (incoming != UBX_SYNCH_1)) ||
+			((m_ubxFrameCounter == 1) && (incoming != UBX_SYNCH_2))
 		currentSentence = NONE;        //error, reset sentence
 	else if (m_ubxFrameCounter == 2) //Class
 	{
