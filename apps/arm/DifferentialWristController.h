@@ -1,83 +1,79 @@
 #pragma once
 
-#include "mbed.h"
-#include "Motor.h"
-#include "PwmIn.h"
-#include "PinNames.h"
 #include "ActuatorController.h"
+#include "Motor.h"
+#include "PinNames.h"
+#include "PwmIn.h"
+#include "mbed.h"
 
 // CLASS
 
 class DifferentialWristController {
+ public:
+  explicit DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight,
+                                       DigitalIn &wristLimUp, DigitalIn &WristLimCenter, DigitalIn &wristLimDown,
+                                       float leftToRightMotorPowerBias = 0.0, float maxPitchAngle_Degrees = +30.0,
+                                       float minPitchAngle_Degrees = -100.0, float calibrationTimeout_Seconds = 10.0);
 
-public:
+  mbed_error_status_t setControlMode(ActuatorController::t_actuatorControlMode controlMode);
 
-    explicit DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight, 
-                                DigitalIn &wristLimUp, DigitalIn &WristLimCenter, DigitalIn &wristLimDown,
-                                float leftToRightMotorPowerBias = 0.0, float maxPitchAngle_Degrees = +30.0, float minPitchAngle_Degrees = -100.0, 
-                                float calibrationTimeout_Seconds = 10.0);
+  mbed_error_status_t setRollPower_Percentage(float percentage);
+  mbed_error_status_t setRollVelocity_DegreesPerSec(float degreesPerSec);
+  mbed_error_status_t setRollAngle_Degrees(float degrees);
 
-    mbed_error_status_t setControlMode(ActuatorController::t_actuatorControlMode controlMode);
-    
-    mbed_error_status_t setRollPower_Percentage(float percentage);
-    mbed_error_status_t setRollVelocity_DegreesPerSec(float degreesPerSec);
-    mbed_error_status_t setRollAngle_Degrees(float degrees);
+  mbed_error_status_t setPitchPower_Percentage(float percentage);
+  mbed_error_status_t setPitchVelocity_DegreesPerSec(float degreesPerSec);
+  mbed_error_status_t setPitchAngle_Degrees(float degrees);
 
-    mbed_error_status_t setPitchPower_Percentage(float percentage);
-    mbed_error_status_t setPitchVelocity_DegreesPerSec(float degreesPerSec);
-    mbed_error_status_t setPitchAngle_Degrees(float degrees);
+  mbed_error_status_t setPitchMotionData(float motionData);
+  mbed_error_status_t setRollMotionData(float motionData);
 
-    mbed_error_status_t setPitchMotionData(float motionData);
-    mbed_error_status_t setRollMotionData(float motionData);
+  ActuatorController::t_actuatorControlMode getControlMode();
 
-    ActuatorController::t_actuatorControlMode getControlMode();
+  float getRollPower_Percentage();
+  float getRollVelocity_DegreesPerSec();
+  float getRollAngle_Degrees();
 
-    float getRollPower_Percentage();
-    float getRollVelocity_DegreesPerSec();
-    float getRollAngle_Degrees();    
+  float getPitchPower_Percentage();
+  float getPitchVelocity_DegreesPerSec();
+  float getPitchAngle_Degrees();
 
-    float getPitchPower_Percentage();
-    float getPitchVelocity_DegreesPerSec();
-    float getPitchAngle_Degrees();
+  void update();
 
-    void update();
+  mbed_error_status_t runPositionCalibration();
 
-    mbed_error_status_t runPositionCalibration();
+ private:
+  ActuatorController &r_wristActuatorLeft;
+  ActuatorController &r_wristActuatorRight;
 
-private:
+  DigitalIn &r_limSwitchUp;
+  DigitalIn &r_limSwitchCenter;
+  DigitalIn &r_limSwitchDown;
 
-    ActuatorController &r_wristActuatorLeft;
-    ActuatorController &r_wristActuatorRight;
+  bool m_limSwitchUp_Connected;
+  bool m_limSwitchCenter_Connected;
+  bool m_limSwitchDown_Connected;
 
-    DigitalIn &r_limSwitchUp;
-    DigitalIn &r_limSwitchCenter;
-    DigitalIn &r_limSwitchDown;
+  float m_leftToRightMotorPowerBias;
 
-	bool m_limSwitchUp_Connected;
-	bool m_limSwitchCenter_Connected;
-	bool m_limSwitchDown_Connected;
+  float m_maxPitchAngle_Degrees;
+  float m_minPitchAngle_Degrees;
 
-    float m_leftToRightMotorPowerBias;
+  float m_calibrationTimeout_Seconds;
 
-    float m_maxPitchAngle_Degrees;
-    float m_minPitchAngle_Degrees;
+  float m_rollPower_Percentage, m_pitchPower_Percentage;
+  float m_rollVelocity_DegreesPerSec, m_pitchVelocity_DegreesPerSec;
+  float m_rollAngle_Degrees, m_pitchAngle_Degrees;
 
-    float m_calibrationTimeout_Seconds;
+  mbed_error_status_t setSplitMotorPower(void);
+  mbed_error_status_t setSplitVelocities(void);
+  mbed_error_status_t setSplitAngles(void);
 
-    float m_rollPower_Percentage, m_pitchPower_Percentage;
-    float m_rollVelocity_DegreesPerSec, m_pitchVelocity_DegreesPerSec;
-    float m_rollAngle_Degrees, m_pitchAngle_Degrees;
+  bool isLimSwitchUpTriggered();
+  bool isLimSwitchCenterTriggered();
+  bool isLimSwitchDownTriggered();
 
-    mbed_error_status_t setSplitMotorPower(void);
-    mbed_error_status_t setSplitVelocities(void);
-    mbed_error_status_t setSplitAngles(void);
+  ActuatorController::t_actuatorControlMode m_controlMode;
 
-    bool isLimSwitchUpTriggered();
-    bool isLimSwitchCenterTriggered();
-    bool isLimSwitchDownTriggered();
-
-    ActuatorController::t_actuatorControlMode m_controlMode;
-
-    Mutex m_mutex;
-
+  Mutex m_mutex;
 };
