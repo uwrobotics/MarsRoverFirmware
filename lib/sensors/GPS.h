@@ -1,19 +1,24 @@
-//UBlox SAM-M8Q-0-10 GPS Sensor'
+//UBlox SAM-M8Q-0-10 GPS Sensor
 
-//https://github.com/sparkfun/SparkFun_Ublox_Arduino_Library/tree/master/src
+//
+//SparkFun Arduino Library: https://github.com/sparkfun/SparkFun_Ublox_Arduino_Library/tree/master/src
+//Datasheet: https://www.u-blox.com/sites/default/files/SAM-M8Q_DataSheet_%28UBX-16012619%29.pdf
+//Protocol Specification: https://www.u-blox.com/sites/default/files/products/documents/u-blox8-M8_ReceiverDescrProtSpec_%28UBX-13003221%29.pdf
+//
+
 /*
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-		associated documentation files (the "Software"), to deal in the Software without restriction,
+associated documentation files (the "Software"), to deal in the Software without restriction,
 including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of the Software, and to permit persons to whom the Software is furnished to
 do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial
-		portions of the Software.
+portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
 NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-		SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include <array>
 #include "mbed.h"
@@ -27,6 +32,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //Refresh frequency for new position data, in Hz
 //TODO: determine what frequency we want
 const uint8_t NAV_FREQUENCY = 5;
+const int ACK_TIMEOUT_MS = 2000;
 
 // ubxPacket validity
 typedef enum
@@ -332,6 +338,9 @@ class GPS {
 	//class and msg ID targets
 	uint8_t m_target_class;
 	uint8_t m_target_msgID;
+
+	//waitForAck timeout timer
+	Timer m_ack_timeout;
 
 	//serial interface
 	Serial m_uart;

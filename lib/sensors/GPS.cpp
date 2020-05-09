@@ -1,7 +1,3 @@
-//
-// Created by gratt on 2020-04-30.
-//
-
 #include "GPS.h"
 GPS::GPS(PinName tx, PinName rx, uint32_t baud_rate) : m_uart(tx, rx, DEFAULT_BAUD_RATE) {
 	m_rollingChecksumA = 0;
@@ -46,10 +42,14 @@ void GPS::configure() {
 }
 
 bool GPS::waitForAck() {
+	m_ack_flag = false; //if not cleared when function called
+	m_ack_timeout.reset();
+	m_ack_timeout.start();
 	//TODO: need error checking for failed checksums, etc
 	while (!m_ack_flag) { //wait for ack
-		if (m_nack_flag) {
+		if (m_nack_flag || m_ack_timeout.read_ms() > ACK_TIMEOUT_MS) {
 			m_nack_flag = false;
+			m_ack_timeout.stop();
 			return false;
 		}
 	}
