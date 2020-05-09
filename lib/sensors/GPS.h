@@ -61,6 +61,7 @@ const uint32_t DEFAULT_BAUD_RATE = 9600;
 
 //used in config to disable the default messages
 const std::array<const uint8_t, 7> DEFAULT_ENABLED_NMEA = {
+<<<<<<< HEAD
 		0x00,  //GxGGA (Global positioning system fix data)
 		0x01,  //GxGLL (latitude and long, whith time of position fix and status)
 		0x02,  //GxGSA (GNSS DOP and Active satellites)
@@ -68,6 +69,15 @@ const std::array<const uint8_t, 7> DEFAULT_ENABLED_NMEA = {
 		0x04,  //GxRMC (Recommended minimum data)
 		0x05,  //GxVTG (course over ground and Ground speed)
 		0x41  //GxTXT (text transmission)
+=======
+0x00,  //GxGGA (Global positioning system fix data)
+0x01,  //GxGLL (latitude and long, whith time of position fix and status)
+0x02,  //GxGSA (GNSS DOP and Active satellites)
+0x03,  //GxGSV (GNSS satellites in view)
+0x04,  //GxRMC (Recommended minimum data)
+0x05,  //GxVTG (course over ground and Ground speed)
+0x41  //GxTXT (text transmission)
+>>>>>>> eb490403e94df06703a82e96ab7ecc07586e62fc
 };
 
 //oh boy here we go...
@@ -345,3 +355,4 @@ class GPS {
 	//serial interface
 	Serial m_uart;
 };
+

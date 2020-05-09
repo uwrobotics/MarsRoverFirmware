@@ -470,3 +470,4 @@ double GPS::getAlt() {
 double GPS::getTime() { //seconds since midnight
 	return m_nav_data.hour * 3600 + m_nav_data.minute * 60 + m_nav_data.second + m_nav_data.nanosecond * 10E-9;
 }
+
