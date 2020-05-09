@@ -336,8 +336,8 @@ class GPS {
 	volatile bool m_nack_flag;
 
 	//class and msg ID targets
-	uint8_t m_target_class;
-	uint8_t m_target_msgID;
+	volatile uint8_t m_target_class;
+	volatile uint8_t m_target_msgID;
 
 	//waitForAck timeout timer
 	Timer m_ack_timeout;
