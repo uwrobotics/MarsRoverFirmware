@@ -194,50 +194,50 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     msg >> payload;
     ActuatorController *temp = nullptr;
     switch(payload.actuatorID){
-        case ROSID::TURNTABLEACTUATORID:
+        case ROS_CONSTANTS::ARM::ACTUATOR::TURNTABLE:
             temp = &turnTableActuator;
             break;
-        case ROSID::SHOULDERACTUATORID:
+        case ROS_CONSTANTS::ARM::ACTUATOR::SHOULDER:
             temp = &shoulderActuator;
             break;
-        case ROSID::ELBOWACTUATORID:
+        case ROS_CONSTANTS::ARM::ACTUATOR::ELBOW:
             temp = &elbowActuator;
             break;
-        case ROSID::WRISTLEFTACTUATORID:
+        case ROS_CONSTANTS::ARM::ACTUATOR::WRISTLEFT:
             temp = &wristLeftActuator;
             break;
-        case ROSID::WRISTRIGHTACTUATORID:
+        case ROS_CONSTANTS::ARM::ACTUATOR::WRISTRIGHT:
             temp = &wristRightActuator;
             break;
-        case ROSID::CLAWACTUATORID:
+        case ROS_CONSTANTS::ARM::ACTUATOR::CLAW:
             temp = &clawController;
             break;
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
     }
     switch (msg.id){
-        case CANID::SET_JOINT_PID_PID:
+        case CANID::SET_JOINT_PID:
             switch(payload.param){
-                case ROSID::P:
+                case ROS_CONSTANTS::ARM::PID::P:
                     payload.velocity ? temp->setVelocityPID_P(payload.value) :
                     temp->setPositionPID_P(payload.value);
                     return MBED_SUCCESS;
-                case ROSID::I:
+                case ROS_CONSTANTS::ARM::PID::I:
                     payload.velocity ? temp->setVelocityPID_I(payload.value) :
                     temp->setPositionPID_I(payload.value);
                     return MBED_SUCCESS;
-                case ROSID::D:
+                case ROS_CONSTANTS::ARM::PID::D:
                     payload.velocity ? temp->setVelocityPID_D(payload.value) :
                     temp->setPositionPID_D(payload.value);
                     return MBED_SUCCESS;                    
                 default:
                     return MBED_ERROR_INVALID_ARGUMENT;
             }
-        case CANID::SET_JOINT_PID_DEADZONE:
+        case CANID::SET_JOINT_DEADZONE:
             payload.velocity ? temp->setVelocityPID_DeadZoneError(payload.value) : 
             temp->setPositionPID_DeadZoneError(payload.value);
             return MBED_SUCCESS;
-        case CANID::SET_JOINT_PID_BIAS:
+        case CANID::SET_JOINT_BIAS:
             payload.velocity ? temp->setVelocityPID_bias(payload.value) :
             temp->setPositionPID_bias(payload.value);
             return MBED_SUCCESS;
@@ -269,9 +269,9 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
 
     {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
 
-    {CANID::SET_JOINT_PID_DEADZONE,     &setPIDParameter},
-    {CANID::SET_JOINT_PID_PID,          &setPIDParameter},
-    {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
+    {CANID::SET_JOINT_DEADZONE,         &setPIDParameter},
+    {CANID::SET_JOINT_PID,              &setPIDParameter},
+    {CANID::SET_JOINT_BIAS,             &setPIDParameter}
 };
 
 /*** ARM CANBus ***/

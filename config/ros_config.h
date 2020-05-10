@@ -1,15 +1,23 @@
 #pragma once
 
-typedef enum ROSID {
-    // ACTUATOR IDS
-    TURNTABLEACTUATORID,
-    SHOULDERACTUATORID,
-    ELBOWACTUATORID,
-    WRISTLEFTACTUATORID,
-    WRISTRIGHTACTUATORID,
-    CLAWACTUATORID,
-    // PID PARAMETER IDS
-    P = 0,
-    I,
-    D,
-} ROSID;
+namespace ROS_CONSTANTS{
+    namespace ARM{
+        namespace ACTUATOR{
+            enum{
+                TURNTABLE,
+                SHOULDER,
+                ELBOW,
+                WRISTLEFT,
+                WRISTRIGHT,
+                CLAW
+            };
+        }
+        namespace PID{
+            enum{
+                P,
+                I,
+                D
+            };
+        }
+    }
+}
