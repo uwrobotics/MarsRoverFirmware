@@ -373,7 +373,7 @@ void GPS::setNavigationFrequency(uint8_t navFreq) {
 
 	//load payloadCFG with current settings
 	sendSerialCommand(&m_packetCfg);
-	if(!waitForAck(UBX_CLASS_CFG, UBX_CFG_RATE)){
+	if (!waitForAck(UBX_CLASS_CFG, UBX_CFG_RATE)) {
 		//TODO: handle failure case
 	}
 
@@ -432,7 +432,7 @@ void GPS::getPortSettings(uint8_t portID) {
 	m_packetCfg.startingSpot = 0;
 	payloadCfg[0] = portID;
 	sendSerialCommand(&m_packetCfg);
-	if(!waitForAck(UBX_CLASS_CFG, UBX_CFG_PRT)){
+	if (!waitForAck(UBX_CLASS_CFG, UBX_CFG_PRT)) {
 		//TODO: handle failure case
 	}
 }
