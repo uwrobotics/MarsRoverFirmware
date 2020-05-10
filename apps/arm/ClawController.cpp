@@ -134,8 +134,8 @@ float ClawController::convertGapCmToShaftPositionDegrees(float gap_cm) {
   // (5.007842722)*(gap_cm*gap_cm) - (171.560244)*gap_cm + 2127.848743; // High precision
 }
 
+
 float ClawController::convertGapVelocityCmToShaftVelocityDegrees(float gap_cmPerSec) {
-  return 2 * (1.573564198) * gap_cmPerSec - 158.4968661;
-  // return 4*(8.282382533e-3)*(gap_cmPerSec*gap_cmPerSec*gap_cmPerSec) - 3*(2.986760459e-1)*(gap_cmPerSec*gap_cmPerSec)
-  // + 2*(5.007842722)*gap_cmPerSec - 171.560244; // High precision
+    return 2*(1.573564198)*gap_cmPerSec - 158.4968661;
+    // return 4*(8.282382533e-3)*(gap_cmPerSec*gap_cmPerSec*gap_cmPerSec) - 3*(2.986760459e-1)*(gap_cmPerSec*gap_cmPerSec) + 2*(5.007842722)*gap_cmPerSec - 171.560244; // High precision 
 }
