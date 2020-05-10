@@ -181,33 +181,17 @@ static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-    /** ---------------------------------------------------------
-     * | 24 bits  | 32 bits  | 3 bits   | 1 bit   |  4 bits      |
-     * | unused   | data     | param    | vel/pos |  Actuator ID |
-     *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    */
-    // Prepare bitfield to break down CAN data
-    struct{
-        // ID referring to which Actuator should be changed
-        // Param is Kp, Ki, Kd
-        unsigned int actuatorID : 4, param : 3;
-        // Bool for specifying velocity or position pid
-        bool velocity : 1;
-        // Actual value to be set. Bitfields can't have floats, use union
-        int32_t value : 32;
+    /** -----------------------------------------------
+     * | 32 bits  | 8 bits   | 8 bits   |  8 bits     |
+     * | data     | vel/pos  | param    |  Actuator ID|
+     *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+    struct __attribute__ ((packed)){
+        float value;
+        bool velocity;
+        uint8_t param;
+        uint8_t actuatorID;
     } payload;
-    union {
-        float float_value;
-        int32_t int_value;
-    }int_to_float;
-    int64_t data(0);
-    msg >> data;
-    payload.actuatorID = (data & 0xF);
-    payload.velocity = (data & 0x10) >> 4;
-    payload.param = (data & 0xE0) >> 5;
-    payload.value = (data & 0xFFFFFFFF00) >> 8;
-    int_to_float.int_value = payload.value;
-    // determine actuator of interest
+    msg >> payload;
     ActuatorController *temp = nullptr;
     switch(payload.actuatorID){
         case ROSID::TURNTABLEACTUATORID:
@@ -235,27 +219,27 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
         case CANID::SET_JOINT_PID_PID:
             switch(payload.param){
                 case ROSID::P:
-                    payload.velocity ? temp->setVelocityPID_P(int_to_float.float_value) :
-                    temp->setPositionPID_P(int_to_float.float_value);
+                    payload.velocity ? temp->setVelocityPID_P(payload.value) :
+                    temp->setPositionPID_P(payload.value);
                     return MBED_SUCCESS;
                 case ROSID::I:
-                    payload.velocity ? temp->setVelocityPID_I(int_to_float.float_value) :
-                    temp->setPositionPID_I(int_to_float.float_value);
+                    payload.velocity ? temp->setVelocityPID_I(payload.value) :
+                    temp->setPositionPID_I(payload.value);
                     return MBED_SUCCESS;
                 case ROSID::D:
-                    payload.velocity ? temp->setVelocityPID_D(int_to_float.float_value) :
-                    temp->setPositionPID_D(int_to_float.float_value);
+                    payload.velocity ? temp->setVelocityPID_D(payload.value) :
+                    temp->setPositionPID_D(payload.value);
                     return MBED_SUCCESS;                    
                 default:
                     return MBED_ERROR_INVALID_ARGUMENT;
             }
         case CANID::SET_JOINT_PID_DEADZONE:
-            payload.velocity ? temp->setVelocityPID_DeadZoneError(int_to_float.float_value) : 
-            temp->setPositionPID_DeadZoneError(int_to_float.float_value);
+            payload.velocity ? temp->setVelocityPID_DeadZoneError(payload.value) : 
+            temp->setPositionPID_DeadZoneError(payload.value);
             return MBED_SUCCESS;
         case CANID::SET_JOINT_PID_BIAS:
-            payload.velocity ? temp->setVelocityPID_bias(int_to_float.float_value) :
-            temp->setPositionPID_bias(int_to_float.float_value);
+            payload.velocity ? temp->setVelocityPID_bias(payload.value) :
+            temp->setPositionPID_bias(payload.value);
             return MBED_SUCCESS;
         default:
             return MBED_ERROR_INVALID_ARGUMENT;
