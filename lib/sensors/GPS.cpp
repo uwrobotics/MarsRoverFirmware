@@ -8,6 +8,7 @@ GPS::GPS(PinName tx, PinName rx, uint32_t baud_rate) : m_uart(tx, rx, DEFAULT_BA
 	m_nack_flag = false;
 	m_target_class = UBX_CLASS_NAV; //default class target
 	m_target_msgID = UBX_NAV_PVT; //default id target
+	m_buf_write = m_buf_read = m_buffer.begin();
 	setSerialRate(baud_rate, COM_PORT_UART1);
 	m_uart.baud(baud_rate);
 	wait_ms(50); //ACK lost during baud rate change
@@ -37,7 +38,16 @@ void GPS::configure() {
 			//TODO: handle NACK response
 		}
 	}
+}
 
+void GPS::process() {
+	if (m_buf_read == m_buffer.end()) {
+		m_buf_read = m_buffer.begin();
+	}
+	uint8_t tmp = *m_buf_read;
+	++m_buf_read;
+	processNonPayload(tmp, (m_activePacketBuffer == UBLOX_PACKET_PACKETCFG ? &m_packetCfg :
+							m_activePacketBuffer == UBLOX_PACKET_PACKETACK ? &m_packetAck : &m_packetBuf));
 }
 
 bool GPS::waitForAck(uint8_t msgClass, uint8_t msgID) {
@@ -64,9 +74,11 @@ bool GPS::waitForAck(uint8_t msgClass, uint8_t msgID) {
 }
 
 void GPS::onByteReceive() {
-	process(m_uart.getc(), (m_activePacketBuffer == UBLOX_PACKET_PACKETCFG ? &m_packetCfg :
-							m_activePacketBuffer == UBLOX_PACKET_PACKETACK ? &m_packetAck : &m_packetBuf),
-			m_target_class, m_target_msgID);
+	if (m_buf_write == m_buffer.end()) {
+		m_buf_write = m_buffer.begin();
+	}
+	*m_buf_write = m_uart.getc();
+	++m_buf_write;
 }
 
 void GPS::sendSerialCommand(ubxPacket *outgoingUBX) {
@@ -87,11 +99,7 @@ void GPS::sendSerialCommand(ubxPacket *outgoingUBX) {
 	m_uart.putc(outgoingUBX->checksumB);
 }
 
-//this whole processing chain is a mess, I did my best to port it from the sparkfun library
-//ideally a total refactor can be done at some point
-//lots of stuff in here we wont use, and lots that seems VERY fragile
-//I have my doubts that this works at all honestly, but I can't say for sure until I test it
-void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedClass, uint8_t requestedID) {
+void GPS::processNonPayload(uint8_t incoming, ubxPacket *incomingUBX) {
 	if (currentSentence == NONE) {
 		if (incoming == UBX_SYNCH_1) //first char of message
 		{
@@ -106,7 +114,6 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 			//TODO: handle failure case (missed sentence start)
 		}
 	}
-
 	//non-payload bytes if/else chain
 	if (((m_ubxFrameCounter == 0) && (incoming != UBX_SYNCH_1)) ||
 			((m_ubxFrameCounter == 1) && (incoming != UBX_SYNCH_2)))
@@ -121,7 +128,7 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 	} else if (m_ubxFrameCounter == 3) { //ID
 		//determine class
 		if (m_packetBuf.cls != UBX_CLASS_ACK) {
-			if ((m_packetBuf.cls == requestedClass) && (m_packetBuf.id == requestedID)) {
+			if ((m_packetBuf.cls == m_target_class) && (m_packetBuf.id == m_target_msgID)) {
 				//not ACK, Class and ID match
 				//copy data to proper buffer
 				m_activePacketBuffer = UBLOX_PACKET_PACKETCFG;
@@ -133,59 +140,18 @@ void GPS::process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedCla
 				m_ignoreThisPayload = true;
 			}
 		}
-	} else if (m_ubxFrameCounter == 6 && (m_activePacketBuffer == UBLOX_PACKET_PACKETBUF)) {
-		//first payload byte (if ACK/NACK packet)
-		if (m_packetBuf.len == 0) { //should be impossible
-			//if length is zero (!), this is first checksum byte
-			m_packetBuf.checksumA = incoming;
-		} else {
-			m_packetBuf.payload[0] = incoming;
-		}
-	} else if (m_ubxFrameCounter == 7 && (m_activePacketBuffer == UBLOX_PACKET_PACKETBUF)) {
-		//second payload byte (if ACK/NACK packet)
-		if (m_packetBuf.len == 0) //should be impossible
-		{
-			//If length is zero (!), second checksum byte
-			m_packetBuf.checksumB = incoming;
-		} else if (m_packetBuf.len == 1) { //first checksum byte
-			m_packetBuf.checksumA = incoming;
-		} else { //payload byte
-			m_packetBuf.payload[1] = incoming;
-		}
-		//now determine ACK/NACK
-		if ((m_packetBuf.cls == UBX_CLASS_ACK)                  // if ACK/NACK
-				&& (m_packetBuf.payload[0] == requestedClass)  // if class match
-				&& (m_packetBuf.payload[1] == requestedID)) { // if ID match
-			if (m_packetBuf.len == 2) {
-				//is the requested ACK
-				m_activePacketBuffer = UBLOX_PACKET_PACKETACK;
-				m_packetAck.cls = m_packetBuf.cls;
-				m_packetAck.id = m_packetBuf.id;
-				m_packetAck.len = m_packetBuf.len;
-				m_packetAck.counter = m_packetBuf.counter;
-				m_packetAck.payload[0] = m_packetBuf.payload[0];
-				m_packetAck.payload[1] = m_packetBuf.payload[1];
-			} else {
-				//TODO: cover error if length is not 2 (may impact waitForAck)
-			}
-		}
+	} else if (m_activePacketBuffer == UBLOX_PACKET_PACKETBUF &&
+			(m_ubxFrameCounter == 6 || m_ubxFrameCounter == 7)) {
+		handleACK(incoming);
 	}
-
-	//Process incoming data using the proper buffer
-	if (m_activePacketBuffer == UBLOX_PACKET_PACKETACK) {                    //ACK/NACK
-		processUBX(incoming, &m_packetAck, requestedClass, requestedID);
-	} else if (m_activePacketBuffer == UBLOX_PACKET_PACKETCFG) {            //data packet
-		processUBX(incoming, incomingUBX, requestedClass, requestedID);
-	} else {                                                               //unknown
-		processUBX(incoming, &m_packetBuf, requestedClass, requestedID);
-	}
+	selectProcessBuffer(incoming, incomingUBX);
 	m_ubxFrameCounter++;
 }
 
 //Given a character, file it away into the uxb packet structure
 //Set valid to VALID or NOT_VALID once sentence is completely received and passes or fails CRC
 //startingSpot can be set so we only record a subset of bytes within a larger packet.
-void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedClass, uint8_t requestedID) {
+void GPS::processPayload(uint8_t incoming, ubxPacket *incomingUBX) {
 	//Note that incomingUBX->counter == (m_ubxFrameCounter - 2)
 	//Add all incoming bytes to the rolling checksum
 	//Stop at len+4, as these are the checksum bytes
@@ -204,47 +170,9 @@ void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requested
 		incomingUBX->checksumA = incoming;
 	} else if (incomingUBX->counter == incomingUBX->len + 5) { //ChecksumB, last byte of sentence trasmission
 		incomingUBX->checksumB = incoming;
-
 		currentSentence = NONE; //next byte is new sentence
+		validateChecksum(incomingUBX);
 
-		//CRC validate
-		if ((incomingUBX->checksumA == m_rollingChecksumA) && (incomingUBX->checksumB == m_rollingChecksumB)) {
-			incomingUBX->valid = UBLOX_PACKET_VALIDITY_VALID; // Flag the packet as valid
-
-			//verifying class and ID match for ACK
-			if (((incomingUBX->cls == requestedClass) && (incomingUBX->id == requestedID)) ||
-					((incomingUBX->cls == UBX_CLASS_ACK) && (incomingUBX->id == UBX_ACK_ACK)
-							&& (incomingUBX->payload[0] == requestedClass)
-							&& (incomingUBX->payload[1] == requestedID))) {
-				//if match, set valid flag
-				incomingUBX->classAndIDmatch = UBLOX_PACKET_VALIDITY_VALID;
-			}
-
-				//verifying class and ID match for NACK
-			else if ((incomingUBX->cls == UBX_CLASS_ACK) && (incomingUBX->id == UBX_ACK_NACK)
-					&& (incomingUBX->payload[0] == requestedClass) && (incomingUBX->payload[1] == requestedID)) {
-				//if match, set NACK flag
-				incomingUBX->classAndIDmatch = UBLOX_PACKET_NOTACKNOWLEDGED;
-			}
-
-			//complete valid packet, process it
-			if (!m_ignoreThisPayload) {
-				processUBXpacket(incomingUBX);
-			}
-		} else {  // Checksum failure
-			incomingUBX->valid = UBLOX_PACKET_VALIDITY_NOT_VALID;
-
-			//Not sure if I like the idea behind this..., will likely remove once I verify that I can
-			//assumes class/ID bytes didn't cause CRC failure
-			//TODO: Determine if this can be removed without breaking things
-			if (((incomingUBX->cls == requestedClass) && (incomingUBX->id == requestedID)) ||
-					((incomingUBX->cls == UBX_CLASS_ACK)
-							&& (incomingUBX->payload[0] == requestedClass)
-							&& (incomingUBX->payload[1] == requestedID))) {
-				//if match, set not valid flag
-				incomingUBX->classAndIDmatch = UBLOX_PACKET_VALIDITY_NOT_VALID;
-			}
-		}
 	} else { //payload byte
 		if (!m_ignoreThisPayload) {
 			//fudge starting spot for UBX_PVT_NAV
@@ -269,7 +197,7 @@ void GPS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requested
 	}
 }
 
-void GPS::processUBXpacket(ubxPacket *msg) {
+void GPS::extractPacketData(ubxPacket *msg) {
 	if (msg->id == UBX_NAV_PVT && msg->len == 92) {
 		//Parse various byte fields
 		m_nav_data.year = extractInt(4);
@@ -290,6 +218,99 @@ void GPS::processUBXpacket(ubxPacket *msg) {
 	}
 	//TODO: Cover Failure Case
 	//note that we don't care about any other message types for our localization
+}
+
+void GPS::handleACK(uint8_t incoming) {
+	if (m_ubxFrameCounter == 6) {
+		//first payload byte (if ACK/NACK packet)
+		if (m_packetBuf.len == 0) { //should be impossible
+			//if length is zero (!), this is first checksum byte
+			m_packetBuf.checksumA = incoming;
+		} else {
+			m_packetBuf.payload[0] = incoming;
+		}
+	} else if (m_ubxFrameCounter == 7) {
+		//second payload byte (if ACK/NACK packet)
+		if (m_packetBuf.len == 0) //should be impossible
+		{
+			//If length is zero (!), second checksum byte
+			m_packetBuf.checksumB = incoming;
+		} else if (m_packetBuf.len == 1) { //first checksum byte
+			m_packetBuf.checksumA = incoming;
+		} else { //payload byte
+			m_packetBuf.payload[1] = incoming;
+		}
+		//now determine ACK/NACK
+		if ((m_packetBuf.cls == UBX_CLASS_ACK)                  // if ACK/NACK
+				&& (m_packetBuf.payload[0] == m_target_class)  // if class match
+				&& (m_packetBuf.payload[1] == m_target_msgID)) { // if ID match
+			if (m_packetBuf.len == 2) {
+				//is the requested ACK
+				m_activePacketBuffer = UBLOX_PACKET_PACKETACK;
+				m_packetAck.cls = m_packetBuf.cls;
+				m_packetAck.id = m_packetBuf.id;
+				m_packetAck.len = m_packetBuf.len;
+				m_packetAck.counter = m_packetBuf.counter;
+				m_packetAck.payload[0] = m_packetBuf.payload[0];
+				m_packetAck.payload[1] = m_packetBuf.payload[1];
+			} else {
+				//TODO: cover error if length is not 2 (may impact waitForAck)
+			}
+		}
+	} else {
+		//should never happen
+		//TODO: handle error here
+	}
+}
+
+//Process incoming data using the proper buffer
+void GPS::selectProcessBuffer(uint8_t incoming, ubxPacket *incomingUBX) {
+	if (m_activePacketBuffer == UBLOX_PACKET_PACKETACK) {                    //ACK/NACK
+		processPayload(incoming, &m_packetAck);
+	} else if (m_activePacketBuffer == UBLOX_PACKET_PACKETCFG) {            //data packet
+		processPayload(incoming, incomingUBX);
+	} else {                                                               //unknown
+		processPayload(incoming, &m_packetBuf);
+	}
+	m_ubxFrameCounter++;
+}
+
+void GPS::validateChecksum(ubxPacket *incomingUBX) {
+	//CRC validate
+	if ((incomingUBX->checksumA == m_rollingChecksumA) && (incomingUBX->checksumB == m_rollingChecksumB)) {
+		incomingUBX->valid = UBLOX_PACKET_VALIDITY_VALID; // Flag the packet as valid
+
+		//verifying class and ID match for ACK
+		if (((incomingUBX->cls == m_target_class) && (incomingUBX->id == m_target_msgID)) ||
+				((incomingUBX->cls == UBX_CLASS_ACK) && (incomingUBX->id == UBX_ACK_ACK)
+						&& (incomingUBX->payload[0] == m_target_class)
+						&& (incomingUBX->payload[1] == m_target_msgID))) {
+			//if match, set valid flag
+			incomingUBX->classAndIDmatch = UBLOX_PACKET_VALIDITY_VALID;
+		} else if ((incomingUBX->cls == UBX_CLASS_ACK) && (incomingUBX->id == UBX_ACK_NACK)
+				&& (incomingUBX->payload[0] == m_target_class) && (incomingUBX->payload[1] == m_target_msgID)) {
+			//if match, set NACK flag
+			incomingUBX->classAndIDmatch = UBLOX_PACKET_NOTACKNOWLEDGED;
+		}
+
+		//complete valid packet, process it
+		if (!m_ignoreThisPayload) {
+			extractPacketData(incomingUBX);
+		}
+	} else {  // Checksum failure
+		incomingUBX->valid = UBLOX_PACKET_VALIDITY_NOT_VALID;
+
+		//Not sure if I like the idea behind this..., will likely remove once I verify that I can
+		//assumes class/ID bytes didn't cause CRC failure
+		//TODO: Determine if this can be removed without breaking things
+		if (((incomingUBX->cls == m_target_class) && (incomingUBX->id == m_target_msgID)) ||
+				((incomingUBX->cls == UBX_CLASS_ACK)
+						&& (incomingUBX->payload[0] == m_target_class)
+						&& (incomingUBX->payload[1] == m_target_msgID))) {
+			//if match, set not valid flag
+			incomingUBX->classAndIDmatch = UBLOX_PACKET_VALIDITY_NOT_VALID;
+		}
+	}
 }
 
 //checksum helpers

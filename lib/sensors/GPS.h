@@ -34,6 +34,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 const uint8_t NAV_FREQUENCY = 5;
 const int ACK_TIMEOUT_MS = 2000;
 
+const uint32_t BUFFER_SIZE = 100;
+
 // ubxPacket validity
 typedef enum {
   UBLOX_PACKET_VALIDITY_NOT_VALID,
@@ -262,6 +264,7 @@ class GPS {
   GPS(PinName tx, PinName rx, uint32_t baud_rate);
   void configure(); //configures the GPS (note that serial loop must be started before this is run)
   void saveConfiguration(); //saves configuration to persistent memory
+  void process();
   double getLat(); //degrees
   double getLong(); //degrees
   double getAlt(); //meters above elipsoid
@@ -278,9 +281,14 @@ class GPS {
   void setNavigationFrequency(uint8_t navFreq);
 
   //data processing functions
-  void process(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedClass, uint8_t requestedID);
-  void processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t requestedClass, uint8_t requestedID);
-  void processUBXpacket(ubxPacket *msg);
+
+  void processNonPayload(uint8_t incoming, ubxPacket *incomingUBX);
+  void processPayload(uint8_t incoming, ubxPacket *incomingUBX);
+  void extractPacketData(ubxPacket *msg);
+  void selectProcessBuffer(uint8_t incoming, ubxPacket *incomingUBX);
+  void handleACK(uint8_t incoming);
+  void validateChecksum(ubxPacket* incomingUBX);
+
   void calcChecksum(ubxPacket *msg);
   void addToChecksum(uint8_t incoming); //Given an incoming byte, adjust rollingChecksumA/B
 
@@ -341,6 +349,12 @@ class GPS {
 
   //waitForAck timeout timer
   Timer m_ack_timeout;
+
+  //serial input buffer
+  array<uint8_t, BUFFER_SIZE> m_buffer;
+  array<uint8_t, BUFFER_SIZE>::iterator m_buf_write;
+  array<uint8_t, BUFFER_SIZE>::iterator m_buf_read;
+
 
   //serial interface
   Serial m_uart;
