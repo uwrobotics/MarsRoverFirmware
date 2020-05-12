@@ -18,14 +18,6 @@ INA_226::INA_226(ComponentConfig component_config)
     m_sensor_address = component_config.sensor_address << 1; //7 bit address
 
     m_i2c(component_config.SDA_pinname, component_config.SCL_pinname);
-
-    m_config_register = 0x00;
-    m_voltage_register = 0x01;
-    m_power_register = 0x03;
-    m_current_register = 0x04;
-    m_calibration_register = 0x05;
-    m_mask_enable_register = 0x06;
-    m_alert_limit_register = 0x07;
 }
 
 INA_226::~INA_226(){}
