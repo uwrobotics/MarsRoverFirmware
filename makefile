@@ -27,6 +27,16 @@ LAST_BOARD_TARGET := $(shell cat $(BUILD_FOLDER)/LAST_BOARD_TARGET 2>/dev/null)#
 # Utility
 ###############################################################################
 
+# Whitespace definitions
+EMPTY :=
+SPACE := ${EMPTY} ${EMPTY}
+${SPACE} := ${SPACE}
+
+define \n
+
+
+endef
+
 # Cross-platform commands
 ifeq ($(shell echo $$OS),$$OS)
     MAKE_DIR = if not exist "$(1)" mkdir "$(1)"
@@ -37,19 +47,14 @@ else
     RM_DIR = '$(SHELL)' -c "rm -rf \"$(1)\""
     RM_FILE_TYPE = '$(SHELL)' -c "find $(1) -name \"$(2)\" -delete -print"
 endif
-
-# Whitespace definitions
-null :=
-space := ${null} ${null}
-${space} := ${space}
-
-define \n
-
-
-endef
+                        
+# Other Convenience Commands
+REPLACE_SPACES = $(subst $(SPACE),?,$(1))
+RESTORE_SPACES = $(subst ?,$(SPACE),$(1))
+NOTDIR_PATH_WITH_SPACES = $(call RESTORE_SPACES,$(notdir $(call REPLACE_SPACES,$(1))))
 
 # If not in build directory, move to the build directory
-ifneq ($(BUILD_FOLDER),$(notdir $(CURDIR)))
+ifneq ($(BUILD_FOLDER),$(call NOTDIR_PATH_WITH_SPACES,$(CURDIR)))
 
 .PHONY: $(BUILD_FOLDER) clean
 all:
@@ -62,10 +67,10 @@ ifeq (,$(findstring $(TARGET), $(patsubst $(TARGETS_FOLDER)/%/,%,$(sort $(dir $(
 endif
 ifneq ($(TARGET),$(LAST_BOARD_TARGET))
 	$(info New TARGET detected. Recompiling all files.)
-	$(call RM_DIR,$(BUILD_FOLDER)/$(OBJS_FOLDER))
+	+@$(call RM_DIR,$(BUILD_FOLDER)/$(OBJS_FOLDER))
 	+@echo $(TARGET) > $(BUILD_FOLDER)/LAST_BOARD_TARGET
 endif
-	+@$(MAKE) --directory=$(BUILD_FOLDER) --file=$(abspath $(lastword $(MAKEFILE_LIST))) $(MAKECMDGOALS)
+	+@$(MAKE) --directory='$(BUILD_FOLDER)' --file='$(abspath $(lastword $(MAKEFILE_LIST)))' $(MAKECMDGOALS)
 
 $(BUILD_FOLDER): all
 
