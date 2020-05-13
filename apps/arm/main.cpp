@@ -191,7 +191,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
         uint8_t param;
         uint8_t actuatorID;
     } payload;
-    msg >> payload;
+    msg.getPayload(payload);
     ActuatorController *temp = nullptr;
     switch(payload.actuatorID){
         case ROS_CONSTANTS::ARM::ACTUATOR::TURNTABLE:
