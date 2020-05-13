@@ -8,7 +8,7 @@
 
 DigitalOut led1(LED1);
 
-#define SLEEP_TIME 500  // (msec)
+#define SLEEP_TIME          500  // (msec)
 #define PRINT_AFTER_N_LOOPS 20
 
 // main() runs in its own thread in the OS

@@ -66,9 +66,7 @@ mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode con
 }
 
 mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentage) {
-  if (m_controlMode != motorPower) {
-    return MBED_ERROR_INVALID_OPERATION;
-  }
+  if (m_controlMode != motorPower) { return MBED_ERROR_INVALID_OPERATION; }
 
   // Only check for limit switch triggered if in motor mode
   if ((percentage < 0.0 && isLimSwitchMinTriggered()) || (percentage > 0.0 && isLimSwitchMaxTriggered())) {
@@ -81,14 +79,10 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 }
 
 mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesPerSec) {
-  if (m_controlMode != velocity) {
-    return MBED_ERROR_INVALID_OPERATION;
-  }
+  if (m_controlMode != velocity) { return MBED_ERROR_INVALID_OPERATION; }
 
   // Limit velocity setpoint to zero if arm is out of bounds
-  if ((degreesPerSec < 0.0 && isPastMinAngle()) || (degreesPerSec > 0.0 && isPastMaxAngle())) {
-    degreesPerSec = 0.0;
-  }
+  if ((degreesPerSec < 0.0 && isPastMinAngle()) || (degreesPerSec > 0.0 && isPastMaxAngle())) { degreesPerSec = 0.0; }
 
   // Bound input velocity by configured limits
   if (degreesPerSec < m_actuatorConfig.minVelocity_DegreesPerSec) {
@@ -103,9 +97,7 @@ mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesP
 }
 
 mbed_error_status_t ActuatorController::setAngle_Degrees(float degrees) {
-  if (m_controlMode != position) {
-    return MBED_ERROR_INVALID_OPERATION;
-  }
+  if (m_controlMode != position) { return MBED_ERROR_INVALID_OPERATION; }
 
   // Bound input angle by configured limits
   if (degrees < m_actuatorConfig.minAngle_Degrees) {

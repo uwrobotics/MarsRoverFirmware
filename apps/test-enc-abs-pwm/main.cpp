@@ -6,7 +6,7 @@ Encoder::t_encoderConfig config = {
     .pin_PWM = ENC_PWM_TRNTBL,
 
     .degreesPerUnit = 360.0,
-    .inverted = false};
+    .inverted       = false};
 
 EncoderAbsolute_PWM encoder(config);
 
@@ -21,8 +21,8 @@ DigitalOut led(LED1);
 
 int main() {
   float inverter = +1;
-  int period_ms = 4;  // Equivalent to 0.5kHz frequency
-  float duty = 0.1;
+  int period_ms  = 4;  // Equivalent to 0.5kHz frequency
+  float duty     = 0.1;
 
   // Specify PWM period
   pwmOut.period_ms(period_ms);

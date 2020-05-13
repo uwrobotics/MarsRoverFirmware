@@ -80,9 +80,9 @@ class SystemReport {
     // Collect and print cpu stats
     mbed_stats_cpu_get(&cpu_stats);
 
-    uint64_t diff = (cpu_stats.idle_time - prev_idle_time);
-    uint8_t idle = (diff * 100) / (sample_time_ms * 1000);           // usec;
-    uint8_t usage = 100 - ((diff * 100) / (sample_time_ms * 1000));  // usec;;
+    uint64_t diff  = (cpu_stats.idle_time - prev_idle_time);
+    uint8_t idle   = (diff * 100) / (sample_time_ms * 1000);          // usec;
+    uint8_t usage  = 100 - ((diff * 100) / (sample_time_ms * 1000));  // usec;;
     prev_idle_time = cpu_stats.idle_time;
 
     printf("Idle: %d%% Usage: %d%% \r\n", idle, usage);

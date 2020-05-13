@@ -8,7 +8,7 @@ class Servo {
  public:
   enum SERVO_TYPE {
     CONT_SERVO = 0,
-    LIM_SERVO = 1
+    LIM_SERVO  = 1
   };  // CONT_SERVO = 0 = CONTINUOUS Rotation; LIMITED_SERVO = 1 = LIMITED Range Rotation
 
  protected:
@@ -16,11 +16,11 @@ class Servo {
   PwmOut pwm;   // PWM object, does not have default constructor so have to use INITIALIZER LIST to avoid COMPILER
                 // attempting to DEFAULT CONSTRUCT
 
-  const int PWM_FREQ = 50,       // DEFAULT PWM FREQUENCY, should work for both length and positional control
-      DEFAULT_MAX = 2,           // DEFAULT MAX WAVE LENGTH in MILISECONDS
-      DEFAULT_MIN = 1,           // DEFAULT MIN WAVE LENGTH in MILISECONDS
-      DEFAULT_RANGE = 180,       // DEFAULT RANGE for LIMITED Servos
-      PERIOD = 1000 / PWM_FREQ;  // DEFAULT PERIOD LENGTH in MILISECONDS
+  const int PWM_FREQ = 50,               // DEFAULT PWM FREQUENCY, should work for both length and positional control
+      DEFAULT_MAX    = 2,                // DEFAULT MAX WAVE LENGTH in MILISECONDS
+      DEFAULT_MIN    = 1,                // DEFAULT MIN WAVE LENGTH in MILISECONDS
+      DEFAULT_RANGE  = 180,              // DEFAULT RANGE for LIMITED Servos
+      PERIOD         = 1000 / PWM_FREQ;  // DEFAULT PERIOD LENGTH in MILISECONDS
 
   enum SERVO_TYPE rotate_type;  // Either CONTINUOUS or LIMITED rotation servo, see define statements.
 

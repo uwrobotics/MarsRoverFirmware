@@ -77,7 +77,7 @@
 
 PID::PID(float Kc, float tauI, float tauD, float interval) {
   usingFeedForward = false;
-  inAuto = false;
+  inAuto           = false;
 
   // Default the limits to the full range of I/O: 3.3V
   // Make sure to set these to more appropriate limits for
@@ -89,24 +89,22 @@ PID::PID(float Kc, float tauI, float tauD, float interval) {
 
   setTunings(Kc, tauI, tauD);
 
-  setPoint_ = 0.0;
-  processVariable_ = 0.0;
-  prevProcessVariable_ = 0.0;
-  controllerOutput_ = 0.0;
+  setPoint_             = 0.0;
+  processVariable_      = 0.0;
+  prevProcessVariable_  = 0.0;
+  controllerOutput_     = 0.0;
   prevControllerOutput_ = 0.0;
 
-  accError_ = 0.0;
+  accError_      = 0.0;
   deadZoneError_ = 0.0;
-  bias_ = 0.0;
+  bias_          = 0.0;
 
   realOutput_ = 0.0;
 }
 
 void PID::setInputLimits(float inMin, float inMax) {
   // Make sure we haven't been given impossible values.
-  if (inMin >= inMax) {
-    return;
-  }
+  if (inMin >= inMax) { return; }
 
   inSpan_ = inMax - inMin;
 
@@ -127,9 +125,7 @@ void PID::setInputLimits(float inMin, float inMax) {
 
 void PID::setOutputLimits(float outMin, float outMax) {
   // Make sure we haven't been given impossible values.
-  if (outMin >= outMax) {
-    return;
-  }
+  if (outMin >= outMax) { return; }
 
   // Rescale the working variables to reflect the changes.
   prevControllerOutput_ *= (outMax - outMin) / outSpan_;
@@ -141,16 +137,14 @@ void PID::setOutputLimits(float outMin, float outMax) {
     prevControllerOutput_ = 0;
   }
 
-  outMin_ = outMin;
-  outMax_ = outMax;
+  outMin_  = outMin;
+  outMax_  = outMax;
   outSpan_ = outMax - outMin;
 }
 
 void PID::setTunings(float Kc, float tauI, float tauD) {
   // Verify that the tunings make sense.
-  if (Kc == 0.0 || tauI < 0.0 || tauD < 0.0) {
-    return;
-  }
+  if (Kc == 0.0 || tauI < 0.0 || tauD < 0.0) { return; }
 
   // Store raw values to hand back to user on request.
   pParam_ = Kc;
@@ -174,7 +168,7 @@ void PID::setTunings(float Kc, float tauI, float tauD) {
     }
   }
 
-  Kc_ = Kc;
+  Kc_   = Kc;
   tauR_ = tempTauR;
   tauD_ = tauD / tSample_;
 }
@@ -189,7 +183,7 @@ void PID::reset(void) {
   }
 
   prevControllerOutput_ = scaledBias;
-  prevProcessVariable_ = (processVariable_ - inMin_) / inSpan_;
+  prevProcessVariable_  = (processVariable_ - inMin_) / inSpan_;
 
   // Clear any error in the integral.
   accError_ = 0;
@@ -198,9 +192,7 @@ void PID::reset(void) {
 void PID::setMode(int mode) {
   // We were in manual, and we just got set to auto.
   // Reset the controller internals.
-  if (mode != 0 && !inAuto) {
-    reset();
-  }
+  if (mode != 0 && !inAuto) { reset(); }
 
   inAuto = (mode != 0);
 }
@@ -224,7 +216,7 @@ void PID::setProcessValue(float pv) {
 }
 
 void PID::setBias(float bias) {
-  bias_ = bias;
+  bias_            = bias;
   usingFeedForward = 1;
 }
 
@@ -242,7 +234,7 @@ void PID::setupAutoTune(void *outputPointer, float *inputPointer, int actuatorTy
 
   // set I/O pointers
   output_ = outputPointer;
-  input_ = inputPointer;
+  input_  = inputPointer;
 }
 
 // for debug output uncomment below line and comment out line after
@@ -259,20 +251,20 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   // if no config struct was passed, create one with default values
   // outputStart = half of range, oStep = 10% of range, noiseBand = 1% of range
   if (autoTuneConfig == nullptr) {
-    autoTuneConfig = new PID::t_AutoTuneConfig();
-    autoTuneConfig->nLookBack = 40;
+    autoTuneConfig             = new PID::t_AutoTuneConfig();
+    autoTuneConfig->nLookBack  = 40;
     autoTuneConfig->sampleTime = 250;
-    float outputStart = outMax_ / 2;
+    float outputStart          = outMax_ / 2;
     if (outputStart < outMin_) outputStart = outMin_;
     autoTuneConfig->outputStart = outputStart;
-    autoTuneConfig->oStep = outSpan_ * 0.15;
-    autoTuneConfig->noiseBand = outSpan_ * 0.01;
-    autoTuneConfig->setpoint = setPoint_;
+    autoTuneConfig->oStep       = outSpan_ * 0.15;
+    autoTuneConfig->noiseBand   = outSpan_ * 0.01;
+    autoTuneConfig->setpoint    = setPoint_;
   }
 
   // initialize variables
   peakType = peakCount = peak1 = peak2 = 0;
-  justchanged = false;
+  justchanged                          = false;
   refVal = absMax = absMin = autoTuneConfig->setpoint;
 
   setOutput(autoTuneConfig->outputStart + autoTuneConfig->oStep);
@@ -283,9 +275,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     // for debugging uncomment this line and add serial object as argument (called pc)
     // pc->printf("Peak count: %d, \t refVal: %f \r\n", peakCount, refVal);
     // enough peaks to calculate params
-    if (peakCount > 9) {
-      break;
-    }
+    if (peakCount > 9) { break; }
 
     unsigned long now = timer.read_ms();
 
@@ -315,11 +305,11 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     if (isMax) {
       if (peakType == 0) peakType = 1;
       if (peakType == -1) {
-        peakType = 1;
+        peakType    = 1;
         justchanged = true;
-        peak2 = peak1;
+        peak2       = peak1;
       }
-      peak1 = now;
+      peak1            = now;
       peaks[peakCount] = refVal;
 
     } else if (isMin) {
@@ -352,11 +342,11 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
 
   // if we only PI control is desired, alternate calculations and TauD set to 0
   if (PI) {
-    autoTuneKc_ = 0.45 * Ku;
+    autoTuneKc_   = 0.45 * Ku;
     autoTuneTauR_ = 0.54 * Ku / Pu;
     autoTuneTauD_ = 0;
   } else {
-    autoTuneKc_ = 0.6 * Ku;
+    autoTuneKc_   = 0.6 * Ku;
     autoTuneTauR_ = 1.2 * Ku / Pu;
     autoTuneTauD_ = 0.075 * Ku * Pu;
   }
@@ -404,24 +394,18 @@ float PID::compute() {
 
   float error = scaledSP - scaledPV;
 
-  if (fabs(error) < deadZoneError_) {
-    error = 0;
-  }
+  if (fabs(error) < deadZoneError_) { error = 0; }
 
   // Check and see if the output is pegged at a limit and only
   // integrate if it is not. This is to prevent reset-windup.
-  if (!(prevControllerOutput_ >= 1 && error > 0) && !(prevControllerOutput_ <= 0 && error < 0)) {
-    accError_ += error;
-  }
+  if (!(prevControllerOutput_ >= 1 && error > 0) && !(prevControllerOutput_ <= 0 && error < 0)) { accError_ += error; }
 
   // Compute the current slope of the input signal.
   float dMeas = (scaledPV - prevProcessVariable_) / tSample_;
 
   float scaledBias = 0.0;
 
-  if (usingFeedForward) {
-    scaledBias = (bias_ - outMin_) / outSpan_;
-  }
+  if (usingFeedForward) { scaledBias = (bias_ - outMin_) / outSpan_; }
 
   // Perform the PID calculation.
   controllerOutput_ = scaledBias + Kc_ * (error + (tauR_ * accError_) - (tauD_ * dMeas));

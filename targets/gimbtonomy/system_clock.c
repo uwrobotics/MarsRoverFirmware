@@ -40,7 +40,7 @@
 // clock source is selected with CLOCK_SOURCE in json config
 #define USE_PLL_HSE_EXTC 0x8  // Use external clock (ST Link MCO)
 #define USE_PLL_HSE_XTAL 0x4  // Use external xtal (X3 on board - not provided by default)
-#define USE_PLL_HSI 0x2       // Use HSI internal clock
+#define USE_PLL_HSI      0x2  // Use HSI internal clock
 
 //#define DEBUG_MCO        (1) // Output the MCO1/MCO2 on PA8/PC9 for debugging (0=OFF, 1=ON)
 
@@ -147,13 +147,13 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass) {
     RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;  // External 8 MHz clock on OSC_IN
   }
 
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLState  = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;   // VCO input clock = 1.0 MHz (25 MHz / 25) [must be >= 0.95MHz && <= 2.1MHz]
-  RCC_OscInitStruct.PLL.PLLN = 360;  // VCO output clock = 360 MHz (1.0 MHz * 360) [must be >= 100MHz && <= 432MHz]
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;  // PLLCLK = 180 MHz (360 MHz / 2) [must be >= 24MHz && <= 180MHz]
-  RCC_OscInitStruct.PLL.PLLQ = 7;              // Not used
-  RCC_OscInitStruct.PLL.PLLR = 6;              // Not used
+  RCC_OscInitStruct.PLL.PLLM      = 25;   // VCO input clock = 1.0 MHz (25 MHz / 25) [must be >= 0.95MHz && <= 2.1MHz]
+  RCC_OscInitStruct.PLL.PLLN      = 360;  // VCO output clock = 360 MHz (1.0 MHz * 360) [must be >= 100MHz && <= 432MHz]
+  RCC_OscInitStruct.PLL.PLLP      = RCC_PLLP_DIV2;  // PLLCLK = 180 MHz (360 MHz / 2) [must be >= 24MHz && <= 180MHz]
+  RCC_OscInitStruct.PLL.PLLQ      = 7;              // Not used
+  RCC_OscInitStruct.PLL.PLLR      = 6;              // Not used
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     return 0;  // FAIL
   }
@@ -164,19 +164,19 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass) {
   }
 
   // Select PLLSAI output as USB clock source
-  PeriphClkInitStruct.PLLSAI.PLLSAIM = 25;                // 25 / 25 = 1 MHz
-  PeriphClkInitStruct.PLLSAI.PLLSAIN = 384;               // 1 * 384 = 384 MHz
-  PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8;  // 384 / 8 = 48 MHz
+  PeriphClkInitStruct.PLLSAI.PLLSAIM       = 25;                // 25 / 25 = 1 MHz
+  PeriphClkInitStruct.PLLSAI.PLLSAIN       = 384;               // 1 * 384 = 384 MHz
+  PeriphClkInitStruct.PLLSAI.PLLSAIP       = RCC_PLLSAIP_DIV8;  // 384 / 8 = 48 MHz
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLSAIP;
+  PeriphClkInitStruct.Clk48ClockSelection  = RCC_CLK48CLKSOURCE_PLLSAIP;
   HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
 
   // Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;  // 180 MHz
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;   //  45 MHz
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;   //  90 MHz
+  RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;  // 180 MHz
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;    //  45 MHz
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;    //  90 MHz
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
     return 0;  // FAIL
   }
@@ -210,17 +210,17 @@ uint8_t SetSysClock_PLL_HSI(void) {
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   // Enable HSI oscillator and activate PLL with HSI as source
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSEState = RCC_HSE_OFF;
+  RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSIState            = RCC_HSI_ON;
+  RCC_OscInitStruct.HSEState            = RCC_HSE_OFF;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 16;             // VCO input clock = 1 MHz (16 MHz / 16)
-  RCC_OscInitStruct.PLL.PLLN = 360;            // VCO output clock = 360 MHz (1 MHz * 360)
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;  // PLLCLK = 180 MHz (360 MHz / 2)
-  RCC_OscInitStruct.PLL.PLLQ = 7;              //
-  RCC_OscInitStruct.PLL.PLLQ = 6;              //
+  RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM            = 16;             // VCO input clock = 1 MHz (16 MHz / 16)
+  RCC_OscInitStruct.PLL.PLLN            = 360;            // VCO output clock = 360 MHz (1 MHz * 360)
+  RCC_OscInitStruct.PLL.PLLP            = RCC_PLLP_DIV2;  // PLLCLK = 180 MHz (360 MHz / 2)
+  RCC_OscInitStruct.PLL.PLLQ            = 7;              //
+  RCC_OscInitStruct.PLL.PLLQ            = 6;              //
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     return 0;  // FAIL
   }
@@ -231,19 +231,19 @@ uint8_t SetSysClock_PLL_HSI(void) {
   }
 
   // Select PLLSAI output as USB clock source
-  PeriphClkInitStruct.PLLSAI.PLLSAIM = 8;
-  PeriphClkInitStruct.PLLSAI.PLLSAIN = 192;
-  PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8;
+  PeriphClkInitStruct.PLLSAI.PLLSAIM       = 8;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN       = 192;
+  PeriphClkInitStruct.PLLSAI.PLLSAIP       = RCC_PLLSAIP_DIV8;
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLSAIP;
+  PeriphClkInitStruct.Clk48ClockSelection  = RCC_CLK48CLKSOURCE_PLLSAIP;
   HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
 
   /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;  // 180 MHz
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;   //  45 MHz
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;   //  90 MHz
+  RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;  // 180 MHz
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;    //  45 MHz
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;    //  90 MHz
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
     return 0;  // FAIL
   }

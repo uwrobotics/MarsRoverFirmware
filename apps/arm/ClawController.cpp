@@ -25,7 +25,7 @@ mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {
 
 mbed_error_status_t ClawController::setGapVelocity_CmPerSec(float cmPerSec) {
   float shaftVelocity_DegreesPerSec = convertGapVelocityCmToShaftVelocityDegrees(cmPerSec);
-  mbed_error_status_t err_status = MBED_ERROR_INVALID_OPERATION;
+  mbed_error_status_t err_status    = MBED_ERROR_INVALID_OPERATION;
 
   if (m_mutex.trylock_for(200)) {
     err_status = setVelocity_DegreesPerSec(shaftVelocity_DegreesPerSec);
@@ -38,7 +38,7 @@ mbed_error_status_t ClawController::setGapVelocity_CmPerSec(float cmPerSec) {
 }
 
 mbed_error_status_t ClawController::setGapDistance_Cm(float cm) {
-  float shaftPosition_Degrees = convertGapCmToShaftPositionDegrees(cm);
+  float shaftPosition_Degrees    = convertGapCmToShaftPositionDegrees(cm);
   mbed_error_status_t err_status = MBED_ERROR_INVALID_OPERATION;
 
   if (m_mutex.trylock_for(200)) {

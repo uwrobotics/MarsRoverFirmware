@@ -130,9 +130,9 @@
 
 QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, float movingAvgSmoothingParam)
     : channelA_(channelA), channelB_(channelB), index_(index), movingAvgSmoothingParam_(movingAvgSmoothingParam) {
-  pulses_ = 0;
+  pulses_      = 0;
   revolutions_ = 0;
-  encoding_ = encoding;
+  encoding_    = encoding;
 
   // Workout what the current state is.
   int chanA = channelA_.read();
@@ -154,15 +154,13 @@ QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, f
     channelB_.fall(callback(this, &QEI::encode));
   }
   // Index is optional.
-  if (index != NC) {
-    index_.rise(callback(this, &QEI::index));
-  }
+  if (index != NC) { index_.rise(callback(this, &QEI::index)); }
 
   timer_.start();
 }
 
 void QEI::reset(void) {
-  pulses_ = 0;
+  pulses_      = 0;
   revolutions_ = 0;
 }
 
@@ -228,11 +226,11 @@ int QEI::getRevolutions(void) {
 // the state and carry on, with the error correcting itself shortly after.
 void QEI::encode(void) {
   int change = 0;
-  int chanA = channelA_.read();
-  int chanB = channelB_.read();
+  int chanA  = channelA_.read();
+  int chanB  = channelB_.read();
 
-  int prevPulses = pulses_;
-  float period = 0;
+  int prevPulses      = pulses_;
+  float period        = 0;
   float pulseVelocity = 0;
 
   // 2-bit state.
@@ -256,9 +254,7 @@ void QEI::encode(void) {
       // gives 0 if clockwise rotation and 1 if counter clockwise rotation.
       change = (prevState_ & PREV_MASK) ^ ((currState_ & CURR_MASK) >> 1);
 
-      if (change == 0) {
-        change = -1;
-      }
+      if (change == 0) { change = -1; }
 
       pulses_ -= change;
     }

@@ -2,12 +2,12 @@
 #include "mbed.h"
 
 // Defines
-#define MIN_RPM 0  // change min/max RPMs based on motor used
-#define MAX_RPM 300
-#define COUNTS_PER_REV 1200        // motor property
+#define MIN_RPM              0  // change min/max RPMs based on motor used
+#define MAX_RPM              300
+#define COUNTS_PER_REV       1200  // motor property
 #define TIMER_INTERRUPT_FREQ 0.25  // frequency of timer interrupt for input calculation
-#define GOAL_RPM 100.0
-#define K_UPDATE_PERIOD 0.15
+#define GOAL_RPM             100.0
+#define K_UPDATE_PERIOD      0.15
 
 // motor direction pin and pwm out pin, modify as needed
 DigitalOut MOTOR_DIR(D8);
@@ -23,10 +23,10 @@ PID rpmPIDController(0.010268, 0.0260, 0, K_UPDATE_PERIOD);
 Timer timer;
 
 // Variables
-uint64_t pulseCount = 0;
+uint64_t pulseCount    = 0;
 uint64_t oldPulseCount = 0;
-float motorRPM = 0.0;
-float motorPWMDuty = 0.0;
+float motorRPM         = 0.0;
+float motorPWMDuty     = 0.0;
 Ticker interruptTimer;
 
 // PID AutoTune config struct for specific DC motor, change depending on actuator
@@ -49,7 +49,7 @@ void countPulses() {
 
 // every timer interrupt, recompute the rpm
 void computeInput() {
-  motorRPM = (pulseCount - oldPulseCount) * (60 / TIMER_INTERRUPT_FREQ) / COUNTS_PER_REV;
+  motorRPM      = (pulseCount - oldPulseCount) * (60 / TIMER_INTERRUPT_FREQ) / COUNTS_PER_REV;
   oldPulseCount = pulseCount;
 }
 
@@ -86,13 +86,13 @@ int main() {
   eval.start();
 
   while (1) {
-    motorRPM = (pulseCount - oldPulseCount) * (60 / interval) / COUNTS_PER_REV;
+    motorRPM      = (pulseCount - oldPulseCount) * (60 / interval) / COUNTS_PER_REV;
     oldPulseCount = pulseCount;
 
     // Update the PID controller
     rpmPIDController.setInterval(interval);
     rpmPIDController.setProcessValue(motorRPM);
-    motorPWMDuty = rpmPIDController.compute();
+    motorPWMDuty  = rpmPIDController.compute();
     MOTOR_PWM_OUT = motorPWMDuty;
 
     pc.printf("Motor RPM: %f, \t Goal RPM: %f, \t PWM Output: %f\r\n", motorRPM, GOAL_RPM, motorPWMDuty);

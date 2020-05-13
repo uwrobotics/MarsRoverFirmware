@@ -6,15 +6,15 @@
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_, float min_pulse_ms_)
     : pin(pin_), rotate_type(rotate_type_), max_pulse_ms(max_pulse_ms_), min_pulse_ms(min_pulse_ms_), pwm(pin_) {
   if (rotate_type == LIM_SERVO) {
-    range = value;
-    pos = 0;
+    range     = value;
+    pos       = 0;
     max_speed = -1;
-    speed = -1;
+    speed     = -1;
   } else {
     max_speed = value;
-    speed = 0;
-    range = -1;
-    pos = -1;
+    speed     = 0;
+    range     = -1;
+    pos       = -1;
   }
   // INIT PWM DEFAULT
   pwm.period_us(PERIOD * 1000);
@@ -23,16 +23,16 @@ Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value) : pin(pin_), rotate_type(rotate_type_), pwm(pin_) {
   if (rotate_type == SERVO_TYPE::LIM_SERVO) {
     range = value;
-    pos = 0;
+    pos   = 0;
 
     max_speed = -1;
-    speed = -1;
+    speed     = -1;
   } else {
     max_speed = value;
-    speed = 0;
+    speed     = 0;
 
     range = -1;
-    pos = -1;
+    pos   = -1;
   }
 
   max_pulse_ms = DEFAULT_MAX;
@@ -45,16 +45,16 @@ Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_, float value) : pin(pin_), ro
 Servo::Servo(PinName pin_, SERVO_TYPE rotate_type_) : pin(pin_), rotate_type(rotate_type_), pwm(pin_) {
   if (rotate_type == LIM_SERVO) {
     range = DEFAULT_RANGE;
-    pos = 0;
+    pos   = 0;
 
     max_speed = -1;
-    speed = -1;
+    speed     = -1;
   } else {
     max_speed = 0;
-    speed = 0;
+    speed     = 0;
 
     range = -1;
-    pos = -1;
+    pos   = -1;
   }
 
   max_pulse_ms = DEFAULT_MAX;

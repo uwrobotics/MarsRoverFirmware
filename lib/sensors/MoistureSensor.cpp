@@ -3,15 +3,15 @@
 constexpr int Sensor_I2C_Address =
     0x36 << 1;  // MBED I2C uses 8 bit addressing, so addresses are left shifted by 1 (may need to be shifted by 2)
 
-constexpr int Sensor_Status_Base = 0x00;  // Base address registers for different modules
+constexpr int Sensor_Status_Base   = 0x00;  // Base address registers for different modules
 constexpr int Sensor_Moisture_Base = 0x0F;
 
 constexpr int Sensor_Status_HW_ID = 0x01;  // Function address register for the sensor's HW ID
-constexpr int Sensor_HW_ID_Code = 0x55;    // Expected value for sensor HW ID
+constexpr int Sensor_HW_ID_Code   = 0x55;  // Expected value for sensor HW ID
 
 constexpr int Sensor_Moisture_Function = 0x10;  // Function address registers for various modules
-constexpr int Sensor_Temp_Function = 0x04;
-constexpr int Sensor_Status_Reset = 0x7F;
+constexpr int Sensor_Temp_Function     = 0x04;
+constexpr int Sensor_Status_Reset      = 0x7F;
 
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl) {}
 

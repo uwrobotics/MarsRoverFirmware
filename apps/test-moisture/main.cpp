@@ -10,7 +10,7 @@ int main() {
 
   uint16_t moisture = 0;  // initialize default variables
   float temperature = 0.0;
-  uint8_t HW_ID = 0;
+  uint8_t HW_ID     = 0;
 
   MoistureSensor sensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 

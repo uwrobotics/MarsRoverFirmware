@@ -5,16 +5,16 @@ PwmIn::PwmIn(PinName pwmSense, int numSamplesToAverage)
   m_pwmSense.rise(callback(this, &PwmIn::rise));
   m_pwmSense.fall(callback(this, &PwmIn::fall));
 
-  m_period = 0.0;
-  m_pulseWidth = 0.0;
-  m_periodSampleSum = 0.0;
-  m_pulseWidthSampleSum = 0.0;
-  m_sampleCount = 0;
-  m_avgDutyCycle = 0;
-  m_prevAvgDutyCycle = 0;
+  m_period               = 0.0;
+  m_pulseWidth           = 0.0;
+  m_periodSampleSum      = 0.0;
+  m_pulseWidthSampleSum  = 0.0;
+  m_sampleCount          = 0;
+  m_avgDutyCycle         = 0;
+  m_prevAvgDutyCycle     = 0;
   m_avgDutyCycleVelocity = 0;
 
-  p_periodSamples = new float[m_numSamplesToAverage]();
+  p_periodSamples     = new float[m_numSamplesToAverage]();
   p_pulseWidthSamples = new float[m_numSamplesToAverage]();
 
   m_timer.start();
@@ -63,16 +63,14 @@ void PwmIn::rise() {
 void PwmIn::fall() {
   m_pulseWidth = m_timer.read();
 
-  m_avgPulseWidth = PwmIn::movingAvg(p_pulseWidthSamples, &m_pulseWidthSampleSum, m_pulseWidth, m_sampleCount);
-  m_avgDutyCycle = m_avgPulseWidth / m_avgPeriod;
+  m_avgPulseWidth        = PwmIn::movingAvg(p_pulseWidthSamples, &m_pulseWidthSampleSum, m_pulseWidth, m_sampleCount);
+  m_avgDutyCycle         = m_avgPulseWidth / m_avgPeriod;
   m_avgDutyCycleVelocity = (m_avgDutyCycle - m_prevAvgDutyCycle) / m_avgPeriod;
-  m_prevAvgDutyCycle = m_avgDutyCycle;
+  m_prevAvgDutyCycle     = m_avgDutyCycle;
 
   m_sampleCount++;
 
-  if (m_sampleCount >= m_numSamplesToAverage) {
-    m_sampleCount = 0;
-  }
+  if (m_sampleCount >= m_numSamplesToAverage) { m_sampleCount = 0; }
 }
 
 float PwmIn::movingAvg(float* p_samples, float* p_sampleSum, float newSample, int newIndex) {

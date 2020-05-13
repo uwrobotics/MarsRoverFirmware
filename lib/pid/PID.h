@@ -56,7 +56,7 @@
  * Defines
  */
 #define PID_MANUAL_MODE 0
-#define PID_AUTO_MODE 1
+#define PID_AUTO_MODE   1
 
 /**
  * Proportional-integral-derivative controller.

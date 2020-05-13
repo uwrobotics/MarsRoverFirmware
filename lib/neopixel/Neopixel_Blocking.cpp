@@ -4,7 +4,7 @@
 
 constexpr uint16_t H_0_NS = 200;
 constexpr uint16_t H_1_NS = 550;
-constexpr uint16_t L_NS = 450;
+constexpr uint16_t L_NS   = 450;
 
 Neopixel_Blocking::Neopixel_Blocking(int numPixels, PinName mtrxPinName) : m_pixelNum(numPixels), out(mtrxPinName) {}
 
@@ -104,7 +104,7 @@ void Neopixel_Blocking::blinkPixels(int numflashes, float delay_s, colour select
 // colours on the pixels
 void Neopixel_Blocking::writeAnyRGB(const int colour[3]) {
   int colourBuffer[3] = {colour[0], colour[1], colour[2]};
-  int buffer[][8] = {{}, {}, {}};
+  int buffer[][8]     = {{}, {}, {}};
   for (int j = 0; j < 3; j++) {
     for (int i = 0; i < 8; i++) {
       buffer[j][i] = colourBuffer[j] % 2;

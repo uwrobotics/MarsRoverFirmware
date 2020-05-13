@@ -11,7 +11,7 @@
 #endif
 
 #define CANBUFFER_FLAG_DATA_READY (1UL << 0)
-#define CANBUFFER_FLAG_FULL (1UL << 1)
+#define CANBUFFER_FLAG_FULL       (1UL << 1)
 
 class CANBuffer : public CircularBuffer<CANMsg, CANBUFFER_SIZE> {
  public:

@@ -31,10 +31,10 @@ class CANMsg : public CANMessage {
   /** Clears CAN message content
    */
   void clear(void) {
-    len = 0;
-    type = CANData;
+    len    = 0;
+    type   = CANData;
     format = CANStandard;
-    id = 0;
+    id     = 0;
     memset(data, 0, 8);
   };
 
@@ -44,8 +44,8 @@ class CANMsg : public CANMessage {
   void setPayload(const T value) {
     MBED_ASSERT_WARN(sizeof(T) <= 8);  // Make sure input type fits
     CANPayload<T> *payload = (CANPayload<T> *)&data;
-    payload->value = value;
-    len = sizeof(T);
+    payload->value         = value;
+    len                    = sizeof(T);
   }
 
   /** Get the payload data
@@ -54,7 +54,7 @@ class CANMsg : public CANMessage {
   void getPayload(T &val) {
     MBED_ASSERT_WARN(len = sizeof(T));  // Make sure output fits
     CANPayload<T> *payload = (CANPayload<T> *)&data;
-    val = payload->value;
+    val                    = payload->value;
   }
 
   /** Append operator: Appends data (value) to CAN message
