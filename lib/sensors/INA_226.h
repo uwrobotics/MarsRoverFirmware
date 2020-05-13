@@ -8,11 +8,13 @@
 
 //configuration register 00h controls modes of chip
 // bit 15 - reset bit, wriitng 1 resets registers. bits 0-2 select operating mode
-// bus voltage register 02h
-// power register 03h
-//calibration register 05h
-// mask/enable register 06h
-//alert limit register 07h
+constexpr u_int8_t CONFIG_REGISTER = 0x00;
+constexpr u_int8_t VOLTAGE_REGISTER = 0x01;
+constexpr u_int8_t POWER_REGISTER = 0x03;
+constexpr u_int8_t CURRENT_REGISTER = 0x04;
+constexpr u_int8_t CALIBRATION_REGISTER = 0x05;
+constexpr u_int8_t MASK_ENABLE_REGISTER = 0x06;
+constexpr u_int8_t ALERT_LIMIT_REGISTER = 0x07;
 
 //configurations for sensor
 enum CONFIGURATIONMODE{
@@ -37,18 +39,10 @@ struct SensorModes{
     u_int8_t average_mode_setting;
     u_int8_t operation_mode;
     u_int8_t reset_registers;
-}
+};
 
 class INA_226{
     private:  
-        static constexpr u_int8_t M_CONFIG_REGISTER = 0x00;
-        static constexpr u_int8_t M_VOLTAGE_REGISTER = 0x01;
-        static constexpr u_int8_t M_POWER_REGISTER = 0x03;
-        static constexpr u_int8_t M_CURRENT_REGISTER = 0x04;
-        static constexpr u_int8_t M_CALIBRATION_REGISTER = 0x05;
-        static constexpr u_int8_t M_MASK_ENABLE_REGISTER = 0x06;
-        static constexpr u_int8_t M_ALERT_LIMIT_REGISTER = 0x07;
-
         I2C m_i2c;
         u_int8_t m_sensor_address;
 
@@ -64,9 +58,9 @@ class INA_226{
         float getPowerData();
         int calibrateSensor();
         int configureSensor(SensorModes configuration_bits);
-        int setMaskEnableRegister();
+        int setMaskEnableRegister(u_int16_t bits_to_set);
         u_int16_t getAlertLimit();
-        int setAlertLimit();
+        int setAlertLimit(u_int16_t alert_limit);
 
         /*not yet implemented yet
         float getManufacturerID();

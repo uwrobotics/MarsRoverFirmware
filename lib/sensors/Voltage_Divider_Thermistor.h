@@ -23,9 +23,9 @@ class VoltageDividerThermistor{
         AnalogIn m_thermistor_voltage;
 
     public:
-        VoltageDividerThermistor::VoltageDividerThermistor(VoltageDividerThermistorConfig thermistor_config);
+        VoltageDividerThermistor(VoltageDividerThermistorConfig thermistor_config);
         ~VoltageDividerThermistor();
         float readThermistorCelcius();
-}
+};
 
 #endif /* VOLTAGE_DIVIDER_THERMISTOR_H */

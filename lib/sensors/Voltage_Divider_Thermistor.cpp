@@ -3,9 +3,8 @@
 
 constexpr float KELVIN_TO_CELCIUS_CONVERSION = 273.15;
 
-VoltageDividerThermistor::VoltageDividerThermistor(VoltageDividerThermistorConfig thermistor_config)
+VoltageDividerThermistor::VoltageDividerThermistor(VoltageDividerThermistorConfig thermistor_config): m_thermistor_voltage(thermistor_config.thermistor_vout_pin)
 {
-    m_thermistor_voltage(thermistor_config.thermistor_vout_pin);
     m_b = thermistor_config.thermistor_b; //kelvins. Based on Resistances of 25 and 50 , part number ERT-J1VV104J
     m_vin = thermistor_config.thermistor_vin; //might need to be in bytes
     //TODO need to confirm expected room temp. 

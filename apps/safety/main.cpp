@@ -15,7 +15,7 @@ CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY); //TODO: dont know the actual 
 CANMsg rxMsg;
 //TODO: create possible user commands
 constexpr unsigned int SET_ALERT_LIMIT = 0x00;
-constexpr unsigned int SET_CONFIGURATIONS = 0x00;
+constexpr unsigned int SET_CONFIGURATIONS = 0x01;
 
 //measurement thresholds, needs updating, comparison in celcius 
 constexpr float CURRENT_UPPER_LIM = 1;
@@ -26,6 +26,14 @@ constexpr float TEMP_UPPER_LIM = 1;
 constexpr float TEMP_LOWER_LIM = 0;  
 
 constexpr int NUM_SAFETY_SENSORS = 6;
+enum SENSORNAMES{
+    elbow_sensor,
+    claw_sensor,
+    wrist_sensor,
+    bicep_sensor,
+    allen_key_sensor,
+    turntable_sensor
+};
 
 void initCAN();
 //TODO may need more functions to deal with different CAN message contents
@@ -43,13 +51,13 @@ int main()
     ComponentConfig allen_key_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.022, 3.45};
     ComponentConfig turntable_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL,0x00, 0.00075, 60.95};
 
-    INA_226 safety_sensors[NUM_SAFETY_SENSORS] = {
-        INA_226 elbow_current_sensor(elbow_config), 
-        INA_226 claw_current_sensor(claw_config),
-        INA_226 wrist_current_sensor(wrist_config),
-        INA_226 bicep_current_sensor(bicep_config),
-        INA_226 allen_key_current_sensor(allen_key_config),
-        INA_226 turntable_current_sensor(turntable_config)
+    INA_226 safety_sensors[] = {
+        INA_226 (elbow_config), 
+        INA_226 (claw_config),
+        INA_226 (wrist_config),
+        INA_226 (bicep_config),
+        INA_226 (allen_key_config),
+        INA_226 (turntable_config)
     };
 
     //thermistor pin, B constant, vin, expected room temp, thermistor room temp resistance, voltage divider resistance
@@ -58,14 +66,14 @@ int main()
 
     initCAN();
 
-    elbow_current_sensor.calibrateSensor();
+    safety_sensors[elbow_sensor].calibrateSensor(); //replace index with enum
 
-    while (true) {
+    while (1) {
         //read can messages to get data to configure device
         u_int8_t command = 0;
         if(can.read(rxMsg))
         {
-            ValidateCANMsg(&rxMsg);
+            validateCANMsg(&rxMsg);
             rxMsg >> command;
             rxMsg.clear();
             // if (command == mask_enable)
@@ -84,28 +92,29 @@ int main()
             float measured_current = safety_sensors[sensor_index].getCurrentData();
             if (!inRange(CURRENT_UPPER_LIM, CURRENT_LOWER_LIM, measured_current))
             {
-                pc.printf("Measured Current is NOT within expected limits!\r\n");
+                printf("Measured Current is NOT within expected limits!\r\n");
             }
 
             float measured_voltage = safety_sensors[sensor_index].getVoltageData();
             if (!inRange(CURVOLTAGE_UPPER_LIM, VOLTAGE_LOWER_LIM, measured_voltage))
             {
-                pc.printf("Measured Voltage is NOT within expected limits!\r\n");
+                printf("Measured Voltage is NOT within expected limits!\r\n");
             }
 
-            float measured_temp = temp_sensor.readThermistor();
+            float measured_temp = temp_sensor.readThermistorCelcius();
             if(!inRange(TEMP_UPPER_LIM, TEMP_LOWER_LIM, measured_temp))
             {
-                pc.printf("Measured Temperature is NOT within expected limits!\r\n");
+                printf("Measured Temperature is NOT within expected limits!\r\n");
             }
         }
     }
+    return 1;
 }
 
 void initCAN()
 {
     // will need new id's 
-    can.filter(CAN1_RX, CAN1_TX, ROVER_CANID_MASK, CANStandard);
+    can.filter(ROVER_CANID_FIRST_SAFETY_RX, ROVER_CANID_FILTER_MASK, CANStandard);
 }
 
 //may change function name to reflect the processing of the can message when functionality to manipulate INA is made
@@ -114,15 +123,15 @@ void validateCANMsg(CANMsg *p_newMsg)
     // PRINT_INFO("Recieved CAN message with ID %X\r\n", p_newMsg->id);
     switch (p_newMsg->id){
         case SET_CONFIGURATIONS:
-            pc.printf("Updating INA226 config\r\n");
+            printf("Updating INA226 config\r\n");
             //TODO: do stuff to update INA config register
             break;
         case SET_ALERT_LIMIT:
-            pc.printf("Updating Alert Limits\r\n");
+            printf("Updating Alert Limits\r\n");
             //TODO: do stuff to update alert limit register
             break;
         default:
-            pc.printf("Recieved unimplemented command\r\n");
+            printf("Recieved unimplemented command\r\n");
             break;
     }
 }
