@@ -217,7 +217,7 @@ THIRD_PARTY_COMMON_FLAGS += -Wno-unused-parameter
 UWRT_COMMON_FLAGS += -Wall
 UWRT_COMMON_FLAGS += -Wextra
 UWRT_COMMON_FLAGS += -Wpedantic
-# UWRT_COMMON_FLAGS += -Werror # Uncomment this after resolving all warnings
+UWRT_COMMON_FLAGS += -Werror # Uncomment this after resolving all warnings
 
 C_FLAGS += -std=gnu11
 C_FLAGS += ${DEFINITIONS}

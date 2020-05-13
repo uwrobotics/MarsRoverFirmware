@@ -5,7 +5,7 @@
 #include "rover_config.h"
 
 #include "CANMsg.h"
-#include "GimbalConfig.h"
+#include "Encoder.h"
 #include "ActuatorController.h"
 #include "EncoderAbsolute_PWM.h"
 #include "Neopixel_Blocking.h"
@@ -18,7 +18,8 @@
 ContServo panServo(SRVO_PWM_CR, 44.0, 2.1, 0.9); //44 RPM at 4.8V, max->2100us PW, min->900us PW
 LimServo pitchServo(SRVO_PWM_MG, 180, 2.1, 0.9);
 
-EncoderAbsolute_PWM panEncoder(GimbConfig::panEncoderConfig);
+Encoder::t_encoderConfig panEncoderConfig {ENC_PWM_GIMB, NC, NC, NC, NC, NC, NC, 360.0, 0, Encoder::x2_encoding};
+EncoderAbsolute_PWM panEncoder(panEncoderConfig);
 
 // Limit switch
 DigitalIn tiltLimUp(LIM_GIMB);

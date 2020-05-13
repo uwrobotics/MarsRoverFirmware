@@ -55,8 +55,9 @@ void Motor::setPower(float dutyCycle) {
 Motor& Motor::operator=(int dutyCycle) {
     if(motorType == motor){
         this->setPower(dutyCycle);
-        return *this;
     }
+    
+    return *this;
 }
 
 float Motor::getPower() {
