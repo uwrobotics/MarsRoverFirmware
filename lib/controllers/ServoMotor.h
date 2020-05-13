@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Motor.h"
-#include "Servo.h"
-#include "mbed.h"
-
+#include "ContServo.h"
+ 
 // Control a continuous rotation servo like a motor
 
 class ServoMotor : Motor {
@@ -35,8 +34,14 @@ class ServoMotor : Motor {
    */
   float getPower();
 
- protected:
-  Servo m_servo;
-  bool m_inverted;
-  float m_limit;
+    /** Read the current speed of the motor
+     * 
+     * @return Current speed of motor
+     */
+    float getPower();
+ 
+protected:
+    Servo* m_servo;
+    bool m_inverted;
+    float m_limit;
 };

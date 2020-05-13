@@ -19,11 +19,11 @@ Motor::Motor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit,
     }
     // Limited servo
     else if(motorType == lim_servo){
-        m_servo = Servo(pwm, Servo::LIM_SERVO);
+        m_servo = new LimServo(pwm);
     }
     // Continuous servo
     else if(motorType == cont_servo){
-        m_servo = Servo(pwm, Servo::CONT_SERVO);
+        m_servo = new ContServo(pwm);
     }
 }
 
@@ -34,10 +34,14 @@ Motor::Motor(t_motorConfig motorConfig, t_motorType motorType) : Motor(motorConf
         return;
     // Limited servo
     else if(motorType == lim_servo)
-        m_servo = Servo(motorConfig.pwmPin, Servo::LIM_SERVO);
+        m_servo = new LimServo(motorConfig.pwmPin);
     // Continuous servo
     else if(motorType == cont_servo)
-        m_servo = Servo(motorConfig.pwmPin, Servo::CONT_SERVO);
+        m_servo = new ContServo(motorConfig.pwmPin);
+}
+
+Motor::~Motor(){
+    delete m_servo;
 }
 
 void Motor::setPower(float dutyCycle) {
@@ -47,6 +51,7 @@ void Motor::setPower(float dutyCycle) {
     }
 }
 
+// TODO: this function results in a warning "control reaches end of non-void function", not sure how to fix it
 Motor& Motor::operator=(int dutyCycle) {
     if(motorType == motor){
         this->setPower(dutyCycle);
@@ -64,34 +69,31 @@ Motor::t_motorType Motor::getType() {
     return motorType;
 }
 
+// These methods, if not called on the correct servo type, will return false or -1
 bool Motor::servoSetRange(float range_) {
-    if(motorType == lim_servo)
-    return (m_servo.setRange(range_));
+    return m_servo->setRange(range_);
 } 
 
 bool Motor::servoSetMaxSpeed(float max_speed_) {
-    if(motorType == cont_servo)
-    return (m_servo.setMaxSpeed(max_speed_));
+    return m_servo->setMaxSpeed(max_speed_);
 }
 
 bool Motor::servoSetPosition(float angle) {
-    if(motorType == lim_servo)
-    return (m_servo.setPosition(angle));
+    return m_servo->setPosition(angle);
 }
 
 bool Motor::servoSetSpeed(float speed_) {
-    if(motorType == cont_servo)
-    return (m_servo.setSpeed(speed_));
+    return m_servo->setSpeed(speed_);
 }
 
 float Motor::servoRead(void) {
-    return m_servo.read();
+    return m_servo->read();
 }
 
 float Motor::servoGetMaxSpeed(void) {
-    return m_servo.getMaxSpeed();
+    return m_servo->getMaxSpeed();
 }
 
 void Motor::servoSetPeriod(int period) {
-    m_servo.setPeriod(period);
+    m_servo->setPeriod(period);
 }

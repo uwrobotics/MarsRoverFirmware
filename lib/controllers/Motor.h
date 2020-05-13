@@ -5,7 +5,8 @@
 #endif
 
 #include "mbed.h"
-#include "Servo.h"
+#include "ContServo.h"
+#include "LimServo.h"
  
 // Interface to control a standard DC motor with an H-bridge using a PwmOut and 2 DigitalOuts
 
@@ -37,6 +38,8 @@ public:
     Motor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0, t_motorType motorType = motor);
 
     Motor(t_motorConfig motorConfig, t_motorType motorType = motor);
+
+    ~Motor();
 
     /** Set the speed of the motor
      * 
@@ -73,5 +76,5 @@ protected:
     float m_limit;
     
     // member servo, only used when t_motorType = servo
-    Servo m_servo;
+    Servo* m_servo;
 };
