@@ -74,10 +74,7 @@ This repository contains:
     `make APP=science TARGET=science`
 
     Ex. Compile the CAN test application for the safety board:  
-    `make APP=test_can TARGET=safety`
-    
-    Ex. Compile the Serial test application for the nucleo development board:  
-    `make APP=test_serial TARGET=nucleo`
+    `make APP=test-can TARGET=safety`
     
     After compiling an application you should see a message similar to the following:  
     `===== bin file ready to flash: ../build/test_serial/test_serial_nucleo.bin =====`
