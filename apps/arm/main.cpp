@@ -181,14 +181,13 @@ static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-    /** -----------------------------------------------
-     * | 32 bits  | 8 bits   | 8 bits   |  8 bits     |
-     * | data     | vel/pos  | param    |  Actuator ID|
-     *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+    /** ------------------------------------
+     * | 32 bits  | 8 bits   |  8 bits     |
+     * | data     | vel/pos  |  Actuator ID|
+     *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     struct __attribute__ ((packed)){
         float value;
         bool velocity;
-        uint8_t param;
         uint8_t actuatorID;
     } payload;
     msg.getPayload(payload);
@@ -216,28 +215,23 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
             return MBED_ERROR_INVALID_ARGUMENT;
     }
     switch (msg.id){
-        case CANID::SET_JOINT_PID:
-            switch(payload.param){
-                case ROS_CONSTANTS::ARM::PID::P:
-                    payload.velocity ? temp->setVelocityPID_P(payload.value) :
-                    temp->setPositionPID_P(payload.value);
-                    return MBED_SUCCESS;
-                case ROS_CONSTANTS::ARM::PID::I:
-                    payload.velocity ? temp->setVelocityPID_I(payload.value) :
-                    temp->setPositionPID_I(payload.value);
-                    return MBED_SUCCESS;
-                case ROS_CONSTANTS::ARM::PID::D:
-                    payload.velocity ? temp->setVelocityPID_D(payload.value) :
-                    temp->setPositionPID_D(payload.value);
-                    return MBED_SUCCESS;                    
-                default:
-                    return MBED_ERROR_INVALID_ARGUMENT;
-            }
-        case CANID::SET_JOINT_DEADZONE:
+        case CANID::SET_JOINT_PID_P:
+            payload.velocity ? temp->setVelocityPID_P(payload.value) :
+            temp->setPositionPID_P(payload.value);
+            return MBED_SUCCESS;
+        case CANID::SET_JOINT_PID_I:
+            payload.velocity ? temp->setVelocityPID_I(payload.value) :
+            temp->setPositionPID_I(payload.value);
+            return MBED_SUCCESS;
+        case CANID::SET_JOINT_PID_D:
+            payload.velocity ? temp->setVelocityPID_D(payload.value) :
+            temp->setPositionPID_D(payload.value);
+            return MBED_SUCCESS;
+        case CANID::SET_JOINT_PID_DEADZONE:
             payload.velocity ? temp->setVelocityPID_DeadZoneError(payload.value) : 
             temp->setPositionPID_DeadZoneError(payload.value);
             return MBED_SUCCESS;
-        case CANID::SET_JOINT_BIAS:
+        case CANID::SET_JOINT_PID_BIAS:
             payload.velocity ? temp->setVelocityPID_bias(payload.value) :
             temp->setPositionPID_bias(payload.value);
             return MBED_SUCCESS;
@@ -269,9 +263,11 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {
 
     {CANID::SET_PID_TUNING_MODE,        &setPIDTuningMode},
 
-    {CANID::SET_JOINT_DEADZONE,         &setPIDParameter},
-    {CANID::SET_JOINT_PID,              &setPIDParameter},
-    {CANID::SET_JOINT_BIAS,             &setPIDParameter}
+    {CANID::SET_JOINT_PID_P,            &setPIDParameter},
+    {CANID::SET_JOINT_PID_I,            &setPIDParameter},
+    {CANID::SET_JOINT_PID_D,            &setPIDParameter},
+    {CANID::SET_JOINT_PID_DEADZONE,     &setPIDParameter},
+    {CANID::SET_JOINT_PID_BIAS,         &setPIDParameter}
 };
 
 /*** ARM CANBus ***/
