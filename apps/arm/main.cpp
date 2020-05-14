@@ -185,7 +185,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
      * | 32 bits  | 8 bits   |  8 bits     |
      * | data     | vel/pos  |  Actuator ID|
      *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-    struct __attribute__ ((packed)){
+    struct __attribute__ ((__packed__)){
         float value;
         bool velocity;
         uint8_t actuatorID;
