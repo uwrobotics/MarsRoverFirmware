@@ -12,7 +12,7 @@ Serial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 
 //CAN initialization 
 CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY); //TODO: dont know the actual CAN id's, find out can id for safety
-CANMsg rxMsg;
+
 //TODO: create possible user commands
 constexpr unsigned int SET_ALERT_LIMIT = 0x00;
 constexpr unsigned int SET_CONFIGURATIONS = 0x01;
@@ -20,12 +20,13 @@ constexpr unsigned int SET_CONFIGURATIONS = 0x01;
 //measurement thresholds, needs updating, comparison in celcius 
 constexpr float CURRENT_UPPER_LIM = 1;
 constexpr float CURRENT_LOWER_LIM = 0;
-constexpr float CURVOLTAGE_UPPER_LIM = 1;
+constexpr float VOLTAGE_UPPER_LIM = 1;
 constexpr float VOLTAGE_LOWER_LIM = 0;
 constexpr float TEMP_UPPER_LIM = 1;
 constexpr float TEMP_LOWER_LIM = 0;  
 
 constexpr int NUM_SAFETY_SENSORS = 6;
+
 enum SENSORNAMES{
     elbow_sensor,
     claw_sensor,
@@ -35,13 +36,75 @@ enum SENSORNAMES{
     turntable_sensor
 };
 
-void initCAN();
-//TODO may need more functions to deal with different CAN message contents
-void validateCANMsg(CANMsg *p_newMsg);
-bool inRange(float upper_lim, float lower_lim, float val);
+void initCAN()
+{
+    // will need new id's 
+    can.filter(ROVER_CANID_FIRST_SAFETY_RX, ROVER_CANID_FILTER_MASK, CANStandard);
+}
+
+//may change function name to reflect the processing of the can message when functionality to manipulate INA is made
+void validateCANMsg(CANMsg *p_newMsg)
+{
+    // PRINT_INFO("Recieved CAN message with ID %X\r\n", p_newMsg->id);
+    switch (p_newMsg->id){
+        case SET_CONFIGURATIONS:
+            pc.printf("Updating INA226 config\r\n");
+            //TODO: do stuff to update INA config register
+            break;
+        case SET_ALERT_LIMIT:
+            pc.printf("Updating Alert Limits\r\n");
+            //TODO: do stuff to update alert limit register
+            break;
+        default:
+            pc.printf("Recieved unimplemented command\r\n");
+            break;
+    }
+}
+
+//if in range returns 1, otherwise returns 0
+bool inRange(float upper_lim, float lower_lim, float val)
+{
+    return (val > upper_lim || val< lower_lim) ? 0: 1;
+}
+
+void checkSafetySensors(INA_226 safety_sensors[])
+{
+    //TODO: implement hardware indication of danger, print to serial
+    for(int sensor_index = 0; sensor_index < NUM_SAFETY_SENSORS; sensor_index++)
+    {
+        float measured_current = safety_sensors[sensor_index].getCurrentData();
+        if (!inRange(CURRENT_UPPER_LIM, CURRENT_LOWER_LIM, measured_current))
+        {
+            pc.printf("Measured Current is NOT within expected limits!\r\n");
+        }
+
+        float measured_voltage = safety_sensors[sensor_index].getVoltageData();
+        if (!inRange(VOLTAGE_UPPER_LIM, VOLTAGE_LOWER_LIM, measured_voltage))
+        {
+            pc.printf("Measured Voltage is NOT within expected limits!\r\n");
+        }
+
+        // float measured_power = safety_sensors[sensor_index].getPowerData();
+        // if (!inRange(POWER_UPPER_LIM, POWER_LOWER_LIM, measured_power))
+        // {
+        //     pc.printf("Measured Power is NOT within expected limits!\r\n");
+        // }
+    }
+}
+
+void checkThermistor(VoltageDividerThermistor temp_sensor)
+{
+    float measured_temp = temp_sensor.readThermistorCelcius();
+    if(!inRange(TEMP_UPPER_LIM, TEMP_LOWER_LIM, measured_temp))
+    {
+        pc.printf("Measured Temperature is NOT within expected limits!\r\n");
+    }
+}
+
 
 int main()
 {
+    // current sensor data https://docs.google.com/spreadsheets/d/1Qn4QbEJ1Ia54vYnTgaTvLxHralQvCz6PEGaSF_O1L20/edit#gid=0
     // SDA Pin, SCL pin, sensor address, shunt resistance, max expected current
     //TODO: confirm values for sensors
     ComponentConfig elbow_config = {CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL, 0x00, 0.003, 28.75};
@@ -68,11 +131,16 @@ int main()
 
     safety_sensors[elbow_sensor].calibrateSensor(); //replace index with enum
 
+    //TODO see https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/apps/arm/main.cpp 
+    //for a better implemetation to handle CAN messages
+    CANMsg rxMsg;
+
     while (1) {
         //read can messages to get data to configure device
         u_int8_t command = 0;
         if(can.read(rxMsg))
         {
+
             validateCANMsg(&rxMsg);
             rxMsg >> command;
             rxMsg.clear();
@@ -86,59 +154,9 @@ int main()
             // }
         }
 
-        //TODO: implement hardware indication of danger
-        for(int sensor_index = 0; sensor_index < NUM_SAFETY_SENSORS; sensor_index++)
-        {
-            float measured_current = safety_sensors[sensor_index].getCurrentData();
-            if (!inRange(CURRENT_UPPER_LIM, CURRENT_LOWER_LIM, measured_current))
-            {
-                printf("Measured Current is NOT within expected limits!\r\n");
-            }
-
-            float measured_voltage = safety_sensors[sensor_index].getVoltageData();
-            if (!inRange(CURVOLTAGE_UPPER_LIM, VOLTAGE_LOWER_LIM, measured_voltage))
-            {
-                printf("Measured Voltage is NOT within expected limits!\r\n");
-            }
-
-            float measured_temp = temp_sensor.readThermistorCelcius();
-            if(!inRange(TEMP_UPPER_LIM, TEMP_LOWER_LIM, measured_temp))
-            {
-                printf("Measured Temperature is NOT within expected limits!\r\n");
-            }
-        }
+        checkSafetySensors(safety_sensors);
+        
+        checkThermistor(temp_sensor);
     }
     return 1;
 }
-
-void initCAN()
-{
-    // will need new id's 
-    can.filter(ROVER_CANID_FIRST_SAFETY_RX, ROVER_CANID_FILTER_MASK, CANStandard);
-}
-
-//may change function name to reflect the processing of the can message when functionality to manipulate INA is made
-void validateCANMsg(CANMsg *p_newMsg)
-{
-    // PRINT_INFO("Recieved CAN message with ID %X\r\n", p_newMsg->id);
-    switch (p_newMsg->id){
-        case SET_CONFIGURATIONS:
-            printf("Updating INA226 config\r\n");
-            //TODO: do stuff to update INA config register
-            break;
-        case SET_ALERT_LIMIT:
-            printf("Updating Alert Limits\r\n");
-            //TODO: do stuff to update alert limit register
-            break;
-        default:
-            printf("Recieved unimplemented command\r\n");
-            break;
-    }
-}
-
-//if in range returns 1, otherwise returns 0
-bool inRange(float upper_lim, float lower_lim, float val)
-{
-    return (val > upper_lim || val< lower_lim) ? 0: 1;
-}
-

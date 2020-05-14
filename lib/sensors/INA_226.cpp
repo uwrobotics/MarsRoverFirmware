@@ -1,5 +1,4 @@
 #include "INA_226.h"
-#include "math.h"
 
 // Datasheet for INA226 http://www.ti.com/lit/ds/symlink/ina226.pdf
 // current sensor data https://docs.google.com/spreadsheets/d/1Qn4QbEJ1Ia54vYnTgaTvLxHralQvCz6PEGaSF_O1L20/edit#gid=0
@@ -8,12 +7,13 @@ constexpr float INA_226_CALIBRATION_REGISTER_CONSTANT = 0.00512;
 constexpr float INA_226_CURRENT_REGISTER_LSB = 0.001; //Amps
 constexpr float INA_226_VOLTAGE_REGISTER_LSB = 0.00125; //Volts
 constexpr float INA_226_POWER_REGISTER_LSB = 25 * INA_226_CURRENT_REGISTER_LSB; //Watts, Power LSB is 25 times Current LSB
+constexpr int CURRENT_LSB_FACTOR = 32768; // factor is equilvalent to 2^15
 
 INA_226::INA_226(ComponentConfig component_config): m_i2c(component_config.SDA_pinname, component_config.SCL_pinname)
 
 {
     m_max_expected_current = component_config.max_expected_current;
-    m_current_lsb = m_max_expected_current / pow(2,15);
+    m_current_lsb = m_max_expected_current / CURRENT_LSB_FACTOR;
 
     m_shunt_resistance = component_config.shunt_resistance;
     m_sensor_address = component_config.sensor_address << 1; //7 bit address

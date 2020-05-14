@@ -13,6 +13,8 @@ VoltageDividerThermistor::VoltageDividerThermistor(VoltageDividerThermistorConfi
     m_voltage_divider_resistance = thermistor_config.voltage_divider_resistance; //ohms
 } 
 
+VoltageDividerThermistor::~VoltageDividerThermistor(){}
+
 float VoltageDividerThermistor::readThermistorCelcius()
 {
     //voltage divider to find resistance of thermister
