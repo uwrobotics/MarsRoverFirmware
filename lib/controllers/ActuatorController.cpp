@@ -134,6 +134,11 @@ mbed_error_status_t ActuatorController::setMotionData(float motionData) {
   }
 }
 
+// TODO implement this function
+mbed_error_status_t ActuatorController::resetEncoder() {
+	return MBED_SUCCESS;
+}
+
 mbed_error_status_t ActuatorController::update() {
   float updateInterval = m_updateTimer.read();
   m_updateTimer.reset();

@@ -7,10 +7,12 @@
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
-#include "Servo.h"
-#include "can_config.h"
-#include "mbed.h"
-#include "mbed_config.h"
+#include "ActuatorController.h"
+#include "DifferentialWristController.h"
+#include "ClawController.h"
+#include "CANMsg.h"
+#include "CANBuffer.h"
+#include "LimServo.h"
 
 /*** ARM COMPONENTS ***/
 /**********************/
@@ -22,7 +24,7 @@ Motor elbowMotor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
 Motor wristLeftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 Motor wristRightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 Motor clawMotor(MTR_PWM_CLAW, MTR_DIR_CLAW, false);
-Servo clawTooltipServo(SRVO_PWM_CLAW, Servo::LIM_SERVO, 180.0, 2.0, 1.0);
+LimServo clawTooltipServo(SRVO_PWM_CLAW, 180.0, 2.0, 1.0);
 
 // Encoders
 EncoderAbsolute_PWM turnTableEncoder(ArmConfig::turnTableEncoderConfig);

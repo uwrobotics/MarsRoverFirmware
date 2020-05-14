@@ -1,14 +1,12 @@
 #include "ClawController.h"
 
-ClawController::ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
-                               AnalogIn &forceSensor, Servo &tooltipServo, float tooltipExtendedAngle_Degrees,
-                               float tooltipRetractedAngle_Degrees, float calibrationTimeout_Seconds)
-    : ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax),
-      r_forceSensor(forceSensor),
-      r_tooltipServo(tooltipServo),
-      m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees),
-      m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees),
-      m_calibrationTimeout_Seconds(calibrationTimeout_Seconds){};
+ClawController::ClawController(t_actuatorConfig actuatorConfig, 
+                       Motor &motor, Encoder &encoder,  
+                       DigitalIn &limSwitchMax, AnalogIn &forceSensor, LimServo &tooltipServo,
+                       float tooltipExtendedAngle_Degrees, float tooltipRetractedAngle_Degrees, float calibrationTimeout_Seconds) : 
+        ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax), r_forceSensor(forceSensor), r_tooltipServo(tooltipServo),
+        m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees), m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees),
+        m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {}
 
 mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {
   mbed_error_status_t err_status = MBED_ERROR_INVALID_OPERATION;
@@ -65,15 +63,13 @@ mbed_error_status_t ClawController::setMotionData(float motionData) {
 }
 
 mbed_error_status_t ClawController::extendToolTip() {
-  mbed_error_status_t err_status =
-      r_tooltipServo.set_position(m_tooltipExtendedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
-  return err_status;
+    mbed_error_status_t err_status = r_tooltipServo.setPosition(m_tooltipExtendedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
+    return err_status;
 }
 
 mbed_error_status_t ClawController::retractToolTip() {
-  mbed_error_status_t err_status =
-      r_tooltipServo.set_position(m_tooltipRetractedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
-  return err_status;
+    mbed_error_status_t err_status = r_tooltipServo.setPosition(m_tooltipRetractedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
+    return err_status;
 }
 
 float ClawController::getGapVelocity_CmPerSec() {
