@@ -7,11 +7,11 @@ constexpr float INA_226_CALIBRATION_REGISTER_CONSTANT = 0.00512;
 constexpr float INA_226_CURRENT_REGISTER_LSB = 0.001; //Amps
 constexpr float INA_226_VOLTAGE_REGISTER_LSB = 0.00125; //Volts
 constexpr float INA_226_POWER_REGISTER_LSB = 25 * INA_226_CURRENT_REGISTER_LSB; //Watts, Power LSB is 25 times Current LSB
-constexpr int CURRENT_LSB_FACTOR = 32768; // factor is equilvalent to 2^15
+constexpr int CURRENT_LSB_FACTOR = 32768; // factor is equivalent to 2^15
 
 INA_226::INA_226(ComponentConfig component_config): m_i2c(component_config.SDA_pinname, component_config.SCL_pinname)
-
 {
+    m_sensor_name = component_config.sensor_name;
     m_max_expected_current = component_config.max_expected_current;
     m_current_lsb = m_max_expected_current / CURRENT_LSB_FACTOR;
 
@@ -146,4 +146,9 @@ int INA_226::setAlertLimit(u_int16_t alert_limit)
     m_i2c.write(m_sensor_address, cmd, 3);
 
     return 0;
+}
+
+char* INA_226::getSensorName()
+{
+    return m_sensor_name;
 }

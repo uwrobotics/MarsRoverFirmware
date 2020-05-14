@@ -12,6 +12,8 @@ struct VoltageDividerThermistorConfig
     float voltage_divider_resistance;
 };
 
+
+//https://industrial.panasonic.com/cdbs/www-data/pdf/AUA0000/AUA0000C8.pdf thermistor datasheet
 class VoltageDividerThermistor{
     private:
         float m_b; //kelvins. Based on Resistances of 25 and 50 , part number ERT-J1VV104J

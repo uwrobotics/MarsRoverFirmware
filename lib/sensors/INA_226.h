@@ -26,6 +26,7 @@ enum CONFIGURATIONMODE{
 //sample struct for component specific data
 struct ComponentConfig
 {   
+    char* sensor_name;
     PinName SDA_pinname; 
     PinName SCL_pinname;
     u_int8_t sensor_address;
@@ -43,9 +44,9 @@ struct SensorModes{
 
 class INA_226{
     private:  
+        char* m_sensor_name;
         I2C m_i2c;
         u_int8_t m_sensor_address;
-
         float m_max_expected_current; 
         float m_current_lsb;
         float m_shunt_resistance;
@@ -61,6 +62,8 @@ class INA_226{
         int setMaskEnableRegister(u_int16_t bits_to_set);
         u_int16_t getAlertLimit();
         int setAlertLimit(u_int16_t alert_limit);
+
+        char* getSensorName();
 
         /*not yet implemented yet
         float getManufacturerID();
