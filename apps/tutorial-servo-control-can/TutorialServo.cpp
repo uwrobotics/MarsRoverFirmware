@@ -1,4 +1,5 @@
-// TutorialServo Source file
+//TutorialServo Source file
+
 #include "mbed.h"
 #include "TutorialServo.h"
 
@@ -18,7 +19,7 @@ private:
    		:m_servoPwmOut(servoPin), m_servoRangeInDegrees(servoRangeInDegrees), 
 		   m_minPulsewidthInMs(minPulsewidthInMs), m_maxPulsewidthInMs(maxPulsewidthInMs); //sevoPin would be like PA_1
    {
-   		m_servoPwmOut.period(0.02); //call func to set period on m_ser
+   		m_servoPwmOut.period(0.02); //call func to set period on m_servo
    }
 
    // Set servo range (ex. 270 deg)

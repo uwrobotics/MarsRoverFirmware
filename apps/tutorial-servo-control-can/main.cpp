@@ -1,4 +1,3 @@
-
 #include "mbed.h"
 #include "TutorialServo.h"
 #include "PwmIn.h"
@@ -8,7 +7,7 @@
 // Use the same pin (PA_1) as used earlier in the training module. 
 // The program should be able to receive CAN messages which contain a percentage of the range of motion of the servo as a float. 
 
-#define SET_SERVO_RANGE 0x123
+#define SET_SERVO_RANGE 0x123 //ID
 
 float percentOfRange = 0;
 

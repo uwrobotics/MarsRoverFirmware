@@ -1,4 +1,4 @@
-//TutorialServo Header file
+//TutorialServo header file
 
 #ifndef TUTORIAL_SERVO_H
 #define TUTORIAL_SERVO_H
