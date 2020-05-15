@@ -7,7 +7,6 @@ VoltageDividerThermistor::VoltageDividerThermistor(VoltageDividerThermistorConfi
 {
     m_b = thermistor_config.thermistor_b; //kelvins. Based on Resistances of 25 and 50 , part number ERT-J1VV104J
     m_vin = thermistor_config.thermistor_vin; //might need to be in bytes
-    //TODO need to confirm expected room temp. 
     m_room_temp = thermistor_config.expected_room_temp; //degrees in kelvin - 22 celcius
     m_thermistor_room_temp_resistance = thermistor_config.thermistor_room_temp_resistance; //ohms
     m_voltage_divider_resistance = thermistor_config.voltage_divider_resistance; //ohms
@@ -32,5 +31,4 @@ float VoltageDividerThermistor::readThermistorCelcius()
    float measured_thermistor_temp_k = (m_room_temp * m_b) / (m_b + (m_room_temp * log((thermister_resistance / m_thermistor_room_temp_resistance))));
 
    return measured_thermistor_temp_k - KELVIN_TO_CELCIUS_CONVERSION; //convert Kelvins to celcius
-    //return 1/(A + B * log(thermisterResistance) + C * pow(log(thermisterResistance),3)); // uses experimental results
 }

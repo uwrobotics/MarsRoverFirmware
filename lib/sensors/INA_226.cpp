@@ -83,6 +83,19 @@ int INA_226::configureSensor(SensorModes configuration_bits)
     return 0;
 }
 
+u_int16_t INA_226::readConfigRegister()
+{
+    char cmd[2] = {CONFIG_REGISTER, 0x00};
+    u_int16_t registerData = 0x00;
+
+    m_i2c.write(m_sensor_address, cmd, 1);
+    m_i2c.read(m_sensor_address, cmd, 2, false);
+
+    registerData = (cmd[1] << 8 | cmd[0]);
+
+    return registerData;
+}
+
 int INA_226::calibrateSensor()
 {
     int cal = INA_226_CALIBRATION_REGISTER_CONSTANT / (m_current_lsb * m_shunt_resistance);

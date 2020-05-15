@@ -16,13 +16,6 @@ constexpr u_int8_t CALIBRATION_REGISTER = 0x05;
 constexpr u_int8_t MASK_ENABLE_REGISTER = 0x06;
 constexpr u_int8_t ALERT_LIMIT_REGISTER = 0x07;
 
-//configurations for sensor
-enum CONFIGURATIONMODE{
-    powerReset = 0,
-    triggered = 3,
-    continous = 7
-};
-
 //sample struct for component specific data
 struct ComponentConfig
 {   
@@ -35,11 +28,11 @@ struct ComponentConfig
 };
 
 struct SensorModes{
+    u_int8_t reset_registers;
+    u_int8_t average_mode_setting;
     u_int8_t bus_voltage_conversion_setting; 
     u_int8_t shunt_voltage_conversion_setting;
-    u_int8_t average_mode_setting;
     u_int8_t operation_mode;
-    u_int8_t reset_registers;
 };
 
 class INA_226{
@@ -59,6 +52,7 @@ class INA_226{
         float getPowerData();
         int calibrateSensor();
         int configureSensor(SensorModes configuration_bits);
+        u_int16_t readConfigRegister();
         int setMaskEnableRegister(u_int16_t bits_to_set);
         u_int16_t getAlertLimit();
         int setAlertLimit(u_int16_t alert_limit);

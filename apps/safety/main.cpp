@@ -7,10 +7,14 @@
 
 
 /*
+*************************** MAY BE DEPRECATED AS SENSORS MAY BE ON EVERY BOARD INSTEAD  ***********************************
+
 TODO 
 2. Add hardware signals(leds?) for testing
 3. Functions to handle CAN
 4. Functions to send back CAN messages
+
+*************************** MAY BE DEPRECATED AS SENSORS MAY BE ON EVERY BOARD INSTEAD  ***********************************
 */
 
 
