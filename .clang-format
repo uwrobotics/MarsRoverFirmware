@@ -4,7 +4,6 @@ ColumnLimit: 120
 
 CommentPragmas: '^ NOLINT'
 
-AllowShortBlocksOnASingleLine: Empty
 AllowShortFunctionsOnASingleLine: Empty
 
 AlignConsecutiveAssignments: true
