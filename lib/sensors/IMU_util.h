@@ -292,11 +292,6 @@ typedef union{
 	} individual;
 } ICM_20948_INT_ENABLE_3_t;
 
-// typedef struct{
-// 	uint8_t FIFO_WM_EN_40			: 5;
-// 	uint8_t reserved_0				: 3;
-// }ICM_20948_INT_ENABLE_3_t;
-
 typedef struct{
 	uint8_t I2C_SLV0_NACK				: 1;
 	uint8_t I2C_SLV1_NACK 				: 1;
@@ -321,40 +316,10 @@ typedef struct{
 	uint8_t reserved_0					: 7;
 } ICM_20948_INT_STATUS_1_t;
 
-// typedef union{
-// 	struct{
-// 		uint8_t FIFO_OVERFLOW_INT_40	: 5;
-// 		uint8_t reserved_0				: 3;
-// 	}grouped;
-// 	struct{
-// 		uint8_t FIFO_OVERFLOW_INT_0 	: 1;
-// 		uint8_t FIFO_OVERFLOW_INT_1 	: 1;
-// 		uint8_t FIFO_OVERFLOW_INT_2 	: 1;
-// 		uint8_t FIFO_OVERFLOW_INT_3 	: 1;
-// 		uint8_t FIFO_OVERFLOW_INT_4 	: 1;
-// 		uint8_t reserved_0				: 3;
-// 	}individual;
-// }ICM_20948_INT_STATUS_2_t;
-
 typedef struct{
 	uint8_t FIFO_OVERFLOW_INT_40		: 5;
 	uint8_t reserved_0					: 3;
 } ICM_20948_INT_STATUS_2_t;
-
-// typedef union{
-// 	struct{
-// 		uint8_t FIFO_WM_INT_40	: 5;
-// 		uint8_t reserved_0				: 3;
-// 	}grouped;
-// 	struct{
-// 		uint8_t FIFO_WM_INT_0 	: 1;
-// 		uint8_t FIFO_WM_INT_1 	: 1;
-// 		uint8_t FIFO_WM_INT_2 	: 1;
-// 		uint8_t FIFO_WM_INT_3 	: 1;
-// 		uint8_t FIFO_WM_INT_4 	: 1;
-// 		uint8_t reserved_0				: 3;
-// 	}individual;
-// }ICM_20948_INT_STATUS_3_t;
 
 typedef struct{
 	uint8_t FIFO_WM_INT40				: 5;
@@ -426,7 +391,7 @@ typedef struct{
 } ICM_20948_TEMP_OUT_L_t;
 
 typedef struct{
-	uint8_t DATA;				// Note: this is not worth copying 24 times, despite there being 24 registers like this one
+	uint8_t DATA; // Note: this is not worth copying 24 times, despite there being 24 registers like this one
 } ICM_20948_EXT_SLV_SENS_DATA_t;
 
 typedef struct{
@@ -465,7 +430,7 @@ typedef struct{
 } ICM_20948_FIFO_COUNTL_t;
 
 typedef struct{
-	uint8_t FIFO_R_W;	// Reading from or writing to this register actually reads from or writes to the FIFO
+	uint8_t FIFO_R_W; // Reading from or writing to this register actually reads from or writes to the FIFO
 } ICM_20948_FIFO_R_W_t;
 
 typedef struct{
@@ -643,7 +608,7 @@ typedef struct{
 
 
 
-// Bank 3 Types
+// User Bank 3 Types
 
 typedef struct{
 	uint8_t I2C_MST_ODR_CONFIG 		: 4;

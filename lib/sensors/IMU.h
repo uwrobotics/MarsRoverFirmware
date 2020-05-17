@@ -65,7 +65,7 @@ typedef struct {
     uint8_t g;
 } DLPF_cfg_t;
 
-// TODO: check what smplrt stands for
+// Sample rate
 typedef struct {
     uint8_t a;
     uint8_t g;
@@ -137,15 +137,15 @@ class IMU {
         std::array<double, 3> get_IMU_mag_field(void);  // Tesla
 
         // ID
-        uint8_t get_whoami(uint8_t *whoami);
+        Status_e get_whoami(uint8_t *whoami);
         bool is_connected(void);
         Status_e check_ID(void);
 
         // Magnetometer specific
         Status_e init_mag(void);
-        uint8_t get_mag_whoami(void);
-        uint8_t read_mag();
-        Status_e write_mag();
+        Status_e check_mag_ID(void);
+        Status_e read_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata);
+        Status_e write_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata);
 
         // Status
         Status_e status;
@@ -157,32 +157,41 @@ class IMU {
         Status_e sleep(bool on);
         Status_e low_power(bool on);
 
-        // not sure if these are needed
-        Status_e set_sample_mode();
-        Status_e set_full_scale_mode();
-        Status_e set_DLPF_cfc();
-        Status_e enable_DLPF();
-        Status_e set_sample_rate();
-        Status_e clear_interrupts();
-        Status_e cfc_int_active_low();
-        Status_e cfc_int_open_drain();
-        Status_e cfc_int_any_read_to_clear();
-        Status_e cfc_fsync_int_mode();
+        Status_e set_sample_mode(InternalSensorID_bm sensors, ICM_20948_LP_CONFIG_CYCLE_e mode);
+        Status_e set_full_scale_mode(InternalSensorID_bm sensors, FSS_t fss);
+        Status_e set_DLPF_cfc(InternalSensorID_bm sensors, DLPF_cfg_t cfg);
+        Status_e enable_DLPF(InternalSensorsID_bm sensors, bool enable);
+        Status_e set_sample_rate(InternalSensorID_bm sensors, SMPLRT_t smplrt);
+        
+        // Interrupts
+        Status_e clear_interrupts(void);
+        Status_e cfg_int(ICM_20948_INT_PIN_CFG_t *write, ICM_20948_INT_PIN_CFG_t *read);
+        Status_e cfg_int_active_low(bool active_low);
+        Status_e cfg_int_open_drain(bool open_drain);
+        Status_e cfg_int_latch(bool latching);
+        Status_e cfg_int_any_read_to_clear(bool enabled);
+        Status_e cfg_fsync_active_low(bool active_low);
+        Status_e cfg_fsync_int_mode(bool interrupt_mode);
 
-        Status_e int_enable_DMP();
-        Status_e int_enable_WOM();
-        Status_e int_enable_raw_data_ready();
-        Status_e int_enable_PLL();
-        Status_e int_enable_WOF();
-        Status_e int_enable_overflow_FIFO();
-        Status_e int_enable_watermark_FIFO();
+        Status_e int_enable(ICM_20948_INT_enable_t *write, ICM_20948_INT_enable_t *read);
+        Status_e int_enable_i2c(bool enable);
+        Status_e int_enable_DMP(bool enable);
+        Status_e int_enable_PLL(bool enable);
+        Status_e int_enable_WOM(bool enable);
+        Status_e int_enable_WOF(bool enable);
+        Status_e int_enable_raw_data_ready(bool enable);
+        Status_e int_enable_overflow_FIFO(uint8_t bm_enable);
+        Status_e int_enable_watermark_FIFO(uint8_t bm_enable);
 
         Status_e set_clock_source(ICM_20948_PWR_MGMT_1_CLKSEL_e source);
 
-        // Interface
+        // Interface (auxilliary I2C lines used for magnetometer)
         Status_e i2c_master_pass_through(bool passthrough);
         Status_e i2c_master_enable(bool enable);
         Status_e i2c_master_reset(void);
+
+        Status_e i2c_master_slv4_txn(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t len, bool Rw, bool send_reg_addr);
+        Status_e i2c_master_configure_slave(uint8_t slave, uint8_t addr, uint8_t reg, uint8_t len, bool Rw, bool enable, bool data_only, bool grp, bool swap);
 };
 
 #endif
