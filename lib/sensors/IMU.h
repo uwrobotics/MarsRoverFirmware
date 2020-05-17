@@ -13,7 +13,20 @@
 #include "mbed.h"
 #include <array>
 
-#define MAX_SPI_FREQ 7000000;
+#define MAX_SPI_FREQ                  7000000
+#define PI                      3.14159265359
+#define ACCELERATION_GRAVITY             9.81
+
+#define ACCEL_SENSITIVITY_FACTOR_0      16384
+#define ACCEL_SENSITIVITY_FACTOR_1       8192
+#define ACCEL_SENSITIVITY_FACTOR_2       4096
+#define ACCEL_SENSITIVITY_FACTOR_3       2048
+#define GYRO_SENSITIVITY_FACTOR_0       131.0
+#define GYRO_SENSITIVITY_FACTOR_1        65.5
+#define GYRO_SENSITIVITY_FACTOR_2        32.8
+#define GYRO_SENSITIVITY_FACTOR_3        16.4
+#define MAG_SENSITIVITY_FACTOR           0.15
+
 
 // Status codes
 typedef enum {
@@ -108,26 +121,25 @@ class IMU {
         IMU();
 
         // SPI
-        SPI _spi;
-		DigitalOut _cs;
+        SPI spi;
+        DigitalOut cs;
 
         Status_e init_SPI(PinName mosi, PinName miso, PinName sclk, PinName cs, uint8_t SPI_freq);
-		Status_e init_IMU(void);
+        Status_e init_IMU(void);
 
         // Measurement data
         AGM_t agm;
         Status_e update_AGM(void);
         Status_e data_ready(void);  
 
-        std::array<double> get_IMU_orientation(void);
-        std::array<double> get_IMU_lin_vel(void);
-        std::array<double> get_IMU_ang_vel();
-        std::array<double> get_IMU_mag_field();
+        std::array<double, 3> get_IMU_lin_accel(void);  // m/s^2
+        std::array<double, 3> get_IMU_ang_vel(void);    // rad/s
+        std::array<double, 3> get_IMU_mag_field(void);  // Tesla
 
         // ID
         uint8_t get_whoami(uint8_t *whoami);
         bool is_connected(void);
-		Status_e check_ID(void);
+        Status_e check_ID(void);
 
         // Magnetometer specific
         Status_e init_mag(void);
@@ -168,8 +180,8 @@ class IMU {
         Status_e set_clock_source(ICM_20948_PWR_MGMT_1_CLKSEL_e source);
 
         // Interface
-        Status_e i2c_master_pass_through(void);
-        Status_e i2c_master_enable(void);
+        Status_e i2c_master_pass_through(bool passthrough);
+        Status_e i2c_master_enable(bool enable);
         Status_e i2c_master_reset(void);
 };
 

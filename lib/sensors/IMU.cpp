@@ -1,24 +1,89 @@
 #include "IMU.h"
 #include "IMU_util.h"
 
-// TODO
-std::array<double> IMU::get_IMU_orientation(void) {
+std::array<double> IMU::get_IMU_lin_accel(void) {
+
+    update_AGM();
+
+    std::array<double, 3> lin_accel = {0.0, 0.0, 0.0};
+    double sensitivity_factor;
+
+    // get gyro sensitivity scale factor
+    switch (agm.fss.a) {
+        case 0:
+            sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_0;
+            break;
+        case 1:
+            sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_1;
+            break;
+        case 2:
+            sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_2;
+            break;
+        case 3:
+            sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_3;
+            break;
+        default:
+            sensitivity_factor = 1.0;
+            break;
+    }
+
+    // raw accel data is in g's
+    // to convert raw accel data to accel measurement, divide by accel sensitivity factor
+    lin_accel[0] = ((double) agm.acc.x) * ACCELERATION_GRAVITY / sensitivity_factor;
+    lin_accel[1] = ((double) agm.acc.y) * ACCELERATION_GRAVITY / sensitivity_factor;
+    lin_accel[2] = ((double) agm.acc.z) * ACCELERATION_GRAVITY / sensitivity_factor;
     
-}
-
-// TODO
-std::array<double> IMU::get_IMU_lin_vel(void) {
-
-
+    return lin_accel;
 }
 
 std::array<double> IMU::get_IMU_ang_vel(void) {
 
     update_AGM();
 
+    std::array<double, 3> ang_vel = {0.0, 0.0, 0.0};
+    double sensitivity_factor;
+
+    // get gyro sensitivity scale factor
+    switch (agm.fss.g) {
+        case 0:
+            sensitivity_factor = GYRO_SENSITIVITY_FACTOR_0;
+            break;
+        case 1:
+            sensitivity_factor = GYRO_SENSITIVITY_FACTOR_1;
+            break;
+        case 2:
+            sensitivity_factor = GYRO_SENSITIVITY_FACTOR_2;
+            break;
+        case 3:
+            sensitivity_factor = GYRO_SENSITIVITY_FACTOR_3;
+            break;
+        default:
+            sensitivity_factor = 1.0;
+            break;
+    }
+
     // raw gyro data is in degrees per second
-    // to convert raw gyro data to gyro measurement, divide by Gyro_Sensitivity
-    double x = agm.acc.x
+    // to convert raw gyro data to gyro measurement, divide by gyro sensitivity factor
+    ang_vel[0] = ((double) agm.gyr.x) / sensitivity_factor * PI / 180;
+    ang_vel[1] = ((double) agm.gyr.y) / sensitivity_factor * PI / 180;
+    ang_vel[2] = ((double) agm.gyr.z) / sensitivity_factor * PI / 180;
+    
+    return ang_vel;
+}
+
+std::array<double, 3> get_IMU_mag_field(void) {
+
+    update_AGM();
+
+    std::array<double, 3> mag_field = {0.0, 0.0, 0.0};
+
+    // raw mag data is in micro-Teslas
+    // to convert raw mag data to mag measurement, multiply by mag sensitivity factor
+    mag_field[0] = ((double) agm.mag.x) * MAG_SENSITIVITY_FACTOR;
+    mag_field[1] = ((double) agm.mag.y) * MAG_SENSITIVITY_FACTOR;
+    mag_field[2] = ((double) agm.mag.z) * MAG_SENSITIVITY_FACTOR;
+    
+    return mag_field;
 }
 
 Status_e IMU::update_AGM(void) {
@@ -87,32 +152,32 @@ Status_e IMU::update_AGM(void) {
 
 Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 
-    if (_spi == NULL) {
+    if (spi == NULL) {
         return Status_ParamErr;
     }
 
-    _cs = 0;    // select chip
-    _spi.write(regaddr);    // choose register to read from
+    cs = 0; // select chip
+    spi.write(regaddr); // choose register to read from
     for (uint32_t i = 0; i < len; ++i) {
-        *(pdata+i) = _spi.write(0x00);  // read data
+        *(pdata+i) = spi.write(0x00); // read data
     }
-    _cs = 1;    // deselect chip
+    cs = 1; // deselect chip
 
     return Status_Ok;
 }
 
 Status_e IMU::write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 
-    if (_spi == NULL) {
+    if (spi == NULL) {
         return Status_ParamErr;
     }
 
-    _cs = 0;    // select chip
-    _spi.write(regaddr);    // choose register to write to
+    cs = 0; // select chip
+    spi.write(regaddr); // choose register to write to
     for (uin32_t i = 0; i < len; ++i) {
-        _spi.write(*(data+i));  // transmit data
+        spi.write(*(data+i)); // transmit data
     }
-    _cs = 1;    //deselect chip
+    cs = 1;    //deselect chip
 
     return Status_Ok;
 }
@@ -123,22 +188,22 @@ Status_e IMU::set_bank(uint8_t bank) {
     if (bank > 3) {
         return Status_ParamErr;
     }
-    bank = (bank << 4) & 0x30;  // bits 5:4 of REG_BANK_SEL
+    bank = (bank << 4) & 0x30; // bits 5:4 of REG_BANK_SEL
     write_register(REG_BANK_SEL, &bank, 1);
 }
 
 Status_e IMU::init_SPI(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin, uint8_t SPI_freq) {
     
     // configure SPI pins
-    _spi = SPI(mosi_pin, miso_pin, sclk_pin);
-    _cs(cs_pin); 
+    spi = SPI(mosi_pin, miso_pin, sclk_pin);
+    cs(cs_pin); 
 
-    _cs = 0; // deselect device
+    cs = 0; // deselect device
     // TODO
-    //_spi.format(8, 3) // set transmission format CHECK THIS!!!
-    (SPI_freq > MAX_SPI_FREQ) ? _spi.frequency(MAX_SPI_FREQ) : _spi.frequency(SPI_freq); // set SPI frequency
+    //spi.format(8, 3) // set transmission format CHECK THIS!!!
+    (SPI_freq > MAX_SPI_FREQ) ? spi.frequency(MAX_SPI_FREQ) : spi.frequency(SPI_freq); // set SPI frequency
     
-    _cs = 1; // select device
+    cs = 1; // select device
 
     // initialize IMU
     Status_e retval = init_IMU();
@@ -272,7 +337,6 @@ Status_e IMU::init_mag(void) {
     Status_e retval = Status_Ok;
 
     // TODO
-    i2c_master_passthrough(false);
     i2c_master_enable(true);
 
     // after an ICM reset, the mag sensor may stop responding over the I2C master
@@ -326,7 +390,7 @@ Status_e IMU::is_connected(void) {
 Status_e IMU::data_ready(void) {
     Status_e retval = Status_Ok;
 
-    retval = set_bank(0);   // user bank 0
+    retval = set_bank(0); // user bank 0
     if (retval != Status_Ok) {
         return retval;
     }
@@ -340,6 +404,41 @@ Status_e IMU::data_ready(void) {
         retval = Status_NoData;
     }
 
+    return retval;
+}
+
+Status_e i2c_master_enable(bool enable) {
+    Status_e retval = Status_Ok;
+
+    // disable BYPASS_EN
+    retval = i2c_master_passthrough(false);
+    if (retval != Status_Ok) {
+        return retval;
+    }
+
+    ICM_20948_I2C_MST_CTRL_t ctrl;
+	retval = set_bank(3); // user bank 3
+	if (retval != Status_Ok) {
+		return retval;
+	}
+}
+
+Status_e IMU::i2c_master_passthrough(bool passthrough) {
+    Status_e retval = Status_Ok;
+
+    ICM_20948_INT_PIN_CFG_t reg;
+    retval = set_bank(0); // user bank 0
+    if (retval != Status_Ok) {
+        return retval;
+    }
+
+    retval = read_register(AGB0_REG_INT_PIN_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_INT_PIN_CFG_t));
+    if (retval != Status_Ok) {
+        return retval;
+    }
+
+    reg.BYPASS_EN = passthrough;
+    retval = write_register(AGB0_REG_INT_PIN_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_INT_PIN_CFG_t));
     return retval;
 }
 
