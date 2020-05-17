@@ -161,45 +161,28 @@ mbed_error_status_t ActuatorController::update() {
 			m_velocityPIDController.setInterval(updateInterval);
 			m_velocityPIDController.setProcessValue(getVelocity_DegreesPerSec());
 
-			switch (r_motor.getType()) {
-				case Motor::motor:
-					r_motor.setPower(m_velocityPIDController.compute());
-					break;
-				case Motor::cont_servo:
-					r_motor.servoSetSpeed(m_velocityPIDController.compute()*r_motor.servoGetMaxSpeed());
-					break;
-				default:
-					return MBED_ERROR_INVALID_OPERATION;
-			}
+			r_motor.setPower(m_velocityPIDController.compute());
+			
 			break;
 
 		case position:
-			switch(r_motor.getType()) {
-				case Motor::motor:
-					m_positionPIDController.setInterval(updateInterval);
-					m_positionPIDController.setProcessValue(getAngle_Degrees());
-					r_motor.setPower(m_positionPIDController.compute());
-					break;		
-				case Motor::lim_servo:
-					r_motor.servoSetPosition(m_positionPIDController.getSetPoint());
-					break;
-				default:
-					return MBED_ERROR_INVALID_OPERATION;	
-			}
-			break;
+			
+			m_positionPIDController.setInterval(updateInterval);
+			m_positionPIDController.setProcessValue(getAngle_Degrees());
+			r_motor.setPower(m_positionPIDController.compute());
+
+			break;		
 		
 		default: 
 			return MBED_ERROR_INVALID_OPERATION;
 	}
 
-	// Only triggers if motorType is motor
 	// Always constrain the motor power to 0 or the reverse direction (away from limit switch) 
 	// if the corresponding limit switch is triggered
-	if(r_motor.motorType == Motor::motor)
-		if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
-			(r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
-			r_motor.setPower(0.0);
-		}
+	if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
+		(r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
+		r_motor.setPower(0.0);
+	}
 
   // TODO: Add watchdogging (feed here)
 

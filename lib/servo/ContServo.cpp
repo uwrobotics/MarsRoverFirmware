@@ -35,10 +35,10 @@ float ContServo::getMaxSpeed(void){
 }
 
 bool ContServo::setSpeed(float speed){
-    m_speed = (std::abs(speed) < m_max_speed)? speed : m_max_speed;
-    m_pwm.pulsewidth_us(int(((m_max_pulse_ms - m_min_pulse_ms)/2 * m_speed/m_max_speed + 
-    						m_min_pulse_ms + 
-    						(m_max_pulse_ms - m_min_pulse_ms)/2)*1000));
+    m_speed = (std::abs(speed) < m_max_speed)? speed : m_max_speed * getSign(speed);
+    // So now speed is from 0 to 2 * m_max_speed
+    speed += m_max_speed; 
+    m_pwm.pulsewidth_us(int(((m_max_pulse_ms - m_min_pulse_ms) * speed/(m_max_speed*2) + m_min_pulse_ms)*1000));
     return true;
 }
 

@@ -27,6 +27,10 @@ protected:
     float        m_max_pulse_ms,           //PULSE LENGTH for MAX ANGLE 
                  m_min_pulse_ms;           //PULSE LENGTH for MIN ANGLE
 
+    int getSign(int val) { 
+        return (val >= 0) ? 1 : -1; 
+    }
+
     public:
         Servo(PinName pin);            
         virtual ~Servo();

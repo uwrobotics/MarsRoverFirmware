@@ -35,8 +35,12 @@ float LimServo::getRange(void){
 }
 
 bool LimServo::setPosition(float angle){
-    m_pos = (std::abs(angle) < m_range)? angle : m_range;
-    m_pwm.pulsewidth_us(int(((m_max_pulse_ms - m_min_pulse_ms) * angle/180.0 + m_min_pulse_ms)*1000));
+    m_pos = (std::abs(angle) < m_range)? angle : m_range * getSign(angle);
+    // angle = -1 * m_range -> pwm m_min_pulse_ms; angle = +1 * m_range -> pwm m_max_pulse_ms  
+    // now, if we add m_range to angle, angle = 0 -> pwm m_min_pulse_ms; angle = 2 * m_range -> pwm m_max_pulse_ms 
+    // now we have angle as a value from 0 to 2 * m_range, which can be linearly mapped to m_min_pulse_ms to m_max_pulse_ms, with ease
+    angle += m_range; 
+    m_pwm.pulsewidth_us(int(((m_max_pulse_ms - m_min_pulse_ms) * angle/(m_range*2) + m_min_pulse_ms)*1000));
     return true;
 }
 

@@ -5,20 +5,12 @@
 #endif
 
 #include "mbed.h"
-#include "ContServo.h"
-#include "LimServo.h"
  
 // Interface to control a standard DC motor with an H-bridge using a PwmOut and 2 DigitalOuts
 
 class Motor {
 
 public:
-    enum t_motorType {
-        motor,
-        lim_servo,
-        cont_servo
-    } motorType;
-
     typedef struct motorConfig{
         PinName pwmPin;
         PinName dirPin;
@@ -35,11 +27,9 @@ public:
      * @param inverted  If true, then forward speed will set dir to 0 instead of 1, otherwise inverse
      * @param limit     Maximum speed magnitude
      */
-    Motor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0, t_motorType motorType = motor);
+    Motor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0);
 
-    Motor(t_motorConfig motorConfig, t_motorType motorType = motor);
-
-    ~Motor();
+    Motor(t_motorConfig motorConfig);
 
     /** Set the speed of the motor
      * 
@@ -53,12 +43,6 @@ public:
      * @return Current speed of motor
      */
     float getPower();
-
-    /** Read the motor type
-     * 
-     * @return Motor type
-     */
-    t_motorType getType();
     
     // Servo type exclusive functions
     bool servoSetRange(float range_);           //Returns FALSE if t_motorType != lim_servo
@@ -74,7 +58,4 @@ protected:
     DigitalOut m_dir;
     bool m_inverted;
     float m_limit;
-    
-    // member servo, only used when t_motorType = servo
-    Servo* m_servo;
 };
