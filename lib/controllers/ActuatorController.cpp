@@ -43,14 +43,16 @@ float ActuatorController::getAngle_Degrees() {
 mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode controlMode) {
   m_controlMode = controlMode;
 
-	m_controlMode = controlMode;
+  switch (controlMode) {
+    case motorPower:
+      m_controlMode = motorPower;
+      setMotorPower_Percentage(0.0f);
+      return MBED_SUCCESS;
 
-	 switch (controlMode) {
-
-        case motorPower:
-            m_controlMode = motorPower;
-            setMotorPower_Percentage(0.0f);
-            return MBED_SUCCESS;
+    case velocity:
+      m_velocityPIDController.reset();
+      m_controlMode = velocity;
+      return setVelocity_DegreesPerSec(0.0f);
 
     case position:
       m_positionPIDController.reset();
@@ -78,12 +80,7 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 }
 
 mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesPerSec) {
-	if (m_controlMode != velocity) 
-		return MBED_ERROR_INVALID_OPERATION;
-
-	// Limit velocity setpoint to zero if arm is out of bounds
-	if ( (degreesPerSec < 0.0 && isPastMinAngle()) ||
-		(degreesPerSec > 0.0 && isPastMaxAngle()) ) {
+  if (m_controlMode != velocity) return MBED_ERROR_INVALID_OPERATION;
 
   // Limit velocity setpoint to zero if arm is out of bounds
   if ((degreesPerSec < 0.0 && isPastMinAngle()) || (degreesPerSec > 0.0 && isPastMaxAngle())) {
@@ -99,10 +96,8 @@ mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesP
 
   m_velocityPIDController.setSetPoint(degreesPerSec);
 
-	return MBED_SUCCESS;
-
+  return MBED_SUCCESS;
 }
-
 
 mbed_error_status_t ActuatorController::setAngle_Degrees(float degrees) {
   if (m_controlMode != position) {
@@ -136,7 +131,7 @@ mbed_error_status_t ActuatorController::setMotionData(float motionData) {
 
 // TODO implement this function
 mbed_error_status_t ActuatorController::resetEncoder() {
-	return MBED_SUCCESS;
+  return MBED_SUCCESS;
 }
 
 mbed_error_status_t ActuatorController::update() {
@@ -158,31 +153,31 @@ mbed_error_status_t ActuatorController::update() {
         m_velocityPIDController.setSetPoint(0.0);
       }
 
-			m_velocityPIDController.setInterval(updateInterval);
-			m_velocityPIDController.setProcessValue(getVelocity_DegreesPerSec());
+      m_velocityPIDController.setInterval(updateInterval);
+      m_velocityPIDController.setProcessValue(getVelocity_DegreesPerSec());
 
-			r_motor.setPower(m_velocityPIDController.compute());
-			
-			break;
+      r_motor.setPower(m_velocityPIDController.compute());
 
-		case position:
-			
-			m_positionPIDController.setInterval(updateInterval);
-			m_positionPIDController.setProcessValue(getAngle_Degrees());
-			r_motor.setPower(m_positionPIDController.compute());
+      break;
 
-			break;		
-		
-		default: 
-			return MBED_ERROR_INVALID_OPERATION;
-	}
+    case position:
 
-	// Always constrain the motor power to 0 or the reverse direction (away from limit switch) 
-	// if the corresponding limit switch is triggered
-	if ( (r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
-		(r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered()) ) {
-		r_motor.setPower(0.0);
-	}
+      m_positionPIDController.setInterval(updateInterval);
+      m_positionPIDController.setProcessValue(getAngle_Degrees());
+      r_motor.setPower(m_positionPIDController.compute());
+
+      break;
+
+    default:
+      return MBED_ERROR_INVALID_OPERATION;
+  }
+
+  // Always constrain the motor power to 0 or the reverse direction (away from limit switch)
+  // if the corresponding limit switch is triggered
+  if ((r_motor.getPower() < 0.0 && isLimSwitchMinTriggered()) ||
+      (r_motor.getPower() > 0.0 && isLimSwitchMaxTriggered())) {
+    r_motor.setPower(0.0);
+  }
 
   // TODO: Add watchdogging (feed here)
 
@@ -221,5 +216,5 @@ bool ActuatorController::isPastMinAngle() {
 }
 
 bool ActuatorController::isPastMaxAngle() {
-	return (getAngle_Degrees() > m_actuatorConfig.maxAngle_Degrees || isLimSwitchMaxTriggered());
+  return (getAngle_Degrees() > m_actuatorConfig.maxAngle_Degrees || isLimSwitchMaxTriggered());
 }

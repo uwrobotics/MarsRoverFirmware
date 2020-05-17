@@ -4,20 +4,13 @@
 #include "Motor.h"
 #include "PID.h"
 #include "PinNames.h"
+#include "mbed.h"
 
 static DigitalIn NULL_DIGITAL_IN = DigitalIn(NC);
 
 class ActuatorController {
  public:
   typedef enum t_actuatorControlMode : uint8_t { motorPower, velocity, position } t_actuatorControlMode;
-
-public:
-
-	typedef enum t_actuatorControlMode : uint8_t {
-		motorPower,
-		velocity,
-		position
-	} t_actuatorControlMode;
 
 	typedef struct {
 		t_actuatorControlMode defaultControlMode = motorPower;
@@ -38,16 +31,11 @@ public:
   explicit ActuatorController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder,
                               DigitalIn &limSwitchMin = NULL_DIGITAL_IN, DigitalIn &limSwitchMax = NULL_DIGITAL_IN);
 
-	mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
-	
-
-	mbed_error_status_t setMotorPower_Percentage(float percentage);
-	mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec); // Need to mod for Servo
-	mbed_error_status_t setAngle_Degrees(float degrees); // Need to mod for Servo
+  mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
 
   mbed_error_status_t setMotorPower_Percentage(float percentage);
-  mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec);
-  mbed_error_status_t setAngle_Degrees(float degrees);
+  mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec);  // Need to mod for Servo
+  mbed_error_status_t setAngle_Degrees(float degrees);                 // Need to mod for Servo
 
   mbed_error_status_t setMotionData(float motionData);
 
@@ -56,8 +44,8 @@ public:
 	float getAngle_Degrees(); // Need to mod for Servo
 
   float getMotorPower_Percentage();
-  float getVelocity_DegreesPerSec();
-  float getAngle_Degrees();
+  float getVelocity_DegreesPerSec();  // Need to mod for Servo
+  float getAngle_Degrees();           // Need to mod for Servo
 
   mbed_error_status_t update();
 

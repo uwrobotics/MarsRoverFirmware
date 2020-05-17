@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Motor.h"
 #include "ContServo.h"
- 
+#include "Motor.h"
+#include "mbed.h"
+
 // Control a continuous rotation servo like a motor
 
 class ServoMotor : Motor {
@@ -23,35 +24,27 @@ class ServoMotor : Motor {
 
   /** Set the speed of the motor
    *
-   * @param dutyCycle The speed of the motor as a normalised value between -1.0 and 1.0
+   * @param percentage The speed of the motor as a normalised value between -1.0 and 1.0
    */
-  void setPower(float dutyCycle);
-  ServoMotor& operator=(int dutyCycle);
+  void setPower(float percentage);
+  ServoMotor& operator=(int percentage);
 
-    /** Set the speed of the motor
-     * 
-     * @param percentage The speed of the motor as a normalised value between -1.0 and 1.0
-     */
-    void setPower(float percentage);
-    ServoMotor& operator=(int percentage);
+  /** Read the current speed of the motor
+   *
+   * @return Current speed of motor
+   */
+  float getPower();
 
-    /** Read the current speed of the motor
-     * 
-     * @return Current speed of motor
-     */
-    float getPower();
+  // ContServo type exclusive functions
+  bool servoSetMaxSpeed(float max_speed_);
+  bool servoSetSpeed(float speed_);
+  float servoRead(void);
+  float servoGetMaxSpeed(void);
+  void servoSetPeriod(int period);
 
-     // ContServo type exclusive functions
-    bool servoSetMaxSpeed(float max_speed_);   
-    bool servoSetSpeed(float speed_);           
-    float servoRead(void);                      
-    float servoGetMaxSpeed(void);               
-    void servoSetPeriod(int period);          
-
-protected:
- 
-protected:
-    bool m_inverted;
-    float m_limit;
-    ContServo m_servo;
+ protected:
+ protected:
+  bool m_inverted;
+  float m_limit;
+  ContServo m_servo;
 };
