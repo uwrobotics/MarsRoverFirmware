@@ -2,7 +2,7 @@
 #include "mbed_config.h"
 #include "can_config.h"
 
-#include "ArmConfig.h"
+#include "ScienceConfig.h"
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
@@ -12,6 +12,17 @@
 #include "CANMsg.h"
 #include "CANBuffer.h"
 #include "Servo.h"
+
+//motors
+Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
+Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
+
+//encoders
+EncoderAbsolute_PWM elevatorEncoder(ScienceConfig::elevatorEncoderConfig);
+EncoderRelative_Quadrature centrifugeEncoder(ScienceConfig::centrifugeEncoderConfig);
+//limit switches
+//analog inputs
+//I2C
 
 DigitalOut led1(LED1);
 
