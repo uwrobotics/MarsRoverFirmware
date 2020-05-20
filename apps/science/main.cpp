@@ -12,6 +12,7 @@
 #include "CANMsg.h"
 #include "CANBuffer.h"
 #include "Servo.h"
+#include "MoistureSensor.h"
 
 //motors
 Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
@@ -21,10 +22,15 @@ Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
 EncoderAbsolute_PWM elevatorEncoder(ScienceConfig::elevatorEncoderConfig);
 EncoderRelative_Quadrature centrifugeEncoder(ScienceConfig::centrifugeEncoderConfig);
 //limit switches
-//analog inputs
+
+DigitalIn centrifugeLimFront(LIM_SW_1);
+DigitalIn centrifugeLimBack(LIM_SW_2);
+DigitalIn liftLimTop(LIM_SW_3);
+DigitalIn liftLimBottom(LIM_SW_4);
+
 //I2C
 
-DigitalOut led1(LED1);
+MoistureSensor sensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
 CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 
