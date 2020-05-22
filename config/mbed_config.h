@@ -344,9 +344,11 @@
     }                                                                                         \
   }
 
-#define MBED_ASSERT_WARN(assertion)                                                      \
-  {                                                                                      \
-    if ((assertion) == false) { PRINT_WARNING("Failed assertion: %s\r\n", #assertion); } \
+#define MBED_ASSERT_WARN(assertion)                          \
+  {                                                          \
+    if ((assertion) == false) {                              \
+      PRINT_WARNING("Failed assertion: %s\r\n", #assertion); \
+    }                                                        \
   }
 
 #endif
