@@ -70,7 +70,9 @@ void PwmIn::fall() {
 
   m_sampleCount++;
 
-  if (m_sampleCount >= m_numSamplesToAverage) { m_sampleCount = 0; }
+  if (m_sampleCount >= m_numSamplesToAverage) {
+    m_sampleCount = 0;
+  }
 }
 
 float PwmIn::movingAvg(float* p_samples, float* p_sampleSum, float newSample, int newIndex) {

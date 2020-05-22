@@ -1,7 +1,9 @@
 #include "CANBuffer.h"
 
 CANBuffer::CANBuffer(CAN &CANInterface, BufferType type) : r_CANInterface(CANInterface) {
-  if (type == rx) { r_CANInterface.attach(callback(this, &CANBuffer::rxIrqHandler), CAN::RxIrq); }
+  if (type == rx) {
+    r_CANInterface.attach(callback(this, &CANBuffer::rxIrqHandler), CAN::RxIrq);
+  }
 }
 
 bool CANBuffer::pop(CANMsg &canMSG) {
@@ -9,7 +11,9 @@ bool CANBuffer::pop(CANMsg &canMSG) {
 
   bool data_popped = CircularBuffer::pop(canMSG);
 
-  if (empty()) { m_eventFlags.clear(CANBUFFER_FLAG_DATA_READY | CANBUFFER_FLAG_FULL); }
+  if (empty()) {
+    m_eventFlags.clear(CANBUFFER_FLAG_DATA_READY | CANBUFFER_FLAG_FULL);
+  }
 
   core_util_critical_section_exit();
 
@@ -23,7 +27,9 @@ void CANBuffer::rxIrqHandler(void) {
     m_eventFlags.set(CANBUFFER_FLAG_DATA_READY);
     push(m_CANMsg);
 
-    if (full()) { m_eventFlags.set(CANBUFFER_FLAG_FULL); }
+    if (full()) {
+      m_eventFlags.set(CANBUFFER_FLAG_FULL);
+    }
 
     core_util_critical_section_exit();
   }

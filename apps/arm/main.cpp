@@ -137,7 +137,9 @@ static mbed_error_status_t runWristCalibration(CANMsg &msg) {
   bool runCalibration;
   msg.getPayload(runCalibration);
 
-  if (runCalibration) { return wristController.runPositionCalibration(); }
+  if (runCalibration) {
+    return wristController.runPositionCalibration();
+  }
 
   return MBED_SUCCESS;
 }
@@ -147,7 +149,9 @@ static mbed_error_status_t runClawCalibration(CANMsg &msg) {
   bool runCalibration;
   msg.getPayload(runCalibration);
 
-  if (runCalibration) { return clawController.runPositionCalibration(); }
+  if (runCalibration) {
+    return clawController.runPositionCalibration();
+  }
 
   return MBED_SUCCESS;
 }

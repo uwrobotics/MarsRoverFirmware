@@ -154,7 +154,9 @@ QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, f
     channelB_.fall(callback(this, &QEI::encode));
   }
   // Index is optional.
-  if (index != NC) { index_.rise(callback(this, &QEI::index)); }
+  if (index != NC) {
+    index_.rise(callback(this, &QEI::index));
+  }
 
   timer_.start();
 }
@@ -254,7 +256,9 @@ void QEI::encode(void) {
       // gives 0 if clockwise rotation and 1 if counter clockwise rotation.
       change = (prevState_ & PREV_MASK) ^ ((currState_ & CURR_MASK) >> 1);
 
-      if (change == 0) { change = -1; }
+      if (change == 0) {
+        change = -1;
+      }
 
       pulses_ -= change;
     }
