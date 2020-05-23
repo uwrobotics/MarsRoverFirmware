@@ -174,6 +174,11 @@ extern "C"
         BUTTON_1 = PB_0,
         BUTTON_2 = PB_1,
 
+        /**** Servo Pins *****/
+
+        SRVO_PWM_1 = PB_2,
+        SRVO_PWM_2 = PB_10,
+
         /**** Actuator Pins ****/
         MTR_PWM_1 = PA_6,
         MTR_DIR_1 = PA_5,

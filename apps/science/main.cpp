@@ -18,6 +18,10 @@
 Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
 Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
 
+//Servo
+Servo coverServo(SRVO_PWM_1, ScienceConfig::coverServoType, ScienceConfig::coverServoRange, ScienceConfig::coverServoMaxPulse, ScienceConfig::coverServoMinPulse);
+Servo diggerServo(SRVO_PWM_2, ScienceConfig::diggerServoType, ScienceConfig::diggerServoRange, ScienceConfig::diggerServoMaxPulse, ScienceConfig::diggerServoMinPulse);
+
 //encoders
 EncoderAbsolute_PWM elevatorEncoder(ScienceConfig::elevatorEncoderConfig);
 EncoderRelative_Quadrature centrifugeEncoder(ScienceConfig::centrifugeEncoderConfig);
