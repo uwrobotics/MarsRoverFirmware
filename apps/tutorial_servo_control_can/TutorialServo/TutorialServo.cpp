@@ -1,4 +1,3 @@
-#include "mbed.h"
 #include "TutorialServo.h"
 
 TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, 
@@ -8,6 +7,7 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0
             m_minPulsewidthInMs(minPulsewidthInMs),
             m_maxPulsewidthInMs(maxPulsewidthInMs){
                 m_servoPwmOut = 0;
+                m_servoPwmOut.period(0.020)
             }
 
 TutorialServo::setAngleRangeInDegrees(float degrees){
@@ -21,7 +21,8 @@ TutorialServo::setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulsewidth
 
 TutorialServo::setPositionInDegrees(float degrees){
     m_servoPwmOut.pulsewidth(
-        ((this->m_maxPulsewidthInMs - this->m_minPulsewidthInMs)/(max_a)) * degrees + this->m_minPulsewidthInMs
+        ((this->m_maxPulsewidthInMs - this->m_minPulsewidthInMs)/(2 * this->servoRangeInDegrees)) * degrees + 
+        ((this->m_maxPulsewidthInMs + this->m_minPulsewidthInMs) / 2.0)
         );
 
 }
