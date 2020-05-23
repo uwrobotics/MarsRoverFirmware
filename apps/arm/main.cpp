@@ -185,30 +185,26 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
      * | 32 bits  | 8 bits   |  8 bits     |
      * | data     | vel/pos  |  Actuator ID|
      *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-    struct __attribute__ ((__packed__)){
-        float value;
-        bool velocity;
-        uint8_t actuatorID;
-    } payload;
+    ROS_INTERFACE::ARM::API::payload_st payload;
     msg.getPayload(payload);
     ActuatorController *temp = nullptr;
     switch(payload.actuatorID){
-        case ROS_CONSTANTS::ARM::ACTUATOR::TURNTABLE:
+        case ROS_INTERFACE::ARM::ACTUATOR::TURNTABLE:
             temp = &turnTableActuator;
             break;
-        case ROS_CONSTANTS::ARM::ACTUATOR::SHOULDER:
+        case ROS_INTERFACE::ARM::ACTUATOR::SHOULDER:
             temp = &shoulderActuator;
             break;
-        case ROS_CONSTANTS::ARM::ACTUATOR::ELBOW:
+        case ROS_INTERFACE::ARM::ACTUATOR::ELBOW:
             temp = &elbowActuator;
             break;
-        case ROS_CONSTANTS::ARM::ACTUATOR::WRISTLEFT:
+        case ROS_INTERFACE::ARM::ACTUATOR::WRISTLEFT:
             temp = &wristLeftActuator;
             break;
-        case ROS_CONSTANTS::ARM::ACTUATOR::WRISTRIGHT:
+        case ROS_INTERFACE::ARM::ACTUATOR::WRISTRIGHT:
             temp = &wristRightActuator;
             break;
-        case ROS_CONSTANTS::ARM::ACTUATOR::CLAW:
+        case ROS_INTERFACE::ARM::ACTUATOR::CLAW:
             temp = &clawController;
             break;
         default:

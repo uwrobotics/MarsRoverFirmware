@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ROS_CONSTANTS {
+namespace ROS_INTERFACE {
     namespace ARM {
         namespace API {
             struct __attribute__ ((__packed__)) payload_st{
