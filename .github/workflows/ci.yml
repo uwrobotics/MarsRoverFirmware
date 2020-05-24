@@ -56,3 +56,14 @@ jobs:
         shell: bash
         env: ${{matrix.env}}
         run: make APP=${{ env.APP }} TARGET=${{ env.TARGET }}
+
+  clang-format:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Clang format Check
+        uses: DoozyX/clang-format-lint-action@v0.5
+        with:
+          exclude: './mbed-os'
+          clangFormatVersion: 9
