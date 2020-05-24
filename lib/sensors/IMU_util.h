@@ -3,6 +3,8 @@
 #ifndef _IMU_util_H_
 #define _IMU_util_H_
 
+#include <stdint.h>
+
 #define ARD_UNUSED_PIN      0xFF;
 
 #define ICM_20948_WHOAMI 0xEA
