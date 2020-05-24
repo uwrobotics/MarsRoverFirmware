@@ -171,10 +171,6 @@ Status_e IMU::update_AGM(void) {
 
 Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 
-    if (spi == NULL) {
-        return Status_ParamErr;
-    }
-
     cs = 0; // select chip
     spi.write(regaddr); // choose register to read from
     for (uint32_t i = 0; i < len; ++i) {
@@ -186,10 +182,6 @@ Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 }
 
 Status_e IMU::write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
-
-    if (spi == NULL) {
-        return Status_ParamErr;
-    }
 
     cs = 0; // select chip
     spi.write(regaddr); // choose register to write to
@@ -246,7 +238,7 @@ Status_e IMU::init_IMU(void) {
         return status;
     }
 
-    // delay a bit
+    // delay a bit CHECK THIS
     // ThisThread::sleep_for(50);
 
     // wake up imu

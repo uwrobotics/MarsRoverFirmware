@@ -1,5 +1,12 @@
 /* InvenSense ICM-20948 IMU Sensor Library
  *
+ * This library provides access to scaled IMU measurement data through SPI. 
+ * 
+ * TODO: 
+ * - calibration
+ * - fixed update frequency?
+ * - DMP support to return orientation quaternion
+ * 
  * Note: This implementation only supports SPI interface
  *
  * Ported from Sparkfun's Arduino library: https://github.com/sparkfun/SparkFun_ICM-20948_ArduinoLibrary
@@ -13,6 +20,7 @@
 #include "IMU_util.h"
 #include "mbed.h"
 #include <array>
+#include <stdint.h>
 
 #define MAX_SPI_FREQ                  7000000
 #define PI                      3.14159265359
