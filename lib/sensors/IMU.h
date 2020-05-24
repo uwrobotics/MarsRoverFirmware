@@ -10,6 +10,7 @@
 #ifndef _IMU_H_
 #define _IMU_H_
 
+#include "IMU_util.h"
 #include "mbed.h"
 #include <array>
 
@@ -160,7 +161,7 @@ class IMU {
         Status_e set_sample_mode(InternalSensorID_bm sensors, ICM_20948_LP_CONFIG_CYCLE_e mode);
         Status_e set_full_scale_mode(InternalSensorID_bm sensors, FSS_t fss);
         Status_e set_DLPF_cfc(InternalSensorID_bm sensors, DLPF_cfg_t cfg);
-        Status_e enable_DLPF(InternalSensorsID_bm sensors, bool enable);
+        Status_e enable_DLPF(InternalSensorID_bm sensors, bool enable);
         Status_e set_sample_rate(InternalSensorID_bm sensors, SMPLRT_t smplrt);
         
         // Interrupts
@@ -173,7 +174,7 @@ class IMU {
         Status_e cfg_fsync_active_low(bool active_low);
         Status_e cfg_fsync_int_mode(bool interrupt_mode);
 
-        Status_e int_enable(ICM_20948_INT_enable_t *write, ICM_20948_INT_enable_t *read);
+        Status_e int_enable(INT_enable_t *write, INT_enable_t *read);
         Status_e int_enable_i2c(bool enable);
         Status_e int_enable_DMP(bool enable);
         Status_e int_enable_PLL(bool enable);

@@ -1,7 +1,6 @@
 #include "IMU.h"
-#include "IMU_util.h"
 
-std::array<double> IMU::get_IMU_lin_accel(void) {
+std::array<double, 3> IMU::get_IMU_lin_accel(void) {
 
     update_AGM();
 
@@ -36,7 +35,7 @@ std::array<double> IMU::get_IMU_lin_accel(void) {
     return lin_accel;
 }
 
-std::array<double> IMU::get_IMU_ang_vel(void) {
+std::array<double, 3> IMU::get_IMU_ang_vel(void) {
 
     update_AGM();
 
@@ -71,7 +70,7 @@ std::array<double> IMU::get_IMU_ang_vel(void) {
     return ang_vel;
 }
 
-std::array<double, 3> get_IMU_mag_field(void) {
+std::array<double, 3> IMU::get_IMU_mag_field(void) {
 
     update_AGM();
 
@@ -94,8 +93,14 @@ Status_e IMU::update_AGM(void) {
     uint8_t buffer[num_bytes];
 
     // get readings
-    retval |= set_bank(0);  // user bank 0
-    retval |= read_register((uint8_t)AGB0_REG_ACCEL_XOUT_H, buffer, num_bytes);
+    retval = set_bank(0);  // user bank 0
+    if (status != Status_Ok) {
+        return status;
+    }
+    retval = read_register((uint8_t)AGB0_REG_ACCEL_XOUT_H, buffer, num_bytes);
+    if (status != Status_Ok) {
+        return status;
+    }
 
     /* 
      * buffer should now hold:
@@ -110,14 +115,13 @@ Status_e IMU::update_AGM(void) {
      */
 
     // update agm values with buffer data
+    agm.acc.x = ((buffer[0] << 8) | (buffer[1] & 0xFF));
+    agm.acc.y = ((buffer[2] << 8) | (buffer[3] & 0xFF));
+    agm.acc.z = ((buffer[4] << 8) | (buffer[5] & 0xFF));
 
-    agm.acc.x = ((buffer[0] << 8) | (buffer[1]) & 0xFF));
-    agm.acc.y = ((buffer[2] << 8) | (buffer[3]) & 0xFF));
-    agm.acc.z = ((buffer[4] << 8) | (buffer[5]) & 0xFF));
-
-    agm.gyr.x = ((buffer[6] << 8) | (buffer[7]) & 0xFF));
-    agm.gyr.y = ((buffer[8] << 8) | (buffer[9]) & 0xFF));
-    agm.gyr.z = ((buffer[10] << 8) | (buffer[11]) & 0xFF));
+    agm.gyr.x = ((buffer[6] << 8) | (buffer[7] & 0xFF));
+    agm.gyr.y = ((buffer[8] << 8) | (buffer[9] & 0xFF));
+    agm.gyr.z = ((buffer[10] << 8) | (buffer[11] & 0xFF));
 
     // disregard temperature data and mag whoami
 
@@ -132,20 +136,35 @@ Status_e IMU::update_AGM(void) {
 
 
     // read full scale settings (to be able to compute scaled values)
-    retval |= set_bank(2); // user bank 2
+    retval = set_bank(2); // user bank 2
+    if (status != Status_Ok) {
+        return status;
+    }
     ICM_20948_ACCEL_CONFIG_t acfg;
-    retval |= read_register((uint8_t)AGB2_REG_ACCEL_CONFIG, (uint8_t*)&acfg, sizeof(acfg));
+    retval = read_register((uint8_t)AGB2_REG_ACCEL_CONFIG, (uint8_t*)&acfg, sizeof(acfg));
+    if (status != Status_Ok) {
+        return status;
+    }
     agm.fss.a = acfg.ACCEL_FS_SEL;  // Sparkfun notes:
                                     // Worth noting that without explicitly setting the FS range of the accelerometer it was showing the register value for +/- 2g but the reported values were actually scaled to the +/- 16g range
 									// Wait a minute... now it seems like this problem actually comes from the digital low-pass filter. When enabled the value is 1/8 what it should be...
-    retval |= set_bank(2);
+    retval = set_bank(2);
+    if (status != Status_Ok) {
+        return status;
+    }
     ICM_20948_GYRO_CONFIG_1_t gcfg1;
-    retval |= read_register((uint8_t)AGB2_REG_GYRO_CONFIG_1, (uint8_t*)&gcfg1, sizeof(gcfg1));
+    retval = read_register((uint8_t)AGB2_REG_GYRO_CONFIG_1, (uint8_t*)&gcfg1, sizeof(gcfg1));
+    if (status != Status_Ok) {
+        return status;
+    }
     agm.fss.g = gcfg1.GYRO_FS_SEL;
 
     // TODO: What to do with this value??
     ICM_20948_ACCEL_CONFIG_2_t acfg2;
-    retval |= read_register((uint8_t)AGB2_REG_ACCEL_CONFIG_2, (uint8_t*)&acfg2, sizeof(acfg2));
+    retval = read_register((uint8_t)AGB2_REG_ACCEL_CONFIG_2, (uint8_t*)&acfg2, sizeof(acfg2));
+    if (status != Status_Ok) {
+        return status;
+    }
 
     return retval;
 }
@@ -174,8 +193,8 @@ Status_e IMU::write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 
     cs = 0; // select chip
     spi.write(regaddr); // choose register to write to
-    for (uin32_t i = 0; i < len; ++i) {
-        spi.write(*(data+i)); // transmit data
+    for (uint32_t i = 0; i < len; ++i) {
+        spi.write(*(pdata+i)); // transmit data
     }
     cs = 1;    //deselect chip
 
@@ -196,7 +215,7 @@ Status_e IMU::init_SPI(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, Pin
     
     // configure SPI pins
     spi = SPI(mosi_pin, miso_pin, sclk_pin);
-    cs(cs_pin); 
+    cs = DigitalOut(cs_pin); 
 
     cs = 0; // deselect device
     // TODO
@@ -228,7 +247,7 @@ Status_e IMU::init_IMU(void) {
     }
 
     // delay a bit
-    ThisThread::sleep_for(50);
+    // ThisThread::sleep_for(50);
 
     // wake up imu
     retval = sleep(false);
@@ -245,7 +264,7 @@ Status_e IMU::init_IMU(void) {
     }
 
     // set sample mode to continuous (other option is duty cycled)
-    retval = set_sample_mode((Internal_Acc | Internal_Gyr), ICM_20948_Sample_Mode_Continuous);
+    retval = set_sample_mode((InternalSensorID_bm) (Internal_Acc | Internal_Gyr), ICM_20948_Sample_Mode_Continuous);
     if (retval != Status_Ok) {
         status = retval;
         return status;
@@ -255,18 +274,18 @@ Status_e IMU::init_IMU(void) {
     FSS_t fss;
     fss.a = gpm2; // Can be changed; set accel range to +- 2g
     fss.g = dps250; // Can be changed; set gyro range to 250 degrees / s
-    retval = set_full_scale_mode((Internal_Acc | Internal_Gyr), fss);
+    retval = set_full_scale_mode((InternalSensorID_bm) (Internal_Acc | Internal_Gyr), fss);
     if (retval != Status_Ok) {
         status = retval;
         return status;
     }
 
     // configure DLFP
-    ICM_20948_dlpcfg_t dlpcfg;
+    DLPF_cfg_t dlpcfg;
     dlpcfg.a = acc_d473bw_n499bw;
     dlpcfg.g = gyr_d361bw4_n376bw5;
 
-    retval = set_DLPF_cfc((Internal_Acc | Internal_Gyr), dlpcfg);
+    retval = set_DLPF_cfc((InternalSensorID_bm) (Internal_Acc | Internal_Gyr), dlpcfg);
     if (retval != Status_Ok) {
         status = retval;
         return status;
@@ -355,7 +374,7 @@ Status_e IMU::low_power(bool on) {
 
     set_bank(0); // user bank 0
 
-    retval = read_register(AGB0_REG_PWR_MGMT_1, (uint9_t *)&reg, sizeof(ICM_20948_PWR_MGMT_1_t));
+    retval = read_register(AGB0_REG_PWR_MGMT_1, (uint8_t *)&reg, sizeof(ICM_20948_PWR_MGMT_1_t));
     if (retval != Status_Ok) {
         return retval;
     }
@@ -379,7 +398,7 @@ Status_e IMU::init_mag(void) {
         retval = check_mag_ID();
 
         // whoami matched
-        if (revtal == Status_Ok) {
+        if (retval == Status_Ok) {
             break;
         }
 
@@ -414,8 +433,11 @@ Status_e IMU::check_mag_ID(void) {
     Status_e retval = Status_Ok;
     
     uint8_t whoiam1, whoiam2;
-    retval |= read_mag(AK09916_REG_WIA1, &whoiam1);
-    retval |= read_mag(AK09916_REG_WIA2, &whoiam2);
+    retval = read_mag(AK09916_REG_WIA1, &whoiam1);
+    if (retval != Status_Ok) {
+        return retval;
+    }
+    retval = read_mag(AK09916_REG_WIA2, &whoiam2);
     if (retval != Status_Ok) {
         return retval;
     }
@@ -433,7 +455,7 @@ Status_e IMU::check_mag_ID(void) {
     return status;
 }
 
-Status_e IMU::is_connected(void) {
+bool IMU::is_connected(void) {
     status = check_ID();
     return status == Status_Ok;
 }
@@ -488,7 +510,7 @@ Status_e IMU::set_sample_mode(InternalSensorID_bm sensors, ICM_20948_LP_CONFIG_C
 
     // set master i2c mode
     if (sensors & Internal_Mst) {
-        reg.I2C_MST_CYCLE
+        reg.I2C_MST_CYCLE;
     }
 
     retval = write_register(AGB0_REG_LP_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_LP_CONFIG_t));
@@ -505,19 +527,37 @@ Status_e IMU::set_full_scale_mode(InternalSensorID_bm sensors, FSS_t fss) {
     // set accel full scale settings
     if (sensors & Internal_Acc) {
         ICM_20948_ACCEL_CONFIG_t reg;
-        retval |= set_bank(2); // user bank 2
-        retval |= read_register(AGB2_REG_ACCEL_CONIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        retval = set_bank(2); // user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
+        retval = read_register(AGB2_REG_ACCEL_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        if (status != Status_Ok) {
+            return status;
+        }
         reg.ACCEL_FS_SEL = fss.a;
-        retval |= write_register(AGB2_REG_ACCEL_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        retval = write_register(AGB2_REG_ACCEL_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        if (status != Status_Ok) {
+            return status;
+        }
     }
 
     // set gyro full scale settings
     if (sensors & Internal_Gyr) {
         ICM_20948_GYRO_CONFIG_1_t reg;
-        retval |= set_bank(2); //user bank 2
-        retval |= read_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        retval = set_bank(2); //user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
+        retval = read_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        if (status != Status_Ok) {
+            return status;
+        }
         reg.GYRO_FS_SEL = fss.g;
-        retval |= write_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        retval = write_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        if (status != Status_Ok) {
+            return status;
+        }
     }
 
     return retval;
@@ -533,48 +573,83 @@ Status_e IMU::set_DLPF_cfc(InternalSensorID_bm sensors, DLPF_cfg_t cfg) {
     // configure accel dlpf
     if (sensors & Internal_Acc) {
 		ICM_20948_ACCEL_CONFIG_t reg;
-		retval |= set_bank(2); // user bank 2
-		retval |= read_register(AGB2_REG_ACCEL_CONFIG, (uint8_t *)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+		retval = set_bank(2); // user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
+		retval = read_register(AGB2_REG_ACCEL_CONFIG, (uint8_t *)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 		reg.ACCEL_DLPFCFG = cfg.a;
-		retval |= write_register(AGB2_REG_ACCEL_CONFIG, (uint8_t *)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+		retval = write_register(AGB2_REG_ACCEL_CONFIG, (uint8_t *)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 	}
 
     // configure gyro dlpf
-	if (sensors & ICM_20948_Internal_Gyr) {
+	if (sensors & Internal_Gyr) {
 		ICM_20948_GYRO_CONFIG_1_t reg;
-		retval |= set_bank(2); // user bank 2
-		retval |= read_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+		retval = set_bank(2); // user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
+		retval = read_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 		reg.GYRO_DLPFCFG = cfg.g;
-		retval |= write_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+		retval = write_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 	}
 
 	return retval;
 }
 
-Status_e IMU::enable_DLPF(InternalSensorsID_bm sensors, bool enable) {
+Status_e IMU::enable_DLPF(InternalSensorID_bm sensors, bool enable) {
     Status_e retval = Status_Ok;
 
     if (!(sensors & (Internal_Acc | Internal_Gyr))) {
 		return Status_SensorNotSupported;
 	}
 
-    // TODO
     // enable dlpf for accel
 	if (sensors & Internal_Acc) {
 		ICM_20948_ACCEL_CONFIG_t reg;
-		retval |= set_bank(2); // user bank 2
-		retval |= read_register(AGB2_REG_ACCEL_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+		retval = set_bank(2); // user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
+		retval = read_register(AGB2_REG_ACCEL_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 		reg.ACCEL_FCHOICE = (uint8_t) enable;
-		retval |= write_register(AGB2_REG_ACCEL_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+		retval = write_register(AGB2_REG_ACCEL_CONFIG, (uint8_t*)&reg, sizeof(ICM_20948_ACCEL_CONFIG_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 	}
 
     // enable dlpf for gyro
 	if (sensors & Internal_Gyr) {
 		ICM_20948_GYRO_CONFIG_1_t reg;
-		retval |= set_bank(2); // user bank 2
-		retval |= read_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t*)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+		retval = set_bank(2); // user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
+		retval = read_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t*)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 		reg.GYRO_FCHOICE = (uint8_t) enable;
-		retval |= write_register(pdev, AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+		retval = write_register(AGB2_REG_GYRO_CONFIG_1, (uint8_t *)&reg, sizeof(ICM_20948_GYRO_CONFIG_1_t));
+        if (status != Status_Ok) {
+            return status;
+        }
 	}
 
 	return retval;
@@ -589,28 +664,43 @@ Status_e IMU::set_sample_rate(InternalSensorID_bm sensors, SMPLRT_t smplrt) {
 
     // set accel sample rate
 	if (sensors & Internal_Acc) {
-		retval |= set_bank(2); // user bank 2
+		retval = set_bank(2); // user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
 		uint8_t div1 = (smplrt.a << 8);
 		uint8_t div2 = (smplrt.a & 0xFF);
-		retval |= write_register(AGB2_REG_ACCEL_SMPLRT_DIV_1, &div1, 1);
-		retval |= write_register(AGB2_REG_ACCEL_SMPLRT_DIV_2, &div2, 1);
+		retval = write_register(AGB2_REG_ACCEL_SMPLRT_DIV_1, &div1, 1);
+        if (status != Status_Ok) {
+            return status;
+        }
+		retval = write_register(AGB2_REG_ACCEL_SMPLRT_DIV_2, &div2, 1);
+        if (status != Status_Ok) {
+            return status;
+        }
 	}
 
     // set gyro sample rate
 	if (sensors & Internal_Gyr) {
-		retval |= set_bank(2); // user bank 2
+		retval = set_bank(2); // user bank 2
+        if (status != Status_Ok) {
+            return status;
+        }
 		uint8_t div = (smplrt.g);
-		retval |= write_register(AGB2_REG_GYRO_SMPLRT_DIV, &div, 1);
+		retval = write_register(AGB2_REG_GYRO_SMPLRT_DIV, &div, 1);
+        if (status != Status_Ok) {
+            return status;
+        }
 	}
 
 	return retval;
 }
 
-Status_e i2c_master_enable(bool enable) {
+Status_e IMU::i2c_master_enable(bool enable) {
     Status_e retval = Status_Ok;
 
     // disable BYPASS_EN
-    retval = i2c_master_passthrough(false);
+    retval = i2c_master_pass_through(false); // todo
     if (retval != Status_Ok) {
         return retval;
     }
@@ -622,7 +712,7 @@ Status_e i2c_master_enable(bool enable) {
 	}
 }
 
-Status_e IMU::i2c_master_passthrough(bool passthrough) {
+Status_e IMU::i2c_master_pass_through(bool passthrough) {
     Status_e retval = Status_Ok;
 
     ICM_20948_INT_PIN_CFG_t reg;
@@ -641,7 +731,7 @@ Status_e IMU::i2c_master_passthrough(bool passthrough) {
     return retval;
 }
 
-Status_e i2c_master_reset(void) {
+Status_e IMU::i2c_master_reset(void) {
     Status_e retval = Status_Ok;
 
 	ICM_20948_USER_CTRL_t ctrl;
@@ -670,31 +760,40 @@ Status_e IMU::read_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata) {
     return status;
 } 
 
-Status_e write_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata) {
+Status_e IMU::write_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata) {
     status = i2c_master_slv4_txn(MAG_AK09916_I2C_ADDR, reg, pdata, 1, false, true);
     return status;
 }
 
-Status_e i2c_master_slv4_txn(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t len, bool Rw, bool send_reg_addr) {
+Status_e IMU::i2c_master_slv4_txn(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t len, bool Rw, bool send_reg_addr) {
     Status_e retval = Status_Ok;
 
     addr = ((Rw) ? 0x80 : 0x00) | addr;
 
     // set mag i2c address
-    retval |= set_bank(3); //user bank 3
-    retval |= write_register(AGB3_REG_I2C_SLV4_ADDR, (uint8_t*)&addr, 1);
+    retval = set_bank(3); //user bank 3
+    if (status != Status_Ok) {
+        return status;
+    }
+    retval = write_register(AGB3_REG_I2C_SLV4_ADDR, (uint8_t*)&addr, 1);
+    if (status != Status_Ok) {
+        return status;
+    }
     if (retval != Status_Ok) {
         return retval;
     }
 
     // set mag register to read from
-    retval |= set_bank(3); // user bank 3
-    retval |= write_register(AGB3_REG_I2C_SLV4_REG, (uint8_t *)&reg, 1)
+    retval = set_bank(3); // user bank 3
+    if (retval != Status_Ok) {
+        return retval;
+    }
+    retval = write_register(AGB3_REG_I2C_SLV4_REG, (uint8_t *)&reg, 1);
     if (retval != Status_Ok) {
         return retval;
     }
 
-    // configure payload
+    // set control info
     ICM_20948_I2C_SLV4_CTRL_t ctrl;
 	ctrl.EN = 1;
 	ctrl.INT_EN = false;
@@ -708,16 +807,22 @@ Status_e i2c_master_slv4_txn(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t l
     while (nByte < len) {
 
         if (!Rw) {
-            retval |= set_bank(3); // user bank 3
-            retval |= write_register(AGB3_REG_I2C_SLV4_DO, (uint8_t*)&(data[nByte]), 1);
+            retval = set_bank(3); // user bank 3
+            if (retval != Status_Ok) {
+                return retval;
+            }
+            retval = write_register(AGB3_REG_I2C_SLV4_DO, (uint8_t*)&(data[nByte]), 1);
             if (retval != Status_Ok) {
                 return retval;
             }
         }
 
-        // kick of transaction
-        retval |= set_bank(3); // user bank 3
-        retval |= write_register(AGB3_REG_I2C_SLV4_CTRL, (uint8_t*)&ctrl, sizeof(ICM_20948_I2C_SLV4_CTRL_t));
+        // kick off transaction
+        retval = set_bank(3); // user bank 3
+        if (retval != Status_Ok) {
+            return retval;
+        }
+        retval = write_register(AGB3_REG_I2C_SLV4_CTRL, (uint8_t*)&ctrl, sizeof(ICM_20948_I2C_SLV4_CTRL_t));
         if (retval != Status_Ok) {
             return retval;
         }
@@ -727,8 +832,14 @@ Status_e i2c_master_slv4_txn(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t l
 		bool slv4_done = false;
 
         while (!slv4_done) {
-            retval |= set_bank(0);
-            retval |= read_register(AGB0_REG_I2C_MST_STATUS, (uint8_t*)&i2c_mst_status, 1);
+            retval = set_bank(0);
+            if (retval != Status_Ok) {
+                return retval;
+            }
+            retval = read_register(AGB0_REG_I2C_MST_STATUS, (uint8_t*)&i2c_mst_status, 1);
+            if (retval != Status_Ok) {
+                return retval;
+            }
 
             slv4_done = i2c_mst_status.I2C_SLV4_DONE;
             slv4_done |= (count >= max_cycles);
@@ -742,8 +853,14 @@ Status_e i2c_master_slv4_txn(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t l
         }
 
         if (Rw) {
-            retval |= set_bank(3);
-            retval |= read_register(AGB0_REG_I2C_SLV4_DI, &data[nByte], 1);
+            retval = set_bank(3);
+            if (retval != Status_Ok) {
+                return retval;
+            }
+            retval = read_register(AGB3_REG_I2C_SLV4_DI, &data[nByte], 1);
+            if (retval != Status_Ok) {
+                return retval;
+            }
         }
 
         ++nByte;
@@ -794,7 +911,7 @@ Status_e IMU::i2c_master_configure_slave(uint8_t slave, uint8_t addr, uint8_t re
     }
 
     // set slave address and Rw flag
-    ICM_20948_SLVX_ADDR_t address;
+    ICM_20948_I2C_SLVX_ADDR_t address;
     address.ID = addr;
     if (Rw) {
         address.RNW = 1;
@@ -872,13 +989,13 @@ Status_e IMU::cfg_int(ICM_20948_INT_PIN_CFG_t *write, ICM_20948_INT_PIN_CFG_t *r
 
 Status_e IMU::cfg_int_active_low(bool active_low) {
     ICM_20948_INT_PIN_CFG_t reg;
-    status = ICM_20948_int_pin_cfg(&_device, NULL, &reg); // read phase
+    status = cfg_int(NULL, &reg); // read phase
     if (status != Status_Ok) {
         return status;
     }
 
     reg.INT1_ACTL = active_low;                           // set the setting
-    status = ICM_20948_int_pin_cfg(&_device, &reg, NULL); // write phase
+    status = cfg_int(&reg, NULL); // write phase
     return status;
 }
 
@@ -921,7 +1038,7 @@ Status_e IMU::cfg_int_any_read_to_clear(bool enabled) {
 Status_e IMU::cfg_fsync_active_low(bool active_low) {
     ICM_20948_INT_PIN_CFG_t reg;
     status = cfg_int(NULL, &reg); // read phase
-    if (status != Status_e) {
+    if (status != Status_Ok) {
         return status;
     }
     
@@ -942,8 +1059,8 @@ Status_e IMU::cfg_fsync_int_mode(bool interrupt_mode) {
     return status;
 }
 
-Status_e IMU::int_enable(ICM_20948_INT_enable_t *write, ICM_20948_INT_enable_t *read) {
-    Status retval = Status_Ok;
+Status_e IMU::int_enable(INT_enable_t *write, INT_enable_t *read) {
+    Status_e retval = Status_Ok;
 
     ICM_20948_INT_ENABLE_t en_0;
 	ICM_20948_INT_ENABLE_1_t en_1;
@@ -971,10 +1088,19 @@ Status_e IMU::int_enable(ICM_20948_INT_enable_t *write, ICM_20948_INT_enable_t *
 		en_3.individual.FIFO_WM_EN_1 = write->FIFO_WM_EN_1;
 		en_3.individual.FIFO_WM_EN_0 = write->FIFO_WM_EN_0;
 
-        retval |= write_register(AGB0_REG_INT_ENABLE, (uint8_t*)&en_0, sizeof(ICM_20948_INT_ENABLE_t));
-        retval |= write_register(AGB0_REG_INT_ENABLE_1, (uint8_t*)&en_1, sizeof(ICM_20948_INT_ENABLE_1_t));
-        retval |= write_register(AGB0_REG_INT_ENABLE_2, (uint8_t*)&en_2, sizeof(ICM_20948_INT_ENABLE_2_t));
-        retval |= write_register(AGB0_REG_INT_ENABLE_3, (uint8_t*)&en_3, sizeof(ICM_20948_INT_ENABLE_3_t));
+        retval = write_register(AGB0_REG_INT_ENABLE, (uint8_t*)&en_0, sizeof(ICM_20948_INT_ENABLE_t));
+        if (retval != Status_Ok) {
+            return retval;
+        }
+        retval = write_register(AGB0_REG_INT_ENABLE_1, (uint8_t*)&en_1, sizeof(ICM_20948_INT_ENABLE_1_t));
+        if (retval != Status_Ok) {
+            return retval;
+        }
+        retval = write_register(AGB0_REG_INT_ENABLE_2, (uint8_t*)&en_2, sizeof(ICM_20948_INT_ENABLE_2_t));
+        if (retval != Status_Ok) {
+            return retval;
+        }
+        retval = write_register(AGB0_REG_INT_ENABLE_3, (uint8_t*)&en_3, sizeof(ICM_20948_INT_ENABLE_3_t));
 		if (retval != Status_Ok) {
             return retval;
         }
@@ -983,10 +1109,19 @@ Status_e IMU::int_enable(ICM_20948_INT_enable_t *write, ICM_20948_INT_enable_t *
     // if read is not null, read registers
     // if write is not null then this should read back the results of write into read
     if (read) {
-        retval |= read_register(AGB0_REG_INT_ENABLE, (uint8_t*)&en_0, sizeof(ICM_20948_INT_ENABLE_t));
-		retval |= read_register(AGB0_REG_INT_ENABLE_1, (uint8_t*)&en_1, sizeof(ICM_20948_INT_ENABLE_1_t));
-		retval |= read_register(AGB0_REG_INT_ENABLE_2, (uint8_t*)&en_2, sizeof(ICM_20948_INT_ENABLE_2_t));
-		retval |= read_register(AGB0_REG_INT_ENABLE_3, (uint8_t*)&en_3, sizeof(ICM_20948_INT_ENABLE_3_t));
+        retval = read_register(AGB0_REG_INT_ENABLE, (uint8_t*)&en_0, sizeof(ICM_20948_INT_ENABLE_t));
+        if (retval != Status_Ok) {
+            return retval;
+        }
+		retval = read_register(AGB0_REG_INT_ENABLE_1, (uint8_t*)&en_1, sizeof(ICM_20948_INT_ENABLE_1_t));
+        if (retval != Status_Ok) {
+            return retval;
+        }
+		retval = read_register(AGB0_REG_INT_ENABLE_2, (uint8_t*)&en_2, sizeof(ICM_20948_INT_ENABLE_2_t));
+        if (retval != Status_Ok) {
+            return retval;
+        }
+		retval = read_register(AGB0_REG_INT_ENABLE_3, (uint8_t*)&en_3, sizeof(ICM_20948_INT_ENABLE_3_t));
 		if (retval != Status_Ok) {
 			return retval;
 		}
@@ -1013,7 +1148,7 @@ Status_e IMU::int_enable(ICM_20948_INT_enable_t *write, ICM_20948_INT_enable_t *
 }
 
 Status_e IMU::int_enable_i2c(bool enable) {
-    ICM_20948_INT_enable_t en; // storage
+    INT_enable_t en; // storage
     status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
@@ -1033,7 +1168,7 @@ Status_e IMU::int_enable_i2c(bool enable) {
 }
 
 Status_e IMU::int_enable_DMP(bool enable) {
-    ICM_20948_INT_enable_t en; // storage
+    INT_enable_t en; // storage
     status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
@@ -1053,7 +1188,7 @@ Status_e IMU::int_enable_DMP(bool enable) {
 }
 
 Status_e IMU::int_enable_PLL(bool enable) {
-    ICM_20948_INT_enable_t en; // storage
+    INT_enable_t en; // storage
     status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
@@ -1073,7 +1208,7 @@ Status_e IMU::int_enable_PLL(bool enable) {
 }
 
 Status_e IMU::int_enable_WOM(bool enable) {
-    ICM_20948_INT_enable_t en; // storage
+    INT_enable_t en; // storage
     status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
@@ -1093,8 +1228,8 @@ Status_e IMU::int_enable_WOM(bool enable) {
 }
 
 Status_e IMU::int_enable_WOF(bool enable) {
-    ICM_20948_INT_enable_t en; // storage
-    status = int_enable(&_device, NULL, &en); // read phase
+    INT_enable_t en; // storage
+    status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
     }
@@ -1113,7 +1248,7 @@ Status_e IMU::int_enable_WOF(bool enable) {
 }
 
 Status_e IMU::int_enable_raw_data_ready(bool enable) {
-    ICM_20948_INT_enable_t en; // storage
+    INT_enable_t en; // storage
     status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
@@ -1133,7 +1268,7 @@ Status_e IMU::int_enable_raw_data_ready(bool enable) {
 }
 
 Status_e IMU::int_enable_overflow_FIFO(uint8_t bm_enable) {
-    ICM_20948_INT_enable_t en; // storage
+    INT_enable_t en; // storage
     status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
@@ -1149,8 +1284,8 @@ Status_e IMU::int_enable_overflow_FIFO(uint8_t bm_enable) {
     return status;
 }
 
-Status_e int_enable_watermark_FIFO(uint8_t bm_enable) {
-    ICM_20948_INT_enable_t en; // storage
+Status_e IMU::int_enable_watermark_FIFO(uint8_t bm_enable) {
+    INT_enable_t en; // storage
     status = int_enable(NULL, &en); // read phase
     if (status != Status_Ok) {
         return status;
