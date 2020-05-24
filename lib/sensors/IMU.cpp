@@ -172,9 +172,9 @@ Status_e IMU::update_AGM(void) {
 Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 
     cs = 0; // select chip
-    spi.write(regaddr); // choose register to read from
+    spi->write(regaddr); // choose register to read from
     for (uint32_t i = 0; i < len; ++i) {
-        *(pdata+i) = spi.write(0x00); // read data
+        *(pdata+i) = spi->write(0x00); // read data
     }
     cs = 1; // deselect chip
 
@@ -184,9 +184,9 @@ Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 Status_e IMU::write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 
     cs = 0; // select chip
-    spi.write(regaddr); // choose register to write to
+    spi->write(regaddr); // choose register to write to
     for (uint32_t i = 0; i < len; ++i) {
-        spi.write(*(pdata+i)); // transmit data
+        spi->write(*(pdata+i)); // transmit data
     }
     cs = 1;    //deselect chip
 
@@ -194,25 +194,27 @@ Status_e IMU::write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 }
 
 Status_e IMU::set_bank(uint8_t bank) {
+    Status_e retval = Status_Ok;
 
     // bank can only be 0, 1, 2, or 3
     if (bank > 3) {
         return Status_ParamErr;
     }
     bank = (bank << 4) & 0x30; // bits 5:4 of REG_BANK_SEL
-    write_register(REG_BANK_SEL, &bank, 1);
+    retval = write_register(REG_BANK_SEL, &bank, 1);
+    return retval;
 }
 
-Status_e IMU::init_SPI(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin, uint8_t SPI_freq) {
+Status_e IMU::init_SPI(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin, int SPI_freq) {
     
     // configure SPI pins
-    spi = SPI(mosi_pin, miso_pin, sclk_pin);
+    *spi = SPI(mosi_pin, miso_pin, sclk_pin);
     cs = DigitalOut(cs_pin); 
 
     cs = 0; // deselect device
     // TODO
     //spi.format(8, 3) // set transmission format CHECK THIS!!!
-    (SPI_freq > MAX_SPI_FREQ) ? spi.frequency(MAX_SPI_FREQ) : spi.frequency(SPI_freq); // set SPI frequency
+    (SPI_freq > MAX_SPI_FREQ) ? spi->frequency(MAX_SPI_FREQ) : spi->frequency(SPI_freq); // set SPI frequency
     
     cs = 1; // select device
 
@@ -702,6 +704,31 @@ Status_e IMU::i2c_master_enable(bool enable) {
 	if (retval != Status_Ok) {
 		return retval;
 	}
+
+    retval = read_register(AGB3_REG_I2C_MST_CTRL, (uint8_t*)&ctrl, sizeof(ICM_20948_I2C_MST_CTRL_t));
+    if (retval != Status_Ok) {
+		return retval;
+	}
+
+    ctrl.I2C_MST_CLK = 0x07; // corresponds to 345.6 kHz, good for up to 400 kHz
+	ctrl.I2C_MST_P_NSR = 1;
+	retval = write_register(AGB3_REG_I2C_MST_CTRL, (uint8_t*)&ctrl, sizeof(ICM_20948_I2C_MST_CTRL_t));
+	if (retval != Status_Ok) {
+		return retval;
+	}
+
+	ICM_20948_USER_CTRL_t reg;
+	retval = set_bank(0); // user bank 0
+	if (retval != Status_Ok) {
+		return retval;
+	}
+	retval = read_register(AGB0_REG_USER_CTRL, (uint8_t*)&reg, sizeof(ICM_20948_USER_CTRL_t));
+	if (retval != Status_Ok) {
+		return retval;
+	}
+	reg.I2C_MST_EN = enable;
+	retval = write_register(AGB0_REG_USER_CTRL, (uint8_t*)&reg, sizeof(ICM_20948_USER_CTRL_t));
+	return retval;
 }
 
 Status_e IMU::i2c_master_pass_through(bool passthrough) {
@@ -1293,12 +1320,9 @@ Status_e IMU::int_enable_watermark_FIFO(uint8_t bm_enable) {
     return status;
 }
 
-const char* IMU::status_string(Status_e stat = Status_NUM) {
+const char* IMU::status_string(Status_e stat) {
     
-    Status_e val;
-    val = (stat == Status_NUM) ? status : stat;
-
-    switch (val) {
+    switch (stat) {
         case Status_Ok:
             return "All is well";
             break;

@@ -130,10 +130,10 @@ class IMU {
         IMU();
 
         // SPI
-        SPI spi;
+        SPI* spi;
         DigitalOut cs;
 
-        Status_e init_SPI(PinName mosi, PinName miso, PinName sclk, PinName cs, uint8_t SPI_freq);
+        Status_e init_SPI(PinName mosi, PinName miso, PinName sclk, PinName cs, int SPI_freq);
         Status_e init_IMU(void);
 
         // Measurement data
@@ -158,7 +158,7 @@ class IMU {
 
         // Status
         Status_e status;
-        const char* status_string(Status_e = Status_NUM);   // converts status to human readable string
+        const char* status_string(Status_e stat);   // converts status to human readable string
 
         // Device configurations
         Status_e set_bank(uint8_t bank);
