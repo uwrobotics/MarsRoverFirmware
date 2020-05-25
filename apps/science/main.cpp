@@ -36,8 +36,29 @@ DigitalIn liftLimBottom(LIM_SW_4);
 
 MoistureSensor sensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
+DigitalOut led1(LED1);
+DigitalOut ledR(LED_R);
+DigitalOut ledG(LED_G);
+DigitalOut ledB(LED_B);
+
 CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 
+static mbed_error_status_t setMotionData(CANMsg &msg)
+{
+    float motionData;
+    msg.getPayload(motionData);
+
+    switch (msg.id)
+    {
+
+    case CANID::SET_COVER_POS:
+        return coverServo.set_position(motionData);
+    case CANID::SET_DIGGER_POS:
+        return diggerServo.set_position(motionData);
+    default:
+        return MBED_ERROR_INVALID_ARGUMENT;
+    }
+}
 const int k_interval_ms = 500;
 
 
