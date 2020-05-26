@@ -38,15 +38,14 @@
 extern "C" {
 #endif
 
-typedef enum
-{
+typedef enum {
     ALT0 = 0x100,
     ALT1 = 0x200,
     ALT2 = 0x300,
     ALT3 = 0x400
 } ALTx;
 
-typedef enum{
+typedef enum {
     PA_0 = 0x00,
 
     PA_0_ALT0 = PA_0 | ALT0,
@@ -218,8 +217,8 @@ typedef enum{
     /**** OSCILLATOR pins ****/
     RCC_OSC32_IN  = PC_14,
     RCC_OSC32_OUT = PC_15,
-    RCC_OSC_IN  = PH_0,
-    RCC_OSC_OUT = PH_1,
+    RCC_OSC_IN    = PH_0,
+    RCC_OSC_OUT   = PH_1,
 
     /**** DEBUG pins ****/
     SYS_JTCK_SWCLK = PA_14,
