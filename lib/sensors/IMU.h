@@ -1,13 +1,13 @@
 /* InvenSense ICM-20948 IMU Sensor Library
  *
- * This library provides access to scaled IMU measurement data through SPI. 
+ * This library provides access to scaled IMU measurement data over SPI. 
  * 
  * TODO: 
  * - calibration
  * - fixed update frequency?
  * - DMP support to return orientation quaternion
  * 
- * Note: This implementation only supports SPI interface
+ * Note: This implementation only supports the SPI interface
  *
  * Ported from Sparkfun's Arduino library: https://github.com/sparkfun/SparkFun_ICM-20948_ArduinoLibrary
  * Datasheet: https://invensense.tdk.com/wp-content/uploads/2016/06/DS-000189-ICM-20948-v1.3.pdf
@@ -18,6 +18,7 @@
 #define _IMU_H_
 
 #include "IMU_util.h"
+#include "../../config/mbed_config.h" // so vscode doesn't complain about the SPI class being undefined
 #include "mbed.h"
 #include <array>
 #include <stdint.h>
@@ -127,13 +128,13 @@ class IMU {
 
     public:
 
-        IMU();
+        IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin);
 
         // SPI
-        SPI* spi;
+        SPI spi;
         DigitalOut cs;
 
-        Status_e init_SPI(PinName mosi, PinName miso, PinName sclk, PinName cs, int SPI_freq);
+        Status_e init_SPI(int SPI_freq);
         Status_e init_IMU(void);
 
         // Measurement data
