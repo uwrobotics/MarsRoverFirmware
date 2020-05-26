@@ -1,7 +1,7 @@
 #include "IMU.h"
 
-IMU::IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin) :
-  spi(mosi_pin, miso_pin, sclk_pin), cs(cs_pin) {}
+IMU::IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin)
+    : spi(mosi_pin, miso_pin, sclk_pin), cs(cs_pin) {}
 
 std::array<double, 3> IMU::get_IMU_lin_accel(void) {
   update_AGM();
@@ -172,7 +172,7 @@ Status_e IMU::update_AGM(void) {
 }
 
 Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
-  cs = 0;               // select chip
+  cs = 0;              // select chip
   spi.write(regaddr);  // choose register to read from
   for (uint32_t i = 0; i < len; ++i) {
     *(pdata + i) = spi.write(0x00);  // read data
@@ -183,7 +183,7 @@ Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
 }
 
 Status_e IMU::write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {
-  cs = 0;               // select chip
+  cs = 0;              // select chip
   spi.write(regaddr);  // choose register to write to
   for (uint32_t i = 0; i < len; ++i) {
     spi.write(*(pdata + i));  // transmit data
@@ -206,7 +206,6 @@ Status_e IMU::set_bank(uint8_t bank) {
 }
 
 Status_e IMU::init_SPI(int SPI_freq) {
-
   cs = 0;  // deselect device
   // TODO
   // spi.format(8, 3) // set transmission format CHECK THIS!!!

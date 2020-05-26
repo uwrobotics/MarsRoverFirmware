@@ -21,6 +21,7 @@ This repository contains:
 - Create a pull request to merge any branch into master and select everyone else working on the feature as reviewers
   - Name the pull request `Closes #<issue-number>: FeatureTitle`
 - When merging a pull request that fixes an issue title the commit `Fixes #issueNumber: FeatureTitle`
+- Format your code using the style specified in the .clang-format file before opening pull requests
 - Clean binaries between making changes to the makefile
 - There seems to be an annoying mix of CamelCase and snake_case in MBED but just try to be consistent with whatever code is nearby
 - Squash when merging pull requests
