@@ -7,8 +7,6 @@
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
 #include "ActuatorController.h"
-#include "DifferentialWristController.h"
-#include "ClawController.h"
 #include "CANMsg.h"
 #include "CANBuffer.h"
 #include "Servo.h"
@@ -79,7 +77,7 @@ static CANMsg::CANMsgHandlerMap canHandleMap = {
     {CANID::SET_ELEVATOR_POS, setMotionData},
     {CANID::SET_COVER_POS, setMotionData},
     {CANID::SET_DIGGER_POS, setMotionData},
-    {CANID::SET_MOISTURE_SENSOR, setMotionData}};
+    {CANID::SET_MOISTURE_SENSOR, setMotionData}};    
 
 void rxCANProcessor()
 {
