@@ -40,4 +40,15 @@ namespace ScienceConfig
     static float diggerServoMaxPulse = 2.2;
     static float diggerServoMinPulse = 0.8;
 
+    static ActuatorController::t_actuatorConfig diggerLiftActuatorConfig = {
+        .defaultControlMode = ActuatorController::t_actuatorControlMode::position,
+        .positionPID = {
+            .P = 1.0,
+            .I = 0.0,
+            .D = 0.0,
+            .bias = 0.0,
+            .deadZoneError = 0.1}};
+
+    static ActuatorController::t_actuatorConfig indexerActuatorConfig;
+
 } // namespace ScienceConfig
