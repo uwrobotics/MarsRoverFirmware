@@ -22,7 +22,6 @@ void TutorialServo::setPositionInDegrees(float degrees){
         ((this->m_maxPulsewidthInMs - this->m_minPulsewidthInMs)/(2 * this->m_servoRangeInDegrees)) * degrees + 
         ((this->m_maxPulsewidthInMs + this->m_minPulsewidthInMs) / 2.0)
         );
-
 }
 
 void TutorialServo::setPositionInPercent(float percent){
