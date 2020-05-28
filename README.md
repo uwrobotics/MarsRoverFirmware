@@ -68,6 +68,8 @@ This repository contains:
     `git clone --recurse-submodules https://github.com/uwrobotics/MarsRover2020-firmware.git`  
     `cd MarsRover2020-firmware`
 
+    **Note:** The repository has a submodule. To update the submodule, use `git submodule update`
+
 4. Run make with the target application and board
 
     Ex. Compile the science application for the science board:  
