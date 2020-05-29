@@ -1,8 +1,6 @@
 #include "ContServo.h"
 
 ContServo::ContServo(PinName pin) : Servo(pin) {
-  m_rotate_type = CONT_SERVO;
-
   m_max_speed = 0;
   m_speed     = 0;
 
@@ -22,21 +20,21 @@ ContServo::ContServo(PinName pin, float max_speed, float max_pulse_ms, float min
   m_min_pulse_ms = min_pulse_ms;
 }
 
-bool ContServo::setMaxSpeed(float max_speed) {
+mbed_error_status_t ContServo::setMaxSpeed(float max_speed) {
   m_max_speed = max_speed;
-  return true;
+  return MBED_SUCCESS;
 }
 
 float ContServo::getMaxSpeed(void) {
   return m_max_speed;
 }
 
-bool ContServo::setSpeed(float speed) {
+mbed_error_status_t ContServo::setSpeed(float speed) {
   m_speed = (std::abs(speed) < m_max_speed) ? speed : m_max_speed * getSign(speed);
   // So now speed is from 0 to 2 * m_max_speed
   speed += m_max_speed;
   m_pwm.pulsewidth_us(int(((m_max_pulse_ms - m_min_pulse_ms) * speed / (m_max_speed * 2) + m_min_pulse_ms) * 1000));
-  return true;
+  return MBED_SUCCESS;
 }
 
 float ContServo::read(void) {

@@ -9,11 +9,11 @@ class LimServo : public Servo {
   LimServo(PinName pin, float range);
   LimServo(PinName pin, float range, float max_pulse_ms, float min_pulse_ms);
 
-  bool setRange(float range);
+  mbed_error_status_t setRange(float range);
   float getRange(void);
 
   // Angle can be negative
-  bool setPosition(float angle);
+  mbed_error_status_t setPosition(float angle);
   float read(void);
 
  protected:

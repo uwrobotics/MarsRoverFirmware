@@ -9,11 +9,11 @@ class ContServo : public Servo {
   ContServo(PinName pin, float max_speed);
   ContServo(PinName pin, float max_speed, float max_pulse_ms, float min_pulse_ms);
 
-  bool setMaxSpeed(float max_speed);
+  mbed_error_status_t setMaxSpeed(float max_speed);
   float getMaxSpeed(void);
 
   // speed can be negative
-  bool setSpeed(float speed);
+  mbed_error_status_t setSpeed(float speed);
   float read(void);
 
  protected:

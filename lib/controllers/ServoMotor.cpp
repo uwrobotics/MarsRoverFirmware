@@ -21,12 +21,12 @@ float ServoMotor::getPower() {
   return servoRead();
 }
 
-bool ServoMotor::servoSetMaxSpeed(float max_speed_) {
-  return m_servo.setMaxSpeed(max_speed_);
+void ServoMotor::servoSetMaxSpeed(float max_speed_) {
+  m_servo.setMaxSpeed(max_speed_);
 }
 
-bool ServoMotor::servoSetSpeed(float speed_) {
-  return m_servo.setSpeed(speed_);
+void ServoMotor::servoSetSpeed(float speed_) {
+  m_servo.setSpeed(speed_);
 }
 
 float ServoMotor::servoRead(void) {

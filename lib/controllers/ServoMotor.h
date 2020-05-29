@@ -6,7 +6,7 @@
 
 // Control a continuous rotation servo like a motor
 
-class ServoMotor : Motor {
+class ServoMotor : public Motor {
  public:
   /** Create a motor control interface
    *
@@ -36,13 +36,12 @@ class ServoMotor : Motor {
   float getPower();
 
   // ContServo type exclusive functions
-  bool servoSetMaxSpeed(float max_speed_);
-  bool servoSetSpeed(float speed_);
+  void servoSetMaxSpeed(float max_speed_);
+  void servoSetSpeed(float speed_);
   float servoRead(void);
   float servoGetMaxSpeed(void);
   void servoSetPeriod(int period);
 
- protected:
  protected:
   bool m_inverted;
   float m_limit;
