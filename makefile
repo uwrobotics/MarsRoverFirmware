@@ -20,7 +20,6 @@ TARGET_PATH    := ../$(TARGETS_FOLDER)/$(TARGET)
 APP_PATH       := ../$(APPS_FOLDER)/$(APP)
 LIB_PATH       := ../lib
 MBED_PATH      := ../mbed-os
-HW_BRIDGE_PATH := ../uwrt_mars_rover_hw_bridge/config
 CONFIG_PATH    := ../config
 
 LAST_BOARD_TARGET := $(shell cat $(BUILD_FOLDER)/LAST_BOARD_TARGET 2>/dev/null)# ignores non-existant file error
@@ -120,30 +119,25 @@ TARGET_SRC += ${TARGET_PATH}/PeripheralPins.c
 TARGET_SRC += ${TARGET_PATH}/system_clock.c
 
 include ${MBED_PATH}/mbedfile
-include ${HW_BRIDGE_PATH}/hwbridgefile
 
 UWRT_C_OBJ := $(subst ../,${OBJ_PATH}/,$(UWRT_SRC_C:.c=.o))
 UWRT_CPP_OBJECTS := $(subst ../,${OBJ_PATH}/,$(UWRT_SRC_CPP:.cpp=.o))
 TARGET_OBJ := $(subst ../,${OBJ_PATH}/,$(TARGET_SRC:.c=.o))
 MBED_OBJ := $(subst ../,${OBJ_PATH}/,$(MBED_OBJ))
-HW_BRIDGE_OBJ := $(subst ../,${OBJ_PATH}/,$(HW_BRIDGE_OBJ))
 
 OBJECTS += ${UWRT_C_OBJ}
 OBJECTS += ${UWRT_CPP_OBJECTS}
 OBJECTS += ${TARGET_OBJ}
 OBJECTS += ${MBED_OBJ}
-OBJECTS += ${HW_BRIDGE_OBJ}
 
 
 INCLUDE_PATHS += -I$(CONFIG_PATH)
 INCLUDE_PATHS += -I$(LIB_PATH)
 INCLUDE_PATHS += -isystem$(MBED_PATH)
-INCLUDE_PATHS += -isystem$(HW_BRIDGE_PATH)
-#DO I NEED THIS?
 INCLUDE_PATHS += -isystem$(MBED_INC)
 INCLUDE_PATHS += -isystem${TARGET_PATH}
 INCLUDE_PATHS += $(APP_INC) $(LIB_INC)
-#DO I NEED THIS?
+
 LINKER_SCRIPT ?= ${MBED_PATH}/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/TOOLCHAIN_GCC_ARM/STM32F446XE.ld
 
 # Tools and Flags
@@ -237,7 +231,6 @@ CXX_FLAGS += ${COMMON_FLAGS}
 
 ASM_FLAGS += -x
 ASM_FLAGS += assembler-with-cpp
-#DO I NEED THIS
 ASM_FLAGS += ${MBED_INC}
 ASM_FLAGS += ${DEFINITIONS}
 ASM_FLAGS += ${COMMON_FLAGS}
