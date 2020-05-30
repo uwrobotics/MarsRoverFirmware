@@ -36,7 +36,7 @@ ActuatorController elevatorActuator(ScienceConfig::diggerLiftActuatorConfig, ele
 
 //I2C
 
-MoistureSensor sensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
+MoistureSensor moistureSensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
 DigitalOut led1(LED1);
 DigitalOut ledR(LED_R);
@@ -61,7 +61,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg)
     case CANID::SET_DIGGER_POS:
         return diggerServo.set_position(motionData);
     case CANID::SET_MOISTURE_SENSOR:
-        return sensor.Is_Initialized();
+        return moistureSensor.Is_Initialized();
     default:
         return MBED_ERROR_INVALID_ARGUMENT;
     }
@@ -85,7 +85,7 @@ void rxCANProcessor()
 
     while (true)
     {
-        if (can1.read(rxMsg))
+        if (can.read(rxMsg))
         {
             if (canHandleMap.count(rxMsg.id) > 0)
             {
@@ -93,7 +93,7 @@ void rxCANProcessor()
             }
             else
             {
-                // ruh roh
+                // CAN ID error?
             }
         }
     }
@@ -109,38 +109,38 @@ void txCANProcessor()
     {
         txMsg.id = SEND_INDEXER_POS;
         txMsg.setPayload(indexerActuator.getAngle_Degrees());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_ELEVATOR_POS;
         txMsg.setPayload(elevatorActuator.getAngle_Degrees());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_COVER_POS;
         txMsg.setPayload(coverServo.read());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_DIGGER_POS;
         txMsg.setPayload(diggerServo.read());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_DIGGER_POS;
         txMsg.setPayload(diggerServo.read());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
         txMsg.id = SEND_MOISTURE;
-        txMsg.setPayload((int)sensor.Read_Moisture());
-        can1.write(txMsg);
+        txMsg.setPayload((int)moistureSensor.Read_Moisture());
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_TEMPERATURE;
-        txMsg.setPayload(sensor.Read_Temperature());
-        can1.write(txMsg);
+        txMsg.setPayload(moistureSensor.Read_Temperature());
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
     }
 }
