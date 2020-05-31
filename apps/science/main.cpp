@@ -85,7 +85,7 @@ void rxCANProcessor()
 
     while (true)
     {
-        if (can1.read(rxMsg))
+        if (can.read(rxMsg))
         {
             if (canHandleMap.count(rxMsg.id) > 0)
             {
@@ -109,38 +109,38 @@ void txCANProcessor()
     {
         txMsg.id = SEND_INDEXER_POS;
         txMsg.setPayload(indexerActuator.getAngle_Degrees());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_ELEVATOR_POS;
         txMsg.setPayload(elevatorActuator.getAngle_Degrees());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_COVER_POS;
         txMsg.setPayload(coverServo.read());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_DIGGER_POS;
         txMsg.setPayload(diggerServo.read());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_DIGGER_POS;
         txMsg.setPayload(diggerServo.read());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
         txMsg.id = SEND_MOISTURE;
         txMsg.setPayload((int)moistureSensor.Read_Moisture());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
 
         txMsg.id = SEND_TEMPERATURE;
         txMsg.setPayload(moistureSensor.Read_Temperature());
-        can1.write(txMsg);
+        can.write(txMsg);
         ThisThread::sleep_for(txPeriod_millisec);
     }
 }
