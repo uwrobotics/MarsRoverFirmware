@@ -25,8 +25,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-          with:
-            submodules: 'recursive'
+        with:
+          submodules: 'recursive'
 
       - name: Set Working Directory as Home
         shell: bash
@@ -64,8 +64,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-          with:
-            submodules: 'recursive'
+        with:
+          submodules: 'recursive'
       - name: Clang format Check
         uses: DoozyX/clang-format-lint-action@v0.5
         with:
