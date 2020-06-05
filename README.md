@@ -40,7 +40,7 @@ This repository contains:
           sudo tar -xvf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 -C /opt/
           echo "PATH=\$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> ~/.bashrc
           export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin 
-
+       **Note:** If you are not using Ubuntu 18.04 and/or bash you may need to modify this script's paths/files. 
 	
 	For Windows
     - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
