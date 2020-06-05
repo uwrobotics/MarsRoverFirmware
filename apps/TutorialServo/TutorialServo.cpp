@@ -5,6 +5,7 @@
 
 #include "TutorialServo.h"
 #include "mbed.h"
+#include <cstdlib>
 
 
 void TutorialServo::setAngleRangeInDegrees(float degrees)
@@ -20,9 +21,10 @@ void TutorialServo::setPulseWidthRangeInMs(float minPulseWidthMsFloat, float max
 
 void TutorialServo::setPositionInDegrees(float degrees)
 {
-  if(!(degrees > angleRange))
+  if(!((std::fabs(degrees) > angleRange)))
     {
-        double pulseWidthMs = 1 + degrees/angleRange; //Sets the pulse width that will be used, as 1ms is the lower bound and 2ms is the upper bound.
+        double pulseWidthMs = 1.5 + 0.5*degrees/angleRange; //Sets the pulse width that will be used, as 1ms is the lower bound and 2ms is the upper bound.
+        //1.5 is neutral and degrees can be either positive or negative which can make a pulse with from 1-2ms
         if((minPulseWidthMs < pulseWidthMs) && (pulseWidthMs < maxPulseWidthMs)) //checks to ensure it is within bounds
         {
            servoPwm.pulsewidth(pulseWidthMs/1000); //set pulse width
@@ -38,5 +40,5 @@ TutorialServo::TutorialServo(PinName servoPin, float servoFrequency) : servoPwm(
   //Set default parameters:
   minPulseWidthMs = 1;
   maxPulseWidthMs = 2;
-  angleRange = 180;
+  angleRange = 90; //This is the absolute value of the angle range
 }

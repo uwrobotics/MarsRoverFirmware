@@ -14,7 +14,7 @@ class TutorialServo
 
   private:
   PwmOut servoPwm;
-  float minPulseWidthMs, maxPulseWidthMs, angleRange;
+  float minPulseWidthMs, maxPulseWidthMs, angleRange; //angleRange anywhere from plus/minus 90.
 };
 
 #endif
