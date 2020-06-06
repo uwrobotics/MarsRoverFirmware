@@ -2,7 +2,6 @@
 #include "CANMsg.h"
 #include "INA_226.h"
 #include "rover_config.h"
-#include "can_config.h"
 
 //Serial communications for debugging
 Serial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
@@ -50,10 +49,10 @@ int main(){
     }   
 
     //test config > 0 100 111 011 011 001
-    SensorModes test_set_config = {0x00, 0x04, 0x07, 0x03, 0x03};
-    u_int16_t test_set_config_binary = 0100111011011001; 
-    testing_sensor.configureSensor(test_set_config);
-    if (!(testing_sensor.readConfigRegister() == test_set_config_binary))
+    SensorModes test_config = {0x00, 0x04, 0x07, 0x03, 0x03};
+    u_int16_t test_config_binary = 0100111011011001; 
+    testing_sensor.configureSensor(test_config);
+    if (!(testing_sensor.readConfigRegister() == test_config_binary))
     {
         pc.printf("Incorrect config register setting recieved\r\n");
     }

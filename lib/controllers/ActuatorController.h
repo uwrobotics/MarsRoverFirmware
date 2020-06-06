@@ -1,81 +1,71 @@
 #pragma once
 
-#include "mbed.h"
-#include "Motor.h"
 #include "Encoder.h"
+#include "Motor.h"
 #include "PID.h"
 #include "PinNames.h"
+#include "mbed.h"
 
 static DigitalIn NULL_DIGITAL_IN = DigitalIn(NC);
 
 class ActuatorController {
+ public:
+  typedef enum t_actuatorControlMode : uint8_t { motorPower, velocity, position } t_actuatorControlMode;
 
-public:
+  typedef struct {
+    t_actuatorControlMode defaultControlMode = motorPower;
 
-	typedef enum t_actuatorControlMode : uint8_t {
-		motorPower,
-		velocity,
-		position
-	} t_actuatorControlMode;
+    float minMotorPower_Percentage = -1.0, maxMotorPower_Percentage = +1.0;
+    float minVelocity_DegreesPerSec = -10.0, maxVelocity_DegreesPerSec = +10.0;
+    float minAngle_Degrees = -90, maxAngle_Degrees = +90;
 
-	typedef struct {
-		t_actuatorControlMode defaultControlMode = motorPower;
+    PID::t_pidConfig velocityPID, positionPID;
 
-		float minMotorPower_Percentage = -1.0, maxMotorPower_Percentage = +1.0;
-		float minVelocity_DegreesPerSec = -10.0, maxVelocity_DegreesPerSec = +10.0;
-		float minAngle_Degrees = -90, maxAngle_Degrees = +90;
+    float watchDogTimeout_Seconds = 3.0;
+  } t_actuatorConfig;
 
-		PID::t_pidConfig velocityPID, positionPID;
+  explicit ActuatorController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder,
+                              DigitalIn &limSwitchMin = NULL_DIGITAL_IN, DigitalIn &limSwitchMax = NULL_DIGITAL_IN);
 
-		float watchDogTimeout_Seconds = 3.0;
-	} t_actuatorConfig;
+  mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
 
+  mbed_error_status_t setMotorPower_Percentage(float percentage);
+  mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec);
+  mbed_error_status_t setAngle_Degrees(float degrees);
 
-	explicit ActuatorController(t_actuatorConfig actuatorConfig, 
-					   Motor &motor, Encoder &encoder, 
-					   DigitalIn &limSwitchMin = NULL_DIGITAL_IN, 
-					   DigitalIn &limSwitchMax = NULL_DIGITAL_IN);
+  mbed_error_status_t setMotionData(float motionData);
 
-	mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
-	
-	mbed_error_status_t setMotorPower_Percentage(float percentage);
-	mbed_error_status_t setVelocity_DegreesPerSec(float degreesPerSec);
-	mbed_error_status_t setAngle_Degrees(float degrees);
+  t_actuatorControlMode getControlMode();
 
-	mbed_error_status_t setMotionData(float motionData);
+  float getMotorPower_Percentage();
+  float getVelocity_DegreesPerSec();
+  float getAngle_Degrees();
 
-	t_actuatorControlMode getControlMode();
+  mbed_error_status_t update();
 
-	float getMotorPower_Percentage();
-	float getVelocity_DegreesPerSec();
-	float getAngle_Degrees();
+  mbed_error_status_t resetEncoder();
 
-	mbed_error_status_t update();
+  bool isLimSwitchMinTriggered();
+  bool isLimSwitchMaxTriggered();
+  bool isPastMinAngle();
+  bool isPastMaxAngle();
 
-	mbed_error_status_t resetEncoder();
+ private:
+  t_actuatorControlMode m_controlMode;
+  t_actuatorConfig m_actuatorConfig;
 
-	bool isLimSwitchMinTriggered();
-	bool isLimSwitchMaxTriggered();
-	bool isPastMinAngle();
-	bool isPastMaxAngle();
+  Motor &r_motor;
+  Encoder &r_encoder;
+  DigitalIn &r_limSwitchMin;
+  DigitalIn &r_limSwitchMax;
 
-private:
+  bool m_limSwitchMin_Connected;
+  bool m_limSwitchMax_Connected;
 
-	t_actuatorControlMode m_controlMode;
-	t_actuatorConfig m_actuatorConfig;
+  PID m_velocityPIDController;
+  PID m_positionPIDController;
 
-	Motor &r_motor;
-	Encoder &r_encoder;
-	DigitalIn &r_limSwitchMin;
-	DigitalIn &r_limSwitchMax;
+  Timer m_updateTimer;
 
-	bool m_limSwitchMin_Connected;
-	bool m_limSwitchMax_Connected;
-
-	PID m_velocityPIDController;
-	PID m_positionPIDController;
-
-	Timer m_updateTimer;
-
-	void initializePIDControllers();
+  void initializePIDControllers();
 };

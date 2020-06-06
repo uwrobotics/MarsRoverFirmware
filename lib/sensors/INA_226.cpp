@@ -72,8 +72,8 @@ int INA_226::configureSensor(SensorModes configuration_bits)
 
     dataByte |= configuration_bits.operation_mode; 
     dataByte |= configuration_bits.shunt_voltage_conversion_setting << 3;
-    dataByte |= configuration_bits.bus_voltage_conversion_setting << 6;
-    dataByte |= configuration_bits.average_mode_setting << 9;
+    dataByte |= configuration_bits.bus_voltage_conversion_setting << 6; 
+    dataByte |= configuration_bits.average_mode_setting << 9;//bits 12-14 are unused
     dataByte |= configuration_bits.reset_registers << 15;
     
     cmd[1] = dataByte & 0xFF;
