@@ -129,124 +129,122 @@
 /**
  * Includes
  */
-#include "mbed.h"
 #include "Encoder.h"
+#include "mbed.h"
 
 /**
  * Defines
  */
-#define PREV_MASK 0x1 //Mask for the previous state in determining direction
-//of rotation.
-#define CURR_MASK 0x2 //Mask for the current state in determining direction
-//of rotation.
-#define INVALID   0x3 //XORing two states where both bits have changed.
+#define PREV_MASK 0x1  // Mask for the previous state in determining direction
+// of rotation.
+#define CURR_MASK 0x2  // Mask for the current state in determining direction
+// of rotation.
+#define INVALID 0x3  // XORing two states where both bits have changed.
 
 /**
  * Quadrature Encoder Interface.
  */
 class QEI {
+ public:
+  typedef Encoder::t_quadratureEncodingType Encoding;
 
-public:
+  /**
+   * Constructor.
+   *
+   * Reads the current values on channel A and channel B to determine the
+   * initial state.
+   *
+   * Attaches the encode function to the rise/fall interrupt edges of
+   * channels A and B to perform X4 encoding.
+   *
+   * Attaches the index function to the rise interrupt edge of channel index
+   * (if it is used) to count revolutions.
+   *
+   * @param channelA mbed pin for channel A input.
+   * @param channelB mbed pin for channel B input.
+   * @param index    mbed pin for optional index channel input,
+   *                 (pass NC if not needed).
+   * @param encoding The encoding to use. Uses X2 encoding by default. X2
+   *                 encoding uses interrupts on the rising and falling edges
+   *                 of only channel A where as X4 uses them on both
+   *                 channels.
+   * @param movingAvgSmoothingParam Moving average smoothing parameter (0, 1) --> (0.1: minimal smoothing, 0.9: strong
+   * smoothing)
+   */
+  QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding = Encoding::x2_encoding,
+      float movingAvgSmoothingParam = 0.2);
 
-    typedef Encoder::t_quadratureEncodingType Encoding;
+  /**
+   * Reset the encoder.
+   *
+   * Sets the pulses and revolutions count to zero.
+   */
+  void reset(void);
 
-    /**
-     * Constructor.
-     *
-     * Reads the current values on channel A and channel B to determine the
-     * initial state.
-     *
-     * Attaches the encode function to the rise/fall interrupt edges of
-     * channels A and B to perform X4 encoding.
-     *
-     * Attaches the index function to the rise interrupt edge of channel index
-     * (if it is used) to count revolutions.
-     *
-     * @param channelA mbed pin for channel A input.
-     * @param channelB mbed pin for channel B input.
-     * @param index    mbed pin for optional index channel input,
-     *                 (pass NC if not needed).
-     * @param encoding The encoding to use. Uses X2 encoding by default. X2
-     *                 encoding uses interrupts on the rising and falling edges
-     *                 of only channel A where as X4 uses them on both
-     *                 channels.
-     * @param movingAvgSmoothingParam Moving average smoothing parameter (0, 1) --> (0.1: minimal smoothing, 0.9: strong smoothing)
-     */
-    QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding = Encoding::x2_encoding, float movingAvgSmoothingParam = 0.2);
+  /**
+   * Read the state of the encoder.
+   *
+   * @return The current state of the encoder as a 2-bit number, where:
+   *         bit 1 = The reading from channel B
+   *         bit 2 = The reading from channel A
+   */
+  int getCurrentState(void);
 
-    /**
-     * Reset the encoder.
-     *
-     * Sets the pulses and revolutions count to zero.
-     */
-    void reset(void);
+  /**
+   * Read the number of pulses recorded by the encoder.
+   *
+   * @return Number of pulses which have occured.
+   */
+  int getPulses(void);
 
-    /**
-     * Read the state of the encoder.
-     *
-     * @return The current state of the encoder as a 2-bit number, where:
-     *         bit 1 = The reading from channel B
-     *         bit 2 = The reading from channel A
-     */
-    int getCurrentState(void);
+  /**
+   * Read the rate of pulsing
+   *
+   * @return Rate of pulsing (pulses/sec)
+   */
+  float getPulseVelocity_PulsesPerSec(void);
 
-    /**
-     * Read the number of pulses recorded by the encoder.
-     *
-     * @return Number of pulses which have occured.
-     */
-    int getPulses(void);
+  /**
+   * Read the number of revolutions recorded by the encoder on the index channel.
+   *
+   * @return Number of revolutions which have occured on the index channel.
+   */
+  int getRevolutions(void);
 
-    /**
-     * Read the rate of pulsing
-     *
-     * @return Rate of pulsing (pulses/sec)
-     */
-    float getPulseVelocity_PulsesPerSec(void);
+ private:
+  /**
+   * Update the pulse count.
+   *
+   * Called on every rising/falling edge of channels A/B.
+   *
+   * Reads the state of the channels and determines whether a pulse forward
+   * or backward has occured, updating the count appropriately.
+   */
+  void encode(void);
 
-    /**
-     * Read the number of revolutions recorded by the encoder on the index channel.
-     *
-     * @return Number of revolutions which have occured on the index channel.
-     */
-    int getRevolutions(void);
+  /**
+   * Called on every rising edge of channel index to update revolution
+   * count by one.
+   */
+  void index(void);
 
-private:
+  Encoding encoding_;
 
-    /**
-     * Update the pulse count.
-     *
-     * Called on every rising/falling edge of channels A/B.
-     *
-     * Reads the state of the channels and determines whether a pulse forward
-     * or backward has occured, updating the count appropriately.
-     */
-    void encode(void);
+  InterruptIn channelA_;
+  InterruptIn channelB_;
+  InterruptIn index_;
 
-    /**
-     * Called on every rising edge of channel index to update revolution
-     * count by one.
-     */
-    void index(void);
+  Timer timer_;
 
-    Encoding encoding_;
+  int prevState_;
+  int currState_;
 
-    InterruptIn channelA_;
-    InterruptIn channelB_;
-    InterruptIn index_;
+  volatile int pulses_;
+  volatile int revolutions_;
 
-    Timer timer_;
+  volatile float movingAvgVelocity_PulsesPerSec_;
 
-    int          prevState_;
-    int          currState_;
-
-    volatile int pulses_;
-    volatile int revolutions_;
-
-    volatile float movingAvgVelocity_PulsesPerSec_;
-
-    float movingAvgSmoothingParam_; // 0.1: minimal smoothing, 0.9: strong smoothing
-
+  float movingAvgSmoothingParam_;  // 0.1: minimal smoothing, 0.9: strong smoothing
 };
 
 #endif /* QEI_H */

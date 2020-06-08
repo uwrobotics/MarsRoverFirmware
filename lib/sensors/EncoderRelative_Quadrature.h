@@ -1,28 +1,24 @@
 #pragma once
 
-#include "mbed.h"
 #include "Encoder.h"
 #include "QEI.h"
+#include "mbed.h"
 
-class EncoderRelative_Quadrature: public Encoder {
+class EncoderRelative_Quadrature : public Encoder {
+ public:
+  EncoderRelative_Quadrature(t_encoderConfig config);
+  ~EncoderRelative_Quadrature();
 
-public:
+  // Must be implemented
+  t_encoderType getType();
+  float getAngle_Degrees();
+  float getVelocity_DegreesPerSec();
 
-    EncoderRelative_Quadrature(t_encoderConfig config);
-    ~EncoderRelative_Quadrature();
+  mbed_error_status_t reset();
 
-    // Must be implemented
-    t_encoderType getType();
-    float getAngle_Degrees();
-    float getVelocity_DegreesPerSec();
+ private:
+  QEI m_QEI;
 
-    mbed_error_status_t reset();
-
-private:
-
-    QEI m_QEI;
-
-    float m_degreesPerUnit;
-    float m_zeroOffset_Degrees;
-
+  float m_degreesPerUnit;
+  float m_zeroOffset_Degrees;
 };
