@@ -1,34 +1,28 @@
-#include "mbed.h"
 #include <stm32f4xx_hal.h>
 
-enum DIRECTION{
-    forward,
-    backward
-}
+#include "mbed.h"
 
-class HAL_QEI{
-    public:
-        typedef enum encoderType {
-            relative,
-            absolute
-        } t_encoderType;
+class HAL_QEI {
+ private:
+  typedef enum encoderType { relative, absolute } t_encoderType;
 
-        typedef enum quadratureEncodingType {
-            x2_encoding,
-            x4_encoding
-        } t_quadratureEncodingType;
+  typedef enum quadratureEncodingType { x2_encoding, x4_encoding } t_quadratureEncodingType;
 
-        TIM_Encoder_InitTypeDef m_encoder;
-        GPIO_InitTypedef m_GPIO_InitStruc;
-        TIM_HandleTypeDef m_Tim_BaseInitStruc;
+  TIM_Encoder_InitTypeDef m_encoder;
+  GPIO_InitTypeDef m_GPIO_InitStruc;
+  TIM_HandleTypeDef m_Tim_BaseInitStruc;
+  TIM_MasterConfigTypeDef m_MasterConfig;
 
-        float m_velocity;
-        int m_pulse1;
-        int m_pulse2;
-        int m_direction;
+  float m_velocity;
+  int m_pulse1;
+  int m_pulse2;
+  char m_direction;
 
-    private:
-        HAL_QEI(Encoding quadratureEncodingType);
-        ~HAL_QEI();
-        float readEncoder();
-}
+ public:
+  // TODO HAL_QEI(Encoding quadratureEncodingType); implement once testing is complete
+  HAL_QEI();
+  ~HAL_QEI();
+  float readEncoder();
+  float getVelocity();
+  char getDirection();
+};
