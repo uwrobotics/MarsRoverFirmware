@@ -38,9 +38,9 @@ This repository contains:
 	      sudo apt autoremove gcc-arm-none-eabi
           wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
           sudo tar -xvf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 -C /opt/
-          echo "\nPATH=\$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> ~/.bashrc
+          echo "PATH=\$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> ~/.bashrc
           export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin 
-
+       **Note:** If you are not using Ubuntu 18.04 and/or bash you may need to modify this script's paths/files. 
 	
 	For Windows
     - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
@@ -74,10 +74,7 @@ This repository contains:
     `make APP=science TARGET=science`
 
     Ex. Compile the CAN test application for the safety board:  
-    `make APP=test_can TARGET=safety`
-    
-    Ex. Compile the Serial test application for the nucleo development board:  
-    `make APP=test_serial TARGET=nucleo`
+    `make APP=test-can TARGET=safety`
     
     After compiling an application you should see a message similar to the following:  
     `===== bin file ready to flash: ../build/test_serial/test_serial_nucleo.bin =====`

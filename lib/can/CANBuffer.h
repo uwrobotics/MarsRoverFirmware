@@ -1,9 +1,10 @@
 #pragma once
 
-#include "mbed.h"
-#include "CircularBuffer.h"
-#include "CANMsg.h"
 #include <stdint.h>
+
+#include "CANMsg.h"
+#include "CircularBuffer.h"
+#include "mbed.h"
 
 #ifndef CANBUFFER_SIZE
 #define CANBUFFER_SIZE 8
@@ -13,41 +14,32 @@
 #define CANBUFFER_FLAG_FULL       (1UL << 1)
 
 class CANBuffer : public CircularBuffer<CANMsg, CANBUFFER_SIZE> {
+ public:
+  enum BufferType { rx, tx };
 
-public:
+  CANBuffer(CAN &CANInterface, BufferType type = rx);
 
-    enum BufferType {
-        rx,
-        tx
-    };
+  /** Pop the transaction from the buffer
+   *
+   * @param data Data to be popped from the buffer
+   * @return True if the buffer is not empty and data contains a transaction, false otherwise
+   */
+  bool pop(CANMsg &canMSG);
 
-    CANBuffer(CAN &CANInterface, BufferType type = rx);
+  uint32_t getFlags();
 
-    /** Pop the transaction from the buffer
-     *
-     * @param data Data to be popped from the buffer
-     * @return True if the buffer is not empty and data contains a transaction, false otherwise
-     */
-    bool pop(CANMsg &canMSG);
+  uint32_t waitFlagsAny(uint32_t flags = 0, uint32_t millisec = osWaitForever, bool clear = true);
 
-    uint32_t getFlags();
+  uint32_t waitFlagsAll(uint32_t flags = 0, uint32_t millisec = osWaitForever, bool clear = true);
 
-    uint32_t waitFlagsAny(uint32_t flags=0, uint32_t millisec=osWaitForever, bool clear=true);
+ private:
+  CAN &r_CANInterface;
+  CANMsg m_CANMsg;
 
-    uint32_t waitFlagsAll(uint32_t flags=0, uint32_t millisec=osWaitForever, bool clear=true);
+  EventFlags m_eventFlags;
 
+  void rxIrqHandler();
 
-private:
-
-    CAN &r_CANInterface;
-    CANMsg m_CANMsg;
-
-
-    EventFlags m_eventFlags;
-
-    void rxIrqHandler();
-
-    // Remove push from public scope
-    using CircularBuffer::push;
-
+  // Remove push from public scope
+  using CircularBuffer::push;
 };

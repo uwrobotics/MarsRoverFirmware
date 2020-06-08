@@ -1,0 +1,11 @@
+---
+BasedOnStyle: Google
+ColumnLimit: 120
+
+CommentPragmas: '^ NOLINT'
+
+AllowShortFunctionsOnASingleLine: Empty
+
+AlignConsecutiveAssignments: true
+AlignConsecutiveMacros: true
+---
