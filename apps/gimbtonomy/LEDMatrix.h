@@ -21,7 +21,7 @@ class LEDMatrix {
 	
 	public:
 		//Data constructor - pins determined beforehand
-		LEDMatrix(void);
+		//LEDMatrix();
 		
 		void setColour(uint8_t msgRed, uint8_t msgGreen, uint8_t msgBlue);
 

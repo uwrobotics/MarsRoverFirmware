@@ -4,18 +4,18 @@
 
 
 //Data constructor
-LEDMatrix :: LEDMatrix (void)
-{
-    //initialize pins for PWM - pins tbd
+//LEDMatrix :: LEDMatrix (void)
+//{
+    //initialize PWM pins - pins tbd
     
     //redPWM(/*redLED*/);
     //greenPWM(/*greenLED*/);
     //bluePWM(/*blueLED*/);
-}
+//}
 
 //Set how often it flashes/sec
 void LEDMatrix :: setFrequency(uint8_t msgFrequency)
-{T
+{
     redPWM.period(1/msgFrequency);
     greenPWM.period(1/msgFrequency);
     bluePWM.period(1/msgFrequency);
