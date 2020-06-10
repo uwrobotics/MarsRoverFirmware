@@ -5,10 +5,14 @@
 
 namespace GimbtonomyConfig {
 
-static Encoder::t_encoderConfig panEncoderConfig{ENC_PWM_GIMB, NC, NC, NC, NC, NC, NC, 360.0, 0, Encoder::x2_encoding};
+static Encoder::t_encoderConfig panEncoderConfig{
+    .pin_PWM = ENC_PWM_GIMB, .degreesPerUnit = 360.0, .zeroOffset_Degrees = 0.0};
 
 static ActuatorController::t_actuatorConfig panServoActuatorConfig = {
-    ActuatorController::position, -1.0, +1.0, -264.0, +264.0, -90, +90, {1.0, 0.0, 0.0, 0.0, 0.1},
-    {1.0, 0.0, 0.0, 0.0, 0.1},    3.0};
+    .defaultControlMode        = ActuatorController::position,
+    .minVelocity_DegreesPerSec = -264.0,
+    .maxVelocity_DegreesPerSec = +264.0,
+    .velocityPID               = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
+    .positionPID               = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 }  // namespace GimbtonomyConfig

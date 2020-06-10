@@ -11,48 +11,57 @@ namespace ArmConfig {
 
 /*** ENCODER CONFIG ***/
 
-static Encoder::t_encoderConfig turnTableEncoderConfig = {ENC_PWM_TRNTBL,      NC, NC, NC, NC, NC, NC, 360.0, 0,
-                                                          Encoder::x2_encoding};
+static Encoder::t_encoderConfig turnTableEncoderConfig = {
+    .pin_PWM = ENC_PWM_TRNTBL, .degreesPerUnit = 360, .zeroOffset_Degrees = 0.0};
 
-static Encoder::t_encoderConfig shoulderEncoderConfig = {ENC_PWM_SHLDR,       NC, NC, NC, NC, NC, NC, 360.0, 0,
-                                                         Encoder::x2_encoding};
+static Encoder::t_encoderConfig shoulderEncoderConfig = {
+    .pin_PWM = ENC_PWM_TRNTBL, .degreesPerUnit = 360, .zeroOffset_Degrees = 0.0};
 
-static Encoder::t_encoderConfig elbowEncoderConfig = {ENC_PWM_ELBW, NC, NC,    NC, NC,
-                                                      NC,           NC, 360.0, 0,  Encoder::x2_encoding};
+static Encoder::t_encoderConfig elbowEncoderConfig = {
+    .pin_PWM = ENC_PWM_TRNTBL, .degreesPerUnit = 360, .zeroOffset_Degrees = 0.0};
 
-static Encoder::t_encoderConfig wristLeftEncoderConfig = {
-    NC, NC, NC, NC, ENC_QUAD_WRST_LHS_A, ENC_QUAD_WRST_LHS_A, NC, 1.0, 0.0, Encoder::x2_encoding};
+static Encoder::t_encoderConfig wristLeftEncoderConfig = {.pin_ChannelA = ENC_QUAD_WRST_LHS_A,
+                                                          .pin_ChannelB = ENC_QUAD_WRST_LHS_A,
 
-static Encoder::t_encoderConfig wristRightEncoderConfig = {
-    NC, NC, NC, NC, ENC_QUAD_WRST_RHS_A, ENC_QUAD_WRST_RHS_B, NC, 1.0, 0.0, Encoder::x2_encoding};
+                                                          .degreesPerUnit     = 1.0,
+                                                          .zeroOffset_Degrees = 0.0};
 
-static Encoder::t_encoderConfig clawEncoderConfig = {
-    NC, NC, NC, NC, ENC_QUAD_CLAW_A, ENC_QUAD_CLAW_B, NC, 1.0, 0.0, Encoder::x2_encoding};
+static Encoder::t_encoderConfig wristRightEncoderConfig = {.pin_ChannelA = ENC_QUAD_WRST_RHS_A,
+                                                           .pin_ChannelB = ENC_QUAD_WRST_RHS_B,
+
+                                                           .degreesPerUnit     = 1.0,
+                                                           .zeroOffset_Degrees = 0.0};
+
+static Encoder::t_encoderConfig clawEncoderConfig = {.pin_ChannelA = ENC_QUAD_CLAW_A,
+                                                     .pin_ChannelB = ENC_QUAD_CLAW_B,
+
+                                                     .degreesPerUnit     = 1.0,
+                                                     .zeroOffset_Degrees = 0.0};
 
 /*** ROTARY ACTUATOR CONFIG ***/
 
 static ActuatorController::t_actuatorConfig turnTableActuatorConfig = {
-    ActuatorController::motorPower, -1.0, +1.0, -10.0, +10.0, -90, +90, {1.0, 0.0, 0.0, 0.0, 0.1},
-    {1.0, 0.0, 0.0, 0.0, 0.1},      3.0};
+    .velocityPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
+    .positionPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 static ActuatorController::t_actuatorConfig shoulderActuatorConfig = {
-    ActuatorController::motorPower, -1.0, +1.0, -10.0, +10.0, -90, +90, {1.0, 0.0, 0.0, 0.0, 0.1},
-    {1.0, 0.0, 0.0, 0.0, 0.1},      3.0};
+    .velocityPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
+    .positionPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 static ActuatorController::t_actuatorConfig elbowActuatorConfig = {
-    ActuatorController::motorPower, -1.0, +1.0, -10.0, +10.0, -90, +90, {1.0, 0.0, 0.0, 0.0, 0.1},
-    {1.0, 0.0, 0.0, 0.0, 0.1},      3.0};
+    .velocityPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
+    .positionPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 static ActuatorController::t_actuatorConfig wristLeftActuatorConfig = {
-    ActuatorController::motorPower, -1.0, +1.0, -10.0, +10.0, -90, +90, {1.0, 0.0, 0.0, 0.0, 0.1},
-    {1.0, 0.0, 0.0, 0.0, 0.1},      3.0};
+    .velocityPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
+    .positionPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 static ActuatorController::t_actuatorConfig wristRightActuatorConfig = {
-    ActuatorController::motorPower, -1.0, +1.0, -10.0, +10.0, -90, +90, {1.0, 0.0, 0.0, 0.0, 0.1},
-    {1.0, 0.0, 0.0, 0.0, 0.1},      3.0};
+    .velocityPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
+    .positionPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 static ActuatorController::t_actuatorConfig clawActuatorConfig = {
-    ActuatorController::motorPower, -1.0, +1.0, -10.0, +10.0, -90, +90, {1.0, 0.0, 0.0, 0.0, 0.1},
-    {1.0, 0.0, 0.0, 0.0, 0.1},      3.0};
+    .velocityPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
+    .positionPID = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 }  // namespace ArmConfig
