@@ -14,8 +14,8 @@ HAL_QEI::HAL_QEI() {
   // uses PA_0 and PA_1
   m_Tim_BaseInitStruc.Instance       = TIM2;
   m_Tim_BaseInitStruc.Init.Prescaler = TIM_CLEARINPUTPRESCALER_DIV1;  // number of pulse before pulse is passed into CNT
-  m_Tim_BaseInitStruc.Init.CounterMode = TIM_COUNTERMODE_UP;
-  m_Tim_BaseInitStruc.Init.Period = 100000;  // number of counts until timer resets
+  m_Tim_BaseInitStruc.Init.CounterMode   = TIM_COUNTERMODE_UP;
+  m_Tim_BaseInitStruc.Init.Period        = 100000;  // number of counts until timer resets
   m_Tim_BaseInitStruc.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 
   HAL_TIM_Base_Init(&m_Tim_BaseInitStruc);
