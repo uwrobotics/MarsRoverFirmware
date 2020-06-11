@@ -14,9 +14,9 @@ class HAL_QEI {
   TIM_MasterConfigTypeDef m_MasterConfig;
 
   float m_velocity;
-  int m_pulse1;
-  int m_pulse2;
-  char m_direction;
+  uint32_t m_pulse1;
+  uint32_t m_pulse2;
+  uint16_t m_direction; //if 0 upcounter > forward. if 1 downcounter > backward
 
  public:
   // TODO HAL_QEI(Encoding quadratureEncodingType); implement once testing is complete

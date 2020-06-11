@@ -9,8 +9,15 @@
 
 HAL_PWM::HAL_PWM() {
   __TIM1_CLK_ENABLE();
+  __GPIOA_CLK_ENABLE();
 
-  // uses PA_8 and PA_9
+  m_GPIO_InitStruc.Pin = GPIO_PIN_8;
+  m_GPIO_InitStruc.Mode = GPIO_MODE_AF_PP;
+  m_GPIO_InitStruc.Pull = GPIO_PULLDOWN;
+  m_GPIO_InitStruc.Speed = GPIO_SPEED_HIGH;
+  HAL_GPIO_Init(GPIOA, &m_GPIO_InitStruc);
+  
+  // uses PA_8
   m_htim.Instance           = TIM1;
   m_htim.Init.Prescaler     = 0;
   m_htim.Init.CounterMode   = TIM_COUNTERMODE_UP;
@@ -41,18 +48,16 @@ HAL_PWM::HAL_PWM() {
   HAL_TIMEx_MasterConfigSynchronization(&m_htim, &m_MasterConfig);
 
   HAL_TIM_PWM_Start(&m_htim, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&m_htim, TIM_CHANNEL_2);
 }
 
 // http://diyhpl.us/~nmz787/pdf/RM0368__timer_section.pdf page 261
 void HAL_PWM::calcDutyCycle() {
-    while(!__HAL_TIM_GET_FLAG(&m_htim, TIM_FLAG_CC1)
+    while(!__HAL_TIM_GET_FLAG(&m_htim, TIM_FLAG_CC1))
     {
     wait_ms(2);
     }
 
     m_period = HAL_TIM_ReadCapturedValue(&m_htim, TIM_CHANNEL_1);
-    //m_period = __HAL_TIM_GET_COMPARE(&m_htim, TIM_CHANNEL_1); 
 
     __HAL_TIM_CLEAR_FLAG(&m_htim, TIM_FLAG_CC1);
 

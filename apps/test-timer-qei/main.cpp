@@ -14,14 +14,14 @@ int main() {
 
   pc.printf("Starting pwm generation");
   pinA.period(expected_period);
-  wait_ms(3);
+  wait_ms(2);
   pinB.period(expected_period);
 
   HAL_QEI quadrature_encoder;
 
   while (1) {
     wait_ms(2000);
-    pc.printf("Velocity: %f\n", quadrature_encoder.readEncoder());
+    pc.printf("Velocity: %f  CNT register=%lu dir: %d\n", quadrature_encoder.readEncoder(), TIM2->CNT, quadrature_encoder.getDirection()) ;
 
     if (expected_velocity == quadrature_encoder.getVelocity()) {
       led = 1;
