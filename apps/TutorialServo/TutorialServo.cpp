@@ -35,8 +35,7 @@ void TutorialServo::setPositionInDegrees(float degrees)
 TutorialServo::TutorialServo(PinName servoPin, float servoFrequency, float angleRange, float minPulseWidthFloat, float maxPulseWidthFloat) : servoPwm(servoPin) //Constructor
 {
   servoPwm.period(1/servoFrequency);
-  minPulseWidthMs = minPulseWidthFloat;
-  maxPulseWidthMs = maxPulseWidthFloat;
+  setPulseWidthRangeInMs(minPulseWidthFloat, maxPulseWidthFloat);
 
   //Set default parameters
   setAngleRangeInDegrees(angleRange); //This is the absolute value of the angle range
