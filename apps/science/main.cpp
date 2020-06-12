@@ -1,8 +1,18 @@
 #include "mbed.h"
+#include "CANMsg.h"
+#include "can_config.h"
+#include "rover_config.h"
 
 DigitalOut led1(LED1);
 
 const int k_interval_ms = 500;
+
+CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+
+void initCAN()
+{
+  can.filter(ROVER_CANID_FIRST_SCIENCE_RX, ROVER_CANID_FILTER_MASK, CANStandard);
+}
 
 int main() {
   while (true) {
