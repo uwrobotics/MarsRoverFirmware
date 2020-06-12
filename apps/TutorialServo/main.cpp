@@ -11,7 +11,7 @@
 CAN can(D3, D4);
 CANMsg msg;
 uint8_t convertedMessage;
-TutorialServo servo(PA_1, 50);
+TutorialServo servo(PA_1, 50, 90);
 
 // main() runs in its own thread in the OS
 int main() 

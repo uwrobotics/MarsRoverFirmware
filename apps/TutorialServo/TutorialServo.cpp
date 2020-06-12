@@ -4,7 +4,6 @@
  */
 
 #include "TutorialServo.h"
-#include "mbed.h"
 #include <cstdlib>
 
 
@@ -33,12 +32,12 @@ void TutorialServo::setPositionInDegrees(float degrees)
     }
 }
 
-TutorialServo::TutorialServo(PinName servoPin, float servoFrequency) : servoPwm(servoPin) //Constructor
+TutorialServo::TutorialServo(PinName servoPin, float servoFrequency, float angleRange, float minPulseWidthFloat, float maxPulseWidthFloat) : servoPwm(servoPin) //Constructor
 {
   servoPwm.period(1/servoFrequency);
-  
-  //Set default parameters:
-  minPulseWidthMs = 1;
-  maxPulseWidthMs = 2;
-  angleRange = 90; //This is the absolute value of the angle range
+  minPulseWidthMs = minPulseWidthFloat;
+  maxPulseWidthMs = maxPulseWidthFloat;
+
+  //Set default parameters
+  setAngleRangeInDegrees(angleRange); //This is the absolute value of the angle range
 }
