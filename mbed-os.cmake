@@ -5,46 +5,11 @@ set(MEMORY_DEFINITIONS
         MBED_RAM_SIZE=0x20000
         )
 
-set(MBED_DEFINITIONS
-        ARM_MATH_CM4
-        COMPONENT_NSPE=1
-        COMPONENT_PSA_SRV_EMUL=1
-        COMPONENT_PSA_SRV_IMPL=1
-        DEVICE_ANALOGIN=1
-        DEVICE_ANALOGOUT=1
-        DEVICE_CAN=1
-        DEVICE_FLASH=1
-        DEVICE_I2C=1
-        DEVICE_I2CSLAVE=1
-        DEVICE_I2C_ASYNCH=1
-        DEVICE_INTERRUPTIN=1
-        DEVICE_LPTICKER=1
-        DEVICE_MPU=1
-        DEVICE_PORTIN=1
-        DEVICE_PORTINOUT=1
-        DEVICE_PORTOUT=1
-        DEVICE_PWMOUT=1
-        DEVICE_RESET_REASON=1
-        DEVICE_RTC=1
-        DEVICE_SERIAL=1
-        DEVICE_SERIAL_ASYNCH=1
-        DEVICE_SERIAL_FC=1
-        DEVICE_SLEEP=1
-        DEVICE_SPI=1
-        DEVICE_SPISLAVE=1
-        DEVICE_SPI_ASYNCH=1
-        DEVICE_STDIO_MESSAGES=1
-        DEVICE_USTICKER=1
-        DEVICE_WATCHDOG=1
-        MBED_CONF_MBED_TRACE_FEA_IPV6=0
-        MBED_CRC_TABLE_SIZE=16
-        MBED_TRAP_ERRORS_ENABLED=1
+set(TARGET_DEFINITIONS
         STM32F446xx
         TARGET_CORTEX
         TARGET_CORTEX_M
         TARGET_FAMILY_STM32
-        TARGET_FF_ARDUINO
-        TARGET_FF_MORPHO
         TARGET_LIKE_CORTEX_M4
         TARGET_LIKE_MBED
         TARGET_M4
@@ -58,23 +23,10 @@ set(MBED_DEFINITIONS
         TARGET_STM32F446xE
         TOOLCHAIN_GCC
         TOOLCHAIN_GCC_ARM
-        TRANSACTION_QUEUE_SIZE_SPI=2
-        USE_FULL_LL_DRIVER
-        USE_HAL_DRIVER
-        __CMSIS_RTOS
-        __CORTEX_M4
-        __FPU_PRESENT=1
-        __MBED_CMSIS_RTOS_CM
-        __MBED__=1
         )
 
-# Does not build the following features:
-# BLE, cellular, coap, cryptocell, experimental, lwip, nanostack, netsocket
-add_library(mbed-os
-        #TODO(wmmc88): update target configs from basic templates
-        #        mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE/PeripheralPins.c
-        #        mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE/system_clock.c
-
+add_library(mbed-os)
+target_sources(mbed-os PRIVATE
         mbed-os/drivers/source/AnalogIn.cpp
         mbed-os/drivers/source/AnalogOut.cpp
         mbed-os/drivers/source/BufferedSerial.cpp
@@ -89,7 +41,6 @@ add_library(mbed-os
         mbed-os/drivers/source/I2C.cpp
         mbed-os/drivers/source/I2CSlave.cpp
         mbed-os/drivers/source/InterruptIn.cpp
-        mbed-os/drivers/source/MbedCRC.cpp
         mbed-os/drivers/source/PortIn.cpp
         mbed-os/drivers/source/PortInOut.cpp
         mbed-os/drivers/source/PortOut.cpp
@@ -106,226 +57,13 @@ add_library(mbed-os
         mbed-os/drivers/source/Timer.cpp
         mbed-os/drivers/source/TimerEvent.cpp
         mbed-os/drivers/source/UnbufferedSerial.cpp
-        mbed-os/drivers/source/usb/AsyncOp.cpp
-        mbed-os/drivers/source/usb/ByteBuffer.cpp
-        mbed-os/drivers/source/usb/EndpointResolver.cpp
-        mbed-os/drivers/source/usb/LinkedListBase.cpp
-        mbed-os/drivers/source/usb/OperationListBase.cpp
-        mbed-os/drivers/source/usb/PolledQueue.cpp
-        mbed-os/drivers/source/usb/TaskBase.cpp
-        mbed-os/drivers/source/usb/USBAudio.cpp
-        mbed-os/drivers/source/usb/USBCDC.cpp
-        mbed-os/drivers/source/usb/USBCDC_ECM.cpp
-        mbed-os/drivers/source/usb/USBDevice.cpp
-        mbed-os/drivers/source/usb/USBHID.cpp
-        mbed-os/drivers/source/usb/USBKeyboard.cpp
-        mbed-os/drivers/source/usb/USBMIDI.cpp
-        mbed-os/drivers/source/usb/USBMouse.cpp
-        mbed-os/drivers/source/usb/USBMouseKeyboard.cpp
-        mbed-os/drivers/source/usb/USBMSD.cpp
-        mbed-os/drivers/source/usb/USBSerial.cpp
         mbed-os/drivers/source/Watchdog.cpp
         mbed-os/events/source/equeue.c
         mbed-os/events/source/equeue_mbed.cpp
         mbed-os/events/source/equeue_posix.c
         mbed-os/events/source/EventQueue.cpp
         mbed-os/events/source/mbed_shared_queues.cpp
-        mbed-os/features/device_key/source/DeviceKey.cpp
-        mbed-os/features/frameworks/greentea-client/source/greentea_metrics.cpp
-        mbed-os/features/frameworks/greentea-client/source/greentea_test_env.cpp
         mbed-os/features/frameworks/mbed-client-randlib/source/randLIB.c
-        mbed-os/features/frameworks/mbed-trace/source/mbed_trace.c
-        mbed-os/features/frameworks/unity/source/unity.c
-        mbed-os/features/frameworks/utest/mbed-utest-shim.cpp
-        mbed-os/features/frameworks/utest/source/unity_handler.cpp
-        mbed-os/features/frameworks/utest/source/utest_case.cpp
-        mbed-os/features/frameworks/utest/source/utest_default_handlers.cpp
-        mbed-os/features/frameworks/utest/source/utest_greentea_handlers.cpp
-        mbed-os/features/frameworks/utest/source/utest_harness.cpp
-        mbed-os/features/frameworks/utest/source/utest_print.cpp
-        mbed-os/features/frameworks/utest/source/utest_shim.cpp
-        mbed-os/features/frameworks/utest/source/utest_stack_trace.cpp
-        mbed-os/features/frameworks/utest/source/utest_types.cpp
-        mbed-os/features/lorawan/lorastack/mac/LoRaMac.cpp
-        mbed-os/features/lorawan/lorastack/mac/LoRaMacChannelPlan.cpp
-        mbed-os/features/lorawan/lorastack/mac/LoRaMacCommand.cpp
-        mbed-os/features/lorawan/lorastack/mac/LoRaMacCrypto.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHY.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYAS923.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYAU915.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYCN470.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYCN779.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYEU433.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYEU868.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYIN865.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYKR920.cpp
-        mbed-os/features/lorawan/lorastack/phy/LoRaPHYUS915.cpp
-        mbed-os/features/lorawan/LoRaWANInterface.cpp
-        mbed-os/features/lorawan/LoRaWANStack.cpp
-        mbed-os/features/lorawan/system/LoRaWANTimer.cpp
-        mbed-os/features/mbedtls/platform/src/mbed_trng.cpp
-        mbed-os/features/mbedtls/platform/src/platform_alt.cpp
-        mbed-os/features/mbedtls/platform/src/shared_rng.cpp
-        mbed-os/features/mbedtls/src/aes.c
-        mbed-os/features/mbedtls/src/aesni.c
-        mbed-os/features/mbedtls/src/arc4.c
-        mbed-os/features/mbedtls/src/aria.c
-        mbed-os/features/mbedtls/src/asn1parse.c
-        mbed-os/features/mbedtls/src/asn1write.c
-        mbed-os/features/mbedtls/src/base64.c
-        mbed-os/features/mbedtls/src/bignum.c
-        mbed-os/features/mbedtls/src/blowfish.c
-        mbed-os/features/mbedtls/src/camellia.c
-        mbed-os/features/mbedtls/src/ccm.c
-        mbed-os/features/mbedtls/src/certs.c
-        mbed-os/features/mbedtls/src/chacha20.c
-        mbed-os/features/mbedtls/src/chachapoly.c
-        mbed-os/features/mbedtls/src/cipher.c
-        mbed-os/features/mbedtls/src/cipher_wrap.c
-        mbed-os/features/mbedtls/src/cmac.c
-        mbed-os/features/mbedtls/src/ctr_drbg.c
-        mbed-os/features/mbedtls/src/debug.c
-        mbed-os/features/mbedtls/src/des.c
-        mbed-os/features/mbedtls/src/dhm.c
-        mbed-os/features/mbedtls/src/ecdh.c
-        mbed-os/features/mbedtls/src/ecdsa.c
-        mbed-os/features/mbedtls/src/ecjpake.c
-        mbed-os/features/mbedtls/src/ecp.c
-        mbed-os/features/mbedtls/src/ecp_curves.c
-        mbed-os/features/mbedtls/src/entropy.c
-        mbed-os/features/mbedtls/src/entropy_poll.c
-        mbed-os/features/mbedtls/src/error.c
-        mbed-os/features/mbedtls/src/gcm.c
-        mbed-os/features/mbedtls/src/havege.c
-        mbed-os/features/mbedtls/src/hkdf.c
-        mbed-os/features/mbedtls/src/hmac_drbg.c
-        mbed-os/features/mbedtls/src/md2.c
-        mbed-os/features/mbedtls/src/md4.c
-        mbed-os/features/mbedtls/src/md5.c
-        mbed-os/features/mbedtls/src/md.c
-        mbed-os/features/mbedtls/src/memory_buffer_alloc.c
-        mbed-os/features/mbedtls/src/net_sockets.c
-        mbed-os/features/mbedtls/src/nist_kw.c
-        mbed-os/features/mbedtls/src/oid.c
-        mbed-os/features/mbedtls/src/padlock.c
-        mbed-os/features/mbedtls/src/pem.c
-        mbed-os/features/mbedtls/src/pk.c
-        mbed-os/features/mbedtls/src/pk_wrap.c
-        mbed-os/features/mbedtls/src/pkcs5.c
-        mbed-os/features/mbedtls/src/pkcs11.c
-        mbed-os/features/mbedtls/src/pkcs12.c
-        mbed-os/features/mbedtls/src/pkparse.c
-        mbed-os/features/mbedtls/src/pkwrite.c
-        mbed-os/features/mbedtls/src/platform.c
-        mbed-os/features/mbedtls/src/platform_util.c
-        mbed-os/features/mbedtls/src/poly1305.c
-        mbed-os/features/mbedtls/src/ripemd160.c
-        mbed-os/features/mbedtls/src/rsa.c
-        mbed-os/features/mbedtls/src/rsa_internal.c
-        mbed-os/features/mbedtls/src/sha1.c
-        mbed-os/features/mbedtls/src/sha256.c
-        mbed-os/features/mbedtls/src/sha512.c
-        mbed-os/features/mbedtls/src/ssl_cache.c
-        mbed-os/features/mbedtls/src/ssl_ciphersuites.c
-        mbed-os/features/mbedtls/src/ssl_cli.c
-        mbed-os/features/mbedtls/src/ssl_cookie.c
-        mbed-os/features/mbedtls/src/ssl_msg.c
-        mbed-os/features/mbedtls/src/ssl_srv.c
-        mbed-os/features/mbedtls/src/ssl_ticket.c
-        mbed-os/features/mbedtls/src/ssl_tls.c
-        mbed-os/features/mbedtls/src/threading.c
-        mbed-os/features/mbedtls/src/timing.c
-        mbed-os/features/mbedtls/src/version.c
-        mbed-os/features/mbedtls/src/version_features.c
-        mbed-os/features/mbedtls/src/x509.c
-        mbed-os/features/mbedtls/src/x509_create.c
-        mbed-os/features/mbedtls/src/x509_crl.c
-        mbed-os/features/mbedtls/src/x509_crt.c
-        mbed-os/features/mbedtls/src/x509_csr.c
-        mbed-os/features/mbedtls/src/x509write_crt.c
-        mbed-os/features/mbedtls/src/x509write_csr.c
-        mbed-os/features/mbedtls/src/xtea.c
-        mbed-os/features/mbedtls/targets/hash_wrappers.c
-        mbed-os/features/mbedtls/targets/TARGET_STM/md5_alt.c
-        mbed-os/features/mbedtls/targets/TARGET_STM/sha1_alt.c
-        mbed-os/features/mbedtls/targets/TARGET_STM/sha256_alt.c
-        mbed-os/features/mbedtls/targets/TARGET_STM/TARGET_STM32F4/aes_alt.c
-        mbed-os/features/nfc/acore/source/ac_buffer.c
-        mbed-os/features/nfc/acore/source/ac_buffer_builder.c
-        mbed-os/features/nfc/acore/source/ac_buffer_reader.c
-        mbed-os/features/nfc/acore/source/ac_stream.c
-        mbed-os/features/nfc/source/controllers/PN512Driver.cpp
-        mbed-os/features/nfc/source/controllers/PN512SPITransportDriver.cpp
-        mbed-os/features/nfc/source/controllers/PN512TransportDriver.cpp
-        mbed-os/features/nfc/source/nfc/ndef/common/Mime.cpp
-        mbed-os/features/nfc/source/nfc/ndef/common/SimpleMessageParser.cpp
-        mbed-os/features/nfc/source/nfc/ndef/common/Text.cpp
-        mbed-os/features/nfc/source/nfc/ndef/common/URI.cpp
-        mbed-os/features/nfc/source/nfc/ndef/common/util.cpp
-        mbed-os/features/nfc/source/nfc/ndef/MessageBuilder.cpp
-        mbed-os/features/nfc/source/nfc/ndef/MessageParser.cpp
-        mbed-os/features/nfc/source/nfc/ndef/RecordParser.cpp
-        mbed-os/features/nfc/source/nfc/NFCController.cpp
-        mbed-os/features/nfc/source/nfc/NFCControllerDriver.cpp
-        mbed-os/features/nfc/source/nfc/NFCEEPROM.cpp
-        mbed-os/features/nfc/source/nfc/NFCEEPROMDriver.cpp
-        mbed-os/features/nfc/source/nfc/NFCNDEFCapable.cpp
-        mbed-os/features/nfc/source/nfc/NFCRemoteEndpoint.cpp
-        mbed-os/features/nfc/source/nfc/NFCRemoteInitiator.cpp
-        mbed-os/features/nfc/source/nfc/NFCTarget.cpp
-        mbed-os/features/nfc/source/nfc/Type4RemoteInitiator.cpp
-        mbed-os/features/nfc/stack/ndef/ndef.c
-        mbed-os/features/nfc/stack/platform/nfc_scheduler.c
-        mbed-os/features/nfc/stack/platform/nfc_transport.c
-        mbed-os/features/nfc/stack/tech/iso7816/iso7816.c
-        mbed-os/features/nfc/stack/tech/iso7816/iso7816_app.c
-        mbed-os/features/nfc/stack/tech/isodep/isodep_target.c
-        mbed-os/features/nfc/stack/tech/type4/type4_target.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_cmd.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_hw.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_irq.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_poll.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_registers.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_rf.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_timer.c
-        mbed-os/features/nfc/stack/transceiver/pn512/pn512_transceive.c
-        mbed-os/features/nfc/stack/transceiver/transceiver.c
-        mbed-os/features/storage/blockdevice/BufferedBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/ChainingBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/ExhaustibleBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/FlashSimBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/HeapBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/MBRBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/ObservingBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/ProfilingBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/ReadOnlyBlockDevice.cpp
-        mbed-os/features/storage/blockdevice/SlicingBlockDevice.cpp
-
-        #        To enable mbed filesystem, add appropriate configuration definitions
-        #        mbed-os/features/storage/filesystem/Dir.cpp
-        #        mbed-os/features/storage/filesystem/fat/ChaN/ff.cpp
-        #        mbed-os/features/storage/filesystem/fat/ChaN/ffunicode.cpp
-        #        mbed-os/features/storage/filesystem/fat/FATFileSystem.cpp
-        #        mbed-os/features/storage/filesystem/File.cpp
-        #        mbed-os/features/storage/filesystem/FileSystem.cpp
-        #        mbed-os/features/storage/filesystem/littlefs/LittleFileSystem.cpp
-        #        mbed-os/features/storage/filesystem/littlefs/littlefs/lfs.c
-        #        mbed-os/features/storage/filesystem/littlefs/littlefs/lfs_util.c
-        #        mbed-os/features/storage/filesystem/littlefsv2/LittleFileSystem2.cpp
-        #        mbed-os/features/storage/filesystem/littlefsv2/littlefs/bd/lfs2_filebd.c
-        #        mbed-os/features/storage/filesystem/littlefsv2/littlefs/bd/lfs2_rambd.c
-        #        mbed-os/features/storage/filesystem/littlefsv2/littlefs/bd/lfs2_testbd.c
-        #        mbed-os/features/storage/filesystem/littlefsv2/littlefs/lfs2.c
-        #        mbed-os/features/storage/filesystem/littlefsv2/littlefs/lfs2_util.c
-        #        mbed-os/features/storage/kvstore/conf/kv_config.cpp
-        #        mbed-os/features/storage/kvstore/direct_access_devicekey/DirectAccessDevicekey.cpp
-        #        mbed-os/features/storage/kvstore/filesystemstore/FileSystemStore.cpp
-        #        mbed-os/features/storage/kvstore/global_api/kvstore_global_api.cpp
-        #        mbed-os/features/storage/kvstore/kv_map/KVMap.cpp
-        #        mbed-os/features/storage/kvstore/securestore/SecureStore.cpp
-        #        mbed-os/features/storage/kvstore/tdbstore/TDBStore.cpp
-        #        mbed-os/features/storage/system_storage/SystemStorage.cpp
         mbed-os/hal/LowPowerTickerWrapper.cpp
         mbed-os/hal/mbed_compat.c
         mbed-os/hal/mbed_critical_section_api.c
@@ -342,7 +80,6 @@ add_library(mbed-os
         mbed-os/hal/mpu/mbed_mpu_v7m.c
         mbed-os/hal/mpu/mbed_mpu_v8m.c
         mbed-os/hal/static_pinmap.cpp
-        #        mbed-os/hal/TARGET_FLASH_CMSIS_ALGO/flash_common_algo.c
         mbed-os/hal/usb/mbed_usb_phy.cpp
         mbed-os/platform/cxxsupport/mstd_mutex.cpp
         mbed-os/platform/source/ATCmdParser.cpp
@@ -534,7 +271,7 @@ add_library(mbed-os
         mbed-os/targets/TARGET_STM/USBPhy_STM32.cpp
         mbed-os/targets/TARGET_STM/watchdog_api.c
         )
-target_include_directories(mbed-os PUBLIC
+target_include_directories(mbed-os PRIVATE
         mbed-os
         mbed-os/cmsis
         mbed-os/cmsis/TARGET_CORTEX_M
@@ -543,61 +280,8 @@ target_include_directories(mbed-os PUBLIC
         mbed-os/events
         mbed-os/events/internal
         mbed-os/features
-        mbed-os/features/device_key/source
-        mbed-os/features/frameworks/greentea-client
         mbed-os/features/frameworks/mbed-client-randlib/mbed-client-randlib
-        mbed-os/features/frameworks/mbed-client-randlib/mbed-client-randlib/platform
-        mbed-os/features/frameworks/mbed-trace
-        mbed-os/features/frameworks/mbed-trace/mbed-trace
-        mbed-os/features/frameworks/unity
-        mbed-os/features/frameworks/utest
-        mbed-os/features/lorawan
-        mbed-os/features/lorawan/lorastack/mac
-        mbed-os/features/lorawan/lorastack/phy
-        mbed-os/features/lorawan/system
-        mbed-os/features/mbedtls
-        mbed-os/features/mbedtls/inc
-        mbed-os/features/mbedtls/inc/mbedtls
-        mbed-os/features/mbedtls/platform/inc
-        mbed-os/features/mbedtls/targets/TARGET_STM
-        mbed-os/features/mbedtls/targets/TARGET_STM/TARGET_STM32F4
-        mbed-os/features/mbedtls/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F437xG
-        mbed-os/features/mbedtls/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xI
-        mbed-os/features/nfc/acore
-        mbed-os/features/nfc/controllers
-        mbed-os/features/nfc
-        mbed-os/features/nfc/nfc
-        mbed-os/features/nfc/nfc/ndef
-        mbed-os/features/nfc/nfc/ndef/common
-        mbed-os/features/nfc/stack
-        mbed-os/features/nfc/stack/ndef
-        mbed-os/features/nfc/stack/platform
-        mbed-os/features/nfc/stack/tech/iso7816
-        mbed-os/features/nfc/stack/tech/isodep
-        mbed-os/features/nfc/stack/tech/type4
-        mbed-os/features/nfc/stack/transceiver
-        mbed-os/features/nfc/stack/transceiver/pn512
-        mbed-os/features/storage
-        mbed-os/features/storage/blockdevice
-        mbed-os/features/storage/filesystem
-        mbed-os/features/storage/filesystem/fat
-        mbed-os/features/storage/filesystem/fat/ChaN
-        mbed-os/features/storage/filesystem/littlefs
-        mbed-os/features/storage/filesystem/littlefs/littlefs
-        mbed-os/features/storage/filesystem/littlefs/littlefs/emubd
-        mbed-os/features/storage/filesystem/littlefsv2
-        mbed-os/features/storage/filesystem/littlefsv2/littlefs
-        mbed-os/features/storage/filesystem/littlefsv2/littlefs/bd
-        mbed-os/features/storage/kvstore/conf
-        mbed-os/features/storage/kvstore/direct_access_devicekey
-        mbed-os/features/storage/kvstore/filesystemstore
-        mbed-os/features/storage/kvstore/global_api
-        mbed-os/features/storage/kvstore/include
-        mbed-os/features/storage/kvstore/kv_map
-        mbed-os/features/storage/kvstore/securestore
-        mbed-os/features/storage/kvstore/tdbstore
         mbed-os/hal
-        #        mbed-os/hal/TARGET_FLASH_CMSIS_ALGO
         mbed-os/hal/usb
         mbed-os/platform
         mbed-os/platform/cxxsupport
@@ -622,7 +306,7 @@ target_include_directories(mbed-os PUBLIC
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE
         )
-target_compile_definitions(mbed-os PUBLIC ${MEMORY_DEFINITIONS} ${MBED_DEFINITIONS})
+target_compile_definitions(mbed-os PUBLIC ${MEMORY_DEFINITIONS} ${TARGET_DEFINITIONS})
 target_compile_options(mbed-os PUBLIC -w) # Disable all warnings from mbed code
 
 

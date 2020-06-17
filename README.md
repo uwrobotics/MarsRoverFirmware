@@ -152,3 +152,15 @@ On Ubuntu
 - Run `candump can0` to show all traffic received by can0
 
 See the [CANable Getting Started guide](https://canable.io/getting-started.html) for more information including Windows support.
+
+## CMake
+This repository using our own custom CMake files to configure and compile our applications, including mbed-os. Only certain parts of mbed are currently compiled into the mbed-os library target. If other mbed features are required, add the required sources to the `target_sources` property and the required include paths to the `target_include_directories`of the `mbed-os` target. 
+
+**Tip:** These commands may be useful in determining what files you need to include:
+```
+// Outputs a alphabetically-sorted list of the paths to all source files within a directory and all subdirectories 
+find <path to desired feature folder> -name "*.cpp" -or -name "*.cxx" -or -name "*.c" -or -name "*.S" -or -name "*.s" | sort -n
+
+// Outputs a alphabetically-sorted list of the paths to all header files within a directory and all subdirectories 
+find <path to desired feature folder> -name "*.hpp" -or -name "*.h"| sort -n
+```
