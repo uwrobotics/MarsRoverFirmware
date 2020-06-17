@@ -53,42 +53,6 @@ uint8_t SetSysClock_PLL_HSI(void);
 #endif /* ((CLOCK_SOURCE) & USE_PLL_HSI) */
 
 /**
- * @brief  Setup the microcontroller system
- *         Initialize the FPU setting, vector table location and External memory
- *         configuration.
- * @param  None
- * @retval None
- */
-void SystemInit(void) {
-  /* FPU settings ------------------------------------------------------------*/
-#if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
-  SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2)); /* set CP10 and CP11 Full Access */
-#endif
-  /* Reset the RCC clock configuration to the default reset state ------------*/
-  /* Set HSION bit */
-  RCC->CR |= (uint32_t)0x00000001;
-
-  /* Reset CFGR register */
-  RCC->CFGR = 0x00000000;
-
-  /* Reset HSEON, CSSON and PLLON bits */
-  RCC->CR &= (uint32_t)0xFEF6FFFF;
-
-  /* Reset PLLCFGR register */
-  RCC->PLLCFGR = 0x24003010;
-
-  /* Reset HSEBYP bit */
-  RCC->CR &= (uint32_t)0xFFFBFFFF;
-
-  /* Disable all interrupts */
-  RCC->CIR = 0x00000000;
-
-#if defined(DATA_IN_ExtSRAM) || defined(DATA_IN_ExtSDRAM)
-  SystemInit_ExtMemCtl();
-#endif /* DATA_IN_ExtSRAM || DATA_IN_ExtSDRAM */
-}
-
-/**
  * @brief  Configures the System clock source, PLL Multiplier and Divider factors,
  *               AHB/APBx prescalers and Flash settings
  * @note   This function should be called only once the RCC clock configuration
@@ -153,7 +117,7 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass) {
   RCC_OscInitStruct.PLL.PLLN      = 360;  // VCO output clock = 360 MHz (1.0 MHz * 360) [must be >= 100MHz && <= 432MHz]
   RCC_OscInitStruct.PLL.PLLP      = RCC_PLLP_DIV2;  // PLLCLK = 180 MHz (360 MHz / 2) [must be >= 24MHz && <= 180MHz]
   RCC_OscInitStruct.PLL.PLLQ      = 7;              // Not used
-  RCC_OscInitStruct.PLL.PLLR      = 6;              // Not used
+  RCC_OscInitStruct.PLL.PLLR      = 2;              // Not used
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     return 0;  // FAIL
   }
@@ -163,6 +127,7 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass) {
     return 0;  // FAIL
   }
 
+#if DEVICE_USBDEVICE
   // Select PLLSAI output as USB clock source
   PeriphClkInitStruct.PLLSAI.PLLSAIM       = 25;                // 25 / 25 = 1 MHz
   PeriphClkInitStruct.PLLSAI.PLLSAIN       = 384;               // 1 * 384 = 384 MHz
@@ -170,6 +135,7 @@ uint8_t SetSysClock_PLL_HSE(uint8_t bypass) {
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
   PeriphClkInitStruct.Clk48ClockSelection  = RCC_CLK48CLKSOURCE_PLLSAIP;
   HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
+#endif /* DEVICE_USBDEVICE */
 
   // Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
@@ -230,6 +196,7 @@ uint8_t SetSysClock_PLL_HSI(void) {
     return 0;  // FAIL
   }
 
+#if DEVICE_USBDEVICE
   // Select PLLSAI output as USB clock source
   PeriphClkInitStruct.PLLSAI.PLLSAIM       = 8;
   PeriphClkInitStruct.PLLSAI.PLLSAIN       = 192;
@@ -237,6 +204,7 @@ uint8_t SetSysClock_PLL_HSI(void) {
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
   PeriphClkInitStruct.Clk48ClockSelection  = RCC_CLK48CLKSOURCE_PLLSAIP;
   HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
+#endif /* DEVICE_USBDEVICE */
 
   /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
