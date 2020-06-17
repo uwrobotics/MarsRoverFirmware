@@ -7,9 +7,13 @@
  * Source: https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/
  */
 
-#include <stdexcept>
 #include <math.h>
 
+#include <stdexcept>
+
+#ifndef GYRO_BIAS_DRIFT_COMPENSATION
+#define GYRO_BIAS_DRIFT_COMPENSATION  // define to apply gyro bias drift compensation in filter
+#endif
 
 float invSqrt(float x);
 
@@ -21,9 +25,11 @@ class vec4f {
 
   float& operator[](int index);
   vec4f operator*(float scalar);
+  vec4f operator-=(vec4f v);
 
   void normalize(void);
   vec4f operator*(Quaternion q);  // returns q * v * q' (where q' is the conjugate of q)
+                                  // represents v rotated by q
 };
 
 class Quaternion {
@@ -34,25 +40,31 @@ class Quaternion {
 
   float& operator[](int index);
   Quaternion operator*(float scalar);
-  Quaternion operator*(vec4f v);
+  Quaternion operator*(vec4f v);  // returns q * v as a quaternion
+  vec4f operator*(Quaternion q); // return q * qOther as a vector
   void operator-=(Quaternion q);
   void operator+=(Quaternion q);
 
-  Quaternion conjugate(void);
-  Quaternion normalized(void);
+  Quaternion conjugated(void);
+  void normalize(void);
 };
 
 class MadgwickFilter {
  public:
   float updateFreq;  // frequency at which the filter updates its estimate
-  float beta;        // divergence rate of gyro-derived orientation
+  float beta;        // represents mean zero gyro measurement error
+  float zeta;        // gain used for gyro bias drift compensation
   Quaternion qEst;   // orientation estimate
 
-  MadgwickFilter(float beta, float updateFreq);
+  MadgwickFilter(float updateFreq, float beta, float zeta = 0.0f);
 
-  // (ax, ay, az) - accelerometer measurement
-  // (gx, gy, gz) - gyro measurement
-  // (mx, my, mz) - magnetometer measurement
+  /*
+   * update() should be continuously called at the update frequency
+   *
+   * (ax, ay, az) - accelerometer measurement
+   * (gx, gy, gz) - gyro measurement
+   * (mx, my, mz) - magnetometer measurement
+   */
   void update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
 };
 
