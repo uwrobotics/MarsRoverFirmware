@@ -1,6 +1,5 @@
 #include "MoistureSensor.h"
 #include "mbed.h"
-#include "rover_config.h"
 
 DigitalOut led1(LED1);
 Serial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);

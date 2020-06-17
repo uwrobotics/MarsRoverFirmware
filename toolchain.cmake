@@ -23,9 +23,10 @@ set(PROCESSOR_FLAGS
         -mthumb -mfpu=fpv4-sp-d16
         -mfloat-abi=hard)
 
-# TODO(wmmc88): add target configs
 set(COMMON_FLAGS
         -include ${CMAKE_SOURCE_DIR}/config/mbed_config.h
+        -include ${CMAKE_SOURCE_DIR}/config/rover_config.h
+        -include ${CMAKE_SOURCE_DIR}/config/can_config.h
 
         -MMD
         -MP
