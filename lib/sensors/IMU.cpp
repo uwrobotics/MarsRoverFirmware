@@ -1,88 +1,31 @@
 #include "IMU.h"
 
-IMU::IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin)
-    : spi(mosi_pin, miso_pin, sclk_pin), cs(cs_pin) {}
+IMU::IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin,
+         float madgwickUpdateFreq = DEFAULT_UPDATE_FREQ, float madgwickBeta = DEFAULT_BETA,
+         float madgwickZeta = DEFAULT_ZETA)
+    : spi(mosi_pin, miso_pin, sclk_pin), cs(cs_pin), madgwick(madgwickUpdateFreq, madgwickBeta, madgwickZeta) {}
 
-std::array<double, 3> IMU::get_IMU_lin_accel(void) {
-  update_AGM();
+// TODO: set default AGM values
 
-  std::array<double, 3> lin_accel = {0.0, 0.0, 0.0};
-  double sensitivity_factor;
-
-  // get gyro sensitivity scale factor
-  switch (agm.fss.a) {
-    case 0:
-      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_0;
-      break;
-    case 1:
-      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_1;
-      break;
-    case 2:
-      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_2;
-      break;
-    case 3:
-      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_3;
-      break;
-    default:
-      sensitivity_factor = 1.0;
-      break;
-  }
-
-  // raw accel data is in g's
-  // to convert raw accel data to accel measurement, divide by accel sensitivity factor
-  lin_accel[0] = ((double)agm.acc.x) * ACCELERATION_GRAVITY / sensitivity_factor;
-  lin_accel[1] = ((double)agm.acc.y) * ACCELERATION_GRAVITY / sensitivity_factor;
-  lin_accel[2] = ((double)agm.acc.z) * ACCELERATION_GRAVITY / sensitivity_factor;
-
+std::array<double, 3> IMU::get_lin_accel(void) {
+  std::array<double, 3> lin_accel = {(double)agm_scaled.acc.x, (double)agm_scaled.acc.y, (double)agm_scaled.acc.z};
   return lin_accel;
 }
 
-std::array<double, 3> IMU::get_IMU_ang_vel(void) {
-  update_AGM();
-
-  std::array<double, 3> ang_vel = {0.0, 0.0, 0.0};
-  double sensitivity_factor;
-
-  // get gyro sensitivity scale factor
-  switch (agm.fss.g) {
-    case 0:
-      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_0;
-      break;
-    case 1:
-      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_1;
-      break;
-    case 2:
-      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_2;
-      break;
-    case 3:
-      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_3;
-      break;
-    default:
-      sensitivity_factor = 1.0;
-      break;
-  }
-
-  // raw gyro data is in degrees per second
-  // to convert raw gyro data to gyro measurement, divide by gyro sensitivity factor
-  ang_vel[0] = ((double)agm.gyr.x) / sensitivity_factor * PI / 180;
-  ang_vel[1] = ((double)agm.gyr.y) / sensitivity_factor * PI / 180;
-  ang_vel[2] = ((double)agm.gyr.z) / sensitivity_factor * PI / 180;
-
+std::array<double, 3> IMU::get_ang_vel(void) {
+  std::array<double, 3> ang_vel = {(double)agm_scaled.gyr.x, (double)agm_scaled.gyr.y, (double)agm_scaled.gyr.z};
   return ang_vel;
 }
 
-std::array<double, 3> IMU::get_IMU_mag_field(void) {
-  update_AGM();
-
-  std::array<double, 3> mag_field = {0.0, 0.0, 0.0};
-
-  // raw mag data is in micro-Teslas
-  // to convert raw mag data to mag measurement, multiply by mag sensitivity factor
-  mag_field[0] = ((double)agm.mag.x) * MAG_SENSITIVITY_FACTOR;
-  mag_field[1] = ((double)agm.mag.y) * MAG_SENSITIVITY_FACTOR;
-  mag_field[2] = ((double)agm.mag.z) * MAG_SENSITIVITY_FACTOR;
-
+std::array<double, 3> IMU::get_mag_field(void) {
+  std::array<double, 3> mag_field = {(double)agm_scaled.mag.x, (double)agm_scaled.mag.y, (double)agm_scaled.mag.z};
   return mag_field;
+}
+
+std::array<double, 4> IMU::get_orientation(void) {
+  std::array<double, 4> orientation = {(double)madgwick.qEst[0], (double)madgwick.qEst[1], (double)madgwick.qEst[2],
+                                       (double)madgwick.qEst[3]};
+  return orientation;
 }
 
 Status_e IMU::update_AGM(void) {
@@ -115,24 +58,27 @@ Status_e IMU::update_AGM(void) {
    */
 
   // update agm values with buffer data
-  agm.acc.x = ((buffer[0] << 8) | (buffer[1] & 0xFF));
-  agm.acc.y = ((buffer[2] << 8) | (buffer[3] & 0xFF));
-  agm.acc.z = ((buffer[4] << 8) | (buffer[5] & 0xFF));
+  agm_raw.acc.x = ((buffer[0] << 8) | (buffer[1] & 0xFF));
+  agm_raw.acc.y = ((buffer[2] << 8) | (buffer[3] & 0xFF));
+  agm_raw.acc.z = ((buffer[4] << 8) | (buffer[5] & 0xFF));
 
-  agm.gyr.x = ((buffer[6] << 8) | (buffer[7] & 0xFF));
-  agm.gyr.y = ((buffer[8] << 8) | (buffer[9] & 0xFF));
-  agm.gyr.z = ((buffer[10] << 8) | (buffer[11] & 0xFF));
+  agm_raw.gyr.x = ((buffer[6] << 8) | (buffer[7] & 0xFF));
+  agm_raw.gyr.y = ((buffer[8] << 8) | (buffer[9] & 0xFF));
+  agm_raw.gyr.z = ((buffer[10] << 8) | (buffer[11] & 0xFF));
 
   // disregard temperature data and mag whoami
 
-  agm.mag_stat_1 = buffer[15];
+  agm_raw.mag_stat_1 = buffer[15];
 
   // mag data is read little endian
-  agm.mag.x = ((buffer[17] << 8) | (buffer[16] & 0xFF));
-  agm.mag.y = ((buffer[19] << 8) | (buffer[18] & 0xFF));
-  agm.mag.z = ((buffer[21] << 8) | (buffer[20] & 0xFF));
+  agm_raw.mag.x = ((buffer[17] << 8) | (buffer[16] & 0xFF));
+  agm_raw.mag.y = ((buffer[19] << 8) | (buffer[18] & 0xFF));
+  agm_raw.mag.z = ((buffer[21] << 8) | (buffer[20] & 0xFF));
 
-  agm.mag_stat_2 = buffer[22];
+  agm_raw.mag_stat_2 = buffer[22];
+
+  // update scaled agm values
+  update_AGM_scaled();
 
   // read full scale settings (to be able to compute scaled values)
   retval = set_bank(2);  // user bank 2
@@ -144,7 +90,7 @@ Status_e IMU::update_AGM(void) {
   if (status != Status_Ok) {
     return status;
   }
-  agm.fss.a =
+  agm_raw.fss.a =
       acfg.ACCEL_FS_SEL;  // Sparkfun notes:
                           // Worth noting that without explicitly setting the FS range of the accelerometer it was
                           // showing the register value for +/- 2g but the reported values were actually scaled to the
@@ -159,7 +105,7 @@ Status_e IMU::update_AGM(void) {
   if (status != Status_Ok) {
     return status;
   }
-  agm.fss.g = gcfg1.GYRO_FS_SEL;
+  agm_raw.fss.g = gcfg1.GYRO_FS_SEL;
 
   // TODO: What to do with this value??
   ICM_20948_ACCEL_CONFIG_2_t acfg2;
@@ -169,6 +115,71 @@ Status_e IMU::update_AGM(void) {
   }
 
   return retval;
+}
+
+void IMU::update_AGM_scaled() {
+  float sensitivity_factor;
+
+  // get accel sensitivity scale factor
+  switch (agm_raw.fss.a) {
+    case 0:
+      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_0;
+      break;
+    case 1:
+      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_1;
+      break;
+    case 2:
+      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_2;
+      break;
+    case 3:
+      sensitivity_factor = ACCEL_SENSITIVITY_FACTOR_3;
+      break;
+    default:
+      sensitivity_factor = 1.0;
+      break;
+  }
+
+  // raw accel data is in g's
+  // to convert raw accel data to accel measurement, divide by accel sensitivity factor
+  agm_scaled.acc.x = ((float)agm_raw.acc.x) * ACCELERATION_GRAVITY / sensitivity_factor;
+  agm_scaled.acc.y = ((float)agm_raw.acc.y) * ACCELERATION_GRAVITY / sensitivity_factor;
+  agm_scaled.acc.z = ((float)agm_raw.acc.z) * ACCELERATION_GRAVITY / sensitivity_factor;
+
+  // get gyro sensitivity scale factor
+  switch (agm_raw.fss.g) {
+    case 0:
+      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_0;
+      break;
+    case 1:
+      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_1;
+      break;
+    case 2:
+      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_2;
+      break;
+    case 3:
+      sensitivity_factor = GYRO_SENSITIVITY_FACTOR_3;
+      break;
+    default:
+      sensitivity_factor = 1.0;
+      break;
+  }
+
+  // raw gyro data is in degrees per second
+  // to convert raw gyro data to gyro measurement, divide by gyro sensitivity factor
+  agm_scaled.gyr.x = ((float)agm_raw.gyr.x) / sensitivity_factor * PI / 180;
+  agm_scaled.gyr.y = ((float)agm_raw.gyr.y) / sensitivity_factor * PI / 180;
+  agm_scaled.gyr.z = ((float)agm_raw.gyr.z) / sensitivity_factor * PI / 180;
+
+  // raw mag data is in micro-Teslas
+  // to convert raw mag data to mag measurement, multiply by mag sensitivity factor
+  agm_scaled.mag.x = ((float)agm_raw.mag.x) * MAG_SENSITIVITY_FACTOR;
+  agm_scaled.mag.y = ((float)agm_raw.mag.y) * MAG_SENSITIVITY_FACTOR;
+  agm_scaled.mag.z = ((float)agm_raw.mag.z) * MAG_SENSITIVITY_FACTOR;
+}
+
+void IMU::update_orientation(void) {
+  madgwick.update(agm_scaled.acc.x, agm_scaled.acc.y, agm_scaled.acc.z, agm_scaled.gyr.x, agm_scaled.gyr.y,
+                  agm_scaled.gyr.z, agm_scaled.mag.x, agm_scaled.mag.y, agm_scaled.mag.z);
 }
 
 Status_e IMU::read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len) {

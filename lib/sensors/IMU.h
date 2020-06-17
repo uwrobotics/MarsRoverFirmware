@@ -22,6 +22,7 @@
 #include <array>
 
 #include "../../config/mbed_config.h"  // so vscode doesn't complain about the SPI class being undefined
+#include "IMU_MadgwickFilter.h"
 #include "IMU_util.h"
 #include "mbed.h"
 
@@ -102,22 +103,36 @@ typedef struct {
   uint8_t FIFO_WM_EN_0 : 1;
 } INT_enable_t;
 
-// Structure to store x, y, z axes
+// Structure to store x, y, z axes (raw)
 typedef struct {
   int16_t x;
   int16_t y;
   int16_t z;
-} Axes;
+} Axes_raw;
 
-// Structure to hold accel, gyro, and mag data
+// Structure to hold accel, gyro, and mag data (raw)
 typedef struct {
-  Axes acc;
-  Axes gyr;
-  Axes mag;
+  Axes_raw acc;
+  Axes_raw gyr;
+  Axes_raw mag;
   uint8_t mag_stat_1;
   uint8_t mag_stat_2;
   FSS_t fss;  // full-scale range settings
-} AGM_t;
+} AGM_raw_t;
+
+// Structure to store x, y, z axes (scaled)
+typedef struct {
+  float x;
+  float y;
+  float z;
+} Axes_scaled;
+
+// Structure to hold accel, gyro, and mag data (scaled)
+typedef struct {
+  Axes_scaled acc;
+  Axes_scaled gyr;
+  Axes_scaled mag;
+} AGM_scaled_t;
 
 // --------------------------------------------------------------------------------
 
@@ -127,7 +142,9 @@ class IMU {
   Status_e write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len);
 
  public:
-  IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin);
+  IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin,
+      float madgwickUpdateFreq = DEFAULT_UPDATE_FREQ, float madgwickBeta = DEFAULT_BETA,
+      float madgwickZeta = DEFAULT_ZETA);
 
   // SPI
   SPI spi;
@@ -137,13 +154,20 @@ class IMU {
   Status_e init_IMU(void);
 
   // Measurement data
-  AGM_t agm;
-  Status_e update_AGM(void);
+  AGM_raw_t agm_raw;
+  AGM_scaled_t agm_scaled;
+  void update_AGM_scaled(void);  // automatically called within update_AGM()
+  Status_e update_AGM(void);     // grab sensor readings for AGM data
   Status_e data_ready(void);
 
-  std::array<double, 3> get_IMU_lin_accel(void);  // m/s^2
-  std::array<double, 3> get_IMU_ang_vel(void);    // rad/s
-  std::array<double, 3> get_IMU_mag_field(void);  // Tesla
+  std::array<double, 3> get_lin_accel(void);    // m/s^2
+  std::array<double, 3> get_ang_vel(void);      // rad/s
+  std::array<double, 3> get_mag_field(void);    // Tesla
+  std::array<double, 4> get_orientation(void);  // orientation quaternion
+
+  // Madgwick filter to compute orientation
+  MadgwickFilter madgwick;
+  void update_orientation(void);  // should be continuously called at the filter's update frequency
 
   // ID
   Status_e get_whoami(uint8_t *whoami);

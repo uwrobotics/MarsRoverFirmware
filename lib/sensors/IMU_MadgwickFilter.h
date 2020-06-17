@@ -11,6 +11,10 @@
 
 #include <stdexcept>
 
+#define DEFAULT_UPDATE_FREQ 512.0f
+#define DEFAULT_BETA        0.1f
+#define DEFAULT_ZETA        0.0f
+
 #ifndef GYRO_BIAS_DRIFT_COMPENSATION
 #define GYRO_BIAS_DRIFT_COMPENSATION  // define to apply gyro bias drift compensation in filter
 #endif
@@ -41,7 +45,7 @@ class Quaternion {
   float& operator[](int index);
   Quaternion operator*(float scalar);
   Quaternion operator*(vec4f v);  // returns q * v as a quaternion
-  vec4f operator*(Quaternion q); // return q * qOther as a vector
+  vec4f operator*(Quaternion q);  // return q * qOther as a vector
   void operator-=(Quaternion q);
   void operator+=(Quaternion q);
 
@@ -56,7 +60,7 @@ class MadgwickFilter {
   float zeta;        // gain used for gyro bias drift compensation
   Quaternion qEst;   // orientation estimate
 
-  MadgwickFilter(float updateFreq, float beta, float zeta = 0.0f);
+  MadgwickFilter(float updateFreq, float beta, float zeta = DEFAULT_ZETA);
 
   /*
    * update() should be continuously called at the update frequency
