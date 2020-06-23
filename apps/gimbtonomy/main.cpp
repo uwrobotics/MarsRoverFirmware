@@ -4,10 +4,11 @@
  */
 
 #include "CANMsg.h"
-#include "Neopixel_Blocking.h"
 #include "mbed.h"
+#include "Neopixel_Blocking.h"
+#include "hw_bridge.h"
 
-CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+CAN can(CAN1_RX, CAN1_TX, ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;
 // CAN_RX = PB_8, CAN_TX = PB_9
 Neopixel_Blocking neopixel(16, LED_MTRX);
@@ -15,7 +16,7 @@ Neopixel_Blocking neopixel(16, LED_MTRX);
 // Color is specified by the data inside the packet
 
 void initCAN() {
-  can.filter(ROVER_CANID_FIRST_GIMBTONOMY_RX, ROVER_CANID_FILTER_MASK, CANStandard);
+  can.filter(ROVERCONFIG::ROVER_CANID_FIRST_GIMBTONOMY_RX, ROVERCONFIG::ROVER_CANID_FILTER_MASK, CANStandard);
 }
 
 void handleSetNeoPixelColor(CANMsg *p_newMsg) {

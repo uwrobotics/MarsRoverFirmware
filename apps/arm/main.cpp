@@ -209,7 +209,7 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {{CANID::SET_OVERRIDE_FLAGS, &se
 /******************/
 
 // Interface and recieve buffer
-CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+CAN can1(CAN1_RX, CAN1_TX, ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 // CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
 
 // Incoming message processor
@@ -253,42 +253,42 @@ void txCANProcessor() {
   } motionReport;
 
   while (true) {
-    txMsg.id              = REPORT_TURNTABLE_MOTION;
+    txMsg.id              = CANID::REPORT_TURNTABLE_MOTION;
     motionReport.position = turnTableActuator.getAngle_Degrees();
     motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay_millisec);
 
-    txMsg.id              = REPORT_SHOULDER_MOTION;
+    txMsg.id              = CANID::REPORT_SHOULDER_MOTION;
     motionReport.position = shoulderActuator.getAngle_Degrees();
     motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay_millisec);
 
-    txMsg.id              = REPORT_ELBOW_MOTION;
+    txMsg.id              = CANID::REPORT_ELBOW_MOTION;
     motionReport.position = elbowActuator.getAngle_Degrees();
     motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay_millisec);
 
-    txMsg.id              = REPORT_WRIST_PITCH_MOTION;
+    txMsg.id              = CANID::REPORT_WRIST_PITCH_MOTION;
     motionReport.position = wristController.getPitchAngle_Degrees();
     motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay_millisec);
 
-    txMsg.id              = REPORT_WRIST_PITCH_MOTION;
+    txMsg.id              = CANID::REPORT_WRIST_PITCH_MOTION;
     motionReport.position = wristController.getRollAngle_Degrees();
     motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay_millisec);
 
-    txMsg.id              = REPORT_CLAW_MOTION;
+    txMsg.id              = CANID::REPORT_CLAW_MOTION;
     motionReport.position = clawController.getGapDistance_Cm();
     motionReport.velocity = clawController.getGapVelocity_CmPerSec();
     txMsg.setPayload(motionReport);
