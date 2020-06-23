@@ -5,9 +5,7 @@
 
 #include "CANMsg.h"
 #include "Neopixel_Blocking.h"
-#include "can_config.h"
 #include "mbed.h"
-#include "rover_config.h"
 
 CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;

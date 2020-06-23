@@ -8,7 +8,6 @@
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
 #include "Servo.h"
-#include "can_config.h"
 #include "mbed.h"
 #include "mbed_config.h"
 
