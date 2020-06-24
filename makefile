@@ -113,9 +113,10 @@ LIB_SRC_C += $(wildcard $(LIB_PATH)/*/*.c)
 
 APP_SRC_CPP += $(wildcard $(APP_PATH)/*.cpp)
 LIB_SRC_CPP += $(wildcard $(LIB_PATH)/*/*.cpp)
+SUBMODULE_SRC_CPP = $(wildcard $(SUBMODULE_PATH)/*.cpp)
 
 UWRT_SRC_C   = $(APP_SRC_C)   $(LIB_SRC_C)
-UWRT_SRC_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
+UWRT_SRC_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP) $(SUBMODULE_SRC_CPP)
 
 TARGET_SRC += ${TARGET_PATH}/PeripheralPins.c
 TARGET_SRC += ${TARGET_PATH}/system_clock.c
