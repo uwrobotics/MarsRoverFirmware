@@ -1,15 +1,79 @@
 cmake_minimum_required(VERSION 3.16.5)
 
-set( CMAKE_VERBOSE_MAKEFILE on )
-
 # TODO(wmmc88): disable in tree builds
 
+set(CMAKE_VERBOSE_MAKEFILE on)
 include(toolchain.cmake)
-include(mbed-os.cmake)
 
+# Toolchain must be included before project declaration
 project(MarsRoverFirmware)
 
-#add_executable(${PROJECT_NAME} apps/test-blinky/main.cpp)
-#target_link_libraries(${PROJECT_NAME} hello)
+# Global Settings
+set(COMPILE_FLAGS
+        -MMD
+        -MP
 
+        -O3
+        -g
+
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wvla
+        -Werror
+
+        -Wno-unused-parameter
+        -Wno-missing-field-initializers
+
+        -ffunction-sections
+        -fdata-sections
+        -fomit-frame-pointer
+        -funsigned-char
+
+        -fno-exceptions
+        -fno-delete-null-pointer-checks
+
+        -fstack-protector-strong
+
+        $<$<COMPILE_LANGUAGE:ASM>:-xassembler-with-cpp>
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+        $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/mbed_config.h>
+        $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/rover_config.h>
+        $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/can_config.h>
+        )
+add_compile_options(${PROCESSOR_FLAGS} ${COMPILE_FLAGS})
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
+
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+#
+include(mbed-os.cmake)
+#include_directories(libs) TODO(wmmc88): add libs
+
+if (NOT DEFINED APP)
+    message(FATAL_ERROR "APP cache variable not set")
+else ()
+    # TODO(wmmc88): check if APP matches folder in apps and TARGET matches folder in targets
+endif ()
+if (NOT DEFINED TARGET)
+    message(FATAL_ERROR "TARGET cache variable not set")
+endif ()
+message(STATUS "Configuring and generating build for ${APP} app on ${TARGET} target")
+
+# TODO(wmmc88): check if its in supported configuration list and warn if not in list
+
+# TODO(wmmc88): selectively include target based off above
+add_subdirectory(targets/${TARGET})
+
+add_executable(test-blinky.elf)
+target_sources(test-blinky.elf PRIVATE apps/test-blinky/main.cpp)
+target_link_libraries(test-blinky.elf PUBLIC ${TARGET}-board mbed-os) # TODO(wmmc88): remove target-board dep
+
+target_precompile_headers(test-blinky.elf REUSE_FROM mbed-os)
+
+set_target_properties(test-blinky.elf PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT_OUTPUT_PATH})
+add_dependencies(test-blinky.elf linker-script)
 

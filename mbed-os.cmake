@@ -1,10 +1,3 @@
-set(MEMORY_DEFINITIONS
-        MBED_ROM_START=0x8000000
-        MBED_ROM_SIZE=0x80000
-        MBED_RAM_START=0x20000000
-        MBED_RAM_SIZE=0x20000
-        )
-
 set(TARGET_DEFINITIONS
         STM32F446xx
         TARGET_CORTEX
@@ -25,7 +18,22 @@ set(TARGET_DEFINITIONS
         TOOLCHAIN_GCC_ARM
         )
 
-add_library(mbed-os)
+add_library(mbed-os-target-interface INTERFACE)
+target_include_directories(mbed-os-target-interface INTERFACE
+        mbed-os
+        mbed-os/cmsis/TARGET_CORTEX_M
+        mbed-os/hal
+        mbed-os/platform
+        mbed-os/targets/TARGET_STM
+        mbed-os/targets/TARGET_STM/TARGET_STM32F4
+        mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/CMSIS
+        mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/STM32F4xx_HAL_Driver
+        mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/STM32F4xx_HAL_Driver/Legacy
+        mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE
+        )
+target_compile_definitions(mbed-os-target-interface INTERFACE ${MEMORY_DEFINITIONS} ${TARGET_DEFINITIONS})
+
+add_library(mbed-os OBJECT) # TODO(wmmc88): .a lib
 target_sources(mbed-os PRIVATE
         mbed-os/drivers/source/AnalogIn.cpp
         mbed-os/drivers/source/AnalogOut.cpp
@@ -63,7 +71,6 @@ target_sources(mbed-os PRIVATE
         mbed-os/events/source/equeue_posix.c
         mbed-os/events/source/EventQueue.cpp
         mbed-os/events/source/mbed_shared_queues.cpp
-        mbed-os/features/frameworks/mbed-client-randlib/source/randLIB.c
         mbed-os/hal/LowPowerTickerWrapper.cpp
         mbed-os/hal/mbed_compat.c
         mbed-os/hal/mbed_critical_section_api.c
@@ -271,8 +278,7 @@ target_sources(mbed-os PRIVATE
         mbed-os/targets/TARGET_STM/USBPhy_STM32.cpp
         mbed-os/targets/TARGET_STM/watchdog_api.c
         )
-target_include_directories(mbed-os PRIVATE
-        mbed-os
+target_include_directories(mbed-os PUBLIC
         mbed-os/cmsis
         mbed-os/cmsis/TARGET_CORTEX_M
         mbed-os/drivers
@@ -299,15 +305,17 @@ target_include_directories(mbed-os PRIVATE
         mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source
         mbed-os/targets/TARGET_STM
         mbed-os/targets/TARGET_STM/TARGET_STM32F4
-        mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/CMSIS
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/STM32F4xx_HAL_Driver
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/STM32F4xx_HAL_Driver/Legacy
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE
-        mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE
         )
-target_compile_definitions(mbed-os PUBLIC ${MEMORY_DEFINITIONS} ${TARGET_DEFINITIONS})
-target_compile_options(mbed-os PUBLIC -w) # Disable all warnings from mbed code
+target_compile_options(mbed-os PRIVATE -w) # Disable all warnings from mbed code
+target_link_libraries(mbed-os PUBLIC ${TARGET}-board)
+target_precompile_headers(mbed-os
+        PUBLIC
+        $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/mbed-os/mbed.h>
+        )
 
 
 

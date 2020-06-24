@@ -19,6 +19,7 @@
 #define __MBED_CONFIG_DATA__
 
 #include "rover_config.h"
+#include "mbed_config_target.h"
 
 // MBED Debug configuration
 #define __MBED__
@@ -64,6 +65,7 @@
 #define MBED_CONF_PLATFORM_STDIO_CONVERT_TTY_NEWLINES        0                               // set by library:platform
 #define MBED_CONF_PLATFORM_STDIO_FLUSH_AT_EXIT               1                               // set by library:platform
 #define MBED_CONF_PLATFORM_USE_MPU                           1                               // set by library:platform
+#define MBED_CONF_RTOS_API_PRESENT                           1                               // set by library:rtos
 #define MBED_CONF_RTOS_IDLE_THREAD_STACK_SIZE                512                             // set by library:rtos
 #define MBED_CONF_RTOS_IDLE_THREAD_STACK_SIZE_DEBUG_EXTRA    128                             // set by library:rtos[STM]
 #define MBED_CONF_RTOS_IDLE_THREAD_STACK_SIZE_TICKLESS_EXTRA 256                             // set by library:rtos
