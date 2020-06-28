@@ -40,11 +40,11 @@ set(LINKER_FLAGS
         -specs=nosys.specs
         LINKER:--gc-sections
         LINKER:--wrap=main
-        LINKER:--wrap=_malloc_r
-        LINKER:--wrap=_free_r
-        LINKER:--wrap=_realloc_r
-        LINKER:--wrap=_memalign_r
-        LINKER:--wrap=_calloc_r
+        LINKER:--wrap=__malloc_r
+        LINKER:--wrap=__free_r
+        LINKER:--wrap=__realloc_r
+        LINKER:--wrap=__memalign_r
+        LINKER:--wrap=__calloc_r
         LINKER:--wrap=exit
         LINKER:--wrap=atexit
         LINKER:-n
