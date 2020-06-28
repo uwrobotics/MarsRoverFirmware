@@ -73,7 +73,7 @@
  * Includes
  */
 
-#include "PID.h"
+#include "../include/PID.h"
 
 PID::PID(float Kc, float tauI, float tauD, float interval) {
   usingFeedForward = false;

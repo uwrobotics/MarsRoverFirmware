@@ -1,4 +1,4 @@
-#include "CANBuffer.h"
+#include "../include/CANBuffer.h"
 
 CANBuffer::CANBuffer(CAN &CANInterface, BufferType type) : r_CANInterface(CANInterface) {
   if (type == rx) {

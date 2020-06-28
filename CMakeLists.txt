@@ -51,7 +51,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #
 include(mbed-os.cmake)
-#include_directories(libs) TODO(wmmc88): add libs
+
+add_subdirectory(lib/can)
+add_subdirectory(lib/controllers)
+add_subdirectory(lib/miscellaneous)
+add_subdirectory(lib/neopixel)
+add_subdirectory(lib/pid)
+add_subdirectory(lib/sensors)
+add_subdirectory(lib/servo)
 
 if (NOT DEFINED APP)
     message(FATAL_ERROR "APP cache variable not set")

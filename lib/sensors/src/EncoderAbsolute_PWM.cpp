@@ -1,5 +1,5 @@
 
-#include "EncoderAbsolute_PWM.h"
+#include "../include/EncoderAbsolute_PWM.h"
 
 EncoderAbsolute_PWM::EncoderAbsolute_PWM(t_encoderConfig encoderConfig)
     : Encoder(encoderConfig),

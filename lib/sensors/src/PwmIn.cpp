@@ -1,4 +1,4 @@
-#include "PwmIn.h"
+#include "../include/PwmIn.h"
 
 PwmIn::PwmIn(PinName pwmSense, int numSamplesToAverage)
     : m_pwmSense(pwmSense), m_numSamplesToAverage(numSamplesToAverage) {

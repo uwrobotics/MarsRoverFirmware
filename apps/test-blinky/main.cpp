@@ -8,7 +8,6 @@
 
 DigitalOut led1(LED1);
 
-#define SLEEP_TIME          500  // (msec)
 #define PRINT_AFTER_N_LOOPS 20
 
 // main() runs in its own thread in the OS
@@ -19,7 +18,7 @@ int main() {
   while (true) {
     // Blink LED and wait 0.5 seconds
     led1 = !led1;
-    wait_ms(SLEEP_TIME);
+    ThisThread::sleep_for(5s);
 
     if ((0 == count) || (PRINT_AFTER_N_LOOPS == count)) {
       // Following the main thread wait, report on the current system status

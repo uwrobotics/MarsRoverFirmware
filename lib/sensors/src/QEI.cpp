@@ -126,7 +126,7 @@
 /**
  * Includes
  */
-#include "QEI.h"
+#include "../include/QEI.h"
 
 QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, float movingAvgSmoothingParam)
     : channelA_(channelA), channelB_(channelB), index_(index), movingAvgSmoothingParam_(movingAvgSmoothingParam) {

@@ -1,4 +1,4 @@
-#include "Motor.h"
+#include "../include/Motor.h"
 
 #include <cmath>
 

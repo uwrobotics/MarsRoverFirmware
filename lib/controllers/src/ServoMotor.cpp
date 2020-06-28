@@ -1,4 +1,4 @@
-#include "ServoMotor.h"
+#include "../include/ServoMotor.h"
 
 #include <cmath>
 

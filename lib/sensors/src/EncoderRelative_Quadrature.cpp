@@ -1,5 +1,5 @@
 
-#include "EncoderRelative_Quadrature.h"
+#include "../include/EncoderRelative_Quadrature.h"
 
 EncoderRelative_Quadrature::EncoderRelative_Quadrature(t_encoderConfig encoderConfig)
     : Encoder(encoderConfig),
