@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16.5)
 
-# TODO(wmmc88): disable in tree builds
+set(CMAKE_DISABLE_SOURCE_CHANGES ON)
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 include(toolchain.cmake)
@@ -49,9 +50,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#
+# Include mbed-os
 include(mbed-os.cmake)
 
+# Include library targets
 add_subdirectory(lib/can)
 add_subdirectory(lib/controllers)
 add_subdirectory(lib/miscellaneous)
@@ -65,6 +67,7 @@ if (NOT DEFINED APP)
 else ()
     # TODO(wmmc88): check if APP matches folder in apps and TARGET matches folder in targets
 endif ()
+
 if (NOT DEFINED TARGET)
     message(FATAL_ERROR "TARGET cache variable not set")
 endif ()
@@ -72,15 +75,12 @@ message(STATUS "Configuring and generating build for ${APP} app on ${TARGET} tar
 
 # TODO(wmmc88): check if its in supported configuration list and warn if not in list
 
-# TODO(wmmc88): selectively include target based off above
 add_subdirectory(targets/${TARGET})
 
 add_executable(test-blinky.elf)
 target_sources(test-blinky.elf PRIVATE apps/test-blinky/main.cpp)
 target_link_libraries(test-blinky.elf PUBLIC ${TARGET}-board mbed-os) # TODO(wmmc88): remove target-board dep
-
 target_precompile_headers(test-blinky.elf REUSE_FROM mbed-os)
-
 set_target_properties(test-blinky.elf PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT_OUTPUT_PATH})
 add_dependencies(test-blinky.elf linker-script)
 
