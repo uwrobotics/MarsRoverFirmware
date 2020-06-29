@@ -1,6 +1,6 @@
 #include "MoistureSensor.h"
-#include "mbed.h"
 #include "hw_bridge.h"
+#include "mbed.h"
 
 DigitalOut led1(LED1);
 
@@ -27,7 +27,7 @@ int main() {
     ThisThread::sleep_for(100);
 
     printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates unsuccessful
-                                               // initialization
+                                            // initialization
     moisture = sensor.Read_Moisture();
     printf("Moisture: %d \r\n", moisture);
 
