@@ -34,7 +34,7 @@ int main() {
     ThisThread::sleep_for(100);
 
     printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0 indicates
-                                                  // unsuccessful initialization
+                                               // unsuccessful initialization
     temperature = sensor.Read_Temperature();
     printf("Temperature: %f \r\n", temperature);
 

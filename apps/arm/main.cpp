@@ -7,8 +7,8 @@
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
-#include "hw_bridge.h"
 #include "Servo.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 #include "mbed_config.h"
 
