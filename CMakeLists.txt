@@ -62,24 +62,25 @@ add_subdirectory(lib/pid)
 add_subdirectory(lib/sensors)
 add_subdirectory(lib/servo)
 
+# TODO(wmmc88): check if its in supported configuration list and warn if not in list. This should be in wrapper makefile
 if (NOT DEFINED APP)
-    message(FATAL_ERROR "APP cache variable not set")
-else ()
-    # TODO(wmmc88): check if APP matches folder in apps and TARGET matches folder in targets
+    message(FATAL_ERROR "APP variable not set in CACHE or ENV")
+elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/apps/${APP}")
+    message(FATAL_ERROR "${APP} app does not exist in the apps folder")
 endif ()
 
 if (NOT DEFINED TARGET)
-    message(FATAL_ERROR "TARGET cache variable not set")
+    message(FATAL_ERROR "TARGET variable not set in CACHE or ENV")
+elseif(NOT EXISTS "${CMAKE_SOURCE_DIR}/targets/${TARGET}")
+    message(FATAL_ERROR "${TARGET} target does not exist in the targets folder")
 endif ()
 message(STATUS "Configuring and generating build for ${APP} app on ${TARGET} target")
-
-# TODO(wmmc88): check if its in supported configuration list and warn if not in list
-
+# Add cmakelist for target-specific files
 add_subdirectory(targets/${TARGET})
 
 add_executable(test-blinky.elf)
 target_sources(test-blinky.elf PRIVATE apps/test-blinky/main.cpp)
-target_link_libraries(test-blinky.elf PUBLIC ${TARGET}-board mbed-os) # TODO(wmmc88): remove target-board dep
+target_link_libraries(test-blinky.elf PUBLIC mbed-os)
 target_precompile_headers(test-blinky.elf REUSE_FROM mbed-os)
 set_target_properties(test-blinky.elf PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT_OUTPUT_PATH})
 add_dependencies(test-blinky.elf linker-script)
