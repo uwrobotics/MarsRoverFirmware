@@ -36,7 +36,8 @@
 #define USE_HAL_DRIVER
 #define USE_FULL_LL_DRIVER
 
-// MBED configuration parameters TODO(wmmc88): update based on mbed_lib.jsons https://os.mbed.com/docs/mbed-os/v6.0/program-setup/advanced-configuration.html
+// MBED configuration parameters TODO(wmmc88): update based on mbed_lib.jsons
+// https://os.mbed.com/docs/mbed-os/v6.0/program-setup/advanced-configuration.html and remove any unused params
 #define LPTICKER_DELAY_TICKS                                 1     // set by target:FAMILY_STM32
 #define MBED_CONF_DRIVERS_UART_SERIAL_RXBUF_SIZE             256   // set by library:drivers
 #define MBED_CONF_DRIVERS_UART_SERIAL_TXBUF_SIZE             256   // set by library:drivers
