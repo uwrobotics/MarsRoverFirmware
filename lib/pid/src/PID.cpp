@@ -251,7 +251,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   Timer timer;
   bool isMax, isMin, justchanged;
   double absMax, absMin, refVal, Ku, Pu;
-  unsigned long peak1, peak2;
+  std::chrono::microseconds peak1, peak2;
   int peakType, peakCount;
   double lastInputs[101] = {0};
   double peaks[10];
@@ -261,7 +261,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   if (autoTuneConfig == nullptr) {
     autoTuneConfig             = new PID::t_AutoTuneConfig();
     autoTuneConfig->nLookBack  = 40;
-    autoTuneConfig->sampleTime = 250;
+    autoTuneConfig->sampleTime = 250ms;
     float outputStart          = outMax_ / 2;
     if (outputStart < outMin_) outputStart = outMin_;
     autoTuneConfig->outputStart = outputStart;
@@ -271,7 +271,8 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   }
 
   // initialize variables
-  peakType = peakCount = peak1 = peak2 = 0;
+  peakType = peakCount = 0;
+  peak1 = peak2 = 0us;
   justchanged                          = false;
   refVal = absMax = absMin = autoTuneConfig->setpoint;
 
@@ -287,7 +288,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
       break;
     }
 
-    unsigned long now = timer.read_ms();
+    std::chrono::microseconds timer_elapsed_time = timer.elapsed_time();
 
     refVal = *input_;
 
@@ -319,7 +320,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
         justchanged = true;
         peak2       = peak1;
       }
-      peak1            = now;
+      peak1            = timer_elapsed_time;
       peaks[peakCount] = refVal;
 
     } else if (isMin) {
@@ -342,13 +343,13 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     justchanged = false;
 
     // wait for sample time interval
-    while ((timer.read_ms() - now) < autoTuneConfig->sampleTime)
+    while ((timer.elapsed_time() - timer_elapsed_time) < autoTuneConfig->sampleTime)
       ;
   }
 
-  // calculate autotune parameters
-  Ku = 4 * (2 * autoTuneConfig->oStep) / ((absMax - absMin) * 3.14159);
-  Pu = (double)(peak1 - peak2) / 1000;
+  // calculate autotune parameters TODO: FIXME! Clean this up. Where are these magic numbers from(@tandronescu)?
+  Ku = 4 * (2 * autoTuneConfig->oStep) / ((absMax - absMin) * M_PI);
+  Pu = std::chrono::duration_cast<std::chrono::duration<double>>(peak1 - peak2).count(); // in seconds
 
   // if we only PI control is desired, alternate calculations and TauD set to 0
   if (PI) {
