@@ -153,7 +153,7 @@ On Ubuntu
 
 See the [CANable Getting Started guide](https://canable.io/getting-started.html) for more information including Windows support.
 
-## CMake
+## CMake: Adding mbed-os features
 This repository using our own custom CMake files to configure and compile our applications, including mbed-os. Only certain parts of mbed are currently compiled into the mbed-os library target. If other mbed features are required, add the required sources to the `target_sources` property and the required include paths to the `target_include_directories`of the `mbed-os` target. 
 
 **Tip:** These commands may be useful in determining what files you need to include:
@@ -164,3 +164,16 @@ find <path to desired feature folder> -name "*.cpp" -or -name "*.cxx" -or -name 
 // Outputs a alphabetically-sorted list of the paths to all header files within a directory and all subdirectories 
 find <path to desired feature folder> -name "*.hpp" -or -name "*.h"| sort -n
 ```
+## Updating Files from Upstream
+Most of this repositories upstream code is contained within the `mbed-os` git submodule and can be updated by just changing the tag that the submodule is pinned to; however, there are some exceptions. These exceptions must be manually updated:
+* `test-blinky/main.cpp`: This file is a mirror of the main.cpp from the https://github.com/ARMmbed/mbed-os-example-blinky repository
+* `targets/nucleo/include/PeripheralNames.h`: This file is from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/include/PinNames.h`: This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/include/stm32f4xx_hal_conf.h`: This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/src/PeripheralPins.h`: This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/src/system_clock.c` : This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/include/PeripheralNames.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/include/PinNames.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/include/stm32f4xx_hal_conf.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/src/PeripheralPins.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/src/system_clock.c` : This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
