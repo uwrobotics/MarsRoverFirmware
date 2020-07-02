@@ -1,0 +1,87 @@
+# The CI Matrix must be updated to match this file or else the "matching supported build configurations" stage of CI will fail # TODO(wmmc88): "implement matching supported build configurations" stage
+
+
+# Rover Apps
+arm:
+  - arm
+
+gimbtonomy:
+  - gimbtonomy
+
+safety:
+  - safety
+
+science:
+  - science
+
+# Test Apps
+test-aeat-8800:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-actuator-controller:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-blinky:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-blockingneo:
+  - nucleo
+  - gimbtonomy
+
+test-can:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-enc-abs-pwm:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-moisture:
+  - nucleo
+  - science
+
+test-pid:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-pwm:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-pwmin:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
+
+test-servo:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+  - science
