@@ -69,10 +69,23 @@ add_custom_command(OUTPUT ${LINKER_SCRIPT_OUTPUT_PATH}
 add_custom_target(linker-script DEPENDS ${LINKER_SCRIPT_OUTPUT_PATH})
 add_link_options(-T${LINKER_SCRIPT_OUTPUT_PATH} ${LINKER_FLAGS} ${PROCESSOR_FLAGS} ${MEMORY_DEFINITIONS_FOR_LINKER} ${LINKER_SYS_LIBS})
 
-# custom command to use objcopy to create .bin files out of ELF files
-function(make_mbed_firmware INPUT)
-    add_custom_command(TARGET ${INPUT}
-            COMMAND ${CMAKE_OBJCOPY} -O binary ${INPUT} ${INPUT}_${MBED_TARGET}.bin
+# use objcopy to create .bin files out of ELF files
+function(target_bin_from_elf TARGET-NAME)
+    string(REPLACE ".elf" "" BASE-TARGET-NAME TARGET-NAME)
+    add_custom_command(TARGET ${TARGET-NAME}
+            POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} -O binary ${INPUT} ${BASE-TARGET-NAME}.bin
             COMMENT "Generating bin from elf")
-    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${INPUT}_${MBED_TARGET}.bin)
+    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${BASE-TARGET-NAME}.bin)
+endfunction()
+
+# link against mbed and setup linker script
+function(target_set_firmware_properties TARGET-NAME)
+    target_link_libraries(${TARGET-NAME} PUBLIC mbed-os)
+    target_precompile_headers(${TARGET-NAME} REUSE_FROM mbed-os)
+
+    set_target_properties(${TARGET-NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT_OUTPUT_PATH})
+    add_dependencies(${TARGET-NAME} linker-script)
+
+    target_bin_from_elf(${TARGET-NAME})
 endfunction()
