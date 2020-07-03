@@ -162,7 +162,7 @@ void PID::setTunings(double Kc, double tauI, double tauD) {
   if (tauI == 0.0) {
     tempTauR = 0.0;
   } else {
-    tempTauR = (1.0 / tauI) * std::chrono::duration_cast<std::chrono::duration<double>>(tSample_).count() ;
+    tempTauR = (1.0 / tauI) * tSample_.count() ;
   }
 
   // For "bumpless transfer" we need to rescale the accumulated error.
@@ -176,7 +176,7 @@ void PID::setTunings(double Kc, double tauI, double tauD) {
 
   Kc_   = Kc;
   tauR_ = tempTauR;
-  tauD_ = tauD / std::chrono::duration_cast<std::chrono::duration<double>>(tSample_).count();
+  tauD_ = tauD / tSample_.count();
 }
 
 void PID::reset(void) {
@@ -206,7 +206,7 @@ void PID::setMode(int mode) {
 }
 
 void PID::setInterval(std::chrono::duration<double> interval) {
-  if (interval > 0us) {
+  if (interval > 0s) {
     // Convert the time-based tunings to reflect this change.
     tauR_ *= (interval / tSample_);
     accError_ *= (tSample_ / interval);
@@ -251,7 +251,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   Timer timer;
   bool isMax, isMin, justchanged;
   double absMax, absMin, refVal, Ku, Pu;
-  std::chrono::microseconds peak1, peak2;
+  std::chrono::duration<double> peak1, peak2;
   int peakType, peakCount;
   double lastInputs[101] = {0};
   double peaks[10];
@@ -272,7 +272,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
 
   // initialize variables
   peakType = peakCount = 0;
-  peak1 = peak2 = 0us;
+  peak1 = peak2 = 0s;
   justchanged                          = false;
   refVal = absMax = absMin = autoTuneConfig->setpoint;
 
@@ -288,7 +288,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
       break;
     }
 
-    std::chrono::microseconds timer_elapsed_time = timer.elapsed_time();
+    std::chrono::duration<double> last_timer_time = timer.elapsed_time();
 
     refVal = *input_;
 
@@ -320,7 +320,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
         justchanged = true;
         peak2       = peak1;
       }
-      peak1            = timer_elapsed_time;
+      peak1            = last_timer_time;
       peaks[peakCount] = refVal;
 
     } else if (isMin) {
@@ -343,13 +343,13 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     justchanged = false;
 
     // wait for sample time interval
-    while ((timer.elapsed_time() - timer_elapsed_time) < autoTuneConfig->sampleTime)
+    while ((timer.elapsed_time() - last_timer_time) < autoTuneConfig->sampleTime)
       ;
   }
 
   // calculate autotune parameters TODO: FIXME! Clean this up. Where are these magic numbers from(@tandronescu)?
   Ku = 4 * (2 * autoTuneConfig->oStep) / ((absMax - absMin) * M_PI);
-  Pu = std::chrono::duration_cast<std::chrono::duration<double>>(peak1 - peak2).count(); // in seconds
+  Pu = (peak1 - peak2).count();
 
   // if we only PI control is desired, alternate calculations and TauD set to 0
   if (PI) {

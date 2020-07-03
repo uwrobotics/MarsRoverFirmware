@@ -74,7 +74,7 @@ class PID {
   // configurable parameters for autotuning process
   typedef struct {
     int nLookBack;
-    std::chrono::microseconds sampleTime;
+    std::chrono::duration<double> sampleTime;
     double outputStart, oStep, noiseBand, setpoint;
   } t_AutoTuneConfig;
 
