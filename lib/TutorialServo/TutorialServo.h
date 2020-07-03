@@ -19,18 +19,4 @@ class TutorialServo {
   void setPositionInDegrees(float degrees);
 };
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1,
-                             float maxPulsewidthInMs = 2) {
-  m_servoPmwOut         = servoPin;
-  m_servoRangeInDegrees = servoRangeInDegrees;
-  m_minPulsewidthInMs   = minPulsewidthInMs;
-  m_maxPulsewidthInMs   = maxPulsewidthInMs;
-}
-
-TutorialServo::~TutorialServo() {
-  m_servoRangeInDegrees = 0;
-  m_minPulsewidthInMs   = 0;
-  m_maxPulsewidthInMs   = 0;
-}
-
 #endif  // !TUTORIAL_SERVO_H
