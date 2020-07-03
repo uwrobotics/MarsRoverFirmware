@@ -4,5 +4,5 @@ target_sources(CANBuffer PRIVATE
 target_include_directories(CANBuffer PUBLIC include)
 target_set_mbed_dependency(CANBuffer)
 
-add_library(CanMsg INTERFACE)
-target_include_directories(CanMsg INTERFACE include)
+add_library(CANMsg INTERFACE)
+target_include_directories(CANMsg INTERFACE include)

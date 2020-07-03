@@ -36,13 +36,13 @@ int main(void) {
   printf("CAN_Hello\r\n");
 
   while (1) {
-    if (timer.read_ms() >= 1000) {  // check for timeout
+    if (timer.elapsed_time() >= 1s) {  // check for timeout
       timer.reset();                // reset timer
       counter++;                    // increment counter
-      txMsg.clear();                // clear Tx message storage
-      txMsg.id = TX_ID;             // set ID
+      txMsg.clear();                // clear Tx message storage    // set ID
       txMsg << counter;             // copy counter value to CAN msg payload
-      if (can.write(txMsg)) {       // transmit message
+      if (can.write(txMsg)) {
+        txMsg.id = TX_ID;           // transmit message
         printf("-------------------------------------\r\n");
         printf("CAN message sent\r\n");
         printMsg(txMsg);
