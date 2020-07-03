@@ -5,9 +5,9 @@
 #define MIN_RPM              0  // change min/max RPMs based on motor used
 #define MAX_RPM              300
 #define COUNTS_PER_REV       1200  // motor property
-#define TIMER_INTERRUPT_FREQ 0.25  // frequency of timer interrupt for input calculation
+#define TIMER_INTERRUPT_FREQ 250ms // frequency of timer interrupt for input calculation
 #define GOAL_RPM             100.0
-#define K_UPDATE_PERIOD      0.15
+#define K_UPDATE_PERIOD      150ms
 
 // motor direction pin and pwm out pin, modify as needed
 DigitalOut MOTOR_DIR(D8);
@@ -17,7 +17,7 @@ PwmOut MOTOR_PWM_OUT(D9);
 InterruptIn encoderCh1(D2);
 InterruptIn encoderCh2(D3);
 
-Serial pc(SERIAL_TX, SERIAL_RX);
+BufferedSerial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 
 PID rpmPIDController(0.010268, 0.0260, 0, K_UPDATE_PERIOD);
 Timer timer;
@@ -25,13 +25,13 @@ Timer timer;
 // Variables
 uint64_t pulseCount    = 0;
 uint64_t oldPulseCount = 0;
-float motorRPM         = 0.0;
-float motorPWMDuty     = 0.0;
+double motorRPM         = 0.0;
+double motorPWMDuty     = 0.0;
 Ticker interruptTimer;
 
 // PID AutoTune config struct for specific DC motor, change depending on actuator
 PID::t_AutoTuneConfig autoTuneConfig = {
-    .nLookBack = 40, .sampleTime = 250, .outputStart = 0.4, .oStep = 0.25, .noiseBand = 0.01, .setpoint = 120};
+    .nLookBack = 40, .sampleTime = 250ms, .outputStart = 0.4, .oStep = 0.25, .noiseBand = 0.01, .setpoint = 120};
 
 // Setup velocity PID controller
 void initializePidController(void) {
@@ -49,7 +49,7 @@ void countPulses() {
 
 // every timer interrupt, recompute the rpm
 void computeInput() {
-  motorRPM      = (pulseCount - oldPulseCount) * (60 / TIMER_INTERRUPT_FREQ) / COUNTS_PER_REV;
+  motorRPM      = (pulseCount - oldPulseCount) * (60 / std::chrono::duration_cast<std::chrono::duration<double>>(TIMER_INTERRUPT_FREQ).count())/ COUNTS_PER_REV;
   oldPulseCount = pulseCount;
 }
 
@@ -59,12 +59,10 @@ int main() {
   encoderCh2.rise(&countPulses);
   encoderCh2.fall(&countPulses);
 
-  pc.baud(9600);  // initialize serial
-
-  pc.printf("PID Test - Start \r\n");
+  printf("PID Test - Start \r\n");
 
   // Initialization
-  float interval = 0.1;
+  std::chrono::duration<double> interval = 0.1s;
   initializePidController();
   rpmPIDController.setSetPoint(GOAL_RPM);                      // Set RPM set point
   MOTOR_DIR = 1;                                               // set default direction
@@ -75,18 +73,18 @@ int main() {
   // rpmPIDController.autoTune(&pc, true, &autoTuneConfig);
   rpmPIDController.autoTune(true, &autoTuneConfig);
 
-  pc.printf("Autotune Params obtained: Kc: %f \t    TauI: %f \t    TauD: %f \r\n", rpmPIDController.getATunePParam(),
+  printf("Autotune Params obtained: Kc: %f \t    TauI: %f \t    TauD: %f \r\n", rpmPIDController.getATunePParam(),
             rpmPIDController.getATuneIParam(), rpmPIDController.getATuneDParam());
   rpmPIDController.setAutoTuneParams();
   interruptTimer.detach();
 
-  wait(5);
+  ThisThread::sleep_for(5s);
 
   Timer eval;
   eval.start();
 
   while (1) {
-    motorRPM      = (pulseCount - oldPulseCount) * (60 / interval) / COUNTS_PER_REV;
+    motorRPM      = (pulseCount - oldPulseCount) * (60 / std::chrono::duration_cast<std::chrono::duration<double>>(interval).count()) / COUNTS_PER_REV;
     oldPulseCount = pulseCount;
 
     // Update the PID controller
@@ -95,16 +93,15 @@ int main() {
     motorPWMDuty  = rpmPIDController.compute();
     MOTOR_PWM_OUT = motorPWMDuty;
 
-    pc.printf("Motor RPM: %f, \t Goal RPM: %f, \t PWM Output: %f\r\n", motorRPM, GOAL_RPM, motorPWMDuty);
+    printf("Motor RPM: %f, \t Goal RPM: %f, \t PWM Output: %f\r\n", motorRPM, GOAL_RPM, motorPWMDuty);
     if (abs(motorRPM - GOAL_RPM) < 1.0) {
-      pc.printf("Time taken to reach goal RPM: %f \r\n", eval.read());
+      printf("Time taken to reach goal RPM: %f seconds \r\n", std::chrono::duration_cast<std::chrono::duration<double>>(eval.elapsed_time()).count() );
       MOTOR_DIR = 0;
       return 0;
     }
 
-    wait(K_UPDATE_PERIOD);
-
-    interval = timer.read();
+    ThisThread::sleep_for(K_UPDATE_PERIOD);
+    interval = std::chrono::duration_cast<std::chrono::duration<double>>(timer.elapsed_time());
     timer.reset();
   }
 }

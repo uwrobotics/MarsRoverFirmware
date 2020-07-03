@@ -75,7 +75,7 @@
 
 #include "PID.h"
 
-PID::PID(float Kc, float tauI, float tauD, float interval) {
+PID::PID(double Kc, double tauI, double tauD, std::chrono::duration<double> interval) {
   usingFeedForward = false;
   inAuto           = false;
 
@@ -102,7 +102,7 @@ PID::PID(float Kc, float tauI, float tauD, float interval) {
   realOutput_ = 0.0;
 }
 
-void PID::setInputLimits(float inMin, float inMax) {
+void PID::setInputLimits(double inMin, double inMax) {
   // Make sure we haven't been given impossible values.
   if (inMin >= inMax) {
     return;
@@ -125,7 +125,7 @@ void PID::setInputLimits(float inMin, float inMax) {
   inMax_ = inMax;
 }
 
-void PID::setOutputLimits(float outMin, float outMax) {
+void PID::setOutputLimits(double outMin, double outMax) {
   // Make sure we haven't been given impossible values.
   if (outMin >= outMax) {
     return;
@@ -146,7 +146,7 @@ void PID::setOutputLimits(float outMin, float outMax) {
   outSpan_ = outMax - outMin;
 }
 
-void PID::setTunings(float Kc, float tauI, float tauD) {
+void PID::setTunings(double Kc, double tauI, double tauD) {
   // Verify that the tunings make sense.
   if (Kc == 0.0 || tauI < 0.0 || tauD < 0.0) {
     return;
@@ -157,12 +157,12 @@ void PID::setTunings(float Kc, float tauI, float tauD) {
   iParam_ = tauI;
   dParam_ = tauD;
 
-  float tempTauR;
+  double tempTauR;
 
   if (tauI == 0.0) {
     tempTauR = 0.0;
   } else {
-    tempTauR = (1.0 / tauI) * tSample_;
+    tempTauR = (1.0 / tauI) * std::chrono::duration_cast<std::chrono::duration<double>>(tSample_).count() ;
   }
 
   // For "bumpless transfer" we need to rescale the accumulated error.
@@ -176,11 +176,11 @@ void PID::setTunings(float Kc, float tauI, float tauD) {
 
   Kc_   = Kc;
   tauR_ = tempTauR;
-  tauD_ = tauD / tSample_;
+  tauD_ = tauD / std::chrono::duration_cast<std::chrono::duration<double>>(tSample_).count();
 }
 
 void PID::reset(void) {
-  float scaledBias = 0.0;
+  double scaledBias = 0.0;
 
   if (usingFeedForward) {
     scaledBias = (bias_ - outMin_) / outSpan_;
@@ -205,8 +205,8 @@ void PID::setMode(int mode) {
   inAuto = (mode != 0);
 }
 
-void PID::setInterval(float interval) {
-  if (interval > 0) {
+void PID::setInterval(std::chrono::duration<double> interval) {
+  if (interval > 0us) {
     // Convert the time-based tunings to reflect this change.
     tauR_ *= (interval / tSample_);
     accError_ *= (tSample_ / interval);
@@ -215,28 +215,28 @@ void PID::setInterval(float interval) {
   }
 }
 
-void PID::setSetPoint(float sp) {
+void PID::setSetPoint(double sp) {
   setPoint_ = sp;
 }
 
-void PID::setProcessValue(float pv) {
+void PID::setProcessValue(double pv) {
   processVariable_ = pv;
 }
 
-void PID::setBias(float bias) {
+void PID::setBias(double bias) {
   bias_            = bias;
   usingFeedForward = 1;
 }
 
-void PID::setDeadZoneError(float error) {
+void PID::setDeadZoneError(double error) {
   deadZoneError_ = error;
 }
 
-void PID::setRealOutput(float realOutput) {
+void PID::setRealOutput(double realOutput) {
   realOutput_ = realOutput;
 }
 
-void PID::setupAutoTune(void *outputPointer, float *inputPointer, int actuatorType) {
+void PID::setupAutoTune(void *outputPointer, double *inputPointer, int actuatorType) {
   // set actuator type
   actuatorType_ = actuatorType;
 
@@ -262,7 +262,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     autoTuneConfig             = new PID::t_AutoTuneConfig();
     autoTuneConfig->nLookBack  = 40;
     autoTuneConfig->sampleTime = 250ms;
-    float outputStart          = outMax_ / 2;
+    double outputStart          = outMax_ / 2;
     if (outputStart < outMin_) outputStart = outMin_;
     autoTuneConfig->outputStart = outputStart;
     autoTuneConfig->oStep       = outSpan_ * 0.15;
@@ -363,7 +363,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   }
 }
 
-void PID::setOutput(float output) {
+void PID::setOutput(double output) {
   // bound output to limits
   if (output > outMax_)
     output = outMax_;
@@ -371,14 +371,14 @@ void PID::setOutput(float output) {
     output = outMin_;
 
   // cast void pointer based on required output type
-  // add desired output types here and convert from float as necessary
+  // add desired output types here and convert from double as necessary
   switch (actuatorType_) {
     case PWM_MOTOR: {
       *static_cast<PwmOut *>(output_) = output;
       break;
     }
     default:
-      *(float *)output_ = output;
+      *(double *)output_ = output;
   }
 }
 
@@ -386,9 +386,9 @@ void PID::setAutoTuneParams() {
   setTunings(autoTuneKc_, autoTuneTauR_, autoTuneTauD_);
 }
 
-float PID::compute() {
+double PID::compute() {
   // Pull in the input and setpoint, and scale them into percent span.
-  float scaledPV = (processVariable_ - inMin_) / inSpan_;
+  double scaledPV = (processVariable_ - inMin_) / inSpan_;
 
   if (scaledPV > 1.0) {
     scaledPV = 1.0;
@@ -396,14 +396,14 @@ float PID::compute() {
     scaledPV = 0.0;
   }
 
-  float scaledSP = (setPoint_ - inMin_) / inSpan_;
+  double scaledSP = (setPoint_ - inMin_) / inSpan_;
   if (scaledSP > 1.0) {
     scaledSP = 1;
   } else if (scaledSP < 0.0) {
     scaledSP = 0;
   }
 
-  float error = scaledSP - scaledPV;
+  double error = scaledSP - scaledPV;
 
   if (fabs(error) < deadZoneError_) {
     error = 0;
@@ -416,9 +416,9 @@ float PID::compute() {
   }
 
   // Compute the current slope of the input signal.
-  float dMeas = (scaledPV - prevProcessVariable_) / tSample_;
+  double dMeas = (scaledPV - prevProcessVariable_) / tSample_.count();
 
-  float scaledBias = 0.0;
+  double scaledBias = 0.0;
 
   if (usingFeedForward) {
     scaledBias = (bias_ - outMin_) / outSpan_;
@@ -443,50 +443,50 @@ float PID::compute() {
   return ((controllerOutput_ * outSpan_) + outMin_);
 }
 
-float PID::getInMin() {
+double PID::getInMin() {
   return inMin_;
 }
 
-float PID::getInMax() {
+double PID::getInMax() {
   return inMax_;
 }
 
-float PID::getOutMin() {
+double PID::getOutMin() {
   return outMin_;
 }
 
-float PID::getOutMax() {
+double PID::getOutMax() {
   return outMax_;
 }
 
-float PID::getInterval() {
+std::chrono::duration<double> PID::getInterval() {
   return tSample_;
 }
 
-float PID::getPParam() {
+double PID::getPParam() {
   return pParam_;
 }
 
-float PID::getIParam() {
+double PID::getIParam() {
   return iParam_;
 }
 
-float PID::getDParam() {
+double PID::getDParam() {
   return dParam_;
 }
 
-float PID::getATunePParam() {
+double PID::getATunePParam() {
   return autoTuneKc_;
 }
 
-float PID::getATuneIParam() {
+double PID::getATuneIParam() {
   return autoTuneTauR_;
 }
 
-float PID::getATuneDParam() {
+double PID::getATuneDParam() {
   return autoTuneTauD_;
 }
 
-float PID::getSetPoint() {
+double PID::getSetPoint() {
   return setPoint_;
 }

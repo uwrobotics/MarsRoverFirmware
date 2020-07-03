@@ -64,8 +64,8 @@
 class PID {
  public:
   typedef struct {
-    float P, I, D, bias = 0.0;
-    float deadZoneError = 0.0;
+    double P, I, D, bias = 0.0;
+    double deadZoneError = 0.0;
   } t_pidConfig;
 
   // add other actuators here
@@ -89,7 +89,7 @@ class PID {
    * @param tauD - Tuning parameter
    * @param interval PID calculation performed every interval seconds.
    */
-  PID(float Kc, float tauI, float tauD, float interval);
+  PID(double Kc, double tauI, double tauD, std::chrono::duration<double> interval);
 
   /**
    * Scale from inputs to 0-100%.
@@ -97,7 +97,7 @@ class PID {
    * @param InMin The real world value corresponding to 0%.
    * @param InMax The real world value corresponding to 100%.
    */
-  void setInputLimits(float inMin, float inMax);
+  void setInputLimits(double inMin, double inMax);
 
   /**
    * Scale from outputs to 0-100%.
@@ -105,7 +105,7 @@ class PID {
    * @param outMin The real world value corresponding to 0%.
    * @param outMax The real world value corresponding to 100%.
    */
-  void setOutputLimits(float outMin, float outMax);
+  void setOutputLimits(double outMin, double outMax);
 
   /**
    * Calculate PID constants.
@@ -116,7 +116,7 @@ class PID {
    * @param tauI - Tuning parameter
    * @param tauD - Tuning parameter
    */
-  void setTunings(float Kc, float tauI, float tauD);
+  void setTunings(double Kc, double tauI, double tauD);
 
   /**
    * Reinitializes controller internals. Automatically
@@ -137,40 +137,40 @@ class PID {
    *
    * @param interval PID calculation peformed every interval seconds.
    */
-  void setInterval(float interval);
+  void setInterval(std::chrono::duration<double> interval);
 
   /**
    * Set the set point.
    *
    * @param sp The set point as a real world value.
    */
-  void setSetPoint(float sp);
+  void setSetPoint(double sp);
 
   /**
    * Set the process value.
    *
    * @param pv The process value as a real world value.
    */
-  void setProcessValue(float pv);
+  void setProcessValue(double pv);
 
   /**
    * Set the bias.
    *
    * @param bias The bias for the controller output.
    */
-  void setBias(float bias);
+  void setBias(double bias);
 
   /**
    * Set the dead zone error to allow error to round down if within +/- this value
    * @param error Round error down to 0.0 if error is within +/- this value
    */
-  void setDeadZoneError(float error);
+  void setDeadZoneError(double error);
 
   /**
    * Set real output value
    * @param realOutput real life output
    */
-  void setRealOutput(float realOutput);
+  void setRealOutput(double realOutput);
 
   /**
    * Setup needed before autotuning
@@ -178,7 +178,7 @@ class PID {
    * @param inputPointer pointer to calculated input value, usually done in background on main
    * @param actuatorType type of actuator needed to cast generic void pointer
    */
-  void setupAutoTune(void *outputPointer, float *inputPointer, int actuatorType);
+  void setupAutoTune(void *outputPointer, double *inputPointer, int actuatorType);
 
   /**
    * Run the autotuning algorithm and set autoTune class member variables
@@ -191,9 +191,9 @@ class PID {
 
   /**
    * Set the output from within the PID class, needed for autotuning
-   * @param output output as a float, casting done in function based on actuator type
+   * @param output output as a double, casting done in function based on actuator type
    */
-  void setOutput(float output);
+  void setOutput(double output);
 
   /**
    * Set the tuning values to the calculated autotuning parameters
@@ -203,41 +203,41 @@ class PID {
   /**
    * PID calculation.
    *
-   * @return The controller output as a float between outMin and outMax.
+   * @return The controller output as a double between outMin and outMax.
    */
-  float compute(void);
+  double compute(void);
 
   // Getters.
-  float getInMin();
-  float getInMax();
-  float getOutMin();
-  float getOutMax();
-  float getInterval();
-  float getPParam();
-  float getIParam();
-  float getDParam();
-  float getATunePParam();
-  float getATuneIParam();
-  float getATuneDParam();
-  float getSetPoint();
+  double getInMin();
+  double getInMax();
+  double getOutMin();
+  double getOutMax();
+  std::chrono::duration<double> getInterval();
+  double getPParam();
+  double getIParam();
+  double getDParam();
+  double getATunePParam();
+  double getATuneIParam();
+  double getATuneDParam();
+  double getSetPoint();
 
  private:
   bool usingFeedForward;
   bool inAuto;
 
   // Actual tuning parameters used in PID calculation.
-  float Kc_;
-  float tauR_;
-  float tauD_;
+  double Kc_;
+  double tauR_;
+  double tauD_;
 
   // Tuning parameters calculated from autotuning function
-  float autoTuneKc_;
-  float autoTuneTauR_;
-  float autoTuneTauD_;
+  double autoTuneKc_;
+  double autoTuneTauR_;
+  double autoTuneTauD_;
 
   // Input/Output pointers for AutoTuning
   void *output_;
-  float *input_;
+  double *input_;
 
   // Store type of actuator PID is being used on
   int actuatorType_;
@@ -246,40 +246,40 @@ class PID {
   t_AutoTuneConfig AutoTuneConfig;
 
   // Raw tuning parameters.
-  float pParam_;
-  float iParam_;
-  float dParam_;
+  double pParam_;
+  double iParam_;
+  double dParam_;
 
   // The point we want to reach.
-  float setPoint_;
+  double setPoint_;
   // The thing we measure.
-  float processVariable_;
-  float prevProcessVariable_;
+  double processVariable_;
+  double prevProcessVariable_;
   // The output that affects the process variable.
-  float controllerOutput_;
-  float prevControllerOutput_;
+  double controllerOutput_;
+  double prevControllerOutput_;
 
   // We work in % for calculations so these will scale from
   // real world values to 0-100% and back again.
-  float inMin_;
-  float inMax_;
-  float inSpan_;
-  float outMin_;
-  float outMax_;
-  float outSpan_;
+  double inMin_;
+  double inMax_;
+  double inSpan_;
+  double outMin_;
+  double outMax_;
+  double outSpan_;
 
   // The accumulated error, i.e. integral.
-  float accError_;
+  double accError_;
   // The allowed error range for error to be rounded to 0.0
-  float deadZoneError_;
+  double deadZoneError_;
   // The controller output bias.
-  float bias_;
+  double bias_;
 
   // The interval between samples.
-  float tSample_;
+  std::chrono::duration<double> tSample_;
 
   // Controller output as a real world value.
-  volatile float realOutput_;
+  volatile double realOutput_;
 };
 
 #endif /* PID_H */
