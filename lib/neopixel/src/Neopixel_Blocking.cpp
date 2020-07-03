@@ -91,7 +91,7 @@ void Neopixel_Blocking::showColour(colour selectedColour) {
 }
 
 // tells pixels to turn on and off n times
-void Neopixel_Blocking::blinkPixels(int numflashes, std::chrono::milliseconds delay, colour selectedColour) {
+void Neopixel_Blocking::blinkPixels(int numflashes, std::chrono::duration<double> delay, colour selectedColour) {
   for (int i = 0; i < numflashes; i++) {
     showColour(selectedColour);
     ThisThread::sleep_for(delay);
@@ -120,7 +120,7 @@ void Neopixel_Blocking::writeAnyRGB(const int colour[3]) {
 }
 
 // Flashing Green to be phased out
-void Neopixel_Blocking::flashGreen(int numFlashes, std::chrono::milliseconds delay) {
+void Neopixel_Blocking::flashGreen(int numFlashes, std::chrono::duration<double> delay) {
   for (int i = 0; i < numFlashes; i++) {
     showColour(Green);
     ThisThread::sleep_for(delay);

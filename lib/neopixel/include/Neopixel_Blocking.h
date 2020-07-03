@@ -21,13 +21,13 @@ class Neopixel_Blocking {
   void pulse_0();
   void writeByte(const int buffer[8]);
   void showColour(colour selectedColour);
-  void blinkPixels(int numflashes, std::chrono::milliseconds delay, colour selectedColour);
+  void blinkPixels(int numflashes, std::chrono::duration<double> delay, colour selectedColour);
   void writeAnyRGB(const int colour[3]);
 
   // basic functions for autonomy
   void displayRed();
   void displayBlue();
-  void flashGreen(int numFlashes, std::chrono::milliseconds delay);
+  void flashGreen(int numFlashes, std::chrono::duration<double> delay);
   void shutdown();
 };
 
