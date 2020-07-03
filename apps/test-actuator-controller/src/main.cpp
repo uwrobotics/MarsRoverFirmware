@@ -44,6 +44,6 @@ int main() {
   while (true) {
     // Blink LED and wait 0.5 seconds
     led1 = !led1;
-    wait_ms(500);
+    ThisThread::sleep_for(500ms);
   }
 }
