@@ -61,10 +61,11 @@
 #define MBED_CONF_PLATFORM_MAX_ERROR_FILENAME_LEN            16                              // set by library:platform
 #define MBED_CONF_PLATFORM_POLL_USE_LOWPOWER_TIMER           0                               // set by library:platform
 #define MBED_CONF_PLATFORM_STDIO_BAUD_RATE                   ROVER_DEFAULT_SERIAL_BAUD_RATE  // set by library:platform
-#define MBED_CONF_PLATFORM_STDIO_BUFFERED_SERIAL             0                               // set by library:platform
-#define MBED_CONF_PLATFORM_STDIO_CONVERT_NEWLINES            0                               // set by library:platform
-#define MBED_CONF_PLATFORM_STDIO_CONVERT_TTY_NEWLINES        0                               // set by library:platform
+#define MBED_CONF_PLATFORM_STDIO_BUFFERED_SERIAL             1                               // set by library:platform
+#define MBED_CONF_PLATFORM_STDIO_CONVERT_NEWLINES            1                               // set by library:platform
+#define MBED_CONF_PLATFORM_STDIO_CONVERT_TTY_NEWLINES        1                               // set by library:platform
 #define MBED_CONF_PLATFORM_STDIO_FLUSH_AT_EXIT               1                               // set by library:platform
+#define MBED_CONF_PLATFORM_STDIO_MINIMAL_CONSOLE_ONLY        0                               // set by library:platform
 #define MBED_CONF_PLATFORM_USE_MPU                           1                               // set by library:platform
 #define MBED_CONF_RTOS_API_PRESENT                           1                               // set by library:rtos
 #define MBED_CONF_RTOS_IDLE_THREAD_STACK_SIZE                512                             // set by library:rtos
