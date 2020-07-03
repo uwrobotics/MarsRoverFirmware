@@ -26,27 +26,27 @@ class PwmIn {
 
   /** Read the current period
    *
-   * @returns the period in microseconds
+   * @returns the period in seconds
    */
-  std::chrono::microseconds period();
+  std::chrono::duration<double> period();
 
   /** Read the average period
    *
-   * @returns the average period in microseconds
+   * @returns the average period in seconds
    */
-  std::chrono::microseconds avgPeriod();
+  std::chrono::duration<double> avgPeriod();
 
   /** Read the current pulse width
    *
-   * @returns the pulsewidth in microseconds
+   * @returns the pulsewidth in seconds
    */
-  std::chrono::microseconds pulseWidth();
+  std::chrono::duration<double> pulseWidth();
 
   /** Read the average pulse width
    *
-   * @returns the average pulsewidth in microseconds
+   * @returns the average pulsewidth in seconds
    */
-  std::chrono::microseconds avgPulseWidth();
+  std::chrono::duration<double> avgPulseWidth();
 
   /** Read the current duty cycle
    *
@@ -70,19 +70,19 @@ class PwmIn {
   InterruptIn m_pwmSense;
   Timer m_timer;
 
-  std::chrono::microseconds m_pulseWidth, m_period, m_avgPulseWidth, m_avgPeriod;
+  std::chrono::duration<double> m_pulseWidth, m_period, m_avgPulseWidth, m_avgPeriod;
   double m_avgDutyCycle, m_prevAvgDutyCycle, m_avgDutyCycleVelocity;
 
   int m_sampleCount;
   int m_numSamplesToAverage;
 
-  std::chrono::microseconds* p_pulseWidthSamples;
-  std::chrono::microseconds* p_periodSamples;
+  std::chrono::duration<double>* p_pulseWidthSamples;
+  std::chrono::duration<double>* p_periodSamples;
 
-  std::chrono::microseconds m_pulseWidthSampleSum;
-  std::chrono::microseconds m_periodSampleSum;
+  std::chrono::duration<double> m_pulseWidthSampleSum;
+  std::chrono::duration<double> m_periodSampleSum;
 
   void rise();
   void fall();
-  std::chrono::microseconds movingAvg(std::chrono::microseconds* p_samples, std::chrono::microseconds* p_sampleSum, std::chrono::microseconds newSample, int newIndex);
+  std::chrono::duration<double> movingAvg(std::chrono::duration<double>* p_samples, std::chrono::duration<double>* p_sampleSum, std::chrono::duration<double> newSample, int newIndex);
 };
