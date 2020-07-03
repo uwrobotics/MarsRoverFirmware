@@ -153,6 +153,9 @@ On Ubuntu
 
 See the [CANable Getting Started guide](https://canable.io/getting-started.html) for more information including Windows support.
 
+## Writing Test Apps
+For every feature that gets added, a test app that tests the feature in isolation should be written to verify that the feature actually functions properly in our hardware. The author of the feature should ensure that the test app works on all the board targets that make sense. Typically this means that the test app should work on at least the nucleo board and the board that the feature was designed for. For example, the `test-can` app should be able to be compiled and run sucessfully for all of our boards, including a nucelo dev board.
+
 ## CMake: Adding mbed-os features
 This repository using our own custom CMake files to configure and compile our applications, including mbed-os. Only certain parts of mbed are currently compiled into the mbed-os library target. If other mbed features are required, add the required sources to the `target_sources` property and the required include paths to the `target_include_directories`of the `mbed-os` target. 
 
