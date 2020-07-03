@@ -1,31 +1,26 @@
 add_library(EncoderAbsolute_PWM)
-target_sources(EncoderAbsolute_PWM PRIVATE
-        src/EncoderAbsolute_PWM.cpp)
+target_sources(EncoderAbsolute_PWM PRIVATE src/EncoderAbsolute_PWM.cpp)
 target_include_directories(EncoderAbsolute_PWM PUBLIC include)
 target_link_libraries(EncoderAbsolute_PWM PUBLIC PwmIn)
 target_set_mbed_dependency(EncoderAbsolute_PWM)
 
 add_library(EncoderRelative_Quadrature)
-target_sources(EncoderRelative_Quadrature PRIVATE
-        src/EncoderRelative_Quadrature.cpp)
+target_sources(EncoderRelative_Quadrature PRIVATE src/EncoderRelative_Quadrature.cpp)
 target_include_directories(EncoderRelative_Quadrature PUBLIC include)
 target_link_libraries(EncoderRelative_Quadrature PUBLIC QEI)
 target_set_mbed_dependency(EncoderRelative_Quadrature)
 
 add_library(MoistureSensor)
-target_sources(MoistureSensor PRIVATE
-        src/MoistureSensor.cpp)
+target_sources(MoistureSensor PRIVATE src/MoistureSensor.cpp)
 target_include_directories(MoistureSensor PUBLIC include)
 target_set_mbed_dependency(MoistureSensor)
 
 add_library(PwmIn)
-target_sources(PwmIn PRIVATE
-        src/PwmIn.cpp)
+target_sources(PwmIn PRIVATE src/PwmIn.cpp)
 target_include_directories(PwmIn PUBLIC include)
 target_set_mbed_dependency(PwmIn)
 
 add_library(QEI)
-target_sources(QEI PRIVATE
-        src/QEI.cpp)
+target_sources(QEI PRIVATE src/QEI.cpp)
 target_include_directories(QEI PUBLIC include)
 target_set_mbed_dependency(QEI)

@@ -1,5 +1,4 @@
 add_library(Neopixel_Blocking)
-target_sources(Neopixel_Blocking PRIVATE
-        src/Neopixel_Blocking.cpp)
+target_sources(Neopixel_Blocking PRIVATE src/Neopixel_Blocking.cpp)
 target_include_directories(Neopixel_Blocking PUBLIC include)
 target_set_mbed_dependency(Neopixel_Blocking)
