@@ -1,4 +1,4 @@
-#pragma once
+#pragma once //TODO(qinyang-bao): fix all compile errors and renable servo code
 
 #include "Motor.h"
 #include "Servo.h"
@@ -17,8 +17,8 @@ class ServoMotor : Motor {
    * @param inverted  If true, then forward speed will set dir to 0 instead of 1, otherwise inverse
    * @param limit     Maximum speed magnitude
    */
-  ServoMotor(PinName pwm, bool inverted = false, float min_pulsewidth_ms = 1.0, float max_pulsewidth_ms = 2.0,
-             float limit = 1.0);
+  ServoMotor(PinName pwm, bool inverted = false, double min_pulsewidth_ms = 1.0, double max_pulsewidth_ms = 2.0,
+             double limit = 1.0);
 
   ServoMotor(Motor::t_motorConfig motorConfig);
 
@@ -26,17 +26,17 @@ class ServoMotor : Motor {
    *
    * @param dutyCycle The speed of the motor as a normalised value between -1.0 and 1.0
    */
-  void setPower(float dutyCycle);
+  void setPower(double dutyCycle);
   ServoMotor& operator=(int dutyCycle);
 
   /** Read the current speed of the motor
    *
    * @return Current speed of motor
    */
-  float getPower();
+  double getPower();
 
  protected:
   Servo m_servo;
   bool m_inverted;
-  float m_limit;
+  double m_limit;
 };

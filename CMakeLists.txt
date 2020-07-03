@@ -53,7 +53,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Include mbed-os
 include(mbed-os.cmake)
 
-# Include library targets
+# Include library CMakeLists
 add_subdirectory(lib/can)
 add_subdirectory(lib/controllers)
 add_subdirectory(lib/miscellaneous)
@@ -76,69 +76,24 @@ elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/targets/${TARGET}")
 endif ()
 message(STATUS "Configuring and generating build for ${APP} app on ${TARGET} target")
 
-# Add cmakelist for target-specific files
+# Add CMakeList for target-specific files
 add_subdirectory(targets/${TARGET})
 
-# Rover Apps
+# Include Rover App CMakeLists
+add_subdirectory(apps/arm)
+#add_subdirectory(apps/gimbtonomy)
+#add_subdirectory(apps/safety)
+#add_subdirectory(apps/science)
 
-add_executable(arm.${TARGET}-board.elf)
-target_sources(arm.${TARGET}-board.elf PRIVATE apps/arm/main.cpp)
-target_set_firmware_properties(arm.${TARGET}-board.elf)
-
-add_executable(gimbtonomy.${TARGET}-board.elf)
-target_sources(gimbtonomy.${TARGET}-board.elf PRIVATE apps/gimbtonomy/main.cpp)
-target_set_firmware_properties(gimbtonomy.${TARGET}-board.elf)
-
-add_executable(safety.${TARGET}-board.elf)
-target_sources(safety.${TARGET}-board.elf PRIVATE apps/safety/main.cpp)
-target_set_firmware_properties(safety.${TARGET}-board.elf)
-
-add_executable(science.${TARGET}-board.elf)
-target_sources(science.${TARGET}-board.elf PRIVATE apps/science/main.cpp)
-target_set_firmware_properties(science.${TARGET}-board.elf)
-
-# Test Apps
-
-add_executable(test-actuator-controller.${TARGET}-board.elf)
-target_sources(test-actuator-controller.${TARGET}-board.elf PRIVATE apps/test-actuator-controller/main.cpp)
-target_set_firmware_properties(test-actuator-controller.${TARGET}-board.elf)
-
-add_executable(test-aeat-8800.${TARGET}-board.elf)
-target_sources(test-aeat-8800.${TARGET}-board.elf PRIVATE apps/test-aeat-8800/main.cpp)
-target_set_firmware_properties(test-aeat-8800.${TARGET}-board.elf)
-
-add_executable(test-blinky.${TARGET}-board.elf)
-target_sources(test-blinky.${TARGET}-board.elf PRIVATE apps/test-blinky/main.cpp)
-target_set_firmware_properties(test-blinky.${TARGET}-board.elf)
-
-add_executable(test-blockingneo.${TARGET}-board.elf)
-target_sources(test-blockingneo.${TARGET}-board.elf PRIVATE apps/test-blockingneo/main.cpp)
-target_set_firmware_properties(test-blockingneo.${TARGET}-board.elf)
-
-add_executable(test-can.${TARGET}-board.elf)
-target_sources(test-can.${TARGET}-board.elf PRIVATE apps/test-can/main.cpp)
-target_set_firmware_properties(test-can.${TARGET}-board.elf)
-
-add_executable(test-enc-abs-pwm.${TARGET}-board.elf)
-target_sources(test-enc-abs-pwm.${TARGET}-board.elf PRIVATE apps/test-enc-abs-pwm/main.cpp)
-target_set_firmware_properties(test-enc-abs-pwm.${TARGET}-board.elf)
-
-add_executable(test-moisture.${TARGET}-board.elf)
-target_sources(test-moisture.${TARGET}-board.elf PRIVATE apps/test-moisture/main.cpp)
-target_set_firmware_properties(test-moisture.${TARGET}-board.elf)
-
-add_executable(test-pid.${TARGET}-board.elf)
-target_sources(test-pid.${TARGET}-board.elf PRIVATE apps/test-pid/main.cpp)
-target_set_firmware_properties(test-pid.${TARGET}-board.elf)
-
-add_executable(test-pwm.${TARGET}-board.elf)
-target_sources(test-pwm.${TARGET}-board.elf PRIVATE apps/test-pwm/main.cpp)
-target_set_firmware_properties(test-pwm.${TARGET}-board.elf)
-
-add_executable(test-pwmin.${TARGET}-board.elf)
-target_sources(test-pwmin.${TARGET}-board.elf PRIVATE apps/test-pwmin/main.cpp)
-target_set_firmware_properties(test-pwmin.${TARGET}-board.elf)
-
-add_executable(test-servo.${TARGET}-board.elf)
-target_sources(test-servo.${TARGET}-board.elf PRIVATE apps/test-servo/main.cpp)
-target_set_firmware_properties(test-servo.${TARGET}-board.elf)
+# Include Test App CMakeLists
+#add_subdirectory(apps/test-actuator-controller)
+#add_subdirectory(apps/test-aeat-8800)
+#add_subdirectory(apps/test-blinky)
+#add_subdirectory(apps/test-blockingneo)
+#add_subdirectory(apps/test-can)
+#add_subdirectory(apps/test-enc-abs-pwm)
+#add_subdirectory(apps/test-moisture)
+#add_subdirectory(apps/test-pid)
+#add_subdirectory(apps/test-pwm)
+#add_subdirectory(apps/test-pwmin)
+#add_subdirectory(apps/test-servo)

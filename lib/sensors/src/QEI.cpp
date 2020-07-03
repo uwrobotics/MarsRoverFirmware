@@ -126,7 +126,7 @@
 /**
  * Includes
  */
-#include "../include/QEI.h"
+#include "QEI.h"
 
 QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, float movingAvgSmoothingParam)
     : channelA_(channelA), channelB_(channelB), index_(index), movingAvgSmoothingParam_(movingAvgSmoothingParam) {
@@ -231,9 +231,9 @@ void QEI::encode(void) {
   int chanA  = channelA_.read();
   int chanB  = channelB_.read();
 
-  int prevPulses      = pulses_;
-  float period        = 0;
-  float pulseVelocity = 0;
+  int prevPulses                   = pulses_;
+  std::chrono::microseconds period = 0us;
+  float pulseVelocity              = 0;
 
   // 2-bit state.
   currState_ = (chanA << 1) | (chanB);
@@ -267,10 +267,10 @@ void QEI::encode(void) {
   prevState_ = currState_;
 
   // Calculate pulse velocity (smooth with EWMA)
-  period = timer_.read();
+  period = timer_.elapsed_time();
   timer_.reset();
 
-  pulseVelocity = ((float)(pulses_ - prevPulses)) / period;
+  pulseVelocity = ((pulses_ - prevPulses)) / std::chrono::duration_cast<std::chrono::duration<double>>(period).count();
   movingAvgVelocity_PulsesPerSec_ =
       (1 - movingAvgSmoothingParam_) * pulseVelocity + movingAvgSmoothingParam_ * movingAvgVelocity_PulsesPerSec_;
 }

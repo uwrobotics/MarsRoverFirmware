@@ -26,63 +26,63 @@ class PwmIn {
 
   /** Read the current period
    *
-   * @returns the period in seconds
+   * @returns the period in microseconds
    */
-  float period();
+  std::chrono::microseconds period();
 
   /** Read the average period
    *
-   * @returns the average period in seconds
+   * @returns the average period in microseconds
    */
-  float avgPeriod();
+  std::chrono::microseconds avgPeriod();
 
   /** Read the current pulse width
    *
-   * @returns the pulsewidth in seconds
+   * @returns the pulsewidth in microseconds
    */
-  float pulseWidth();
+  std::chrono::microseconds pulseWidth();
 
   /** Read the average pulse width
    *
-   * @returns the average pulsewidth in seconds
+   * @returns the average pulsewidth in microseconds
    */
-  float avgPulseWidth();
+  std::chrono::microseconds avgPulseWidth();
 
   /** Read the current duty cycle
    *
    * @returns the duty cycle as a percentage, represented between 0.0-1.0
    */
-  float dutyCycle();
+  double dutyCycle();
 
   /** Read the average duty cycle
    *
    * @returns the average duty cycle as a percentage, represented between 0.0-1.0
    */
-  float avgDutyCycle();
+  double avgDutyCycle();
 
   /** Read the average duty cycle velocity
    *
    * @returns the average duty cycle velocity as a 0.0-1.0 percentage/second
    */
-  float avgDutyCycleVelocity();
+  double avgDutyCycleVelocity();
 
  protected:
   InterruptIn m_pwmSense;
   Timer m_timer;
 
-  float m_pulseWidth, m_period;
-  float m_avgPulseWidth, m_avgPeriod, m_avgDutyCycle, m_prevAvgDutyCycle, m_avgDutyCycleVelocity;
+  std::chrono::microseconds m_pulseWidth, m_period, m_avgPulseWidth, m_avgPeriod;
+  double m_avgDutyCycle, m_prevAvgDutyCycle, m_avgDutyCycleVelocity;
 
   int m_sampleCount;
   int m_numSamplesToAverage;
 
-  float* p_pulseWidthSamples;
-  float* p_periodSamples;
+  std::chrono::microseconds* p_pulseWidthSamples;
+  std::chrono::microseconds* p_periodSamples;
 
-  float m_pulseWidthSampleSum;
-  float m_periodSampleSum;
+  std::chrono::microseconds m_pulseWidthSampleSum;
+  std::chrono::microseconds m_periodSampleSum;
 
   void rise();
   void fall();
-  float movingAvg(float* p_samples, float* p_sampleSum, float newSample, int newIndex);
+  std::chrono::microseconds movingAvg(std::chrono::microseconds* p_samples, std::chrono::microseconds* p_sampleSum, std::chrono::microseconds newSample, int newIndex);
 };

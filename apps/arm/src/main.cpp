@@ -7,7 +7,7 @@
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
-#include "Servo.h"
+//#include "Servo.h"//TODO(qinyang-bao): fix all compile errors and renable servo code
 #include "mbed.h"
 
 /*** ARM COMPONENTS ***/
@@ -20,7 +20,7 @@ Motor elbowMotor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
 Motor wristLeftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 Motor wristRightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 Motor clawMotor(MTR_PWM_CLAW, MTR_DIR_CLAW, false);
-Servo clawTooltipServo(SRVO_PWM_CLAW, Servo::LIM_SERVO, 180.0, 2.0, 1.0);
+//Servo clawTooltipServo(SRVO_PWM_CLAW, Servo::LIM_SERVO, 180.0, 2.0, 1.0); //TODO(qinyang-bao): fix all compile errors and renable servo code
 
 // Encoders
 EncoderAbsolute_PWM turnTableEncoder(ArmConfig::turnTableEncoderConfig);
@@ -55,7 +55,7 @@ ActuatorController wristRightActuator(ArmConfig::wristRightActuatorConfig, wrist
 DifferentialWristController wristController(wristLeftActuator, wristRightActuator, wristLimUp, wristLimCenter,
                                             wristLimDown);
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor,
-                              clawTooltipServo, 180.0, 0.0);
+                              /*clawTooltipServo,*/ 180.0, 0.0);//TODO(qinyang-bao): fix all compile errors and renable servo code
 
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
@@ -235,14 +235,14 @@ void rxCANProcessor() {
     //     }
     // }
 
-    ThisThread::sleep_for(2);
+    ThisThread::sleep_for(2ms);
   }
 }
 
 // Outgoing message processor
 void txCANProcessor() {
-  const int txInterdelay_millisec = 2;
-  const int txPeriod_millisec     = 10;
+  constexpr std::chrono::milliseconds txInterdelay          = 2ms;
+  constexpr std::chrono::milliseconds txPeriod              = 10ms;
 
   CANMsg txMsg;
 
@@ -257,44 +257,44 @@ void txCANProcessor() {
     motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
-    ThisThread::sleep_for(txInterdelay_millisec);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.id              = REPORT_SHOULDER_MOTION;
     motionReport.position = shoulderActuator.getAngle_Degrees();
     motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
-    ThisThread::sleep_for(txInterdelay_millisec);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.id              = REPORT_ELBOW_MOTION;
     motionReport.position = elbowActuator.getAngle_Degrees();
     motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
-    ThisThread::sleep_for(txInterdelay_millisec);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.id              = REPORT_WRIST_PITCH_MOTION;
     motionReport.position = wristController.getPitchAngle_Degrees();
     motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
-    ThisThread::sleep_for(txInterdelay_millisec);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.id              = REPORT_WRIST_PITCH_MOTION;
     motionReport.position = wristController.getRollAngle_Degrees();
     motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
-    ThisThread::sleep_for(txInterdelay_millisec);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.id              = REPORT_CLAW_MOTION;
     motionReport.position = clawController.getGapDistance_Cm();
     motionReport.velocity = clawController.getGapVelocity_CmPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
-    ThisThread::sleep_for(txInterdelay_millisec);
+    ThisThread::sleep_for(txInterdelay);
 
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod);
   }
 }
 
@@ -319,6 +319,6 @@ int main() {
     wristController.update();
     clawController.update();
 
-    ThisThread::sleep_for(2);
+    ThisThread::sleep_for(2ms);
   }
 }

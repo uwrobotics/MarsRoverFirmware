@@ -1,4 +1,4 @@
-#include "../include/Neopixel_Blocking.h"
+#include "Neopixel_Blocking.h"
 
 #include "mbed.h"
 
