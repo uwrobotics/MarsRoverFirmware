@@ -4,7 +4,7 @@
 PwmOut pwmLED(LED1);
 
 const int k_period_ms = 1;
-const int interval_ms = 50;
+constexpr auto interval = 50ms;
 const float k_step    = 0.02;
 
 int main() {
@@ -24,6 +24,6 @@ int main() {
 
     pwmLED.write(duty);
 
-    wait_ms(interval_ms);
+    ThisThread::sleep_for(interval);
   }
 }
