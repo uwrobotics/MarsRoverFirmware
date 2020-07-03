@@ -6,10 +6,10 @@ int main() {
 
   while (1) {
     pixels.displayRed();
-    wait(1);
+    ThisThread::sleep_for(1ms);
     pixels.displayBlue();
-    wait(1);
-    pixels.blinkPixels(2, 1, pixels.Green);
+    ThisThread::sleep_for(1ms);
+    pixels.blinkPixels(2, 1s, pixels.Green);
   }
 
   return 1;
