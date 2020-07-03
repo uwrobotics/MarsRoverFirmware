@@ -33,7 +33,7 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg) {
       break;
     case flashingGreen:
       printf("Setting neo pixels to flashing green\r\n");
-      neopixel.blinkPixels(10, 2, neopixel.Green);
+      neopixel.blinkPixels(10, 2s, neopixel.Green);
       break;
     case off:
       printf("Turning neo pixels off\r\n");

@@ -81,7 +81,7 @@ add_subdirectory(targets/${TARGET})
 
 # Include Rover App CMakeLists
 add_subdirectory(apps/arm)
-#add_subdirectory(apps/gimbtonomy)
+add_subdirectory(apps/gimbtonomy)
 #add_subdirectory(apps/safety)
 #add_subdirectory(apps/science)
 
