@@ -18,7 +18,8 @@ set(CMAKE_SIZE arm-none-eabi-size CACHE PATH "" FORCE)
 set(CMAKE_STRINGS arm-none-eabi-strings CACHE PATH "" FORCE)
 set(CMAKE_STRIP arm-none-eabi-strip CACHE PATH "" FORCE)
 
-set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY") #maybe can get rid of this if link flags are right
+# Required to pass CMAKE toolchain functionality check
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
 # Flags
 set(PROCESSOR_FLAGS
