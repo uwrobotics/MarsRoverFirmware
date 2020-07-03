@@ -5,8 +5,7 @@ Encoder::t_encoderConfig config = {
     // PWM encoder pins
     .pin_PWM = ENC_PWM_TRNTBL,
 
-    .degreesPerUnit = 360.0,
-    .inverted       = false};
+    .degreesPerUnit = 360.0};
 
 EncoderAbsolute_PWM encoder(config);
 
@@ -35,7 +34,7 @@ int main() {
     led = !led;
 
     // Sweep the output duty cycle at 2%/second (7.2 deg / sec)
-    if (timer.read() >= 0.005) {
+    if (timer.elapsed_time() >= 5ms) {
       // Set the duty cycle on the pins
       duty += 0.0001 * inverter;
       pwmOut.write(duty);
@@ -44,7 +43,7 @@ int main() {
         inverter = 1.0;
       } else if (duty >= 0.9) {
         inverter = 0.0;  // Hold at 0.9 duty cycle for 5 seconds
-        if (timer.read() >= 5) {
+        if (timer.elapsed_time() >= 5s) {
           inverter = -1.0;
           timer.reset();
         }
@@ -53,7 +52,7 @@ int main() {
       }
     }
 
-    if (printTimer.read() >= 0.05) {
+    if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
       printf("Angle: %f, Angular Velocity :%f\r\n", encoder.getAngle_Degrees(), encoder.getVelocity_DegreesPerSec());
     }
