@@ -8,7 +8,7 @@ int main() {
 
   // Select SSI protocol by setting CS high
   cs = 1;
-  wait_ms(3);
+  ThisThread::sleep_for(3ms);
 
   // Setup the spi for 8 bit data, high steady state clock,
   // second edge capture, with a 1MHz clock rate
