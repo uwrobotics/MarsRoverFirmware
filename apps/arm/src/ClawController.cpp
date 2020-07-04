@@ -2,7 +2,7 @@
 
 ClawController::ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
                                AnalogIn &forceSensor, /*Servo &tooltipServo, */ float tooltipExtendedAngle_Degrees,//TODO(qinyang-bao): fix all compile errors and renable servo code
-                               float tooltipRetractedAngle_Degrees, std::chrono::seconds calibrationTimeout)
+                               float tooltipRetractedAngle_Degrees, chrono::duration<double> calibrationTimeout)
     : ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax),
       r_forceSensor(forceSensor),
       /*r_tooltipServo(tooltipServo),*///TODO(qinyang-bao): fix all compile errors and renable servo code

@@ -21,7 +21,7 @@ class ActuatorController {
 
     PID::t_pidConfig velocityPID, positionPID;
 
-    float watchDogTimeout_Seconds = 3.0;
+    std::chrono::duration<double> watchDogTimeout = 3.0s;
   } t_actuatorConfig;
 
   explicit ActuatorController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder,

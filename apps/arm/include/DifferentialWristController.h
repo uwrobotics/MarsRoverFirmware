@@ -13,7 +13,7 @@ class DifferentialWristController {
   explicit DifferentialWristController(ActuatorController &wristActuatorLeft, ActuatorController &wristActuatorRight,
                                        DigitalIn &wristLimUp, DigitalIn &WristLimCenter, DigitalIn &wristLimDown,
                                        float leftToRightMotorPowerBias = 0.0, float maxPitchAngle_Degrees = +30.0,
-                                       float minPitchAngle_Degrees = -100.0, std::chrono::seconds calibrationTimeout = 10s);
+                                       float minPitchAngle_Degrees = -100.0, std::chrono::duration<double> calibrationTimeout = 10s);
 
   mbed_error_status_t setControlMode(ActuatorController::t_actuatorControlMode controlMode);
 
@@ -59,7 +59,7 @@ class DifferentialWristController {
   float m_maxPitchAngle_Degrees;
   float m_minPitchAngle_Degrees;
 
-  std::chrono::seconds m_calibrationTimeout;
+  std::chrono::duration<double> m_calibrationTimeout;
 
   float m_rollPower_Percentage, m_pitchPower_Percentage;
   float m_rollVelocity_DegreesPerSec, m_pitchVelocity_DegreesPerSec;
