@@ -49,7 +49,7 @@ void countPulses() {
 
 // every timer interrupt, recompute the rpm
 void computeInput() {
-  motorRPM      = (pulseCount - oldPulseCount) * (60 / std::chrono::duration_cast<std::chrono::duration<double>>(TIMER_INTERRUPT_FREQ).count())/ COUNTS_PER_REV;
+  motorRPM      = (pulseCount - oldPulseCount)  / std::chrono::duration_cast<std::chrono::duration<double, std::ratio<60>>>(TIMER_INTERRUPT_FREQ).count() / COUNTS_PER_REV  ;
   oldPulseCount = pulseCount;
 }
 
@@ -84,7 +84,7 @@ int main() {
   eval.start();
 
   while (1) {
-    motorRPM      = (pulseCount - oldPulseCount) * (60 / std::chrono::duration_cast<std::chrono::duration<double>>(interval).count()) / COUNTS_PER_REV;
+    motorRPM      = (pulseCount - oldPulseCount) * (60 / interval.count() / COUNTS_PER_REV;
     oldPulseCount = pulseCount;
 
     // Update the PID controller
