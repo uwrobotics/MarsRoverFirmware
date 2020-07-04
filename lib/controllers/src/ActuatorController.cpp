@@ -132,9 +132,8 @@ mbed_error_status_t ActuatorController::setMotionData(float motionData) {
   }
 }
 
-// TODO(jetkov): refactor to explicitly use std::chrono::duration, etc.
 mbed_error_status_t ActuatorController::update() {
-  float updateInterval = m_updateTimer.elapsed_time().count();
+  auto updateInterval = m_updateTimer.elapsed_time();
   m_updateTimer.reset();
 
   switch (m_controlMode) {
