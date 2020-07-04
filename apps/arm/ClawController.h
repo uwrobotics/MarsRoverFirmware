@@ -9,6 +9,11 @@ class ClawController : public ActuatorController {
                           AnalogIn &forceSensor, LimServo &tooltipServo, float tooltipExtendedAngle_Degrees = 180.0,
                           float tooltipRetractedAngle_Degrees = 0.0, float calibrationTimeout_Seconds = 10.0);
 
+  mbed_error_status_t setMotorPower_Percentage(float percentage);
+
+  mbed_error_status_t setGapVelocity_CmPerSec(float cmPerSec);
+  mbed_error_status_t setGapDistance_Cm(float cm);
+
   mbed_error_status_t setMotionData(float motionData);
 
   mbed_error_status_t extendToolTip();
@@ -23,7 +28,7 @@ class ClawController : public ActuatorController {
 
  private:
   AnalogIn &r_forceSensor;
-  Servo &r_tooltipServo;
+  LimServo &r_tooltipServo;
 
   float m_tooltipExtendedAngle_Degrees;
   float m_tooltipRetractedAngle_Degrees;

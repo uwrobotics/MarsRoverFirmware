@@ -10,8 +10,8 @@ static Encoder::t_encoderConfig panEncoderConfig{
 
 static ActuatorController::t_actuatorConfig panServoActuatorConfig = {
     .defaultControlMode        = ActuatorController::position,
-    .minVelocity_DegreesPerSec = -264.0,
-    .maxVelocity_DegreesPerSec = +264.0,
+    .minVelocity_DegreesPerSec = -228.0,
+    .maxVelocity_DegreesPerSec = +228.0,
     .velocityPID               = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1},
     .positionPID               = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 

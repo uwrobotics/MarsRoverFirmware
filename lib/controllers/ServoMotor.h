@@ -11,10 +11,9 @@ class ServoMotor : public Motor {
   /** Create a motor control interface
    *
    * @param pwm       A PwmOut pin, driving the H-bridge enable line to control the speed
-   * @param dir       A DigitalOut, set high when the motor should go forward, low when backwards [NOT USED BY
-   * SERVOMOTOR CLASS]
-   * @param freqInHz  Output PWM frequency, default 1kHz [NOT USED BY SERVOMOTOR CLASS]
    * @param inverted  If true, then forward speed will set dir to 0 instead of 1, otherwise inverse
+   * @param min_pulsewidth_ms  Pwm pulse width for minimum speed
+   * @param max_pulsewidth_ms  Pwm pulse width for maximum speed
    * @param limit     Maximum speed magnitude
    */
   ServoMotor(PinName pwm, bool inverted = false, float min_pulsewidth_ms = 1.0, float max_pulsewidth_ms = 2.0,

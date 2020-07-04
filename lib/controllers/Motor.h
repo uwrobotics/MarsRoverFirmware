@@ -43,15 +43,6 @@ class Motor {
    */
   float getPower();
 
-  // Servo type exclusive functions
-  bool servoSetRange(float range_);         // Returns FALSE if t_motorType != lim_servo
-  bool servoSetMaxSpeed(float max_speed_);  // Returns FALSE if t_motorType != cont_servo
-  bool servoSetPosition(float angle);       // Sets POS to angle if t_motorType == lim_servo
-  bool servoSetSpeed(float speed_);         // Sets rotation SPEED to speed_ if t_motorType == cont_servo
-  float servoRead(void);                    // Returns SPEED if CONTINUOUS and POSITION if LIMITED
-  float servoGetMaxSpeed(void);             // Returns MAX SPEED
-  void servoSetPeriod(int period);          // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
-
  protected:
   PwmOut m_pwm;
   DigitalOut m_dir;

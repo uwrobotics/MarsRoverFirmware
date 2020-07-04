@@ -23,14 +23,11 @@ void Motor::setPower(float dutyCycle) {
   m_pwm = fmin(fabs(dutyCycle), m_limit);
 }
 
-// TODO: this function results in a warning "control reaches end of non-void function", not sure how to fix it
 Motor& Motor::operator=(int dutyCycle) {
   this->setPower(dutyCycle);
   return *this;
 }
 
 float Motor::getPower() {
-  float temp;
-  m_dir ? temp = m_pwm.read() : temp = -m_pwm.read();
-  return temp;
+  return m_dir ? m_pwm.read() : -m_pwm.read();
 }

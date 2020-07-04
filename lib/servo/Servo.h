@@ -15,8 +15,8 @@ class Servo {
       DEFAULT_MIN    = 1,                // DEFAULT MIN WAVE LENGTH in MILISECONDS
       PERIOD         = 1000 / PWM_FREQ;  // DEFAULT PERIOD LENGTH in MILISECONDS
 
-  float m_max_pulse_ms,  // PULSE LENGTH for MAX ANGLE
-      m_min_pulse_ms;    // PULSE LENGTH for MIN ANGLE
+  float m_max_pulse_ms,  // PULSE LENGTH for MAX ANGLE/SPEED
+      m_min_pulse_ms;    // PULSE LENGTH for MIN ANGLE/SPEED
 
   int getSign(int val) {
     return (val >= 0) ? 1 : -1;

@@ -7,12 +7,10 @@
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
-#include "ActuatorController.h"
-#include "DifferentialWristController.h"
-#include "ClawController.h"
-#include "CANMsg.h"
-#include "CANBuffer.h"
 #include "LimServo.h"
+#include "can_config.h"
+#include "mbed.h"
+#include "mbed_config.h"
 
 /*** ARM COMPONENTS ***/
 /**********************/
