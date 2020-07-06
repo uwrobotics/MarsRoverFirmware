@@ -4,7 +4,7 @@
 ## Platform: [STM32F446xE](https://www.st.com/resource/en/datasheet/stm32f446re.pdf) / [NUCLEO-F446RE](https://os.mbed.com/platforms/ST-Nucleo-F446RE/)
 
 This repository contains:
-- Arm MBED OS 5 SDK source [[mbed-os](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/mbed-os)]
+- Arm MBED OS 6 SDK source [[mbed-os](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/mbed-os)]
 - Custom and external libaries [[lib](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/lib)]
 - Applications for running on each control board [[apps](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps)]
 - Test applications for testing code components [[apps/test_xxxx](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps)]
@@ -31,15 +31,15 @@ This repository contains:
    
    For Ubuntu (18.04 preferred)
     - `sudo apt update`
-    - `sudo apt install make`
+    - `sudo apt install make ` for build
     - `sudo apt install screen can-utils` for serial and CAN interfacing
     - Install/update ARM GCC toolchain:
 
 	      sudo apt autoremove gcc-arm-none-eabi
-          wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
-          sudo tar -xvf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 -C /opt/
-          echo "PATH=\$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> ~/.bashrc
-          export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin 
+          wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
+          sudo tar -xvf gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -C /opt/
+          echo "PATH=\$PATH:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin" >> ~/.bashrc
+          export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin 
        **Note:** If you are not using Ubuntu 18.04 and/or bash you may need to modify this script's paths/files. 
 	
 	For Windows
