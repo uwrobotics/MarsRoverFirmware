@@ -8,7 +8,7 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
   // do nothing
 }
 
-TutorialServo::TutorialServo(PinName servoPin) : m_servoPmwOut(servoPin){
+TutorialServo::TutorialServo(PinName servoPin) : m_servoPwmOut(servoPin){
   m_servoRangeInDegrees = 180;
   m_minPulsewidthInMs = 1;
   m_maxPulsewidthInMs = 2;
@@ -27,7 +27,7 @@ void TutorialServo::setAngleRangeInDegrees(float degrees) {
 void TutorialServo::setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulsewidthMs) {
   m_minPulsewidthInMs = minPulsewidthMs;
   m_maxPulsewidthInMs = maxPulsewidthMs;
-  //m_servoPmwOut.period((maxPulsewidthMs - minPulsewidthMs) / 1000);
+  //m_servoPwmOut.period((maxPulsewidthMs - minPulsewidthMs) / 1000);
 }
 
 void TutorialServo::setPositionInDegrees(float degrees) {}
