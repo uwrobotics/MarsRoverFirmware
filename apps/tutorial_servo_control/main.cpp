@@ -1,7 +1,7 @@
 #include "mbed.h"
 
 AnalogIn potVoltageIn(PA_0);
-PmwOut servoPwmOut(PA_1);
+PwmOut servoPwmOut(PA_1);
 
 int main() {
   servoPwmOut.period(0.020);
