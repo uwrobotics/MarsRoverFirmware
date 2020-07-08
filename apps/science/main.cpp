@@ -9,12 +9,8 @@ const int k_interval_ms = 500;
 
 CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 
-void initCAN()
-{
-  can.filter(ROVER_CANID_FIRST_SCIENCE_RX, ROVER_CANID_FILTER_MASK, CANStandard);
-}
-
 int main() {
+  can.filter(ROVER_CANID_FIRST_SCIENCE_RX, ROVER_CANID_FILTER_MASK, CANStandard);
   while (true) {
     led1 = !led1;
     wait_ms(k_interval_ms);

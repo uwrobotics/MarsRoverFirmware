@@ -213,10 +213,6 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {{CANID::SET_OVERRIDE_FLAGS, &se
 CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 // CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
 
-void initCAN()
-{
-  can1.filter(ROVER_CANID_FIRST_ARM_RX, ROVER_CANID_FILTER_MASK, CANStandard);
-}
 
 // Incoming message processor
 void rxCANProcessor() {
@@ -315,7 +311,8 @@ int main() {
   printf("ARM APPLICATION STARTED\r\n");
   printf("=======================\r\n");
 
-  initCAN();
+  //CAN init stuff
+  can1.filter(ROVER_CANID_FIRST_ARM_RX, ROVER_CANID_FILTER_MASK, CANStandard);
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 
