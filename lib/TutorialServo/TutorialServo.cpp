@@ -1,11 +1,17 @@
 #include "TutorialServo.h"
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1,
-                             float maxPulsewidthInMs = 2): m_servoPwmOut(servoPin),
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs,
+                             float maxPulsewidthInMs): m_servoPwmOut(servoPin),
                               m_servoRangeInDegrees(servoRangeInDegrees), 
                               m_minPulsewidthInMs(minPulsewidthInMs),
                               m_maxPulsewidthInMs(maxPulsewidthInMs) {
   // do nothing
+}
+
+TutorialServo::TutorialServo(PinName servoPin) : m_servoPmwOut(servoPin){
+  m_servoRangeInDegrees = 180;
+  m_minPulsewidthInMs = 1;
+  m_maxPulsewidthInMs = 2;
 }
 
 TutorialServo::~TutorialServo() {
