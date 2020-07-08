@@ -5,7 +5,7 @@
 
 class TutorialServo {
  private:
-  PmwOut m_servoPmwOut;
+  PwmOut m_servoPwmOut;
   float m_servoRangeInDegrees;
   float m_minPulsewidthInMs;
   float m_maxPulsewidthInMs;
