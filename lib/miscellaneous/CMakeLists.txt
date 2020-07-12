@@ -1,2 +1,0 @@
-add_library(SystemReport INTERFACE)
-target_include_directories(SystemReport INTERFACE include)

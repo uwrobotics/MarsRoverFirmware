@@ -27,14 +27,14 @@ int main() {
     ThisThread::sleep_for(100ms);
 
     printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates unsuccessful
-                                               // initialization
+                                            // initialization
     moisture = sensor.Read_Moisture();
     printf("Moisture: %d \r\n", moisture);
 
     ThisThread::sleep_for(100ms);
 
     printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0 indicates
-                                                  // unsuccessful initialization
+                                               // unsuccessful initialization
     temperature = sensor.Read_Temperature();
     printf("Temperature: %f \r\n", temperature);
 

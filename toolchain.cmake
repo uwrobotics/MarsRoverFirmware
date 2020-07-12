@@ -95,3 +95,9 @@ function(target_set_firmware_properties TARGET-NAME)
 
     target_bin_from_elf(${TARGET-NAME})
 endfunction()
+
+#TODO: flash target/function
+#add_custom_target(flash DEPENDS ${PROJECT_NAME}.bin)
+#add_custom_command(TARGET flash
+#        USES_TERMINAL
+#        COMMAND JLinkExe -CommanderScript ../flash.jlink)

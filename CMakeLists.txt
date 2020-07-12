@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 3.16.5)
+cmake_minimum_required(VERSION 3.15.7)
 
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
-set(CMAKE_VERBOSE_MAKEFILE on)
 include(toolchain.cmake) # TODO(melvinw): this should not be included here. It should be configured by ide or by passing it to cmake
 
 # Toolchain must be included before project declaration
@@ -56,7 +55,6 @@ include(mbed-os.cmake)
 # Include library CMakeLists
 add_subdirectory(lib/can)
 add_subdirectory(lib/controllers)
-add_subdirectory(lib/miscellaneous)
 add_subdirectory(lib/neopixel)
 add_subdirectory(lib/pid)
 add_subdirectory(lib/sensors)
@@ -64,13 +62,13 @@ add_subdirectory(lib/servo)
 
 # TODO(wmmc88): check if its in supported configuration list and warn if not in list. This should be in wrapper makefile
 if (NOT DEFINED APP)
-    message(FATAL_ERROR "APP variable not set in CACHE or ENV")
+    message(FATAL_ERROR "APP variable not set in CACHE. Please invoke CMake with \"-DAPP=<app-name>\"")
 elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/apps/${APP}")
     message(FATAL_ERROR "${APP} app does not exist in the apps folder")
 endif ()
 
 if (NOT DEFINED TARGET)
-    message(FATAL_ERROR "TARGET variable not set in CACHE or ENV")
+    message(FATAL_ERROR "TARGET variable not set in CACHE. Please invoke CMake with \"-DTARGET=<target-name>\"")
 elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/targets/${TARGET}")
     message(FATAL_ERROR "${TARGET} target does not exist in the targets folder")
 endif ()

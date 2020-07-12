@@ -4,8 +4,8 @@
 // Defines
 #define MIN_RPM              0  // change min/max RPMs based on motor used
 #define MAX_RPM              300
-#define COUNTS_PER_REV       1200  // motor property
-#define TIMER_INTERRUPT_FREQ 250ms // frequency of timer interrupt for input calculation
+#define COUNTS_PER_REV       1200   // motor property
+#define TIMER_INTERRUPT_FREQ 250ms  // frequency of timer interrupt for input calculation
 #define GOAL_RPM             100.0
 #define K_UPDATE_PERIOD      150ms
 
@@ -25,8 +25,8 @@ Timer timer;
 // Variables
 uint64_t pulseCount    = 0;
 uint64_t oldPulseCount = 0;
-double motorRPM         = 0.0;
-double motorPWMDuty     = 0.0;
+double motorRPM        = 0.0;
+double motorPWMDuty    = 0.0;
 Ticker interruptTimer;
 
 // PID AutoTune config struct for specific DC motor, change depending on actuator
@@ -49,7 +49,9 @@ void countPulses() {
 
 // every timer interrupt, recompute the rpm
 void computeInput() {
-  motorRPM      = (pulseCount - oldPulseCount)  / std::chrono::duration_cast<std::chrono::duration<double, std::ratio<60>>>(TIMER_INTERRUPT_FREQ).count() / COUNTS_PER_REV  ;
+  motorRPM = (pulseCount - oldPulseCount) /
+             std::chrono::duration_cast<std::chrono::duration<double, std::ratio<60>>>(TIMER_INTERRUPT_FREQ).count() /
+             COUNTS_PER_REV;
   oldPulseCount = pulseCount;
 }
 
@@ -74,7 +76,7 @@ int main() {
   rpmPIDController.autoTune(true, &autoTuneConfig);
 
   printf("Autotune Params obtained: Kc: %f \t    TauI: %f \t    TauD: %f \r\n", rpmPIDController.getATunePParam(),
-            rpmPIDController.getATuneIParam(), rpmPIDController.getATuneDParam());
+         rpmPIDController.getATuneIParam(), rpmPIDController.getATuneDParam());
   rpmPIDController.setAutoTuneParams();
   interruptTimer.detach();
 
@@ -95,7 +97,8 @@ int main() {
 
     printf("Motor RPM: %f, \t Goal RPM: %f, \t PWM Output: %f\r\n", motorRPM, GOAL_RPM, motorPWMDuty);
     if (abs(motorRPM - GOAL_RPM) < 1.0) {
-      printf("Time taken to reach goal RPM: %f seconds \r\n", std::chrono::duration_cast<std::chrono::duration<double>>(eval.elapsed_time()).count() );
+      printf("Time taken to reach goal RPM: %f seconds \r\n",
+             std::chrono::duration_cast<std::chrono::duration<double>>(eval.elapsed_time()).count());
       MOTOR_DIR = 0;
       return 0;
     }

@@ -26,7 +26,7 @@ This repository contains:
 - Squash when merging pull requests
 
 ## UWRT Firmware Development Instructions
-
+TODO(wmmc88): Update + add cmake + python shit + clang format
 1. Download the development toolchain (gcc and make) and serial interface software
    
    For Ubuntu (18.04 preferred)

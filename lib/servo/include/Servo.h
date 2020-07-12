@@ -4,7 +4,7 @@
 //#include "PwmOut.h"
 //#include "mbed.h"
 //
-//class Servo {
+// class Servo {
 // public:
 //  enum SERVO_TYPE {
 //    CONT_SERVO = 0,

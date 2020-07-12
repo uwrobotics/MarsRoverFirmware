@@ -1,6 +1,3 @@
-# The CI Matrix must be updated to match this file or else the "matching supported build configurations" stage of CI will fail # TODO(wmmc88): "implement matching supported build configurations" stage
-
-
 # Rover Apps
 arm:
   - arm

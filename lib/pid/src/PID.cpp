@@ -162,7 +162,7 @@ void PID::setTunings(double Kc, double tauI, double tauD) {
   if (tauI == 0.0) {
     tempTauR = 0.0;
   } else {
-    tempTauR = (1.0 / tauI) * tSample_.count() ;
+    tempTauR = (1.0 / tauI) * tSample_.count();
   }
 
   // For "bumpless transfer" we need to rescale the accumulated error.
@@ -262,7 +262,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     autoTuneConfig             = new PID::t_AutoTuneConfig();
     autoTuneConfig->nLookBack  = 40;
     autoTuneConfig->sampleTime = 250ms;
-    double outputStart          = outMax_ / 2;
+    double outputStart         = outMax_ / 2;
     if (outputStart < outMin_) outputStart = outMin_;
     autoTuneConfig->outputStart = outputStart;
     autoTuneConfig->oStep       = outSpan_ * 0.15;
@@ -273,7 +273,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   // initialize variables
   peakType = peakCount = 0;
   peak1 = peak2 = 0s;
-  justchanged                          = false;
+  justchanged   = false;
   refVal = absMax = absMin = autoTuneConfig->setpoint;
 
   setOutput(autoTuneConfig->outputStart + autoTuneConfig->oStep);

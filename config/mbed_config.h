@@ -18,8 +18,8 @@
 #ifndef __MBED_CONFIG_DATA__
 #define __MBED_CONFIG_DATA__
 
-#include "rover_config.h"
 #include "mbed_config_target.h"
+#include "rover_config.h"
 
 // MBED Debug configuration
 #define __MBED__

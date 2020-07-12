@@ -3,9 +3,9 @@
 
 PwmOut pwmLED(LED1);
 
-const int k_period_ms = 1;
+const int k_period_ms   = 1;
 constexpr auto interval = 50ms;
-const float k_step    = 0.02;
+const float k_step      = 0.02;
 
 int main() {
   pwmLED.period_ms(k_period_ms);

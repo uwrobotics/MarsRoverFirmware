@@ -15,9 +15,7 @@ target_sources(Motor PRIVATE src/Motor.cpp)
 target_include_directories(Motor PUBLIC include)
 target_set_mbed_dependency(Motor)
 
-add_library(ServoMotor)
-target_sources(ServoMotor PRIVATE src/ServoMotor.cpp)
-target_include_directories(ServoMotor PUBLIC include)
-target_set_mbed_dependency(ServoMotor)
-
-
+#add_library(ServoMotor) #TODO(qinyang-bao): fix all compile errors and renable servo code
+#target_sources(ServoMotor PRIVATE src/ .cpp)
+#target_include_directories(ServoMotor PUBLIC include)
+#target_set_mbed_dependency(ServoMotor)
