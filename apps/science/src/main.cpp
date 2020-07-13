@@ -1,7 +1,4 @@
-#include "CANMsg.h"
-#include "can_config.h"
 #include "mbed.h"
-#include "rover_config.h"
 
 DigitalOut led1(LED1);
 
