@@ -1,4 +1,3 @@
-#include "SystemReport.h"
 #include "mbed.h"
 
 PwmOut pwmLED(LED1);

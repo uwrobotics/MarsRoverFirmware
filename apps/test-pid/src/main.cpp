@@ -86,7 +86,9 @@ int main() {
   eval.start();
 
   while (1) {
-    motorRPM      = (pulseCount - oldPulseCount) * (60 / interval.count() / COUNTS_PER_REV;
+    motorRPM = (pulseCount - oldPulseCount) *
+               std::chrono::duration_cast<std::chrono::duration<double, std::ratio<60>>>(interval).count() /
+               COUNTS_PER_REV;
     oldPulseCount = pulseCount;
 
     // Update the PID controller

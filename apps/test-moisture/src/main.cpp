@@ -2,7 +2,6 @@
 #include "mbed.h"
 
 DigitalOut led1(LED1);
-BufferedSerial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 
 int main() {
   led1 = 0;  // start with LED off

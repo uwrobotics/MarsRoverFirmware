@@ -27,7 +27,7 @@ int main() {
     led = !led;
 
     // Sweep the output duty cycle at 2%/second (7.2 deg / sec)
-    if (timer.read() >= 0.005) {
+    if (timer.elapsed_time() >= 5ms) {
       // Set the duty cycle on the pins
       duty += 0.0001 * inverter;
       pwmOut.write(duty);
@@ -36,7 +36,7 @@ int main() {
         inverter = 1.0;
       } else if (duty >= 0.9) {
         inverter = 0.0;  // Hold at 0.9 duty cycle for 5 seconds
-        if (timer.read() >= 5) {
+        if (timer.elapsed_time() >= 5s) {
           inverter = -1.0;
           timer.reset();
         }
@@ -45,14 +45,13 @@ int main() {
       }
     }
 
-    if (printTimer.read() >= 0.05) {
+    if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
-      pc.printf(
+      printf(
           "Avg PW: %+f, \tAvg Prd: %+f, \tRaw Duty: %+f, \tAvg Duty: %+f, \tAvg Duty Velo: %+f, \tAvg Ang Velo: "
           "%+f\r\n",
-          pwmIn.avgPulseWidth(), pwmIn.avgPeriod(), pwmIn.dutyCycle(), pwmIn.avgDutyCycle(),
+          pwmIn.avgPulseWidth().count(), pwmIn.avgPeriod().count(), pwmIn.dutyCycle(), pwmIn.avgDutyCycle(),
           pwmIn.avgDutyCycleVelocity(), pwmIn.avgDutyCycleVelocity() * 360.0);
     }
-    ENC_PWM_SHLDR
   }
 }
