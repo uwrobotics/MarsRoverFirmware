@@ -310,6 +310,8 @@ int main() {
   printf("ARM APPLICATION STARTED\r\n");
   printf("=======================\r\n");
 
+  // CAN init stuff
+  can1.filter(ROVER_CANID_FIRST_ARM_RX, ROVER_CANID_FILTER_MASK, CANStandard);
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 
