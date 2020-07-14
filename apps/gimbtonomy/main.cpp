@@ -8,7 +8,7 @@
 #include "hw_bridge.h"
 #include "mbed.h"
 
-CAN can(CAN1_RX, CAN1_TX, ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CAN can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;
 // CAN_RX = PB_8, CAN_TX = PB_9
 Neopixel_Blocking neopixel(16, LED_MTRX);
@@ -16,7 +16,7 @@ Neopixel_Blocking neopixel(16, LED_MTRX);
 // Color is specified by the data inside the packet
 
 void initCAN() {
-  can.filter(ROVERCONFIG::ROVER_CANID_FIRST_GIMBTONOMY_RX, ROVERCONFIG::ROVER_CANID_FILTER_MASK, CANStandard);
+  can.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_GIMBTONOMY_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK, CANStandard);
 }
 
 void handleSetNeoPixelColor(CANMsg *p_newMsg) {
@@ -48,11 +48,11 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg) {
 
 void processCANMsg(CANMsg *p_newMsg) {
   switch (p_newMsg->id) {
-    case CANID::SET_NEOPIXEL:
+    case HWBRIDGE::CANID::NEOPIXEL_SET:
       // Send an acknowledgement CANMsg back to the Jetson
       printf("Sending acknowledgement message\r\n");
       txMsg.clear();
-      txMsg.id = CANID::NEOPIXEL_ACK;
+      txMsg.id = HWBRIDGE::CANID::NEOPIXEL_ACK;
       txMsg << true;
       can.write(txMsg);
       printf("Updating neo pixels\r\n");
