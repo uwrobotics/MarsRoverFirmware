@@ -14,4 +14,4 @@ firmware.code-workspace
 *.idea/
 
 # hw_bridge repo
-uwrt-mars-rover-hw_bridge
+uwrt-mars-rover-hw-bridge
