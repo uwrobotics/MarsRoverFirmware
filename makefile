@@ -226,7 +226,7 @@ C_FLAGS += -std=gnu11
 C_FLAGS += ${DEFINITIONS}
 C_FLAGS += ${COMMON_FLAGS}
 
-CXX_FLAGS += -std=gnu++14
+CXX_FLAGS += -std=gnu++2a
 CXX_FLAGS += -fno-rtti
 CXX_FLAGS += -Wvla
 CXX_FLAGS += ${DEFINITIONS}
