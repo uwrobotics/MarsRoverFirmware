@@ -311,7 +311,8 @@ int main() {
   printf("=======================\r\n");
 
   // CAN init stuff
-  can1.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK, CANStandard);
+  can1.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK,
+              CANStandard);
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 

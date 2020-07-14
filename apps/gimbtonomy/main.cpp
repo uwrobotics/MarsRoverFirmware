@@ -16,7 +16,8 @@ Neopixel_Blocking neopixel(16, LED_MTRX);
 // Color is specified by the data inside the packet
 
 void initCAN() {
-  can.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_GIMBTONOMY_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK, CANStandard);
+  can.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_GIMBTONOMY_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK,
+             CANStandard);
 }
 
 void handleSetNeoPixelColor(CANMsg *p_newMsg) {
