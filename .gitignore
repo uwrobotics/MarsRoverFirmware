@@ -12,3 +12,6 @@ firmware.code-workspace
 
 # Clion
 *.idea/
+
+# hw_bridge repo
+uwrt-mars-rover-hw_bridge
