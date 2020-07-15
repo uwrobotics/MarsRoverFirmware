@@ -14,16 +14,11 @@ science:
 # Test Apps
 test-aeat-8800:
   - nucleo
-  - arm
-  - gimbtonomy
-  - safety
-  - science
 
 test-actuator-controller:
   - nucleo
   - arm
   - gimbtonomy
-  - safety
   - science
 
 test-blinky:
@@ -48,7 +43,6 @@ test-enc-abs-pwm:
   - nucleo
   - arm
   - gimbtonomy
-  - safety
   - science
 
 test-moisture:
@@ -66,14 +60,12 @@ test-pwm:
   - nucleo
   - arm
   - gimbtonomy
-  - safety
   - science
 
 test-pwmin:
   - nucleo
   - arm
   - gimbtonomy
-  - safety
   - science
 
 test-servo:
