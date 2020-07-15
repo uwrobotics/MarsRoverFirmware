@@ -29,9 +29,5 @@ Motor& Motor::operator=(int dutyCycle) {
 }
 
 float Motor::getPower() {
-  if (m_dir) {
-    return m_pwm.read();
-  } else {
-    return -m_pwm.read();
-  }
+  return m_dir ? m_pwm.read() : -m_pwm.read();
 }
