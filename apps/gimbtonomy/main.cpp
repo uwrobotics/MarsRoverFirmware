@@ -8,10 +8,10 @@
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "GimbtonomyConfig.h"
-#include "hw_bridge.h"
 #include "LimServo.h"
 #include "Neopixel_Blocking.h"
 #include "ServoMotor.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 #include "mbed_config.h"
 
