@@ -1,15 +1,14 @@
 #include "ClawController.h"
 
-ClawController::ClawController(
-    t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax, AnalogIn &forceSensor,
-    /*Servo &tooltipServo, */ float tooltipExtendedAngle_Degrees,  // TODO(qinyang-bao): fix all compile errors and
-                                                                   // renable servo code
-    float tooltipRetractedAngle_Degrees, chrono::duration<double> calibrationTimeout)
+ClawController::ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
+                               AnalogIn &forceSensor, LimServo &tooltipServo, float tooltipExtendedAngle_Degrees,
+                               float tooltipRetractedAngle_Degrees, chrono::duration<double> calibrationTimeout)
     : ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax),
       r_forceSensor(forceSensor),
-      /*r_tooltipServo(tooltipServo),*/  // TODO(qinyang-bao): fix all compile errors and renable servo code
+      r_tooltipServo(tooltipServo),
       m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees),
       m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees),
+      m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {}
       m_calibrationTimeout(calibrationTimeout) {}
 
 mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {
@@ -66,19 +65,16 @@ mbed_error_status_t ClawController::setMotionData(float motionData) {
   }
 }
 
-mbed_error_status_t
-ClawController::extendToolTip() {  // TODO(qinyang-bao): fix all compile errors and renable servo code
-  //  mbed_error_status_t err_status =
-  //      r_tooltipServo.set_position(m_tooltipExtendedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
-  //  return err_status;
-  return 0;
+mbed_error_status_t ClawController::extendToolTip() {
+  mbed_error_status_t err_status =
+      r_tooltipServo.setPosition(m_tooltipExtendedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
+  return err_status;
 }
 
 mbed_error_status_t ClawController::retractToolTip() {
-  //  mbed_error_status_t err_status = //TODO(qinyang-bao): fix all compile errors and renable servo code
-  //      r_tooltipServo.set_position(m_tooltipRetractedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
-  //  return err_status;
-  return 0;
+  mbed_error_status_t err_status =
+      r_tooltipServo.setPosition(m_tooltipRetractedAngle_Degrees) ? MBED_SUCCESS : MBED_ERROR_INVALID_OPERATION;
+  return err_status;
 }
 
 float ClawController::getGapVelocity_CmPerSec() {
@@ -134,13 +130,15 @@ float ClawController::convertShaftVelocityDegreesToGapVelocityCm(float shaftPosi
 }
 
 float ClawController::convertGapCmToShaftPositionDegrees(float gap_cm) {
-  return (1.573564198) * (gap_cm * gap_cm) - (158.4968661) * gap_cm + 2119.701587;  // TODO: FIXME! Magic Numbers
+  // TODO: fix magic numbers @ALEX
+  return (1.573564198) * (gap_cm * gap_cm) - (158.4968661) * gap_cm + 2119.701587;
   // return (8.282382533e-3)*(gap_cm*gap_cm*gap_cm*gap_cm) - (2.986760459e-1)*(gap_cm*gap_cm*gap_cm) +
   // (5.007842722)*(gap_cm*gap_cm) - (171.560244)*gap_cm + 2127.848743; // High precision
 }
 
 float ClawController::convertGapVelocityCmToShaftVelocityDegrees(float gap_cmPerSec) {
-  return 2 * (1.573564198) * gap_cmPerSec - 158.4968661;  // TODO: FIXME! Magic Numbers
+  // TODO: fix magic numbers @ALEX
+  return 2 * (1.573564198) * gap_cmPerSec - 158.4968661;
   // return 4*(8.282382533e-3)*(gap_cmPerSec*gap_cmPerSec*gap_cmPerSec) - 3*(2.986760459e-1)*(gap_cmPerSec*gap_cmPerSec)
   // + 2*(5.007842722)*gap_cmPerSec - 171.560244; // High precision
 }

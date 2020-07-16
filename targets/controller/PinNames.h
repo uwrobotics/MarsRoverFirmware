@@ -158,54 +158,43 @@ typedef enum {
 #endif
 
   /**** UI ****/
-  LED1 = PC_0,
-  LED2 = PC_1,
-  LED3 = PC_2,
-  LED4 = PC_3,
+  LED1  = PC_0,
+  LED_R = PC_1,
+  LED_G = PC_2,
+  LED_B = PC_3,
 
-  LED_MTRX = PA_2,
+  BUTTON_TEST = PB_0,
 
-  BUTTON_1 = PB_0,
-  BUTTON_2 = PB_1,
+  /**** Joystick Pins ****/
+  JOY_SM_X = PC_4,
+  JOY_SM_Y = PC_5,
 
-  /**** Actuator Pins ****/
-  SRVO_PWM_CR = PB_14,
-  SRVO_PWM_HS = PB_15,
-  SRVO_PWM_SG = PB_5,
+  JOY_BTN = PA_4,
+  JOY_X   = PA_5,
+  JOY_Y   = PA_6,
 
-  /**** Limit Switch Pins ****/
-  LIM_GIMB = PC_13,
+  /**** Pushbutton Pins ****/
+  PB1 = PB_14,
+  PB2 = PB_15,
 
-  /**** Encoder Pins ****/
-  ENC_PWM_GIMB = PA_3,
+  /**** Switch Pins ****/
+  SW_1A = PC_6,
+  SW_1B = PC_7,
+  SW_2A = PC_8,
+  SW_2B = PC_9,
 
-  /**** Sensors ****/
-  ULTRA_TRIG_3V3_1 = PB_6,
-  ULTRA_ECHO_1     = PB_7,
-  ULTRA_TRIG_3V3_2 = PB_8,
-  ULTRA_ECHO_2     = PB_9,
+  /**** Potentiometer Pins ****/
+  POT_AL       = PA_1,
+  SLIDE_POT_AL = PA_2,
 
   /**** Serial Interface Pins ****/
-  SPI1_SCK  = PA_5,
-  SPI1_MOSI = PA_7,
-  SPI1_MISO = PA_6,
+  SERIAL_TX = STDIO_UART_TX,
+  SERIAL_RX = STDIO_UART_RX,
 
-  CAN1_TX = PA_12,
-  CAN1_RX = PA_11,
-
-  CAN2_TX = PB_13,
-  CAN2_RX = PB_12,
-
-  CAN_TX = CAN1_TX,
-  CAN_RX = CAN1_RX,
-
-  SERIAL_TX  = STDIO_UART_TX,
-  SERIAL_RX  = STDIO_UART_RX,
-  SERIAL_RTS = PC_8,
-  // does not exist
-
-  USBTX = STDIO_UART_TX,
-  USBRX = STDIO_UART_RX,
+  USB_RTS = PA_7,
+  USB_CTS = PA_8,
+  USBTX   = PA_9,
+  USBRX   = PA_10,
 
   /**** OSCILLATOR pins ****/
   RCC_OSC32_IN  = PC_14,

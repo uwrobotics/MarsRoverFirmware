@@ -19,7 +19,9 @@
 #define __MBED_CONFIG_DATA__
 
 #include "mbed_config_target.h"
-#include "rover_config.h"
+
+// Convenience Defines
+#define ROVER_DEFAULT_SERIAL_BAUD_RATE 115200
 
 // MBED Debug configuration
 #define __MBED__

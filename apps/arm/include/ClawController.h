@@ -1,15 +1,14 @@
 #pragma once
 
 #include "ActuatorController.h"
-//#include "Servo.h"
+#include "LimServo.h"
 
 class ClawController : public ActuatorController {
  public:
   explicit ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
-                          AnalogIn &forceSensor, /*Servo &tooltipServo,*/ float tooltipExtendedAngle_Degrees = 180.0,
-                          float tooltipRetractedAngle_Degrees = 0.0,
-                          chrono::duration<double> calibrationTimeout =
-                              10s);  // TODO(qinyang-bao): fix all compile errors and renable servo code
+                          AnalogIn &forceSensor, LimServo &tooltipServo, float tooltipExtendedAngle_Degrees = 180.0,
+                          float tooltipRetractedAngle_Degrees = 0.0, chrono::duration<double> calibrationTimeout =
+                              10s);
 
   mbed_error_status_t setMotorPower_Percentage(float percentage);
 
@@ -30,7 +29,7 @@ class ClawController : public ActuatorController {
 
  private:
   AnalogIn &r_forceSensor;
-  //  Servo &r_tooltipServo; //TODO(qinyang-bao): fix all compile errors and renable servo code
+  LimServo &r_tooltipServo;
 
   float m_tooltipExtendedAngle_Degrees;
   float m_tooltipRetractedAngle_Degrees;

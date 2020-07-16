@@ -10,13 +10,12 @@
 
 class Motor {
  public:
-  typedef struct {
+  typedef struct motorConfig {
     PinName pwmPin;
     PinName dirPin;
     bool inverted;
     int freqInHz;
     float limit;
-
   } t_motorConfig;
 
   /** Create a motor control interface

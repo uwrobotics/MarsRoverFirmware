@@ -1,4 +1,3 @@
-
 #include "ActuatorController.h"
 
 #include <cmath>
@@ -48,7 +47,7 @@ mbed_error_status_t ActuatorController::setControlMode(t_actuatorControlMode con
     case motorPower:
       m_controlMode = motorPower;
       setMotorPower_Percentage(0.0f);
-      return update();
+      return MBED_SUCCESS;
 
     case velocity:
       m_velocityPIDController.reset();
@@ -81,9 +80,7 @@ mbed_error_status_t ActuatorController::setMotorPower_Percentage(float percentag
 }
 
 mbed_error_status_t ActuatorController::setVelocity_DegreesPerSec(float degreesPerSec) {
-  if (m_controlMode != velocity) {
-    return MBED_ERROR_INVALID_OPERATION;
-  }
+  if (m_controlMode != velocity) return MBED_ERROR_INVALID_OPERATION;
 
   // Limit velocity setpoint to zero if arm is out of bounds
   if ((degreesPerSec < 0.0 && isPastMinAngle()) || (degreesPerSec > 0.0 && isPastMaxAngle())) {
@@ -132,6 +129,11 @@ mbed_error_status_t ActuatorController::setMotionData(float motionData) {
   }
 }
 
+// TODO implement this function
+mbed_error_status_t ActuatorController::resetEncoder() {
+  return MBED_SUCCESS;
+}
+
 mbed_error_status_t ActuatorController::update() {
   auto updateInterval = m_updateTimer.elapsed_time();
   m_updateTimer.reset();
@@ -153,11 +155,13 @@ mbed_error_status_t ActuatorController::update() {
 
       m_velocityPIDController.setInterval(updateInterval);
       m_velocityPIDController.setProcessValue(getVelocity_DegreesPerSec());
+
       r_motor.setPower(m_velocityPIDController.compute());
 
       break;
 
     case position:
+
       m_positionPIDController.setInterval(updateInterval);
       m_positionPIDController.setProcessValue(getAngle_Degrees());
       r_motor.setPower(m_positionPIDController.compute());
@@ -177,11 +181,6 @@ mbed_error_status_t ActuatorController::update() {
 
   // TODO: Add watchdogging (feed here)
 
-  return MBED_SUCCESS;
-}
-
-mbed_error_status_t ActuatorController::resetEncoder() {
-  r_encoder.reset();
   return MBED_SUCCESS;
 }
 

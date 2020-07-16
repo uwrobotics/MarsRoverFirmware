@@ -7,7 +7,8 @@
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
-//#include "Servo.h"//TODO(qinyang-bao): fix all compile errors and renable servo code
+#include "LimServo.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 
 /*** ARM COMPONENTS ***/
@@ -20,8 +21,7 @@ Motor elbowMotor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
 Motor wristLeftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 Motor wristRightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 Motor clawMotor(MTR_PWM_CLAW, MTR_DIR_CLAW, false);
-// Servo clawTooltipServo(SRVO_PWM_CLAW, Servo::LIM_SERVO, 180.0, 2.0, 1.0); //TODO(qinyang-bao): fix all compile errors
-// and renable servo code
+LimServo clawTooltipServo(SRVO_PWM_CLAW, 180.0, 2.0, 1.0);
 
 // Encoders
 EncoderAbsolute_PWM turnTableEncoder(ArmConfig::turnTableEncoderConfig);
@@ -56,8 +56,7 @@ ActuatorController wristRightActuator(ArmConfig::wristRightActuatorConfig, wrist
 DifferentialWristController wristController(wristLeftActuator, wristRightActuator, wristLimUp, wristLimCenter,
                                             wristLimDown);
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor,
-                              /*clawTooltipServo,*/ 180.0,
-                              0.0);  // TODO(qinyang-bao): fix all compile errors and renable servo code
+                              clawTooltipServo, 180.0, 0.0);
 
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
@@ -90,15 +89,15 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
   msg.getPayload(controlMode);
 
   switch (msg.id) {
-    case CANID::SET_TURNTABLE_CONTROL_MODE:
+    case HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE:
       return turnTableActuator.setControlMode(controlMode);
-    case CANID::SET_SHOULDER_CONTROL_MODE:
+    case HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE:
       return shoulderActuator.setControlMode(controlMode);
-    case CANID::SET_ELBOW_CONTROL_MODE:
+    case HWBRIDGE::CANID::SET_ELBOW_CONTROL_MODE:
       return elbowActuator.setControlMode(controlMode);
-    case CANID::SET_WRIST_CONTROL_MODE:
+    case HWBRIDGE::CANID::SET_WRIST_CONTROL_MODE:
       return wristController.setControlMode(controlMode);
-    case CANID::SET_CLAW_CONTROL_MODE:
+    case HWBRIDGE::CANID::SET_CLAW_CONTROL_MODE:
       return clawController.setControlMode(controlMode);
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
@@ -113,17 +112,17 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   msg.getPayload(motionData);
 
   switch (msg.id) {
-    case CANID::SET_TURNTABLE_MOTIONDATA:
+    case HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA:
       return turnTableActuator.setMotionData(motionData);
-    case CANID::SET_SHOULDER_MOTIONDATA:
+    case HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA:
       return shoulderActuator.setMotionData(motionData);
-    case CANID::SET_ELBOW_MOTIONDATA:
+    case HWBRIDGE::CANID::SET_ELBOW_MOTIONDATA:
       return elbowActuator.setMotionData(motionData);
-    case CANID::SET_WRIST_PITCH_MOTIONDATA:
+    case HWBRIDGE::CANID::SET_WRIST_PITCH_MOTIONDATA:
       return wristController.setPitchMotionData(motionData);
-    case CANID::SET_WRIST_ROLL_MOTIONDATA:
+    case HWBRIDGE::CANID::SET_WRIST_ROLL_MOTIONDATA:
       return wristController.setRollMotionData(motionData);
-    case CANID::SET_CLAW_MOTIONDATA:
+    case HWBRIDGE::CANID::SET_CLAW_MOTIONDATA:
       return clawController.setMotionData(motionData);
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
@@ -179,38 +178,38 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
 }
 
 // Handler function mappings
-static CANMsg::CANMsgHandlerMap canHandlerMap = {{CANID::SET_OVERRIDE_FLAGS, &setOverrideFlags},
+static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_OVERRIDE_FLAGS, &setOverrideFlags},
 
-                                                 {CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
-                                                 {CANID::SET_SHOULDER_CONTROL_MODE, &setControlMode},
-                                                 {CANID::SET_ELBOW_CONTROL_MODE, &setControlMode},
-                                                 {CANID::SET_WRIST_CONTROL_MODE, &setControlMode},
-                                                 {CANID::SET_CLAW_CONTROL_MODE, &setControlMode},
+                                                 {HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
+                                                 {HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE, &setControlMode},
+                                                 {HWBRIDGE::CANID::SET_ELBOW_CONTROL_MODE, &setControlMode},
+                                                 {HWBRIDGE::CANID::SET_WRIST_CONTROL_MODE, &setControlMode},
+                                                 {HWBRIDGE::CANID::SET_CLAW_CONTROL_MODE, &setControlMode},
 
-                                                 {CANID::SET_TURNTABLE_MOTIONDATA, &setMotionData},
-                                                 {CANID::SET_SHOULDER_MOTIONDATA, &setMotionData},
-                                                 {CANID::SET_ELBOW_MOTIONDATA, &setMotionData},
-                                                 {CANID::SET_WRIST_PITCH_MOTIONDATA, &setMotionData},
-                                                 {CANID::SET_WRIST_ROLL_MOTIONDATA, &setMotionData},
-                                                 {CANID::SET_CLAW_MOTIONDATA, &setMotionData},
-                                                 {CANID::SET_TOOL_TIP_DEPLOYMENT, &setToolTipDeployment},
+                                                 {HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_ELBOW_MOTIONDATA, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_WRIST_PITCH_MOTIONDATA, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_WRIST_ROLL_MOTIONDATA, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_CLAW_MOTIONDATA, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_TOOL_TIP_DEPLOYMENT, &setToolTipDeployment},
 
-                                                 {CANID::RUN_WRIST_CALIBRATION, &runWristCalibration},
-                                                 {CANID::RUN_CLAW_CALIBRATION, &runClawCalibration},
+                                                 {HWBRIDGE::CANID::RUN_WRIST_CALIBRATION, &runWristCalibration},
+                                                 {HWBRIDGE::CANID::RUN_CLAW_CALIBRATION, &runClawCalibration},
 
-                                                 {CANID::SET_PID_TUNING_MODE, &setPIDTuningMode},
+                                                 {HWBRIDGE::CANID::SET_PID_TUNING_MODE, &setPIDTuningMode},
 
-                                                 {CANID::SET_PID_DEADZONE, &setPIDParameter},
-                                                 {CANID::SET_JOINT_PID_P, &setPIDParameter},
-                                                 {CANID::SET_JOINT_PID_I, &setPIDParameter},
-                                                 {CANID::SET_JOINT_PID_D, &setPIDParameter},
-                                                 {CANID::SET_JOINT_PID_BIAS, &setPIDParameter}};
+                                                 {HWBRIDGE::CANID::SET_PID_DEADZONE, &setPIDParameter},
+                                                 {HWBRIDGE::CANID::SET_JOINT_PID_P, &setPIDParameter},
+                                                 {HWBRIDGE::CANID::SET_JOINT_PID_I, &setPIDParameter},
+                                                 {HWBRIDGE::CANID::SET_JOINT_PID_D, &setPIDParameter},
+                                                 {HWBRIDGE::CANID::SET_JOINT_PID_BIAS, &setPIDParameter}};
 
 /*** ARM CANBus ***/
 /******************/
 
 // Interface and recieve buffer
-CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+CAN can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 // CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
 
 // Incoming message processor
@@ -254,42 +253,42 @@ void txCANProcessor() {
   } motionReport;
 
   while (true) {
-    txMsg.id              = REPORT_TURNTABLE_MOTION;
+    txMsg.id              = HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION;
     motionReport.position = turnTableActuator.getAngle_Degrees();
     motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = REPORT_SHOULDER_MOTION;
+    txMsg.id              = HWBRIDGE::CANID::REPORT_SHOULDER_MOTION;
     motionReport.position = shoulderActuator.getAngle_Degrees();
     motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = REPORT_ELBOW_MOTION;
+    txMsg.id              = HWBRIDGE::CANID::REPORT_ELBOW_MOTION;
     motionReport.position = elbowActuator.getAngle_Degrees();
     motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = REPORT_WRIST_PITCH_MOTION;
+    txMsg.id              = HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION;
     motionReport.position = wristController.getPitchAngle_Degrees();
     motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = REPORT_WRIST_PITCH_MOTION;
+    txMsg.id              = HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION;
     motionReport.position = wristController.getRollAngle_Degrees();
     motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = REPORT_CLAW_MOTION;
+    txMsg.id              = HWBRIDGE::CANID::REPORT_CLAW_MOTION;
     motionReport.position = clawController.getGapDistance_Cm();
     motionReport.velocity = clawController.getGapVelocity_CmPerSec();
     txMsg.setPayload(motionReport);
@@ -311,7 +310,8 @@ int main() {
   printf("=======================\r\n");
 
   // CAN init stuff
-  can1.filter(ROVER_CANID_FIRST_ARM_RX, ROVER_CANID_FILTER_MASK, CANStandard);
+  can1.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK,
+              CANStandard);
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 

@@ -65,8 +65,11 @@ TODO(wmmc88): Update + add cmake + python shit + clang format
 
 3. Download source code
 
-    `git clone https://github.com/uwrobotics/MarsRover2020-firmware.git`  
+    `git clone --recurse-submodules https://github.com/uwrobotics/MarsRover2020-firmware.git`  
+`  
     `cd MarsRover2020-firmware`
+
+    **Note:** The repository has a submodule. To update the submodule, use `git submodule update
 
 4. Run make with the target application and board
 
