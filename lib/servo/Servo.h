@@ -1,51 +1,61 @@
-#ifndef SERVO_H
-#define SERVO_H
+#pragma once
 
 #include "PwmOut.h"
 #include "mbed.h"
 
 class Servo {
  public:
-  enum SERVO_TYPE {
-    CONT_SERVO = 0,
-    LIM_SERVO  = 1
-  };  // CONT_SERVO = 0 = CONTINUOUS Rotation; LIMITED_SERVO = 1 = LIMITED Range Rotation
-
  protected:
-  PinName pin;  // PIN the servo PWM signal is attached to
-  PwmOut pwm;   // PWM object, does not have default constructor so have to use INITIALIZER LIST to avoid COMPILER
-                // attempting to DEFAULT CONSTRUCT
+  PinName m_pin;  // PIN the servo PWM signal is attached to
+  PwmOut m_pwm;   // PWM object, does not have default constructor so have to use INITIALIZER LIST to avoid COMPILER
+                  // attempting to DEFAULT CONSTRUCT
 
   const int PWM_FREQ = 50,               // DEFAULT PWM FREQUENCY, should work for both length and positional control
       DEFAULT_MAX    = 2,                // DEFAULT MAX WAVE LENGTH in MILISECONDS
       DEFAULT_MIN    = 1,                // DEFAULT MIN WAVE LENGTH in MILISECONDS
-      DEFAULT_RANGE  = 180,              // DEFAULT RANGE for LIMITED Servos
       PERIOD         = 1000 / PWM_FREQ;  // DEFAULT PERIOD LENGTH in MILISECONDS
 
-  enum SERVO_TYPE rotate_type;  // Either CONTINUOUS or LIMITED rotation servo, see define statements.
+  float m_max_pulse_ms,  // PULSE LENGTH for MAX ANGLE/SPEED
+      m_min_pulse_ms;    // PULSE LENGTH for MIN ANGLE/SPEED
 
-  float range,       // RANGE OF MOTION, only valid for LIMIT_SERVO types
-      max_speed,     // MAXIMUM ROTATION SPEED in ANGLES PER SECOND, only valid for CONTINUOUS_SERVO types
-      max_pulse_ms,  // PULSE LENGTH for MAX ANGLE
-      min_pulse_ms,  // PULSE LENGTH for MIN ANGLE
-      pos,           // POSITION of servo
-      speed;         // ROTATING SPEED in ANGLES PER SECOND
+  int getSign(int val) {
+    return (val >= 0) ? 1 : -1;
+  }
 
  public:
-  Servo(PinName pin_, SERVO_TYPE rotate_type_, float value, float max_pulse_ms_,
-        float min_pulse_ms_);  // Copies previous constructors but with PIN
-  Servo(PinName pin_, SERVO_TYPE rotate_type_);
-  Servo(PinName pin_, SERVO_TYPE rotate_type_, float value);
+  Servo(PinName pin) : m_pin(pin), m_pwm(pin){};
+  virtual ~Servo(){};
 
-  bool set_range(float range_);          // Returns FALSE if Servo Type is CONTINUOUS
-  bool set_max_speed(float max_speed_);  // Returns FALSE if Servo Type is LIMITED
+  // Optionally implemented
+  virtual mbed_error_status_t setRange(float range) {
+    return MBED_ERROR_INVALID_OPERATION;
+  };
 
-  bool set_position(float angle);  // Sets POS to angle if Servo Type LIMITED
-  bool set_speed(float speed_);    // Sets rotation SPEED if Servo Type is CONTINUOUS
+  virtual mbed_error_status_t setMaxSpeed(float max_speed) {
+    return MBED_ERROR_INVALID_OPERATION;
+  };
 
-  float read(void);  // Returns SPEED if CONTINUOUS and POSITION if LIMITED
+  virtual float getRange(void) {
+    return -1;
+  };
 
-  void set_period(int period);  // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
+  virtual float getMaxSpeed(void) {
+    return -1;
+  };
+
+  virtual mbed_error_status_t setPosition(float angle) {
+    return MBED_ERROR_INVALID_OPERATION;
+  };
+
+  virtual mbed_error_status_t setSpeed(float speed) {
+    return MBED_ERROR_INVALID_OPERATION;
+  };
+
+  // Must be implemented
+  virtual float read(void) = 0;
+
+  // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
+  void setPeriod(int period) {
+    m_pwm.period_us(period * 1000);
+  };
 };
-
-#endif

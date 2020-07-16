@@ -170,7 +170,8 @@ typedef enum {
 
   /**** Actuator Pins ****/
   SRVO_PWM_CR = PB_14,
-  SRVO_PWM_MG = PB_15,
+  SRVO_PWM_HS = PB_15,
+  SRVO_PWM_SG = PB_5,
 
   /**** Limit Switch Pins ****/
   LIM_GIMB = PC_13,
