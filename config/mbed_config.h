@@ -18,7 +18,8 @@
 #ifndef __MBED_CONFIG_DATA__
 #define __MBED_CONFIG_DATA__
 
-#include "rover_config.h"
+// Convenience Defines
+#define ROVER_DEFAULT_SERIAL_BAUD_RATE 115200
 
 // MBED configuration parameters
 #define LPTICKER_DELAY_TICKS                              1        // set by target:FAMILY_STM32

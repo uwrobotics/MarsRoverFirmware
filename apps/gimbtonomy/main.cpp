@@ -11,10 +11,9 @@
 #include "LimServo.h"
 #include "Neopixel_Blocking.h"
 #include "ServoMotor.h"
-#include "can_config.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 #include "mbed_config.h"
-#include "rover_config.h"
 
 #define DEBUG
 
@@ -40,7 +39,7 @@ EncoderAbsolute_PWM panEncoder(GimbtonomyConfig::panEncoderConfig);
 ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor, panEncoder);
 
 // CAN Object
-CAN can1(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
+CAN can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;
 
 // neopixel
@@ -90,32 +89,32 @@ void rxCANProcessor() {
   while (true) {
     if (can1.read(rxMsg)) {
       switch (rxMsg.id) {
-        case CANID::SET_GIMBAL_PAN_POS:
+        case HWBRIDGE::CANID::GIMBAL_PAN_POSITION:
           rxMsg.getPayload(pan_pos);
           panServoActuator.setMotionData(pan_pos);
           break;
 
-        case CANID::SET_GIMBAL_PAN_SPEED:
+        case HWBRIDGE::CANID::GIMBAL_PAN_SPEED:
           rxMsg.getPayload(pan_speed);
           panServoMotor.servoSetSpeed(pan_speed);
           break;
 
-        case CANID::SET_GIMBAL_PAN_MODE:
+        case HWBRIDGE::CANID::GIMBAL_PAN_MODE:
           rxMsg.getPayload(controlMode);
           panServoActuator.setControlMode(controlMode);
           break;
 
-        case CANID::SET_GIMBAL_PITCH_POS:
+        case HWBRIDGE::CANID::GIMBAL_PITCH_POS:
           rxMsg.getPayload(pitch_pos);
           pitchServo.setPosition(pitch_pos);
           break;
 
-        case CANID::SET_GIMBAL_ROLL_POS:
+        case HWBRIDGE::CANID::GIMBAL_ROLL_POS:
           rxMsg.getPayload(roll_pos);
           rollServo.setPosition(roll_pos);
           break;
 
-        case CANID::SET_NEOPIXEL:
+        case HWBRIDGE::CANID::NEOPIXEL_SET:
           handleSetNeoPixelColor(&rxMsg);
           // Hangle can writes in a separate thread
           event_flags.set(ACK_FLAG);
@@ -141,7 +140,7 @@ void txCANProcessor() {
     printf("Sending neopixel acknowledgement message\r\n");
 #endif
     txMsg.clear();
-    txMsg.id = CANID::NEOPIXEL_ACK;
+    txMsg.id = HWBRIDGE::CANID::NEOPIXEL_ACK;
     txMsg << true;
     can1.write(txMsg);
 #ifdef DEBUG

@@ -21,6 +21,7 @@ APP_PATH       := ../$(APPS_FOLDER)/$(APP)
 LIB_PATH       := ../lib
 MBED_PATH      := ../mbed-os
 CONFIG_PATH    := ../config
+SUBMODULE_PATH := ../uwrt-mars-rover-hw-bridge/config
 
 LAST_BOARD_TARGET := $(shell cat $(BUILD_FOLDER)/LAST_BOARD_TARGET 2>/dev/null)# ignores non-existant file error
 
@@ -105,15 +106,17 @@ PROJECT := $(APP).$(TARGET)
 
 APP_INC += -I$(APP_PATH)
 LIB_INC += $(addprefix -I,$(wildcard $(LIB_PATH)/*))
+SUBMODULE_INC += -I$(SUBMODULE_PATH)
 
 APP_SRC_C += $(wildcard $(APP_PATH)/*.c)
 LIB_SRC_C += $(wildcard $(LIB_PATH)/*/*.c)
 
 APP_SRC_CPP += $(wildcard $(APP_PATH)/*.cpp)
 LIB_SRC_CPP += $(wildcard $(LIB_PATH)/*/*.cpp)
+SUBMODULE_SRC_CPP = $(wildcard $(SUBMODULE_PATH)/*.cpp)
 
 UWRT_SRC_C   = $(APP_SRC_C)   $(LIB_SRC_C)
-UWRT_SRC_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP)
+UWRT_SRC_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP) $(SUBMODULE_SRC_CPP)
 
 TARGET_SRC += ${TARGET_PATH}/PeripheralPins.c
 TARGET_SRC += ${TARGET_PATH}/system_clock.c
@@ -136,7 +139,7 @@ INCLUDE_PATHS += -I$(LIB_PATH)
 INCLUDE_PATHS += -isystem$(MBED_PATH)
 INCLUDE_PATHS += -isystem$(MBED_INC)
 INCLUDE_PATHS += -isystem${TARGET_PATH}
-INCLUDE_PATHS += $(APP_INC) $(LIB_INC)
+INCLUDE_PATHS += $(APP_INC) $(LIB_INC) $(SUBMODULE_INC)
 
 LINKER_SCRIPT ?= ${MBED_PATH}/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/TOOLCHAIN_GCC_ARM/STM32F446XE.ld
 
