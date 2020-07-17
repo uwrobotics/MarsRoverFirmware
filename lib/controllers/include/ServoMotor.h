@@ -16,8 +16,8 @@ class ServoMotor : public Motor {
    * @param max_pulsewidth  Pwm pulse width for maximum speed
    * @param limit     Maximum speed magnitude
    */
-  ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<double> min_pulsewidth = 1ms, std::chrono::duration<double> max_pulsewidth = 2ms,
-             double limit = 1.0);
+  ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<double> min_pulsewidth = 1ms,
+             std::chrono::duration<double> max_pulsewidth = 2ms, double limit = 1.0);
 
   ServoMotor(Motor::t_motorConfig motorConfig);
 

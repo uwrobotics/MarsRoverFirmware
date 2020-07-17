@@ -13,7 +13,7 @@ Timer printTimer;
 
 int main() {
   float inverter = +1;
-  auto period  = 2ms;  // Equivalent to 0.5kHz frequency
+  auto period    = 2ms;  // Equivalent to 0.5kHz frequency
   float duty     = 0.1;
 
   // Specify PWM period

@@ -2,7 +2,7 @@
 
 PwmOut pwmLED(LED1);
 
-const auto k_period   = 1ms;
+const auto k_period     = 1ms;
 constexpr auto interval = 50ms;
 const float k_step      = 0.02;
 

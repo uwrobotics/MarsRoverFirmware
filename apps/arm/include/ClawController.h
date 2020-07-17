@@ -7,8 +7,7 @@ class ClawController : public ActuatorController {
  public:
   explicit ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
                           AnalogIn &forceSensor, LimServo &tooltipServo, float tooltipExtendedAngle_Degrees = 180.0,
-                          float tooltipRetractedAngle_Degrees = 0.0, chrono::duration<double> calibrationTimeout =
-                              10s);
+                          float tooltipRetractedAngle_Degrees = 0.0, chrono::duration<double> calibrationTimeout = 10s);
 
   mbed_error_status_t setMotorPower_Percentage(float percentage);
 

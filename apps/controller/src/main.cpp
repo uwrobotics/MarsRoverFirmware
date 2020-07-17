@@ -14,7 +14,7 @@ using namespace FrameProtocol;
 
 #define DEBUG
 
-static constexpr uint16_t SEND_INTERVAL         = 100ms;
+static constexpr uint16_t SEND_INTERVAL            = 100ms;
 static constexpr uint8_t DEBOUNCE_THRES            = 3;
 static constexpr uint8_t ANALOG_NUM_SAMPLE_AVERAGE = 5;
 

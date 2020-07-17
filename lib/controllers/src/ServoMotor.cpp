@@ -1,6 +1,7 @@
 #include "ServoMotor.h"
 
-ServoMotor::ServoMotor(PinName pwm, bool inverted, std::chrono::duration<double> min_pulsewidth, std::chrono::duration<double> max_pulsewidth, double limit)
+ServoMotor::ServoMotor(PinName pwm, bool inverted, std::chrono::duration<double> min_pulsewidth,
+                       std::chrono::duration<double> max_pulsewidth, double limit)
     : Motor(NC, NC), m_inverted(inverted), m_servo(pwm, limit, max_pulsewidth, min_pulsewidth) {}
 
 ServoMotor::ServoMotor(t_motorConfig motorConfig) : ServoMotor(motorConfig.pwmPin, motorConfig.inverted) {}
