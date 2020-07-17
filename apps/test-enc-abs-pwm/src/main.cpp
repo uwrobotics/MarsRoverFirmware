@@ -20,11 +20,11 @@ DigitalOut led(LED1);
 
 int main() {
   float inverter = +1;
-  int period_ms  = 4;  // Equivalent to 0.5kHz frequency
+  auto period  = 4ms;  // Equivalent to 0.5kHz frequency
   float duty     = 0.1;
 
   // Specify PWM period
-  pwmOut.period_ms(period_ms);
+  pwmOut.period(period);
 
   // START THE TIMER
   timer.start();

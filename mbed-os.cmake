@@ -311,6 +311,7 @@ target_include_directories(mbed-os PUBLIC
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE
         )
 target_compile_options(mbed-os PRIVATE -w) # Disable all warnings from mbed code
+target_compile_options(mbed-os PRIVATE $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/mbed_config.h>)
 target_link_libraries(mbed-os PUBLIC ${TARGET}-board)
 target_precompile_headers(mbed-os
         PUBLIC

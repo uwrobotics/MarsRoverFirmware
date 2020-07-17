@@ -1,0 +1,23 @@
+add_library(AnalogBusIn)
+target_sources(AnalogBusIn PRIVATE src/AnalogBusIn.cpp)
+target_include_directories(AnalogBusIn PUBLIC include)
+target_set_mbed_dependency(AnalogBusIn)
+
+add_library(AnalogInputGroup)
+target_sources(AnalogInputGroup PRIVATE src/AnalogInputGroup.cpp)
+target_include_directories(AnalogInputGroup PUBLIC include)
+target_link_libraries(AnalogInputGroup PUBLIC AnalogBusIn)
+target_set_mbed_dependency(AnalogInputGroup)
+
+add_library(DigitalInputGroup)
+target_sources(DigitalInputGroup PRIVATE src/DigitalInputGroup.cpp)
+target_include_directories(DigitalInputGroup PUBLIC include)
+target_link_libraries(DigitalInputGroup PUBLIC AnalogBusIn)
+target_set_mbed_dependency(DigitalInputGroup)
+
+add_library(FrameController)
+target_sources(FrameController PRIVATE src/FrameController.cpp)
+target_include_directories(FrameController PUBLIC include)
+target_link_libraries(FrameController PUBLIC AnalogInputGroup DigitalInputGroup)
+target_set_mbed_dependency(FrameController)
+

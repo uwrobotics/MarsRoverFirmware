@@ -1,4 +1,5 @@
 #include "MoistureSensor.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 
 DigitalOut led1(LED1);

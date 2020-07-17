@@ -12,11 +12,11 @@ class ServoMotor : public Motor {
    *
    * @param pwm       A PwmOut pin, driving the H-bridge enable line to control the speed
    * @param inverted  If true, then forward speed will set dir to 0 instead of 1, otherwise inverse
-   * @param min_pulsewidth_ms  Pwm pulse width for minimum speed
-   * @param max_pulsewidth_ms  Pwm pulse width for maximum speed
+   * @param min_pulsewidth  Pwm pulse width for minimum speed
+   * @param max_pulsewidth  Pwm pulse width for maximum speed
    * @param limit     Maximum speed magnitude
    */
-  ServoMotor(PinName pwm, bool inverted = false, double min_pulsewidth_ms = 1.0, double max_pulsewidth_ms = 2.0,
+  ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<double> min_pulsewidth = 1ms, std::chrono::duration<double> max_pulsewidth = 2ms,
              double limit = 1.0);
 
   ServoMotor(Motor::t_motorConfig motorConfig);
@@ -26,7 +26,7 @@ class ServoMotor : public Motor {
    * @param percentage The speed of the motor as a normalised value between -1.0 and 1.0
    */
   void setPower(double percentage);
-  ServoMotor& operator=(int percentage);
+  ServoMotor& operator=(double percentage);
 
   /** Read the current speed of the motor
    *
@@ -35,11 +35,11 @@ class ServoMotor : public Motor {
   double getPower();
 
   // ContServo type exclusive functions
-  void servoSetMaxSpeed(float max_speed_);
-  void servoSetSpeed(float speed_);
+  void servoSetMaxSpeed(double max_speed_);
+  void servoSetSpeed(double speed_);
   float servoRead(void);
   float servoGetMaxSpeed(void);
-  void servoSetPeriod(int period);
+  void servoSetPeriod(std::chrono::duration<double> period);
 
  protected:
   bool m_inverted;

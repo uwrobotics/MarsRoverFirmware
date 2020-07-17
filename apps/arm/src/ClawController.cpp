@@ -8,7 +8,6 @@ ClawController::ClawController(t_actuatorConfig actuatorConfig, Motor &motor, En
       r_tooltipServo(tooltipServo),
       m_tooltipExtendedAngle_Degrees(tooltipExtendedAngle_Degrees),
       m_tooltipRetractedAngle_Degrees(tooltipRetractedAngle_Degrees),
-      m_calibrationTimeout_Seconds(calibrationTimeout_Seconds) {}
       m_calibrationTimeout(calibrationTimeout) {}
 
 mbed_error_status_t ClawController::setMotorPower_Percentage(float percentage) {

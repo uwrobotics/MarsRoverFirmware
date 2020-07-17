@@ -13,7 +13,6 @@
 #include "ServoMotor.h"
 #include "hw_bridge.h"
 #include "mbed.h"
-#include "mbed_config.h"
 
 #define DEBUG
 
@@ -26,11 +25,11 @@
 • Pitch: HS-422 (https://www.robotshop.com/en/hitec-hs-422-servo-motor.html)
 • Roll: SG90 (https://datasheetspdf.com/pdf/791970/TowerPro/SG90/1)
 */
-ServoMotor panServoMotor(SRVO_PWM_CR, false, 2.1, 0.9,
+ServoMotor panServoMotor(SRVO_PWM_CR, false, 2.1ms, 0.9ms,
                          38);  // 38 RPM (228 deg/sec) at 4.8V, max->2100us PW, min->900us PW.
-LimServo pitchServo(SRVO_PWM_HS, 180, 2.1, 0.9);
+LimServo pitchServo(SRVO_PWM_HS, 180, 2.1ms, 0.9ms);
 /* @TODO: electrical hasn't choose a pin for this servo yet, I'm just using a random free pin for this for now*/
-LimServo rollServo(SRVO_PWM_SG, 180, 2, 1);
+LimServo rollServo(SRVO_PWM_SG, 180, 2ms, 1ms);
 
 // Absolute encoder
 EncoderAbsolute_PWM panEncoder(GimbtonomyConfig::panEncoderConfig);
@@ -81,7 +80,7 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg) {
 
 // Incoming message processor
 void rxCANProcessor() {
-  const int rxPeriod_millisec = 2;
+  const auto rxPeriod = 2ms;
 
   float pan_pos = 0.0, pan_speed = 0.0, pitch_pos = 0.0, roll_pos = 0.0;
   ActuatorController::t_actuatorControlMode controlMode;
@@ -125,7 +124,7 @@ void rxCANProcessor() {
       }
     }
 
-    ThisThread::sleep_for(rxPeriod_millisec);
+    ThisThread::sleep_for(rxPeriod);
   }
 }
 
@@ -166,6 +165,6 @@ int main() {
 #endif
     panServoActuator.update();
 
-    ThisThread::sleep_for(2);
+    ThisThread::sleep_for(2ms);
   }
 }

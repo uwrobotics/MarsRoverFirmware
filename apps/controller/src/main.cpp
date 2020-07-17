@@ -14,7 +14,7 @@ using namespace FrameProtocol;
 
 #define DEBUG
 
-static constexpr uint16_t SEND_INTERVAL_MS         = 100;
+static constexpr uint16_t SEND_INTERVAL         = 100ms;
 static constexpr uint8_t DEBOUNCE_THRES            = 3;
 static constexpr uint8_t ANALOG_NUM_SAMPLE_AVERAGE = 5;
 
@@ -85,9 +85,9 @@ int main() {
   while (1) {
     uint32_t start_time = timer.read_ms();
 
-    // Assume all inputs during SEND_INTERVAL_MS is unchanging,
+    // Assume all inputs during SEND_INTERVAL is unchanging,
     // i.e. all inputs in this period is accumulated
-    while (!DigitalInputGroup::interval_passed(start_time, timer.read_ms(), SEND_INTERVAL_MS)) {
+    while (!DigitalInputGroup::interval_passed(start_time, timer.read_ms(), SEND_INTERVAL)) {
       // May need to implement these reads as threads, needs testing
       btns.read();
       switches.read();

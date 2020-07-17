@@ -37,9 +37,6 @@ set(COMPILE_FLAGS
 
         $<$<COMPILE_LANGUAGE:ASM>:-xassembler-with-cpp>
         $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-        $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/mbed_config.h>
-        $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/rover_config.h>
-        $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/can_config.h>
         )
 add_compile_options(${PROCESSOR_FLAGS} ${COMPILE_FLAGS})
 
@@ -77,6 +74,9 @@ message(STATUS "Configuring and generating build for ${APP} app on ${TARGET} tar
 # Add CMakeList for target-specific files
 add_subdirectory(targets/${TARGET})
 
+# Add HW Bridge
+add_subdirectory(uwrt-mars-rover-hw-bridge)
+
 # Include Rover App CMakeLists
 add_subdirectory(apps/arm)
 add_subdirectory(apps/gimbtonomy)
@@ -94,4 +94,3 @@ add_subdirectory(apps/test-moisture)
 add_subdirectory(apps/test-pid)
 add_subdirectory(apps/test-pwm)
 add_subdirectory(apps/test-pwmin)
-add_subdirectory(apps/test-servo)

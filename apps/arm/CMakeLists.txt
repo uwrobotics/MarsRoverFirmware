@@ -12,5 +12,5 @@ target_set_mbed_dependency(DifferentialWristController)
 add_library(ClawController)
 target_sources(ClawController PRIVATE src/ClawController.cpp)
 target_include_directories(ClawController PUBLIC include)
-target_link_libraries(ClawController PUBLIC ActuatorController PID) # Servo //TODO(qinyang-bao): fix all compile errors and renable servo code
+target_link_libraries(ClawController PUBLIC ActuatorController PID LimServo uwrt-mars-rover-hw-bridge)
 target_set_mbed_dependency(ClawController)
