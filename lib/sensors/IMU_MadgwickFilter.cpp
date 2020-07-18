@@ -6,8 +6,6 @@ MadgwickFilter::MadgwickFilter(float updateFreq = DEFAULT_UPDATE_FREQ, float bet
                                float zeta = DEFAULT_ZETA)
     : updateFreq(updateFreq), beta(beta), zeta(zeta), qEst(1.0f, 0.0f, 0.0f, 0.0f) {}
 
-// TODO: set default quaternion
-
 void MadgwickFilter::update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz) {
   // put IMU measurements in 4D vectors
   vec4f gyro(0, gx, gy, gz);

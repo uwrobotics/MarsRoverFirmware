@@ -3,9 +3,12 @@
 IMU::IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin,
          float madgwickUpdateFreq = DEFAULT_UPDATE_FREQ, float madgwickBeta = DEFAULT_BETA,
          float madgwickZeta = DEFAULT_ZETA)
-    : spi(mosi_pin, miso_pin, sclk_pin), cs(cs_pin), madgwick(madgwickUpdateFreq, madgwickBeta, madgwickZeta) {}
-
-// TODO: set default AGM values
+    : spi(mosi_pin, miso_pin, sclk_pin),
+      cs(cs_pin),
+      madgwick(madgwickUpdateFreq, madgwickBeta, madgwickZeta),
+      status(Status_Ok),
+      agm_raw({0}),
+      agm_scaled({0.0f}) {}
 
 std::array<double, 3> IMU::get_lin_accel(void) {
   std::array<double, 3> lin_accel = {(double)agm_scaled.acc.x, (double)agm_scaled.acc.y, (double)agm_scaled.acc.z};
@@ -173,8 +176,9 @@ void IMU::update_AGM_scaled() {
   // raw mag data is in micro-Teslas
   // to convert raw mag data to mag measurement, multiply by mag sensitivity factor
   agm_scaled.mag.x = ((float)agm_raw.mag.x) * MAG_SENSITIVITY_FACTOR;
-  agm_scaled.mag.y = ((float)agm_raw.mag.y) * MAG_SENSITIVITY_FACTOR;
-  agm_scaled.mag.z = ((float)agm_raw.mag.z) * MAG_SENSITIVITY_FACTOR;
+  agm_scaled.mag.y =
+      -((float)agm_raw.mag.y) * MAG_SENSITIVITY_FACTOR;  // flip y and z axis measurements as specified by datasheet
+  agm_scaled.mag.z = -((float)agm_raw.mag.z) * MAG_SENSITIVITY_FACTOR;
 }
 
 void IMU::update_orientation(void) {
@@ -216,17 +220,23 @@ Status_e IMU::set_bank(uint8_t bank) {
   return retval;
 }
 
-Status_e IMU::init_SPI(int SPI_freq) {
-  cs = 0;  // deselect device
-  // TODO
-  // spi.format(8, 3) // set transmission format CHECK THIS!!!
-  (SPI_freq > MAX_SPI_FREQ) ? spi.frequency(MAX_SPI_FREQ) : spi.frequency(SPI_freq);  // set SPI frequency
-
-  cs = 1;  // select device
+Status_e IMU::init(int SPI_freq) {
+  // initialize SPI
+  init_SPI(SPI_freq);
 
   // initialize IMU
-  Status_e retval = init_IMU();
-  return retval;
+  status = init_IMU();
+
+  return status;
+}
+
+void IMU::init_SPI(int SPI_freq) {
+  cs = 1;  // deselect device
+
+  spi.format(8, 3);                                                                   // set transmission format
+  (SPI_freq > MAX_SPI_FREQ) ? spi.frequency(MAX_SPI_FREQ) : spi.frequency(SPI_freq);  // set SPI frequency
+
+  cs = 0;  // select device
 }
 
 Status_e IMU::init_IMU(void) {
@@ -246,8 +256,8 @@ Status_e IMU::init_IMU(void) {
     return status;
   }
 
-  // delay a bit CHECK THIS
-  // ThisThread::sleep_for(50);
+  // delay a bit
+  ThisThread::sleep_for(50);
 
   // wake up imu
   retval = sleep(false);
@@ -700,7 +710,7 @@ Status_e IMU::i2c_master_enable(bool enable) {
   Status_e retval = Status_Ok;
 
   // disable BYPASS_EN
-  retval = i2c_master_pass_through(false);  // todo
+  retval = i2c_master_pass_through(false);
   if (retval != Status_Ok) {
     return retval;
   }

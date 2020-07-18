@@ -25,11 +25,13 @@
 #include "IMU_MadgwickFilter.h"
 #include "IMU_util.h"
 #include "mbed.h"
+#include "rtos.h"
 
 #define MAX_SPI_FREQ         7000000
 #define PI                   3.14159265359
 #define ACCELERATION_GRAVITY 9.81
 
+// Sensitivity factors taken from datasheet
 #define ACCEL_SENSITIVITY_FACTOR_0 16384
 #define ACCEL_SENSITIVITY_FACTOR_1 8192
 #define ACCEL_SENSITIVITY_FACTOR_2 4096
@@ -137,10 +139,6 @@ typedef struct {
 // --------------------------------------------------------------------------------
 
 class IMU {
- protected:
-  Status_e read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len);
-  Status_e write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len);
-
  public:
   IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin,
       float madgwickUpdateFreq = DEFAULT_UPDATE_FREQ, float madgwickBeta = DEFAULT_BETA,
@@ -150,16 +148,17 @@ class IMU {
   SPI spi;
   DigitalOut cs;
 
-  Status_e init_SPI(int SPI_freq);
-  Status_e init_IMU(void);
+  // Init
+  Status_e init(int SPI_freq);
 
   // Measurement data
   AGM_raw_t agm_raw;
   AGM_scaled_t agm_scaled;
-  void update_AGM_scaled(void);  // automatically called within update_AGM()
-  Status_e update_AGM(void);     // grab sensor readings for AGM data
+
+  Status_e update_AGM(void);  // grab sensor readings for AGM data
   Status_e data_ready(void);
 
+  // The following functions return scaled IMU readings
   std::array<double, 3> get_lin_accel(void);    // m/s^2
   std::array<double, 3> get_ang_vel(void);      // rad/s
   std::array<double, 3> get_mag_field(void);    // Tesla
@@ -170,15 +169,7 @@ class IMU {
   void update_orientation(void);  // should be continuously called at the filter's update frequency
 
   // ID
-  Status_e get_whoami(uint8_t *whoami);
   bool is_connected(void);
-  Status_e check_ID(void);
-
-  // Magnetometer specific
-  Status_e init_mag(void);
-  Status_e check_mag_ID(void);
-  Status_e read_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata);
-  Status_e write_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata);
 
   // Status
   Status_e status;
@@ -217,6 +208,28 @@ class IMU {
   Status_e int_enable_watermark_FIFO(uint8_t bm_enable);
 
   Status_e set_clock_source(ICM_20948_PWR_MGMT_1_CLKSEL_e source);
+
+ protected:
+  // Serif
+  Status_e read_register(uint8_t regaddr, uint8_t *pdata, uint32_t len);
+  Status_e write_register(uint8_t regaddr, uint8_t *pdata, uint32_t len);
+
+  // Init
+  void init_SPI(int SPI_freq);  // automatically called within init()
+  Status_e init_IMU(void);      // automatically called within init()
+
+  // Measurement data
+  void update_AGM_scaled(void);  // automatically called within update_AGM()
+
+  // ID
+  Status_e get_whoami(uint8_t *whoami);
+  Status_e check_ID(void);
+
+  // Magnetometer specific
+  Status_e init_mag(void);
+  Status_e check_mag_ID(void);
+  Status_e read_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata);
+  Status_e write_mag(AK09916_Reg_Addr_e reg, uint8_t *pdata);
 
   // Interface (auxilliary I2C lines used for magnetometer)
   Status_e i2c_master_pass_through(bool passthrough);
