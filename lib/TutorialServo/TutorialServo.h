@@ -4,7 +4,7 @@
 
 #include "mbed.h"
 
-class TutorialServo {
+class TutorialServo {// this class is based on the template provided in the training document
  private:
   PwmOut m_servoPwmOut;
   float m_servoRangeInDegrees;
