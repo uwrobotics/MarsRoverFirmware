@@ -1,11 +1,11 @@
 #include "DigitalInputGroup.h"
 
 DigitalInputGroup::DigitalInputGroup(BusIn& inputs, uint8_t numPins, InputDebounceType debounceType,
-                                     uint16_t integratingDebounceThres, uint16_t delayDebouceTimeMS)
+                                     uint16_t integratingDebounceThres, std::chrono::microseconds delayDebouceTime)
     : m_inputs(inputs),
       m_numPins(numPins),
       m_integratingDebounceThres(integratingDebounceThres),
-      m_delayDebounceTimeMS(delayDebouceTimeMS),
+      m_delayDebounceTime(delayDebouceTime),
       m_debounceType(debounceType) {
   // To check constructor parameter at compile time involves using template, don't think that is appropriate here ...
   // So we kind of have to fail this at runtime...it would fail anyways later on if numPins is too large
@@ -56,7 +56,7 @@ void DigitalInputGroup::readDelayDebounce() {
     // 0 or 1
     if (((reading ^ m_curr_values) >> i) & 0x1) {
       // reset the delay start time
-      m_startTimes[i] = m_timer.read_ms();
+      m_startTimes[i] = m_timer.elapsed_time();
       ;
 
       // set the delay started flag
@@ -67,7 +67,7 @@ void DigitalInputGroup::readDelayDebounce() {
     }
 
     // if "delay" has started, and we have "delayed" long enough
-    if ((m_delayStarted & (1 << i)) && interval_passed(m_startTimes[i], m_timer.read_ms(), m_delayDebounceTimeMS)) {
+    if ((m_delayStarted & (1 << i)) && interval_passed(m_startTimes[i], m_timer.elapsed_time(), m_delayDebounceTime)) {
       // clear the invalid bit because delay has completed
       m_invalidReads &= ~(1 << i);
 
@@ -143,6 +143,6 @@ void DigitalInputGroup::reset() {
 
   for (uint16_t i = 0; i < m_numPins; i++) {
     m_integratingDebounceCounts[i] = 0;
-    m_startTimes[i]                = 0;
+    m_startTimes[i]                = 0s;
   }
 }

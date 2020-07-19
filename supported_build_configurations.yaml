@@ -1,3 +1,5 @@
+# Commented boards should be supported, but currently are not
+
 # Rover Apps
 arm:
   - arm
@@ -27,6 +29,7 @@ test-actuator-controller:
 test-blinky:
   - nucleo
   - arm
+  - controller
   - gimbtonomy
   - safety
   - science
@@ -68,5 +71,6 @@ test-pwm:
 test-pwmin:
   - nucleo
   - arm
+  - controller
   - gimbtonomy
   - science

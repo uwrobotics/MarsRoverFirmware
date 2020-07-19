@@ -21,8 +21,8 @@ class DigitalInputGroup {
   */
 
   DigitalInputGroup(BusIn& inputs, uint8_t numPins, InputDebounceType debounceType = InputDebounceType::NONE,
-                    uint16_t integratingDebounceThres = DEFAULT_INTEGRATING_DEBOUNCE_THRES,
-                    uint16_t delayDebouceTimeMS       = DEFAULT_DELAY_DEBOUNCE_MS);
+                    uint16_t integratingDebounceThres          = DEFAULT_INTEGRATING_DEBOUNCE_THRES,
+                    std::chrono::microseconds delayDebouceTime = DEFAULT_DELAY_DEBOUNCE);
   virtual ~DigitalInputGroup() = default;
 
   // some getters
@@ -54,20 +54,17 @@ class DigitalInputGroup {
   void reset();
 
   /* static function that might be reused in other places */
-  static inline bool interval_passed(uint32_t start_time, uint32_t current_time, uint16_t interval) {
-    if (current_time > start_time) return (current_time - start_time) > interval;
-    // else the timer has wrapped around
-    else
-      return (MAX_UINT32 - start_time + current_time) > interval;
+  static inline bool interval_passed(std::chrono::microseconds start_time, std::chrono::microseconds current_time,
+                                     std::chrono::microseconds interval) {
+    return (current_time - start_time) > interval;
   }
 
  protected:
   void readNoDebounce();
   void readDelayDebounce();
   void readIntegratingDebounce();
-  static constexpr uint16_t DEFAULT_INTEGRATING_DEBOUNCE_THRES = 5;
-  static constexpr uint16_t DEFAULT_DELAY_DEBOUNCE_MS          = 10;
-  static constexpr uint32_t MAX_UINT32                         = 0xFFFFFFFF;
+  static constexpr uint16_t DEFAULT_INTEGRATING_DEBOUNCE_THRES      = 5;
+  static constexpr std::chrono::microseconds DEFAULT_DELAY_DEBOUNCE = 10ms;
 
   BusIn& m_inputs;
   uint16_t m_numPins;
@@ -84,9 +81,9 @@ class DigitalInputGroup {
 
   Timer m_timer;
   // This is a bit field, each bit corresponds to whether delay for one input has started or not
-  uint16_t m_delayStarted               = 0;
-  uint32_t m_startTimes[MAX_INPUTS_NUM] = {0};
-  uint16_t m_delayDebounceTimeMS        = DEFAULT_DELAY_DEBOUNCE_MS;
+  uint16_t m_delayStarted = 0;
+  std::chrono::microseconds m_startTimes[MAX_INPUTS_NUM]{};
+  std::chrono::microseconds m_delayDebounceTime = DEFAULT_DELAY_DEBOUNCE;
 
   // Another bit field, each bit corresponds to whether the read from one input is valid or not
   // The default/initial value will be all 1s, because at the start, all inputs read should be invalid

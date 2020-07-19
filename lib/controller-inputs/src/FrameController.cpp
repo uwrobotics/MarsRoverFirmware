@@ -2,7 +2,7 @@
 
 using namespace FrameProtocol;
 
-FrameController::FrameController(RawSerial* dest) : m_dest(dest) {
+FrameController::FrameController(UnbufferedSerial* dest) : m_dest(dest) {
   for (unsigned i = 0; i < MAX_NUM_REDIRECT_FRAME; i++) {
     m_sendSerialThreads[i] = make_unique<Thread>(osPriorityNormal, SERIAL_THREAD_STACK_SIZE, m_sendSerialThreadMems[i]);
   }
@@ -128,7 +128,7 @@ void FrameController::sendFrame(AnalogFrameConfig& frameConfig) {
 
         The important assumption is that the queue is large enough, else we could be losing data
 */
-void FrameController::redirectFrame(RawSerial* source) {
+void FrameController::redirectFrame(UnbufferedSerial* source) {
   uint8_t i = m_numRegistredFrameRedirections;
 
   // fail if we try to redirect too much frame
@@ -149,7 +149,7 @@ void FrameController::redirectFrame(RawSerial* source) {
   m_numRegistredFrameRedirections++;
 }
 
-void SerialReadCallback::init(RawSerial* source, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
+void SerialReadCallback::init(UnbufferedSerial* source, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
                               MemoryPool<serialQueue_t, SERIAL_QUEUE_SIZE>* mPool) {
   m_source = source;
   m_queue  = queue;
@@ -163,7 +163,7 @@ void SerialReadCallback::callback() {
   m_queue->put(message, 0);
 }
 
-void SerialSendThread::init(RawSerial* dest, Mutex* mutex, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
+void SerialSendThread::init(UnbufferedSerial* dest, Mutex* mutex, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
                             MemoryPool<serialQueue_t, SERIAL_QUEUE_SIZE>* mPool) {
   m_dest  = dest;
   m_mutex = mutex;

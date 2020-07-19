@@ -51,6 +51,7 @@ include(mbed-os.cmake)
 
 # Include library CMakeLists
 add_subdirectory(lib/can)
+add_subdirectory(lib/controller-inputs)
 add_subdirectory(lib/controllers)
 add_subdirectory(lib/neopixel)
 add_subdirectory(lib/pid)
@@ -79,6 +80,7 @@ add_subdirectory(uwrt-mars-rover-hw-bridge)
 
 # Include Rover App CMakeLists
 add_subdirectory(apps/arm)
+add_subdirectory(apps/controller)
 add_subdirectory(apps/gimbtonomy)
 add_subdirectory(apps/safety)
 add_subdirectory(apps/science)

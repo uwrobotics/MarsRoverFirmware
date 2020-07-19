@@ -54,14 +54,14 @@ class SerialReadCallback {
      but we need lazy initialization
      we should not free the pointer in destructor because they serve as references
   */
-  RawSerial* m_source;
+  UnbufferedSerial* m_source;
   Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* m_queue;
   MemoryPool<serialQueue_t, SERIAL_QUEUE_SIZE>* m_mPool;
 
  public:
   SerialReadCallback(){};
 
-  void init(RawSerial* source, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
+  void init(UnbufferedSerial* source, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
             MemoryPool<serialQueue_t, SERIAL_QUEUE_SIZE>* mPool);
 
   void callback();
@@ -72,7 +72,7 @@ class SerialReadCallback {
 */
 class SerialSendThread {
  private:
-  RawSerial* m_dest;
+  UnbufferedSerial* m_dest;
   Mutex* m_mutex;
   Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* m_queue;
   MemoryPool<serialQueue_t, SERIAL_QUEUE_SIZE>* m_mPool;
@@ -80,7 +80,7 @@ class SerialSendThread {
  public:
   SerialSendThread(){};
 
-  void init(RawSerial* m_dest, Mutex* mutex, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
+  void init(UnbufferedSerial* m_dest, Mutex* mutex, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
             MemoryPool<serialQueue_t, SERIAL_QUEUE_SIZE>* mPool);
 
   void thread();
@@ -103,7 +103,7 @@ class FrameController {
     AnalogInputGroup& inputGroup;
   };
 
-  FrameController(RawSerial* dest);
+  FrameController(UnbufferedSerial* dest);
 
   ~FrameController();
 
@@ -111,7 +111,7 @@ class FrameController {
 
   void sendFrame(AnalogFrameConfig& frameConfig);
 
-  void redirectFrame(RawSerial* source);
+  void redirectFrame(UnbufferedSerial* source);
 
  private:
   static constexpr uint8_t MASTER_BOARD = 0x0, ARM_BOARD = 0x1, SCIENCE_BOARD = 0x2;
@@ -119,7 +119,7 @@ class FrameController {
   static constexpr uint8_t MAX_NUM_REDIRECT_FRAME    = 2;
   static constexpr uint16_t SERIAL_THREAD_STACK_SIZE = 300;
 
-  RawSerial* m_dest;
+  UnbufferedSerial* m_dest;
 
   Mutex m_mutex;
 
