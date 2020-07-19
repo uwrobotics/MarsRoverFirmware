@@ -38,27 +38,27 @@ class vec4f {
 
 class Quaternion {
  public:
-  float q1, q2, q3, q4;
+  volatile float q1, q2, q3, q4;
 
   Quaternion(float q1, float q2, float q3, float q4);
 
-  float& operator[](int index);
-  Quaternion operator*(float scalar);
-  Quaternion operator*(vec4f v);  // returns q * v as a quaternion
-  vec4f operator*(Quaternion q);  // return q * qOther as a vector
-  void operator-=(Quaternion q);
-  void operator+=(Quaternion q);
+  float operator[](int index) volatile;
+  Quaternion operator*(float scalar) volatile;
+  Quaternion operator*(vec4f v) volatile;  // returns q * v as a quaternion
+  vec4f operator*(Quaternion q) volatile;  // return q * qOther as a vector
+  void operator-=(Quaternion q) volatile;
+  void operator+=(Quaternion q) volatile;
 
-  Quaternion conjugated(void);
-  void normalize(void);
+  Quaternion conjugated(void) volatile;
+  void normalize(void) volatile;
 };
 
 class MadgwickFilter {
  public:
-  float updateFreq;  // frequency at which the filter updates its estimate
-  float beta;        // represents mean zero gyro measurement error
-  float zeta;        // gain used for gyro bias drift compensation
-  Quaternion qEst;   // orientation estimate
+  float updateFreq;          // frequency at which the filter updates its estimate
+  float beta;                // represents mean zero gyro measurement error
+  float zeta;                // gain used for gyro bias drift compensation
+  volatile Quaternion qEst;  // orientation estimate
 
   MadgwickFilter(float updateFreq, float beta, float zeta = DEFAULT_ZETA);
 
@@ -69,7 +69,7 @@ class MadgwickFilter {
    * (gx, gy, gz) - gyro measurement
    * (mx, my, mz) - magnetometer measurement
    */
-  void update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
+  void update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz) volatile;
 };
 
 #endif

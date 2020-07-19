@@ -6,7 +6,8 @@ MadgwickFilter::MadgwickFilter(float updateFreq = DEFAULT_UPDATE_FREQ, float bet
                                float zeta = DEFAULT_ZETA)
     : updateFreq(updateFreq), beta(beta), zeta(zeta), qEst(1.0f, 0.0f, 0.0f, 0.0f) {}
 
-void MadgwickFilter::update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz) {
+void MadgwickFilter::update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my,
+                            float mz) volatile {
   // put IMU measurements in 4D vectors
   vec4f gyro(0, gx, gy, gz);
   vec4f accel(0, ax, ay, az);
@@ -183,7 +184,7 @@ void vec4f::normalize(void) {
 
 Quaternion::Quaternion(float q1, float q2, float q3, float q4) : q1(q1), q2(q2), q3(q3), q4(q4) {}
 
-float& Quaternion::operator[](int index) {
+float Quaternion::operator[](int index) volatile {
   switch (index) {
     case 0:
       return q1;
@@ -203,41 +204,41 @@ float& Quaternion::operator[](int index) {
   }
 }
 
-Quaternion Quaternion::operator*(float scalar) {
+Quaternion Quaternion::operator*(float scalar) volatile {
   return Quaternion(scalar * q1, scalar * q2, scalar * q3, scalar * q4);
 }
 
 // returns q * v as a quaternion, where q is a quaternion and v is a 4D vector
-Quaternion Quaternion::operator*(vec4f v) {
+Quaternion Quaternion::operator*(vec4f v) volatile {
   return Quaternion(q1 * v[0] - q2 * v[1] - q3 * v[2] - q4 * v[3], q1 * v[1] + q2 * v[0] + q3 * v[3] - q4 * v[2],
                     q1 * v[2] - q2 * v[3] + q3 * v[0] + q4 * v[1], q1 * v[3] + q2 * v[2] - q3 * v[1] + q4 * v[0]);
 }
 
 // returns q * qOther as a vector
-vec4f Quaternion::operator*(Quaternion q) {
+vec4f Quaternion::operator*(Quaternion q) volatile {
   return vec4f(q1 * q[0] - q2 * q[1] - q3 * q[2] - q4 * q[3], q1 * q[1] + q2 * q[0] + q3 * q[3] - q4 * q[2],
                q1 * q[2] - q2 * q[3] + q3 * q[0] + q4 * q[1], q1 * q[3] + q2 * q[2] - q3 * q[1] + q4 * q[0]);
 }
 
-void Quaternion::operator-=(Quaternion q) {
+void Quaternion::operator-=(Quaternion q) volatile {
   q1 -= q[0];
   q2 -= q[1];
   q3 -= q[2];
   q4 -= q[3];
 }
 
-void Quaternion::operator+=(Quaternion q) {
+void Quaternion::operator+=(Quaternion q) volatile {
   q1 += q[0];
   q2 += q[1];
   q3 += q[2];
   q4 += q[3];
 }
 
-Quaternion Quaternion::conjugated(void) {
+Quaternion Quaternion::conjugated(void) volatile {
   return Quaternion(q1, -q2, -q3, -q4);
 }
 
-void Quaternion::normalize(void) {
+void Quaternion::normalize(void) volatile {
   float recipNorm = invSqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
   q1 *= recipNorm;
   q2 *= recipNorm;

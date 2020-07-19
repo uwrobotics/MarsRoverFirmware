@@ -165,7 +165,7 @@ class IMU {
   std::array<double, 4> get_orientation(void);  // orientation quaternion
 
   // Madgwick filter to compute orientation
-  MadgwickFilter madgwick;
+  volatile MadgwickFilter madgwick;
   void update_orientation(void);  // should be continuously called at the filter's update frequency
 
   // ID
