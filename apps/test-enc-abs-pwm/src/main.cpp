@@ -24,7 +24,7 @@ int main() {
   float duty     = 0.1;
 
   // Specify PWM period
-  pwmOut.period(period);
+  pwmOut.period(period.count());
 
   // START THE TIMER
   timer.start();
