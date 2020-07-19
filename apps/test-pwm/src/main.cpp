@@ -7,7 +7,7 @@ constexpr auto interval = 50ms;
 const float k_step      = 0.02;
 
 int main() {
-  pwmLED.period(k_period);
+  pwmLED.period(k_period.count());
 
   float duty   = 0.0f;
   int inverter = 1;
