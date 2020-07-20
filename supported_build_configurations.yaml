@@ -35,7 +35,7 @@ test-blinky:
   - science
 
 test-blockingneo:
-  - nucleo
+#  - nucleo
   - gimbtonomy
 
 test-can:
@@ -43,13 +43,13 @@ test-can:
   - arm
   - gimbtonomy
   - safety
-  - science
+#  - science
 
 test-enc-abs-pwm:
   - nucleo
   - arm
-  - gimbtonomy
-  - science
+#  - gimbtonomy
+#  - science
 
 test-moisture:
   - nucleo
@@ -57,10 +57,9 @@ test-moisture:
 
 test-pid:
   - nucleo
-  - arm
-  - gimbtonomy
-  - safety
-  - science
+#  - arm
+#  - gimbtonomy
+#  - science
 
 test-pwm:
   - nucleo
@@ -69,8 +68,8 @@ test-pwm:
   - science
 
 test-pwmin:
-  - nucleo
+#  - nucleo
   - arm
-  - controller
-  - gimbtonomy
-  - science
+#  - controller
+#  - gimbtonomy
+#  - science
