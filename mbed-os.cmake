@@ -33,7 +33,7 @@ target_include_directories(mbed-os-target-interface INTERFACE
         )
 target_compile_definitions(mbed-os-target-interface INTERFACE ${MEMORY_DEFINITIONS} ${TARGET_DEFINITIONS})
 
-add_library(mbed-os)
+add_library(mbed-os STATIC)
 target_sources(mbed-os PRIVATE
         mbed-os/drivers/source/AnalogIn.cpp
         mbed-os/drivers/source/AnalogOut.cpp

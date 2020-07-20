@@ -1,7 +1,7 @@
 [submodule "mbed-os"]
     path = mbed-os
-    url = git@github.com:ARMmbed/mbed-os.git
+    url = https://github.com/ARMmbed/mbed-os.git
 
 [submodule "uwrt-mars-rover-hw-bridge"]
     path = uwrt-mars-rover-hw-bridge
-    url = git@github.com:uwrobotics/uwrt_mars_rover_hw_bridge.git
+    url = ../uwrt_mars_rover_hw_bridge.git

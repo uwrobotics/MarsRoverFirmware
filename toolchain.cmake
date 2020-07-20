@@ -26,7 +26,8 @@ set(PROCESSOR_FLAGS
         -mcpu=cortex-m4
         -mthumb
         -mfpu=fpv4-sp-d16
-        -mfloat-abi=hard)
+        -mfloat-abi=hard
+        )
 set(MEMORY_DEFINITIONS
         MBED_ROM_START=0x8000000
         MBED_ROM_SIZE=0x80000
@@ -83,7 +84,7 @@ endfunction()
 
 # link against mbed and precompile headers
 function(target_set_mbed_dependency TARGET-NAME)
-    target_link_libraries(${TARGET-NAME} PUBLIC mbed-os)
+    target_link_libraries(${TARGET-NAME} PRIVATE mbed-os)
     target_precompile_headers(${TARGET-NAME} REUSE_FROM mbed-os)
 endfunction()
 
