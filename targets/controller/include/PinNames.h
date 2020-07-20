@@ -190,10 +190,10 @@ typedef enum {
   /**** Serial Interface Pins ****/
   SERIAL_TX = STDIO_UART_TX,
   SERIAL_RX = STDIO_UART_RX,
-  USB_RTS = PA_7,
-  USB_CTS = PA_8,
-  USBTX   = PA_9,
-  USBRX   = PA_10,
+  USB_RTS   = PA_7,
+  USB_CTS   = PA_8,
+  USBTX     = PA_9,
+  USBRX     = PA_10,
 
   /**** OSCILLATOR pins ****/
   RCC_OSC32_IN  = PC_14,
