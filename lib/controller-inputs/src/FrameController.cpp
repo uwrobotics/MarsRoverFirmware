@@ -59,7 +59,7 @@ void FrameController::sendFrame(DigitalFrameConfig& frameConfig) {
 
   // The serial port to send data out is a shared resource
   m_mutex.lock();
-  for (unsigned int i = 0; i < FRAME_SIZE_DIGITAL; i++) m_dest->putc(m_digitalFrame[i]);
+  for (unsigned int i = 0; i < FRAME_SIZE_DIGITAL; i++) m_dest->write(&m_digitalFrame[i], 1);
   m_mutex.unlock();
 }
 
@@ -112,7 +112,7 @@ void FrameController::sendFrame(AnalogFrameConfig& frameConfig) {
 
     // The serial port to send data out is a shared resource
     m_mutex.lock();
-    for (unsigned int i = 0; i < FRAME_SIZE_ANALOG; i++) m_dest->putc(m_analogFrame[i]);
+    for (unsigned int i = 0; i < FRAME_SIZE_ANALOG; i++) m_dest->write(&m_analogFrame[i], 1);
     m_mutex.unlock();
   }
 }
@@ -157,10 +157,16 @@ void SerialReadCallback::init(UnbufferedSerial* source, Queue<serialQueue_t, SER
 }
 
 void SerialReadCallback::callback() {
-  serialQueue_t* message = m_mPool->alloc();
-  *message               = m_source->getc();
-  // 0 timeout for enqueue, because having a wait in an IRQ is asking for trouble ...
-  m_queue->put(message, 0);
+  // use try_alloc instead of try_alloc_for, because having a wait in an IRQ is asking for trouble ...
+  serialQueue_t* message = m_mPool->try_alloc();
+  // fail if cannot alloc, mem poll not large enough
+  MBED_ASSERT(message);
+
+  m_source->read(message, 1);
+  // use try_put instead of try_put_for, because having a wait in an IRQ is asking for trouble ...
+  bool result = m_queue->try_put(message);
+  // fail if cannot alloc, queue not large enough
+  MBED_ASSERT(result);
 }
 
 void SerialSendThread::init(UnbufferedSerial* dest, Mutex* mutex, Queue<serialQueue_t, SERIAL_QUEUE_SIZE>* queue,
@@ -178,12 +184,10 @@ void SerialSendThread::thread() {
   bool frame_started = false;
 
   while (1) {
-    osEvent evt = m_queue->get(osWaitForever);
-    if (evt.status == osEventMessage) {
-      serialQueue_t* message = (serialQueue_t*)evt.value.p;
-      val                    = *message;
-      m_mPool->free(message);
-    }
+    serialQueue_t* message;
+    m_queue->try_get_for(Kernel::wait_for_u32_forever, &message);
+    val = *message;
+    m_mPool->free(message);
 
     // if frame has not started, then the byte received would be the first byte in the frame, i.e. SOF
     // we can determine which kind of frame it is based on the SOF
@@ -212,7 +216,7 @@ void SerialSendThread::thread() {
 
       // The serial port to send data out is a shared resource
       m_mutex->lock();
-      for (unsigned int i = 0; i < frame_len; i++) m_dest->putc(frame[i]);
+      for (unsigned int i = 0; i < frame_len; i++) m_dest->write(&frame[i], 1);
       m_mutex->unlock();
     }
   }

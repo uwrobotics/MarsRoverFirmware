@@ -63,7 +63,7 @@ FrameController::AnalogFrameConfig pots_frame_config = {
 Timer timer;
 
 // Serial object for sending data to PC
-RawSerial pc(USBTX, USBRX);
+UnbufferedSerial pc(USBTX, USBRX);
 
 FrameController frame_controller(&pc);
 
