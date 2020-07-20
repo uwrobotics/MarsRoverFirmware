@@ -1,13 +1,13 @@
 add_library(ActuatorController STATIC)
 target_sources(ActuatorController PRIVATE src/ActuatorController.cpp)
-target_include_directories(ActuatorController
+target_include_directories(ActuatorController PUBLIC include)
+target_link_libraries(ActuatorController
         PUBLIC
-        include
+            PID
         PRIVATE
-        ../sensors/include #TODO(wmmc88): Delete this hack.should seperate public and private headers and include properly. Encoder.h should be interface library?
-        ../pid/include #TODO(wmmc88): Delete this hack. should seperate public and private headers and include properly.
+            EncoderAbsolute_PWM
+            Motor
         )
-target_link_libraries(ActuatorController PRIVATE EncoderAbsolute_PWM PID Motor)
 target_set_mbed_dependency(ActuatorController)
 
 add_library(Motor STATIC)
