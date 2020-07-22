@@ -136,6 +136,11 @@ typedef struct {
   Axes_scaled mag;
 } AGM_scaled_t;
 
+// Error code translation functions
+
+const char *status_string(Status_e stat);                      // converts status to human readable string
+mbed_error_status_t status_to_mbed_error_code(Status_e stat);  // converts status to closest mbed error code
+
 // --------------------------------------------------------------------------------
 
 class IMU {
@@ -173,7 +178,6 @@ class IMU {
 
   // Status
   Status_e status;
-  const char *status_string(Status_e stat);  // converts status to human readable string
 
   // Device configurations
   Status_e set_bank(uint8_t bank);

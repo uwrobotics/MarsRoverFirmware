@@ -1336,7 +1336,7 @@ Status_e IMU::int_enable_watermark_FIFO(uint8_t bm_enable) {
   return status;
 }
 
-const char *IMU::status_string(Status_e stat) {
+const char *status_string(Status_e stat) {
   switch (stat) {
     case Status_Ok:
       return "All is well";
@@ -1367,4 +1367,37 @@ const char *IMU::status_string(Status_e stat) {
       break;
   }
   return "None";
+}
+
+mbed_error_status_t status_to_mbed_error_code(Status_e stat) {
+  switch (stat) {
+    case Status_Ok:
+      return MBED_SUCCESS;
+      break;
+    case Status_Err:
+      return MBED_ERROR_CODE_FAILED_OPERATION;
+      break;
+    case Status_NotImpl:
+      return MBED_ERROR_CODE_NOT_READY;
+      break;
+    case Status_ParamErr:
+      return MBED_ERROR_CODE_INVALID_ARGUMENT;
+      break;
+    case Status_WrongID:
+      return MBED_ERROR_CODE_NOT_FOUND;
+      break;
+    case Status_InvalSensor:
+      return MBED_ERROR_CODE_INVALID_OPERATION;
+      break;
+    case Status_NoData:
+      return MBED_ERROR_CODE_UNDERFLOW;
+      break;
+    case Status_SensorNotSupported:
+      return MBED_ERROR_CODE_NOT_SUPPORTED;
+      break;
+    default:
+      return MBED_ERROR_CODE_UNKNOWN;
+      break;
+  }
+  return MBED_ERROR_CODE_UNKNOWN;
 }
