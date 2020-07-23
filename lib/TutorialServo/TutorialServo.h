@@ -1,6 +1,5 @@
 
-#ifndef TUTORIAL_SERVO_H
-#define TUTORIAL_SERVO_H
+#pragma once
 
 #include "mbed.h"
 
@@ -19,5 +18,3 @@ class TutorialServo {// this class is based on the template provided in the trai
   void setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulsewidthMs);
   void setPositionInDegrees(float degrees);
 };
-
-#endif  // !TUTORIAL_SERVO_H

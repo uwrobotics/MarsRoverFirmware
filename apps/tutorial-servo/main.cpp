@@ -1,4 +1,8 @@
 #include "TutorialServo.h"
+#include "CANMsg.h"
+CAN can(CAN_RX, CAN_TX);
+CANMsg rxMsg;
+CANMsg txMsg;
 
 int main() {
   // declares an object of type TutorialServo called Motor1 to demonstrate that the object works

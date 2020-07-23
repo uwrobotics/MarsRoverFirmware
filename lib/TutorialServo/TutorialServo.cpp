@@ -29,6 +29,10 @@ void TutorialServo::setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulse
 }
 
 void TutorialServo::setPositionInDegrees(float degrees) {
-  m_servoPwmOut.pulsewidth_us(int(((m_maxPulsewidthInMs - m_minPulsewidthInMs) * degrees / 180 + m_minPulsewidthInMs) * 1000));
+  if (degrees <= m_servoRangeInDegrees){// checking if the desired degrees is in range
+    m_servoPwmOut.pulsewidth_ms(int((m_maxPulsewidthInMs - m_minPulsewidthInMs) * degrees / 180 + m_minPulsewidthInMs));
+  }else {
+    // send an error message or do nothing
+  }
   // setting the servo position based of servo.cpp in lib subforlder
 }
