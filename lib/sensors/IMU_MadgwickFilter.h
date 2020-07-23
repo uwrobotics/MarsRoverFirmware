@@ -30,12 +30,12 @@ class vec4f {
   vec4f(float v1, float v2, float v3, float v4);
 
   float& operator[](int index);
-  vec4f operator*(float scalar);
+  vec4f operator*(float scalar) const;
   void operator-=(vec4f v);
 
   void normalize(void);
-  vec4f operator*(Quaternion q) volatile;  // returns q * v * q' (where q' is the conjugate of q)
-                                           // represents v rotated by q
+  vec4f operator*(volatile Quaternion q) const;  // returns q * v * q' (where q' is the conjugate of q)
+                                                 // represents v rotated by q
 };
 
 class Quaternion {
@@ -45,13 +45,13 @@ class Quaternion {
   Quaternion(float q1, float q2, float q3, float q4);
 
   float operator[](int index) volatile;
-  Quaternion operator*(float scalar) volatile;
-  Quaternion operator*(vec4f v) volatile;  // returns q * v as a quaternion
-  vec4f operator*(Quaternion q) volatile;  // return q * qOther as a vector
+  Quaternion operator*(float scalar) const volatile;
+  Quaternion operator*(vec4f v) const volatile;  // returns q * v as a quaternion
+  vec4f operator*(Quaternion q) const volatile;  // return q * qOther as a vector
   void operator-=(Quaternion q) volatile;
   void operator+=(Quaternion q) volatile;
 
-  Quaternion conjugated(void) volatile;
+  Quaternion conjugated(void) const volatile;
   void normalize(void) volatile;
 };
 

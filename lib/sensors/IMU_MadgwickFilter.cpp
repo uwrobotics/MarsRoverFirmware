@@ -62,7 +62,7 @@ void MadgwickFilter::update(float ax, float ay, float az, float gx, float gy, fl
       mag.normalize();
 
       // measured direction of Earth's magnetic field in earth frame
-      vec4f h = mag * qEst;
+      vec4f h = mag * Quaternion(q1, q2, q3, q4);  // same as mag * qEst (to get past build errors)
 
       // to compensate for magnetic distortions
       vec4f b(0, sqrt(h[1] * h[1] + h[2] * h[2]), 0, h[3]);
@@ -151,7 +151,7 @@ float& vec4f::operator[](int index) {
   }
 }
 
-vec4f vec4f::operator*(Quaternion q) volatile {
+vec4f vec4f::operator*(Quaternion q) const {
   // temp variables
   float q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];
   float q1q1 = q1 * q1;
@@ -208,18 +208,18 @@ float Quaternion::operator[](int index) volatile {
   }
 }
 
-Quaternion Quaternion::operator*(float scalar) volatile {
+Quaternion Quaternion::operator*(float scalar) const volatile {
   return Quaternion(scalar * q1, scalar * q2, scalar * q3, scalar * q4);
 }
 
 // returns q * v as a quaternion, where q is a quaternion and v is a 4D vector
-Quaternion Quaternion::operator*(vec4f v) volatile {
+Quaternion Quaternion::operator*(vec4f v) const volatile {
   return Quaternion(q1 * v[0] - q2 * v[1] - q3 * v[2] - q4 * v[3], q1 * v[1] + q2 * v[0] + q3 * v[3] - q4 * v[2],
                     q1 * v[2] - q2 * v[3] + q3 * v[0] + q4 * v[1], q1 * v[3] + q2 * v[2] - q3 * v[1] + q4 * v[0]);
 }
 
 // returns q * qOther as a vector
-vec4f Quaternion::operator*(Quaternion q) volatile {
+vec4f Quaternion::operator*(Quaternion q) const volatile {
   return vec4f(q1 * q[0] - q2 * q[1] - q3 * q[2] - q4 * q[3], q1 * q[1] + q2 * q[0] + q3 * q[3] - q4 * q[2],
                q1 * q[2] - q2 * q[3] + q3 * q[0] + q4 * q[1], q1 * q[3] + q2 * q[2] - q3 * q[1] + q4 * q[0]);
 }
@@ -238,7 +238,7 @@ void Quaternion::operator+=(Quaternion q) volatile {
   q4 += q[3];
 }
 
-Quaternion Quaternion::conjugated(void) volatile {
+Quaternion Quaternion::conjugated(void) const volatile {
   return Quaternion(q1, -q2, -q3, -q4);
 }
 
@@ -258,9 +258,9 @@ float invSqrt(float x) {
 
   x2 = x * 0.5f;
   y  = x;
-  i  = long(*(long*)&y);
+  i  = *(reinterpret_cast<long*>(&y));
   i  = 0x5f3759df - (i >> 1);
-  y  = float(*(float*)&i);
+  y  = *(reinterpret_cast<float*>(&i));
   y  = y * (1.5f - (x2 * y * y));
 
   return y;
