@@ -1,14 +1,15 @@
 #include "IMU.h"
 
 IMU::IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin,
-         float madgwickUpdateFreq = DEFAULT_UPDATE_FREQ, float madgwickBeta = DEFAULT_BETA,
-         float madgwickZeta = DEFAULT_ZETA)
+         float madgwickUpdateFreq /*= DEFAULT_UPDATE_FREQ*/, float madgwickBeta /*= DEFAULT_BETA*/,
+         float madgwickZeta /*= DEFAULT_ZETA*/)
     : spi(mosi_pin, miso_pin, sclk_pin),
       cs(cs_pin),
-      madgwick(madgwickUpdateFreq, madgwickBeta, madgwickZeta),
-      status(Status_Ok),
       agm_raw({0}),
-      agm_scaled({0.0f}) {}
+      agm_scaled({0.0f}),
+      madgwick(madgwickUpdateFreq, madgwickBeta, madgwickZeta),
+      status(Status_Ok)
+      {}
 
 std::array<double, 3> IMU::get_lin_accel(void) {
   std::array<double, 3> lin_accel = {(double)agm_scaled.acc.x, (double)agm_scaled.acc.y, (double)agm_scaled.acc.z};
@@ -520,7 +521,7 @@ Status_e IMU::set_sample_mode(InternalSensorID_bm sensors, ICM_20948_LP_CONFIG_C
 
   // set master i2c mode
   if (sensors & Internal_Mst) {
-    reg.I2C_MST_CYCLE;
+    reg.I2C_MST_CYCLE = mode;
   }
 
   retval = write_register(AGB0_REG_LP_CONFIG, (uint8_t *)&reg, sizeof(ICM_20948_LP_CONFIG_t));
@@ -1384,7 +1385,7 @@ mbed_error_status_t status_to_mbed_error_code(Status_e stat) {
       return MBED_ERROR_CODE_INVALID_ARGUMENT;
       break;
     case Status_WrongID:
-      return MBED_ERROR_CODE_NOT_FOUND;
+      return MBED_ERROR_ITEM_NOT_FOUND;
       break;
     case Status_InvalSensor:
       return MBED_ERROR_CODE_INVALID_OPERATION;
@@ -1393,7 +1394,7 @@ mbed_error_status_t status_to_mbed_error_code(Status_e stat) {
       return MBED_ERROR_CODE_UNDERFLOW;
       break;
     case Status_SensorNotSupported:
-      return MBED_ERROR_CODE_NOT_SUPPORTED;
+      return MBED_ERROR_CODE_UNSUPPORTED;
       break;
     default:
       return MBED_ERROR_CODE_UNKNOWN;

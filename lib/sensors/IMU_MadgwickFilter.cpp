@@ -2,8 +2,8 @@
 
 // ***** Madgwick filter class implementation *****
 
-MadgwickFilter::MadgwickFilter(float updateFreq = DEFAULT_UPDATE_FREQ, float beta = DEFAULT_BETA,
-                               float zeta = DEFAULT_ZETA)
+MadgwickFilter::MadgwickFilter(float updateFreq /*= DEFAULT_UPDATE_FREQ*/, float beta /*= DEFAULT_BETA*/,
+                               float zeta /*= DEFAULT_ZETA*/)
     : updateFreq(updateFreq), beta(beta), zeta(zeta), qEst(1.0f, 0.0f, 0.0f, 0.0f) {}
 
 void MadgwickFilter::update(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my,
@@ -144,12 +144,14 @@ float& vec4f::operator[](int index) {
       return v4;
       break;
     default:
-      throw std::out_of_range("Vector index out of range");
+      // throw std::out_of_range("Vector index out of range");
+      // exception handling disabled, should not reach this point
+      return v1;
       break;
   }
 }
 
-vec4f vec4f::operator*(Quaternion q) {
+vec4f vec4f::operator*(Quaternion q) volatile {
   // temp variables
   float q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];
   float q1q1 = q1 * q1;
@@ -165,7 +167,7 @@ vec4f vec4f::operator*(Quaternion q) {
                2 * (v2 * (q2 * q4 - q1 * q3) + v3 * (q1q2 + q3q4)) + v4 * (q1q1 - q2q2 - q3q3 + q4q4));
 }
 
-vec4f vec4f::operator-=(vec4f v) {
+void vec4f::operator-=(vec4f v) {
   v1 -= v[0];
   v2 -= v[1];
   v3 -= v[2];
@@ -199,7 +201,9 @@ float Quaternion::operator[](int index) volatile {
       return q4;
       break;
     default:
-      throw std::out_of_range("Quaternion index out of range");
+      // throw std::out_of_range("Quaternion index out of range");
+      // exception handling disabled, should not reach this point
+      return q1;
       break;
   }
 }
@@ -254,9 +258,9 @@ float invSqrt(float x) {
 
   x2 = x * 0.5f;
   y  = x;
-  i  = *(long*)&y;
+  i  = long(*(long*)&y);
   i  = 0x5f3759df - (i >> 1);
-  y  = *(float*)&i;
+  y  = float(*(float*)&i);
   y  = y * (1.5f - (x2 * y * y));
 
   return y;

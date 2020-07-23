@@ -21,6 +21,8 @@
 
 float invSqrt(float x);
 
+class Quaternion;  // forward declaration
+
 class vec4f {
  public:
   float v1, v2, v3, v4;
@@ -29,11 +31,11 @@ class vec4f {
 
   float& operator[](int index);
   vec4f operator*(float scalar);
-  vec4f operator-=(vec4f v);
+  void operator-=(vec4f v);
 
   void normalize(void);
-  vec4f operator*(Quaternion q);  // returns q * v * q' (where q' is the conjugate of q)
-                                  // represents v rotated by q
+  vec4f operator*(Quaternion q) volatile;  // returns q * v * q' (where q' is the conjugate of q)
+                                           // represents v rotated by q
 };
 
 class Quaternion {
@@ -60,7 +62,7 @@ class MadgwickFilter {
   float zeta;                // gain used for gyro bias drift compensation
   volatile Quaternion qEst;  // orientation estimate
 
-  MadgwickFilter(float updateFreq, float beta, float zeta = DEFAULT_ZETA);
+  MadgwickFilter(float updateFreq = DEFAULT_UPDATE_FREQ, float beta = DEFAULT_BETA, float zeta = DEFAULT_ZETA);
 
   /*
    * update() should be continuously called at the update frequency
