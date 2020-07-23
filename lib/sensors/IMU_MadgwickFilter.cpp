@@ -151,6 +151,10 @@ float& vec4f::operator[](int index) {
   }
 }
 
+vec4f vec4f::operator*(float scalar) const {
+  return vec4f(scalar*v1, scalar*v2, scalar*v3, scalar*v4);
+}
+
 vec4f vec4f::operator*(Quaternion q) const {
   // temp variables
   float q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];
@@ -253,15 +257,19 @@ void Quaternion::normalize(void) volatile {
 // fast inverse sqare root
 // https://en.wikipedia.org/wiki/Fast_inverse_square_root
 float invSqrt(float x) {
-  long i;
-  float x2, y;
+  // long i;
+  // float x2, y;
 
-  x2 = x * 0.5f;
-  y  = x;
-  i  = *(reinterpret_cast<long*>(&y));
-  i  = 0x5f3759df - (i >> 1);
-  y  = *(reinterpret_cast<float*>(&i));
-  y  = y * (1.5f - (x2 * y * y));
+  // x2 = x * 0.5f;
+  // y  = x;
+  // i  = *(reinterpret_cast<long*>(&y));
+  // i  = 0x5f3759df - (i >> 1);
+  // y  = *(reinterpret_cast<float*>(&i));
+  // y  = y * (1.5f - (x2 * y * y));
 
-  return y;
+  // return y;
+
+  // can't use fast inverse square root algo due to strict-aliasing rules :(
+  // gotta do it the slow way
+  return (std::fabs(x) > TOLERANCE) ? 1/std::sqrt(x) : std::numeric_limits<float>::infinity();
 }

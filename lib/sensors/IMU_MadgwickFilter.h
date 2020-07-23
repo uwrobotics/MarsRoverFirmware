@@ -7,13 +7,15 @@
  * Source: https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/
  */
 
-#include <math.h>
-
+#include <cmath>
+#include <limits>
 #include <stdexcept>
 
 #define DEFAULT_UPDATE_FREQ 512.0f
 #define DEFAULT_BETA        0.1f
 #define DEFAULT_ZETA        0.0f
+
+#define TOLERANCE 1e-5  // for comparing floats with 0
 
 #ifndef GYRO_BIAS_DRIFT_COMPENSATION
 #define GYRO_BIAS_DRIFT_COMPENSATION  // define to apply gyro bias drift compensation in filter
