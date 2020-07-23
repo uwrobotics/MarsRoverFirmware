@@ -8,8 +8,7 @@ IMU::IMU(PinName mosi_pin, PinName miso_pin, PinName sclk_pin, PinName cs_pin,
       agm_raw({0}),
       agm_scaled({0.0f}),
       madgwick(madgwickUpdateFreq, madgwickBeta, madgwickZeta),
-      status(Status_Ok)
-      {}
+      status(Status_Ok) {}
 
 std::array<double, 3> IMU::get_lin_accel(void) {
   std::array<double, 3> lin_accel = {(double)agm_scaled.acc.x, (double)agm_scaled.acc.y, (double)agm_scaled.acc.z};

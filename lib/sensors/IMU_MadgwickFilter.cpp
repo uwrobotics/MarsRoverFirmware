@@ -152,7 +152,7 @@ float& vec4f::operator[](int index) {
 }
 
 vec4f vec4f::operator*(float scalar) const {
-  return vec4f(scalar*v1, scalar*v2, scalar*v3, scalar*v4);
+  return vec4f(scalar * v1, scalar * v2, scalar * v3, scalar * v4);
 }
 
 vec4f vec4f::operator*(Quaternion q) const {
@@ -262,14 +262,14 @@ float invSqrt(float x) {
 
   // x2 = x * 0.5f;
   // y  = x;
-  // i  = *(reinterpret_cast<long*>(&y));
+  // i  = *(long*)&y;
   // i  = 0x5f3759df - (i >> 1);
-  // y  = *(reinterpret_cast<float*>(&i));
+  // y  = *(float*)&i;
   // y  = y * (1.5f - (x2 * y * y));
 
   // return y;
 
   // can't use fast inverse square root algo due to strict-aliasing rules :(
   // gotta do it the slow way
-  return (std::fabs(x) > TOLERANCE) ? 1/std::sqrt(x) : std::numeric_limits<float>::infinity();
+  return (std::fabs(x) > TOLERANCE) ? 1 / std::sqrt(x) : std::numeric_limits<float>::infinity();
 }
