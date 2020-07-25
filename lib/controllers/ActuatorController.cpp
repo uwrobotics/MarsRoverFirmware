@@ -218,3 +218,76 @@ bool ActuatorController::isPastMinAngle() {
 bool ActuatorController::isPastMaxAngle() {
   return (getAngle_Degrees() > m_actuatorConfig.maxAngle_Degrees || isLimSwitchMaxTriggered());
 }
+
+// Update m_actuatorConfig upon reception of new PID values
+void ActuatorController::updateActuatorConfigP(const float& value, const bool& velocityPID) {
+  velocityPID ? m_actuatorConfig.velocityPID.P = value : m_actuatorConfig.positionPID.P = value;
+}
+
+void ActuatorController::updateActuatorConfigI(const float& value, const bool& velocityPID) {
+  velocityPID ? m_actuatorConfig.velocityPID.I = value : m_actuatorConfig.positionPID.I = value;
+}
+
+void ActuatorController::updateActuatorConfigD(const float& value, const bool& velocityPID) {
+  velocityPID ? m_actuatorConfig.velocityPID.D = value : m_actuatorConfig.positionPID.D = value;
+}
+
+void ActuatorController::updateActuatorConfigBias(const float& value, const bool& velocityPID) {
+  velocityPID ? m_actuatorConfig.velocityPID.bias = value : m_actuatorConfig.positionPID.bias = value;
+}
+
+void ActuatorController::updateActuatorConfigDeadzone(const float& value, const bool& velocityPID) {
+  velocityPID ? m_actuatorConfig.velocityPID.deadZoneError = value : m_actuatorConfig.positionPID.deadZoneError = value;
+}
+
+// Update PIDController upon reception of new PID values
+void ActuatorController::updatePIDControllerP(const float& value, const bool& velocityPID) {
+  // Change P, but keep I and D the same
+  velocityPID ? m_velocityPIDController.setTunings(value, m_velocityPIDController.getIParam(), m_velocityPIDController.getDParam()) :
+  m_positionPIDController.setTunings(value, m_positionPIDController.getIParam(), m_positionPIDController.getDParam());
+}
+
+void ActuatorController::updatePIDControllerI(const float& value, const bool& velocityPID) {
+  // Change I, but keep P and D the same
+  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), value, m_velocityPIDController.getDParam()) :
+  m_positionPIDController.setTunings(m_positionPIDController.getPParam(), value, m_positionPIDController.getDParam());
+}
+
+void ActuatorController::updatePIDControllerD(const float& value, const bool& velocityPID) {
+  // Change D, but keep I and P the same
+  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), m_velocityPIDController.getIParam(), value) :
+  m_positionPIDController.setTunings(m_positionPIDController.getPParam(), m_positionPIDController.getIParam(), value);
+}
+
+void ActuatorController::updatePIDControllerBias(const float& value, const bool& velocityPID) {
+  velocityPID ? m_velocityPIDController.setBias(value) : m_positionPIDController.setBias(value);
+}
+
+void ActuatorController::updatePIDControllerDeadzone(const float& value, const bool& velocityPID) {
+  velocityPID ? m_velocityPIDController.setDeadZoneError(value) : m_positionPIDController.setDeadZoneError(value);
+}
+
+void ActuatorController::updatePIDP(const float& value, const bool& velocityPID) {
+  updateActuatorConfigP(value, velocityPID);
+  updatePIDControllerP(value, velocityPID);
+}
+
+void ActuatorController::updatePIDI(const float& value, const bool& velocityPID) {
+  updateActuatorConfigI(value, velocityPID);
+  updatePIDControllerD(value, velocityPID);
+}
+
+void ActuatorController::updatePIDD(const float& value, const bool& velocityPID) {
+  updateActuatorConfigD(value, velocityPID);
+  updatePIDControllerD(value, velocityPID);
+}
+
+void ActuatorController::updatePIDBias(const float& value, const bool& velocityPID) {
+  updateActuatorConfigBias(value, velocityPID);
+  updatePIDControllerBias(value, velocityPID);
+}
+
+void ActuatorController::updatePIDDeadzone(const float& value, const bool& velocityPID) {
+  updateActuatorConfigDeadzone(value, velocityPID);
+  updatePIDControllerDeadzone(value, velocityPID);
+}

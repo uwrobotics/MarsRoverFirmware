@@ -50,6 +50,12 @@ class ActuatorController {
   bool isPastMinAngle();
   bool isPastMaxAngle();
 
+  void updatePIDP(const float& value, const bool& velocityPID);
+  void updatePIDI(const float& value, const bool& velocityPID);
+  void updatePIDD(const float& value, const bool& velocityPID);
+  void updatePIDBias(const float& value, const bool& velocityPID);
+  void updatePIDDeadzone(const float& value, const bool& velocityPID);
+
  private:
   t_actuatorControlMode m_controlMode;
   t_actuatorConfig m_actuatorConfig;
@@ -68,4 +74,16 @@ class ActuatorController {
   Timer m_updateTimer;
 
   void initializePIDControllers();
+
+  void updateActuatorConfigP(const float& value, const bool& velocityPID);
+  void updateActuatorConfigI(const float& value, const bool& velocityPID);
+  void updateActuatorConfigD(const float& value, const bool& velocityPID);
+  void updateActuatorConfigBias(const float& value, const bool& velocityPID);
+  void updateActuatorConfigDeadzone(const float& value, const bool& velocityPID);
+
+  void updatePIDControllerP(const float& value, const bool& velocityPID);
+  void updatePIDControllerI(const float& value, const bool& velocityPID);
+  void updatePIDControllerD(const float& value, const bool& velocityPID);
+  void updatePIDControllerBias(const float& value, const bool& velocityPID);
+  void updatePIDControllerDeadzone(const float& value, const bool& velocityPID);
 };

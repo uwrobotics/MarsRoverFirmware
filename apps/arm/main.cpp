@@ -59,6 +59,9 @@ DifferentialWristController wristController(wristLeftActuator, wristRightActuato
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor,
                               clawTooltipServo, 180.0, 0.0);
 
+// Prevents PID params from being tuned over CAN inadvertently
+static bool allowPIDParamTuning = false;
+
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
 
@@ -168,14 +171,72 @@ static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
   }
 }
 
-// Enable or disable PID tuning mode10
+// Enable or disable PID tuning mode
+// Manually send CAN message to SET_PID_TUNING_MODE with appropriate boolean
 static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
-  return MBED_SUCCESS;  // TODO
+  msg.getPayload(allowPIDParamTuning);
+  return MBED_SUCCESS;
 }
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-  return MBED_SUCCESS;  // TODO
+  printf("Received request to update PID params over CAN");
+  if(!allowPIDParamTuning) {
+    printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
+    printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\n");
+    return MBED_ERROR_ASSERTION_FAILED;
+  }
+  /** ------------------------------------
+   * | 32 bits  | 8 bits   |  8 bits     |
+   * | data     | vel/pos  |  Actuator ID|
+   *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+  HWBRIDGE::ARM::PID::tuningApiPayload payload;
+  msg.getPayload(payload);
+  printf("payload: %s", payload.str());
+  ActuatorController *temp = nullptr;
+  switch(payload.actuatorID){
+    case HWBRIDGE::ARM::ACTUATOR::TURNTABLE:
+      temp = &turnTableActuator;
+      break;
+    case HWBRIDGE::ARM::ACTUATOR::SHOULDER:
+      temp = &shoulderActuator;
+      break;
+    case HWBRIDGE::ARM::ACTUATOR::ELBOW:
+      temp = &elbowActuator;
+      break;
+    case HWBRIDGE::ARM::ACTUATOR::WRISTLEFT:
+      temp = &wristLeftActuator;
+      break;
+    case HWBRIDGE::ARM::ACTUATOR::WRISTRIGHT:
+      temp = &wristRightActuator;
+      break;
+    case HWBRIDGE::ARM::ACTUATOR::CLAW:
+      temp = &clawController;
+      break;
+    default:
+      printf("ERROR: Invalid Actuator ID\n");
+      return MBED_ERROR_INVALID_ARGUMENT;
+  }
+  switch (msg.id){
+    case HWBRIDGE::CANID::SET_JOINT_PID_P:
+      temp->updatePIDP(payload.value, payload.velocity);
+      return MBED_SUCCESS;
+    case HWBRIDGE::CANID::SET_JOINT_PID_I:
+      temp->updatePIDI(payload.value, payload.velocity);
+      return MBED_SUCCESS;
+    case HWBRIDGE::CANID::SET_JOINT_PID_D:
+      temp->updatePIDD(payload.value, payload.velocity);;
+      return MBED_SUCCESS;
+    case HWBRIDGE::CANID::SET_PID_DEADZONE:
+      temp->updatePIDDeadzone(payload.value, payload.velocity);
+      return MBED_SUCCESS;
+    case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
+      temp->updatePIDBias(payload.value, payload.velocity);
+      return MBED_SUCCESS;
+    default:
+      printf("ERROR: Invalid PID parameter\n");
+      return MBED_ERROR_INVALID_ARGUMENT;
+  }
 }
 
 // Handler function mappings

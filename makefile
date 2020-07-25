@@ -21,7 +21,7 @@ APP_PATH       := ../$(APPS_FOLDER)/$(APP)
 LIB_PATH       := ../lib
 MBED_PATH      := ../mbed-os
 CONFIG_PATH    := ../config
-SUBMODULE_PATH := ../uwrt-mars-rover-hw-bridge/config
+SUBMODULE_PATH := ../uwrt-mars-rover-hw-bridge
 
 LAST_BOARD_TARGET := $(shell cat $(BUILD_FOLDER)/LAST_BOARD_TARGET 2>/dev/null)# ignores non-existant file error
 
@@ -106,14 +106,14 @@ PROJECT := $(APP).$(TARGET)
 
 APP_INC += -I$(APP_PATH)
 LIB_INC += $(addprefix -I,$(wildcard $(LIB_PATH)/*))
-SUBMODULE_INC += -I$(SUBMODULE_PATH)
+SUBMODULE_INC += -I$(SUBMODULE_PATH)/include
 
 APP_SRC_C += $(wildcard $(APP_PATH)/*.c)
 LIB_SRC_C += $(wildcard $(LIB_PATH)/*/*.c)
 
 APP_SRC_CPP += $(wildcard $(APP_PATH)/*.cpp)
 LIB_SRC_CPP += $(wildcard $(LIB_PATH)/*/*.cpp)
-SUBMODULE_SRC_CPP = $(wildcard $(SUBMODULE_PATH)/*.cpp)
+SUBMODULE_SRC_CPP = $(wildcard $(SUBMODULE_PATH)/src/*.cpp)
 
 UWRT_SRC_C   = $(APP_SRC_C)   $(LIB_SRC_C)
 UWRT_SRC_CPP = $(APP_SRC_CPP) $(LIB_SRC_CPP) $(SUBMODULE_SRC_CPP)
