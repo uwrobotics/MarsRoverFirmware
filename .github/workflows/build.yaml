@@ -49,7 +49,7 @@ jobs:
         run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
 
       - name: Load Cached Arm Toolchain
-        uses: actions/cache@v2.0.0
+        uses: actions/cache@v2.1.0
         id: toolchain-cache
         with:
           path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
