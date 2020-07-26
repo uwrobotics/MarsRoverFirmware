@@ -13,3 +13,4 @@ firmware.code-workspace
 # Clion
 *.idea/
 *cmake-build-*
+venv
