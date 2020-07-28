@@ -1,4 +1,5 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
+# This script maintains compatibility with Python 3.6.9 (default for Ubuntu 18.04
 import argparse
 import json
 import yaml
@@ -41,7 +42,8 @@ def verify_config(args):
 
 def main():
     parser = argparse.ArgumentParser(description='A collection of helpers related to UWRT Firmware build configs')
-    subparsers = parser.add_subparsers(required=True, dest='subcommand', description='actions this script can perform')
+    subparsers = parser.add_subparsers(dest='subcommand', description='actions this script can perform')
+    subparsers.required = True
 
     verify_config_parser = subparsers.add_parser('print-ci-json',
                                                  help='prints supported_build_configurations.yaml in json format. useful for CI.')
