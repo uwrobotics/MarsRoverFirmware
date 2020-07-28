@@ -1,5 +1,5 @@
-#include "TutorialServo.h"
 #include "CANMsg.h"
+#include "TutorialServo.h"
 CAN can(CAN_RX, CAN_TX);
 CANMsg rxMsg;
 CANMsg txMsg;
