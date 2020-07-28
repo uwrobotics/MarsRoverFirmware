@@ -39,7 +39,7 @@ $(error )
 endif
 
 verify_app_target_tuple:
-	@python build_configurations_helper.py verify_config --APP=$(APP) --TARGET=$(TARGET) ; \
+	@python build_configurations_helper.py verify-config --APP=$(APP) --TARGET=$(TARGET) ; \
 	if [ $$? -ne 0 ]; \
 	then \
 		echo "Do you want to try to build anyways? (Y/N)"; \
