@@ -192,7 +192,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
    *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
   HWBRIDGE::ARM::PID::tuningApiPayload payload;
   msg.getPayload(payload);
-  printf("payload: %s", payload.str());
+  printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
   ActuatorController *temp = nullptr;
   switch(payload.actuatorID){
     case HWBRIDGE::ARM::ACTUATOR::TURNTABLE:
