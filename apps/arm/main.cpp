@@ -88,7 +88,7 @@ static mbed_error_status_t setOverrideFlags(CANMsg &msg) {
 }
 
 // Set the control mode of a joint (motor power / velocity / position)
-static mbed_error_status_t setControlMode(CANMsg &msg) {
+static mbed_error_status_t setControlMode(const CANMsg &msg) {
   ActuatorController::t_actuatorControlMode controlMode;
   msg.getPayload(controlMode);
 
@@ -111,7 +111,7 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
 }
 
 // Set the motion data (motor power / velocity / position) of a joint
-static mbed_error_status_t setMotionData(CANMsg &msg) {
+static mbed_error_status_t setMotionData(const CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
 
@@ -136,7 +136,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 }
 
 // Run wrist calibration routine
-static mbed_error_status_t runWristCalibration(CANMsg &msg) {
+static mbed_error_status_t runWristCalibration(const CANMsg &msg) {
   bool runCalibration;
   msg.getPayload(runCalibration);
 
@@ -148,7 +148,7 @@ static mbed_error_status_t runWristCalibration(CANMsg &msg) {
 }
 
 // Run claw calibration routine
-static mbed_error_status_t runClawCalibration(CANMsg &msg) {
+static mbed_error_status_t runClawCalibration(const CANMsg &msg) {
   bool runCalibration;
   msg.getPayload(runCalibration);
 
@@ -160,7 +160,7 @@ static mbed_error_status_t runClawCalibration(CANMsg &msg) {
 }
 
 // Deploy or retract tool tip
-static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
+static mbed_error_status_t setToolTipDeployment(const CANMsg &msg) {
   bool extend;
   msg.getPayload(extend);
 
@@ -173,13 +173,13 @@ static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
 
 // Enable or disable PID tuning mode
 // Manually send CAN message to SET_PID_TUNING_MODE with appropriate boolean
-static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
+static mbed_error_status_t setPIDTuningMode(const CANMsg &msg) {
   msg.getPayload(allowPIDParamTuning);
   return MBED_SUCCESS;
 }
 
 // Configure PID parameters
-static mbed_error_status_t setPIDParameter(CANMsg &msg) {
+static mbed_error_status_t setPIDParameter(const CANMsg &msg) {
   printf("Received request to update PID params over CAN");
   if(!allowPIDParamTuning) {
     printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
