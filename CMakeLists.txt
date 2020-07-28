@@ -58,13 +58,11 @@ add_subdirectory(lib/pid)
 add_subdirectory(lib/sensors)
 add_subdirectory(lib/servo)
 
-# TODO(wmmc88): check if its in supported configuration list and warn if not in list. This should be in wrapper makefile
 if (NOT DEFINED APP)
     message(FATAL_ERROR "APP variable not set in CACHE. Please invoke CMake with \"-DAPP=<app-name>\"")
 elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/apps/${APP}")
     message(FATAL_ERROR "${APP} app does not exist in the apps folder")
 endif ()
-
 if (NOT DEFINED TARGET)
     message(FATAL_ERROR "TARGET variable not set in CACHE. Please invoke CMake with \"-DTARGET=<target-name>\"")
 elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/targets/${TARGET}")

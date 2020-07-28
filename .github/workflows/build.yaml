@@ -27,7 +27,7 @@ jobs:
 
       - name: Set Build Matrix Output
         id: set-matrix
-        run: echo "::set-output name=matrix::`./build_configurations_helper.py`"
+        run: echo "::set-output name=matrix::`./build_configurations_helper.py print-ci-json`"
 
   build:
     needs: setup-build-matrix
