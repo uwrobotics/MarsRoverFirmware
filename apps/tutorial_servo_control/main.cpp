@@ -11,11 +11,10 @@ PwmOut servoPwmOut(PA_1);
 
 // main() runs in its own thread in the OS
 int main() {
-    servoPwmOut.period(0.020);
-  
-    while (true) {
-        float potVoltage = potVoltageIn.read();
-        servoPwmOut.pulsewidth(0.001+0.001*potVoltage/3.3);
-        
-    }
+  servoPwmOut.period(0.020);
+
+  while (true) {
+    float potVoltage = potVoltageIn.read();
+    servoPwmOut.pulsewidth(0.001 + 0.001 * potVoltage / 3.3);
+  }
 }
