@@ -99,10 +99,10 @@ void testPIDTuningApi::printAllActuatorDetails() const{
 }
 
 std::string testPIDTuningApi::getActuatorDetails(const ActuatorController& actuator) const{
-  std::string ret;
-  ret = "\tVelocity = " + getPIDControllerDetails(actuator.m_velocityPIDController);
-  ret += "\tPosition = " + getPIDControllerDetails(actuator.m_positionPIDController);
-  return ret;
+  std::string actuatorDetails;
+  actuatorDetails = "\tVelocity = " + getPIDControllerDetails(actuator.m_velocityPIDController);
+  actuatorDetails += "\tPosition = " + getPIDControllerDetails(actuator.m_positionPIDController);
+  return actuatorDetails;
 }
 std::string testPIDTuningApi::getPIDControllerDetails(const PID& pid) const {
   std::string P, I, D, Deadzone, Bias;
