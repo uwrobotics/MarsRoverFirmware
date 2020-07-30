@@ -39,36 +39,11 @@ Motor motor(PA_5, PA_6);
 ActuatorController actuatorAbs(actuatorConfig, motor, encAbs);
 ActuatorController actuatorRel(actuatorConfig, motor, encRel);
 
-// Functions and objects for the PID tuning API
-static mbed_error_status_t setPIDParameter(CANMsg &msg);
-
-static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_PID_TUNING_MODE, &setPIDTuningMode},
-                                                 {HWBRIDGE::CANID::SET_PID_DEADZONE, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_P, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_I, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_D, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_BIAS, &setPIDParameter}};
-// Incoming message processor
-void rxCANProcessor();
-
 // main() runs in its own thread in the OS
 int main() {
   while (true) {
     // Blink LED and wait 0.5 seconds
     led1 = !led1;
     wait_ms(500);
-  }
-}
-
-void rxCANProcessor();
-{
-  CANMsg rxMsg;
-  while (true) {
-    if (can1.read(rxMsg)) {
-      if (canHandlerMap.count(rxMsg.id) > 0) {
-        canHandlerMap[rxMsg.id](rxMsg);
-      }
-    }
-    ThisThread::sleep_for(2ms);
   }
 }

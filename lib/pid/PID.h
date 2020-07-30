@@ -208,18 +208,20 @@ class PID {
   float compute(void);
 
   // Getters.
-  float getInMin();
-  float getInMax();
-  float getOutMin();
-  float getOutMax();
-  float getInterval();
-  float getPParam();
-  float getIParam();
-  float getDParam();
-  float getATunePParam();
-  float getATuneIParam();
-  float getATuneDParam();
-  float getSetPoint();
+  float getInMin() const;
+  float getInMax() const;
+  float getOutMin() const;
+  float getOutMax() const;
+  float getInterval() const;
+  float getPParam() const;
+  float getIParam() const;
+  float getDParam() const;
+  float getBiasParam() const;
+  float getDeadzoneParam() const;
+  float getATunePParam() const;
+  float getATuneIParam() const;
+  float getATuneDParam() const;
+  float getSetPoint() const;
 
  private:
   bool usingFeedForward;

@@ -86,4 +86,6 @@ class ActuatorController {
   void updatePIDControllerD(const float& value, const bool& velocityPID);
   void updatePIDControllerBias(const float& value, const bool& velocityPID);
   void updatePIDControllerDeadzone(const float& value, const bool& velocityPID);
+  // The test driver must access private data
+  friend class testPIDTuningApi;
 };
