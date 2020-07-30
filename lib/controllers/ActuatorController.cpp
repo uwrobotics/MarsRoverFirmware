@@ -221,23 +221,23 @@ bool ActuatorController::isPastMaxAngle() {
 
 // Update m_actuatorConfig upon reception of new PID values
 void ActuatorController::updateActuatorConfigP(const float& value, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.P = value : m_actuatorConfig.positionPID.P = value;
+  velocityPID ? m_actuatorConfig.velocityPID.P : m_actuatorConfig.positionPID.P = value;
 }
 
 void ActuatorController::updateActuatorConfigI(const float& value, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.I = value : m_actuatorConfig.positionPID.I = value;
+  velocityPID ? m_actuatorConfig.velocityPID.I : m_actuatorConfig.positionPID.I = value;
 }
 
 void ActuatorController::updateActuatorConfigD(const float& value, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.D = value : m_actuatorConfig.positionPID.D = value;
+  velocityPID ? m_actuatorConfig.velocityPID.D : m_actuatorConfig.positionPID.D = value;
 }
 
 void ActuatorController::updateActuatorConfigBias(const float& value, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.bias = value : m_actuatorConfig.positionPID.bias = value;
+  velocityPID ? m_actuatorConfig.velocityPID.bias : m_actuatorConfig.positionPID.bias = value;
 }
 
 void ActuatorController::updateActuatorConfigDeadzone(const float& value, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.deadZoneError = value : m_actuatorConfig.positionPID.deadZoneError = value;
+  velocityPID ? m_actuatorConfig.velocityPID.deadZoneError : m_actuatorConfig.positionPID.deadZoneError = value;
 }
 
 // Update PIDController upon reception of new PID values

@@ -180,7 +180,7 @@ static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-  printf("Received request to update PID params over CAN");
+  printf("Received request to update PID params over CAN\n");
   if(!allowPIDParamTuning) {
     printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
     printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\n");
