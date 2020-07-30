@@ -243,20 +243,26 @@ void ActuatorController::updateActuatorConfigDeadzone(const float& newDeadzone, 
 // Update PIDController upon reception of new PID values
 void ActuatorController::updatePIDControllerP(const float& newP, const bool& velocityPID) {
   // Change P, but keep I and D the same
-  velocityPID ? m_velocityPIDController.setTunings(newP, m_velocityPIDController.getIParam(), m_velocityPIDController.getDParam()) :
-  m_positionPIDController.setTunings(newP, m_positionPIDController.getIParam(), m_positionPIDController.getDParam());
+  velocityPID ? m_velocityPIDController.setTunings(newP, m_velocityPIDController.getIParam(),
+                                                   m_velocityPIDController.getDParam())
+              : m_positionPIDController.setTunings(newP, m_positionPIDController.getIParam(),
+                                                   m_positionPIDController.getDParam());
 }
 
 void ActuatorController::updatePIDControllerI(const float& newI, const bool& velocityPID) {
   // Change I, but keep P and D the same
-  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), newI, m_velocityPIDController.getDParam()) :
-  m_positionPIDController.setTunings(m_positionPIDController.getPParam(), newI, m_positionPIDController.getDParam());
+  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), newI,
+                                                   m_velocityPIDController.getDParam())
+              : m_positionPIDController.setTunings(m_positionPIDController.getPParam(), newI,
+                                                   m_positionPIDController.getDParam());
 }
 
 void ActuatorController::updatePIDControllerD(const float& newD, const bool& velocityPID) {
   // Change D, but keep I and P the same
-  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), m_velocityPIDController.getIParam(), newD) :
-  m_positionPIDController.setTunings(m_positionPIDController.getPParam(), m_positionPIDController.getIParam(), newD);
+  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(),
+                                                   m_velocityPIDController.getIParam(), newD)
+              : m_positionPIDController.setTunings(m_positionPIDController.getPParam(),
+                                                   m_positionPIDController.getIParam(), newD);
 }
 
 void ActuatorController::updatePIDControllerBias(const float& newBias, const bool& velocityPID) {
@@ -264,7 +270,8 @@ void ActuatorController::updatePIDControllerBias(const float& newBias, const boo
 }
 
 void ActuatorController::updatePIDControllerDeadzone(const float& newDeadzone, const bool& velocityPID) {
-  velocityPID ? m_velocityPIDController.setDeadZoneError(newDeadzone) : m_positionPIDController.setDeadZoneError(newDeadzone);
+  velocityPID ? m_velocityPIDController.setDeadZoneError(newDeadzone)
+              : m_positionPIDController.setDeadZoneError(newDeadzone);
 }
 
 void ActuatorController::updatePIDP(const float& newP, const bool& velocityPID) {

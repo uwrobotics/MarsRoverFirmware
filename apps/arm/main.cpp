@@ -181,7 +181,7 @@ static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   printf("Received request to update PID params over CAN\n");
-  if(!allowPIDParamTuning) {
+  if (!allowPIDParamTuning) {
     printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
     printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\n");
     return MBED_ERROR_ASSERTION_FAILED;
@@ -194,7 +194,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   msg.getPayload(payload);
   printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
   ActuatorController *temp = nullptr;
-  switch(payload.actuatorID){
+  switch (payload.actuatorID) {
     case HWBRIDGE::ARM::ACTUATOR::TURNTABLE:
       temp = &turnTableActuator;
       break;
@@ -217,7 +217,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
       printf("ERROR: Invalid Actuator ID\n");
       return MBED_ERROR_INVALID_ARGUMENT;
   }
-  switch (msg.id){
+  switch (msg.id) {
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
       temp->updatePIDP(payload.value, payload.velocity);
       return MBED_SUCCESS;
@@ -225,7 +225,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
       temp->updatePIDI(payload.value, payload.velocity);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      temp->updatePIDD(payload.value, payload.velocity);;
+      temp->updatePIDD(payload.value, payload.velocity);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_PID_DEADZONE:
       temp->updatePIDDeadzone(payload.value, payload.velocity);
