@@ -15,8 +15,10 @@ int main() {
   // configure values for the testing sensor, TODO, need updated values
   ComponentConfig testing_config = {"TEST", CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL, 0x00, 0.003, 28.75};
 
+  pc.printf("Attempting to create sensor object");
   INA_226 testing_sensor(testing_config);
-
+  pc.printf("Created INA sensor object");
+  
   pc.printf("Calibrating Sensor\r\n");
   testing_sensor.calibrateSensor();
   pc.printf("Sensor Calibrated\r\n");
@@ -27,6 +29,10 @@ int main() {
   if (inToleranceRange(current_tolerance, expected_current, measured_current)) {
     pc.printf("Measured current is within expected range. Measured value: %f\r\n", measured_current);
   }
+  else
+  {
+    pc.printf("Measured current is not within expected range. Measured value: %f\r\n", measured_current);
+  }
 
   float voltage_tolerance = 0.01;
   float expected_voltage  = 5;
@@ -34,14 +40,22 @@ int main() {
   if (inToleranceRange(voltage_tolerance, expected_voltage, measured_voltage)) {
     pc.printf("Measured voltage is within expected range. Measured value: %f\r\n", measured_voltage);
   }
-
+  else
+  {
+    pc.printf("Measured voltage is within expected range. Measured value: %f\r\n", measured_voltage);
+  }
+  
   float power_tolerance = 0.01;
   float expected_power  = 5;
   float measured_power  = testing_sensor.getPowerData();
   if (inToleranceRange(power_tolerance, expected_power, measured_power)) {
     pc.printf("Measured power is within expected range. Measured value: %f\r\n", measured_power);
   }
-
+  else
+  {
+    pc.printf("Measured power is within expected range. Measured value: %f\r\n", measured_power);
+  }
+  
   // test config > 0 100 111 011 011 001
   SensorModes test_config      = {0x00, 0x04, 0x07, 0x03, 0x03};
   u_int16_t test_config_binary = 0100111011011001;
@@ -56,4 +70,13 @@ int main() {
   if (!(testing_sensor.readConfigRegister() == default_settings)) {
     pc.printf("Incorrect default config register setting recieved\r\n");
   }
+  
+  u_int16_t alert_limit = 1;
+  testing_sensor.setAlertLimit(alert_limit);
+  u_int16_t alert = testing_sensor.getAlertLimit(); 
+  if (alert != alert_limit )
+  {
+    pc.printf("Incorrect alert limit %u\n", alert);
+  }
+  
 }
