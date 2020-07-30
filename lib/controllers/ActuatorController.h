@@ -60,10 +60,10 @@ class ActuatorController {
   t_actuatorControlMode m_controlMode;
   t_actuatorConfig m_actuatorConfig;
 
-  Motor &r_motor;
-  Encoder &r_encoder;
-  DigitalIn &r_limSwitchMin;
-  DigitalIn &r_limSwitchMax;
+  Motor& r_motor;
+  Encoder& r_encoder;
+  DigitalIn& r_limSwitchMin;
+  DigitalIn& r_limSwitchMax;
 
   bool m_limSwitchMin_Connected;
   bool m_limSwitchMax_Connected;

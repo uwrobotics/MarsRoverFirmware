@@ -442,58 +442,58 @@ float PID::compute() {
   return ((controllerOutput_ * outSpan_) + outMin_);
 }
 
-float PID::getInMin() const{
+float PID::getInMin() const {
   return inMin_;
 }
 
-float PID::getInMax() const{
+float PID::getInMax() const {
   return inMax_;
 }
 
-float PID::getOutMin() const{
+float PID::getOutMin() const {
   return outMin_;
 }
 
-float PID::getOutMax() const{
+float PID::getOutMax() const {
   return outMax_;
 }
 
-float PID::getInterval() const{
+float PID::getInterval() const {
   return tSample_;
 }
 
-float PID::getPParam() const{
+float PID::getPParam() const {
   return pParam_;
 }
 
-float PID::getIParam() const{
+float PID::getIParam() const {
   return iParam_;
 }
 
-float PID::getDParam() const{
+float PID::getDParam() const {
   return dParam_;
 }
 
-float PID::getBiasParam() const{
+float PID::getBiasParam() const {
   return bias_;
 }
 
-float PID::getDeadzoneParam() const{
+float PID::getDeadzoneParam() const {
   return deadZoneError_;
 }
 
-float PID::getATunePParam() const{
+float PID::getATunePParam() const {
   return autoTuneKc_;
 }
 
-float PID::getATuneIParam() const{
+float PID::getATuneIParam() const {
   return autoTuneTauR_;
 }
 
-float PID::getATuneDParam() const{
+float PID::getATuneDParam() const {
   return autoTuneTauD_;
 }
 
-float PID::getSetPoint() const{
+float PID::getSetPoint() const {
   return setPoint_;
 }
