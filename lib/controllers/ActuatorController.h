@@ -24,8 +24,8 @@ class ActuatorController {
     float watchDogTimeout_Seconds = 3.0;
   } t_actuatorConfig;
 
-  explicit ActuatorController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder,
-                              DigitalIn &limSwitchMin = NULL_DIGITAL_IN, DigitalIn &limSwitchMax = NULL_DIGITAL_IN);
+  explicit ActuatorController(t_actuatorConfig actuatorConfig, Motor& motor, Encoder& encoder,
+                              DigitalIn& limSwitchMin = NULL_DIGITAL_IN, DigitalIn& limSwitchMax = NULL_DIGITAL_IN);
 
   mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
 
