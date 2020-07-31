@@ -16,7 +16,7 @@ class bmsLcd
 
     private:
     TextLCD lcd;
-}
+};
 
 
 
