@@ -12,7 +12,9 @@
 class bmsLcd
 {
     public:
-    void bmsLcd::writeToPin(const char* stringToWrite);
+    bmsLcd(PinName rs, PinName e, PinName d4, PinName d5, PinName d6, PinName d7, LCDType type = TextLCD::LCD16x2);
+
+    void bmsLcd::writeToLcd(const char* firstLine, const char* secondLine)
 
     private:
     TextLCD lcd;
