@@ -17,7 +17,7 @@ PwmOut MOTOR_PWM_OUT(D9);
 InterruptIn encoderCh1(D2);
 InterruptIn encoderCh2(D3);
 
-BufferedSerial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
+static BufferedSerial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
 
 PID rpmPIDController(0.010268, 0.0260, 0, K_UPDATE_PERIOD);
 Timer timer;
