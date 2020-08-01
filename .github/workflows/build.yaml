@@ -74,7 +74,7 @@ jobs:
         with:
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeAppendedArgs: '-G"Unix Makefiles" -DAPP=${{ env.APP }} -DTARGET=${{ env.TARGET }}'
+          cmakeAppendedArgs: '-G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/toolchain.cmake -DAPP=${{ env.APP }} -DTARGET=${{ env.TARGET }}'
           buildDirectory: '${{ github.workspace }}/build/'
           buildWithCMakeArgs: '--target ${{ env.APP }}.${{ env.TARGET }}-board.elf --clean-first -- -j$(nproc)'
           useShell: bash
