@@ -43,7 +43,7 @@ This repository contains:
         **Note:** If you are not using Ubuntu 18.04 and/or bash you may need to modify this script's paths/files.
     - Install CMake:
         * Follow [kitware instructions](https://apt.kitware.com/) to add Latest CMake apt repository
-        * sudo apt install cmake
+        * `sudo apt install cmake`
     
     For Windows
     - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
@@ -71,8 +71,8 @@ This repository contains:
     ```shell script
     make --version                    # Should be v3.8.x or newer
     arm-none-eabi-gcc --version       # Should be v9.3.x or newer
+    cmake --version                   # Should be v3.15.7 or newer
     ```
-
 
 3. Download source code
 
