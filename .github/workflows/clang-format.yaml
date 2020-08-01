@@ -20,4 +20,4 @@ jobs:
         uses: DoozyX/clang-format-lint-action@v0.8
         with:
           exclude: './mbed-os'
-          clangFormatVersion: 10
+          clangFormatVersion: 11
