@@ -2,15 +2,15 @@ add_executable(arm.${TARGET}-board.elf)
 target_sources(arm.${TARGET}-board.elf PRIVATE src/main.cpp)
 target_link_libraries(arm.${TARGET}-board.elf
         PUBLIC
-            PID
+        PID
         PRIVATE
-            ClawController
-            CANBuffer
-            DifferentialWristController
-            EncoderRelative_Quadrature
-            LimServo
-            Motor
-            uwrt-mars-rover-hw-bridge
+        ClawController
+        CANBuffer
+        DifferentialWristController
+        EncoderRelative_Quadrature
+        LimServo
+        Motor
+        uwrt-mars-rover-hw-bridge
         )
 target_set_firmware_properties(arm.${TARGET}-board.elf)
 

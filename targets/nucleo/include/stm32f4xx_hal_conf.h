@@ -90,11 +90,11 @@ extern "C" {
  */
 #if !defined(HSE_VALUE)
 #define HSE_VALUE 8000000U /*!< Value of the External oscillator in Hz */
-#endif                     /* HSE_VALUE */
+#endif /* HSE_VALUE */
 
 #if !defined(HSE_STARTUP_TIMEOUT)
 #define HSE_STARTUP_TIMEOUT 100U /*!< Time out for HSE start up, in ms */
-#endif                           /* HSE_STARTUP_TIMEOUT */
+#endif /* HSE_STARTUP_TIMEOUT */
 
 /**
  * @brief Internal High Speed oscillator (HSI) value.
@@ -103,26 +103,26 @@ extern "C" {
  */
 #if !defined(HSI_VALUE)
 #define HSI_VALUE 16000000U /*!< Value of the Internal oscillator in Hz */
-#endif                      /* HSI_VALUE */
+#endif /* HSI_VALUE */
 
 /**
  * @brief Internal Low Speed oscillator (LSI) value.
  */
 #if !defined(LSI_VALUE)
 #define LSI_VALUE 32000U /*!< LSI Typical Value in Hz */
-#endif /* LSI_VALUE */   /*!< Value of the Internal Low Speed oscillator in Hz    \
-                              The real value may vary depending on the variations \
-                              in voltage and temperature. */
+#endif /* LSI_VALUE */ /*!< Value of the Internal Low Speed oscillator in Hz    \
+                            The real value may vary depending on the variations \
+                            in voltage and temperature. */
 /**
  * @brief External Low Speed oscillator (LSE) value.
  */
 #if !defined(LSE_VALUE)
 #define LSE_VALUE 32768U /*!< Value of the External Low Speed oscillator in Hz */
-#endif                   /* LSE_VALUE */
+#endif /* LSE_VALUE */
 
 #if !defined(LSE_STARTUP_TIMEOUT)
 #define LSE_STARTUP_TIMEOUT 5000U /*!< Time out for LSE start up, in ms */
-#endif                            /* LSE_STARTUP_TIMEOUT */
+#endif /* LSE_STARTUP_TIMEOUT */
 
 /**
  * @brief External clock source for I2S peripheral
@@ -131,7 +131,7 @@ extern "C" {
  */
 #if !defined(EXTERNAL_CLOCK_VALUE)
 #define EXTERNAL_CLOCK_VALUE 12288000U /*!< Value of the External oscillator in Hz*/
-#endif                                 /* EXTERNAL_CLOCK_VALUE */
+#endif /* EXTERNAL_CLOCK_VALUE */
 
 /* Tip: To avoid modifying this file each time you need to use different HSE,
    ===  you can define the HSE value in your toolchain compiler preprocessor. */
