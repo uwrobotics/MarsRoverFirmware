@@ -281,7 +281,7 @@ void ActuatorController::updatePIDP(const float& newP, const bool& velocityPID) 
 
 void ActuatorController::updatePIDI(const float& newI, const bool& velocityPID) {
   updateActuatorConfigI(newI, velocityPID);
-  updatePIDControllerD(newI, velocityPID);
+  updatePIDControllerI(newI, velocityPID);
 }
 
 void ActuatorController::updatePIDD(const float& newD, const bool& velocityPID) {
