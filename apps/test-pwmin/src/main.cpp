@@ -17,7 +17,7 @@ int main() {
   float duty     = 0.1;
 
   // Specify PWM period
-  pwmOut.period(period.count());
+  pwmOut.period(0.002);
 
   // START THE TIMER
   timer.start();
@@ -48,8 +48,8 @@ int main() {
     if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
       printf(
-          "Avg PW: %+f, \tAvg Prd: %+f, \tRaw Duty: %+f, \tAvg Duty: %+f, \tAvg Duty Velo: %+f, \tAvg Ang Velo: "
-          "%+f\r\n",
+          "Out: %f \tAvg PW: %+f, \tAvg Prd: %+f, \tRaw Duty: %+f, \tAvg Duty: %+f, \tAvg Duty Velo: %+f, \tAvg Ang Velo: "
+          "%+f\r\n", double(period.count()),
           pwmIn.avgPulseWidth().count(), pwmIn.avgPeriod().count(), pwmIn.dutyCycle(), pwmIn.avgDutyCycle(),
           pwmIn.avgDutyCycleVelocity(), pwmIn.avgDutyCycleVelocity() * 360.0);
     }

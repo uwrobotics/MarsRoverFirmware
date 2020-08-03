@@ -138,6 +138,9 @@ QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, f
   int chanA = channelA_.read();
   int chanB = channelB_.read();
 
+  channelA_.mode(PullDown);
+  channelA_.mode(PullDown);
+
   // 2-bit state.
   currState_ = (chanA << 1) | (chanB);
   prevState_ = currState_;

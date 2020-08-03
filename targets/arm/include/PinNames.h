@@ -275,9 +275,6 @@ typedef enum {
   SERIAL_RX  = STDIO_UART_RX,
   SERIAL_RTS = PC_8,
 
-  USBTX = STDIO_UART_TX,
-  USBRX = STDIO_UART_RX,
-
   /**** OSCILLATOR pins ****/
   RCC_OSC32_IN  = PC_14,
   RCC_OSC32_OUT = PC_15,
