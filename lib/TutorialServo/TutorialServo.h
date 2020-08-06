@@ -17,4 +17,5 @@ class TutorialServo {  // this class is based on the template provided in the tr
   void setAngleRangeInDegrees(float degrees);
   void setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulsewidthMs);
   void setPositionInDegrees(float degrees);
+  float returnAngleRangeInDegrees();
 };

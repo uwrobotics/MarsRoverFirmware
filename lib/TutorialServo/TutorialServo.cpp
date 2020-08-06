@@ -44,3 +44,7 @@ void TutorialServo::setPositionInDegrees(float degrees) {
   }
   // setting the servo position based of servo.cpp in lib subforlder
 }
+
+float TutorialServo::returnAngleRangeInDegrees() {
+  return m_servoRangeInDegrees;
+}
