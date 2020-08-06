@@ -4,10 +4,10 @@
 
 CAN can(D3, D4);
 CANMsg msg;
-uint8 in;
 TutorialServo servo(PA_1, 180.0);
 
 int main() {
+  uint in;
   can.frequency(500000);
 
   while (true) {
