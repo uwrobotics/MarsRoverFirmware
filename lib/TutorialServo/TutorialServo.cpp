@@ -12,14 +12,6 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
   // otherwise nothing to do
 }
 
-TutorialServo::~TutorialServo() {
-  m_servoRangeInDegrees = 0;
-  m_minPulsewidthInMs   = 0;
-  m_maxPulsewidthInMs   = 0;
-
-  // felt i should include a destructor although seems trivial
-}
-
 void TutorialServo::setAngleRangeInDegrees(float degrees) {
   m_servoRangeInDegrees = degrees;
   // updating the member variable not sure if there is anything else to do here
