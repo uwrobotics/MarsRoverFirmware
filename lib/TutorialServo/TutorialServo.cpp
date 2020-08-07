@@ -23,9 +23,11 @@ void TutorialServo::setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulse
   // updating the member variables (not sure if there is anything else to do here)
 }
 
-void TutorialServo::setPositionInDegrees(float degrees) {
-  if (degrees >= m_servoRangeInDegrees) {  // checking if the desired degrees is in range
-                                           // the degrees is above the possible range
+void TutorialServo::setPositionInDegrees(
+    float degrees) {  // function takes in a non-negative angle where 0 represents minPulsewidth
+  // range represents the range between min pulse and max pulse
+  if (degrees >= m_servoRangeInDegrees) {  // checking if the desired angle is in range
+                                           // the desired angle is greater than what is allowed
     m_servoPwmOut.pulsewidth_us(m_maxPulsewidthInMs * 1000);
   } else if (degrees <= 0) {
     // degrees are less than 0
