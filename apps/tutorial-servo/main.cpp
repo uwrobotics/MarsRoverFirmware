@@ -13,8 +13,7 @@ int main() {
       // we have recieved a message
       rxMsg.getPayload(percentage);  // recieving a percentage of motion and storing it in data
       Motor1.setPositionInDegrees(
-          percentage *
-          Motor1.returnAngleRangeInDegrees());  // sets the position to be a percentage of the range of motion
+          percentage * Motor1.getAngleRangeInDegrees());  // sets the position to be a percentage of the range of motion
     } else {
       // we have not recieved a message
     }
