@@ -1,11 +1,10 @@
 #include "CANMsg.h"
 #include "TutorialServo.h"
 
-CAN can(CAN_RX, CAN_TX);
+CAN can(CAN_RX, CAN_TX, 5000);  // set bit rate to 50kbps
 CANMsg rxMsg;
 
 int main() {
-  can.frequency(500000);       // set bit rate to 50kbps
   TutorialServo Motor1(PA_1);  // declares an object of type TutorialServo
   float percentage = 0;
   while (1) {
