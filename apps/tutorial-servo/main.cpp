@@ -1,7 +1,7 @@
 #include "CANMsg.h"
 #include "TutorialServo.h"
 
-CAN can(CAN_RX, CAN_TX, 5000);  // set bit rate to 50kbps
+CAN can(CAN_RX, CAN_TX, 500000);  // set bit rate to 50kbps
 CANMsg rxMsg;
 
 int main() {
