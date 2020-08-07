@@ -3,10 +3,6 @@
 
 CAN can(CAN_RX, CAN_TX);
 CANMsg rxMsg;
-uint8_t counter = 0;
-
-#define TX_ID 0x100
-#define RX_ID 0x101
 
 int main() {
   can.frequency(500000);       // set bit rate to 50kbps
