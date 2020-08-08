@@ -30,7 +30,7 @@ This repository contains:
    
     For Ubuntu (18.04 preferred)
     - `sudo apt update`
-    - `sudo apt install make ` for build
+    - `sudo apt install make` for build
     - `sudo apt install screen can-utils` for serial and CAN interfacing
     - Install/update ARM GCC toolchain:
         ```
@@ -176,9 +176,6 @@ On Ubuntu
 
 See the [CANable Getting Started guide](https://canable.io/getting-started.html) for more information including Windows support.
 
-## Writing Test Apps
-For every feature that gets added, a test app that tests the feature in isolation should be written to verify that the feature actually functions properly in our hardware. The author of the feature should ensure that the test app works on all the board targets that make sense. Typically this means that the test app should work on at least the nucleo board and the board that the feature was designed for. For example, the `test-can` app should be able to be compiled and run sucessfully for all of our boards, including a nucelo dev board.
-
 ## Clang-Format
 This repository follows the formatting rules outlines in the [.clang-format](.clang-format) file. You can make your code conformant by 
 using the CLI ([documentation here](https://clang.llvm.org/docs/ClangFormat.html)) or by installing a clang-format plugin/extension in 
@@ -192,6 +189,21 @@ wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 sudo ./llvm.sh <version number>
 ```
+
+## Writing Test Apps
+For every feature that gets added, a test app that tests the feature in isolation should be written to verify that the feature actually functions properly in our hardware. The author of the feature should ensure that the test app works on all the board targets that make sense. Typically this means that the test app should work on at least the nucleo board and the board that the feature was designed for. For example, the `test-can` app should be able to be compiled and run successfully for all of our boards, including a nucleo dev board.
+
+## Add New Apps, Libraries, and Board Targets
+You can take a look at the apps, libraries, and board targets that are already added in existing CMakeLists to see how you declare new CMake targets. If more clarification is needed, you can refer to the [official CMake documentation](https://cmake.org/documentation/).
+
+Tips:
+* target_set_mbed_dependency(_my-library-target-name_) is a custom CMake function that should be used on all library targets. It is what links the library to mbed (and the board target) and also provides precompiled headers.
+* target_set_firmware_properties(_my-app-name_.${TARGET}-board.elf) is a custom CMake function that should be used on all app elf targets. It links against mbed, applies the proper linker script and generates the .bin target.
+* target_compile_options(_my-cmake-target-name_ PRIVATE -w) can be used to disable all warnings from within this target. This should **only** be used to disable warnings coming from mbed in board targets.
+* target_compile_options(_my-board-target-name_ PRIVATE $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/mbed_config.h>) should be used on all board targets to make sure that mbed is compiled with correct settings. 
+
+**Important Note:** Whenever an app or board target is added, make sure to also add the relevant configurations to the `supported_build_configurations.yaml`. This list is used to keep track of what app-target tuples are "supported" and should always build properly. For example, if you add a new board target, add the board target to each app that should be able to compile for your new board. As another example, if you add a new app, you should add the app to the `supported_build_configurations.yaml` and list out all the boards it should be able to be built on. 
+
 
 ## CMake: Adding mbed-os features
 This repository uses our own custom CMake files to configure and compile our applications, including mbed-os. Only certain parts of mbed are currently compiled into the mbed-os library target. If other mbed features are required, add the required sources to the `target_sources` property and the required include paths to the `target_include_directories`of the `mbed-os` target. 
