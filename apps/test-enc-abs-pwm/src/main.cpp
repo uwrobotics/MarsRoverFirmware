@@ -24,7 +24,7 @@ int main() {
   float duty     = 0.1;
 
   // Specify PWM period
-  pwmOut.period(period.count());
+  pwmOut.period(std::chrono::duration_cast<std::chrono::duration<double>>(period).count());
 
   // START THE TIMER
   timer.start();

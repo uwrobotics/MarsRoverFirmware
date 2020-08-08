@@ -11,7 +11,7 @@ class Servo {
   static constexpr int PWM_FREQ     = 50;   // DEFAULT PWM FREQUENCY, should work for both length and positional control
   static constexpr auto DEFAULT_MAX = 2ms;  // DEFAULT MAX WAVE LENGTH
   static constexpr auto DEFAULT_MIN = 1ms;  // DEFAULT MIN WAVE LENGTH
-  static constexpr auto PERIOD      = 1.0s / PWM_FREQ;  // DEFAULT PERIOD LENGTH
+  static constexpr std::chrono::duration<double> PERIOD = 1.0s / PWM_FREQ;  // DEFAULT PERIOD LENGTH
 
   std::chrono::duration<double> m_max_pulse,  // PULSE LENGTH for MAX ANGLE/SPEED
       m_min_pulse;                            // PULSE LENGTH for MIN ANGLE/SPEED
