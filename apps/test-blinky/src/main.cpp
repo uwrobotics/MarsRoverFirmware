@@ -5,8 +5,6 @@
 
 #include "mbed.h"
 
-static BufferedSerial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
-
 // Blinking rate in milliseconds
 #define BLINKING_RATE 500ms
 
@@ -16,7 +14,7 @@ int main() {
 
   while (true) {
     led = !led;
-    printf("Current LED State is %s", led ? "ON" : "OFF");
+    printf("Current LED State is %s\n", led ? "ON" : "OFF");
     ThisThread::sleep_for(BLINKING_RATE);
   }
 }
