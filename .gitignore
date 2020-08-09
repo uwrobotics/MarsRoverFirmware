@@ -1,5 +1,5 @@
 # Build output
-build
+build-*-board
 *.o
 *.d
 
@@ -12,4 +12,5 @@ firmware.code-workspace
 
 # Clion
 *.idea/
-
+*cmake-build-*
+venv

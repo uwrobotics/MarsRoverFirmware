@@ -1,0 +1,20 @@
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+
+set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
+set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
+set(CMAKE_AS arm-none-eabi-as)
+set(CMAKE_AR arm-none-eabi-ar)
+set(CMAKE_CPP arm-none-eabi-cpp)
+set(CMAKE_LINKER arm-none-eabi-ld)
+set(CMAKE_NM arm-none-eabi-nm)
+set(CMAKE_OBJCOPY arm-none-eabi-objcopy)
+set(CMAKE_OBJDUMP arm-none-eabi-objdump)
+set(CMAKE_READELF arm-none-eabi-readelf)
+set(CMAKE_SIZE arm-none-eabi-size)
+set(CMAKE_STRINGS arm-none-eabi-strings)
+set(CMAKE_STRIP arm-none-eabi-strip)
+
+# Required to pass CMAKE toolchain functionality check
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
