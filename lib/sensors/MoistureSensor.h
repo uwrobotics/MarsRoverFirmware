@@ -1,3 +1,4 @@
+#pragma once
 #include "mbed.h"
 
 class MoistureSensor {

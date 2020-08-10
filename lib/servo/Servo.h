@@ -1,5 +1,4 @@
-#ifndef SERVO_H
-#define SERVO_H
+#pragma once
 
 #include "PwmOut.h"
 #include "mbed.h"
@@ -47,5 +46,3 @@ class Servo {
 
   void set_period(int period);  // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
 };
-
-#endif
