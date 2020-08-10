@@ -28,8 +28,7 @@
  *******************************************************************************
  */
 
-#ifndef MBED_PINNAMES_H
-#define MBED_PINNAMES_H
+#pragma once
 
 #include "PinNamesTypes.h"
 #include "cmsis.h"
@@ -257,6 +256,4 @@ typedef enum {
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

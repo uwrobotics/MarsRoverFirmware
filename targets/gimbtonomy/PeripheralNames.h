@@ -27,8 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************
  */
-#ifndef MBED_PERIPHERALNAMES_H
-#define MBED_PERIPHERALNAMES_H
+#pragma once
 
 #include "cmsis.h"
 
@@ -81,6 +80,4 @@ typedef enum {
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif
