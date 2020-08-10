@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef STATS_REPORT_H
-#define STATS_REPORT
+#pragma once
 
 #include "mbed.h"
 
@@ -122,5 +121,3 @@ class SystemReport {
     }
   }
 };
-
-#endif  // STATS_REPORT_H
