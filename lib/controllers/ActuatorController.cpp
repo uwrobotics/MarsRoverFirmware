@@ -244,25 +244,25 @@ void ActuatorController::updateActuatorConfigDeadzone(const float newDeadzone, c
 void ActuatorController::updatePIDControllerP(const float newP, const bool isVelocityPID) {
   // Change P, but keep I and D the same
   isVelocityPID ? m_velocityPIDController.setTunings(newP, m_velocityPIDController.getIParam(),
-                                                   m_velocityPIDController.getDParam())
+                                                     m_velocityPIDController.getDParam())
                 : m_positionPIDController.setTunings(newP, m_positionPIDController.getIParam(),
-                                                   m_positionPIDController.getDParam());
+                                                     m_positionPIDController.getDParam());
 }
 
 void ActuatorController::updatePIDControllerI(const float newI, const bool isVelocityPID) {
   // Change I, but keep P and D the same
   isVelocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), newI,
-                                                   m_velocityPIDController.getDParam())
+                                                     m_velocityPIDController.getDParam())
                 : m_positionPIDController.setTunings(m_positionPIDController.getPParam(), newI,
-                                                   m_positionPIDController.getDParam());
+                                                     m_positionPIDController.getDParam());
 }
 
 void ActuatorController::updatePIDControllerD(const float newD, const bool isVelocityPID) {
   // Change D, but keep I and P the same
   isVelocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(),
-                                                   m_velocityPIDController.getIParam(), newD)
+                                                     m_velocityPIDController.getIParam(), newD)
                 : m_positionPIDController.setTunings(m_positionPIDController.getPParam(),
-                                                   m_positionPIDController.getIParam(), newD);
+                                                     m_positionPIDController.getIParam(), newD);
 }
 
 void ActuatorController::updatePIDControllerBias(const float newBias, const bool isVelocityPID) {
