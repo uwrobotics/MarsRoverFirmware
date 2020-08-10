@@ -220,81 +220,81 @@ bool ActuatorController::isPastMaxAngle() {
 }
 
 // Update m_actuatorConfig upon reception of new PID values
-void ActuatorController::updateActuatorConfigP(const float& newP, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.P : m_actuatorConfig.positionPID.P = newP;
+void ActuatorController::updateActuatorConfigP(const float newP, const bool isVelocityPID) {
+  isVelocityPID ? m_actuatorConfig.velocityPID.P : m_actuatorConfig.positionPID.P = newP;
 }
 
-void ActuatorController::updateActuatorConfigI(const float& newI, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.I : m_actuatorConfig.positionPID.I = newI;
+void ActuatorController::updateActuatorConfigI(const float newI, const bool isVelocityPID) {
+  isVelocityPID ? m_actuatorConfig.velocityPID.I : m_actuatorConfig.positionPID.I = newI;
 }
 
-void ActuatorController::updateActuatorConfigD(const float& newD, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.D : m_actuatorConfig.positionPID.D = newD;
+void ActuatorController::updateActuatorConfigD(const float newD, const bool isVelocityPID) {
+  isVelocityPID ? m_actuatorConfig.velocityPID.D : m_actuatorConfig.positionPID.D = newD;
 }
 
-void ActuatorController::updateActuatorConfigBias(const float& newBias, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.bias : m_actuatorConfig.positionPID.bias = newBias;
+void ActuatorController::updateActuatorConfigBias(const float newBias, const bool isVelocityPID) {
+  isVelocityPID ? m_actuatorConfig.velocityPID.bias : m_actuatorConfig.positionPID.bias = newBias;
 }
 
-void ActuatorController::updateActuatorConfigDeadzone(const float& newDeadzone, const bool& velocityPID) {
-  velocityPID ? m_actuatorConfig.velocityPID.deadZoneError : m_actuatorConfig.positionPID.deadZoneError = newDeadzone;
+void ActuatorController::updateActuatorConfigDeadzone(const float newDeadzone, const bool isVelocityPID) {
+  isVelocityPID ? m_actuatorConfig.velocityPID.deadZoneError : m_actuatorConfig.positionPID.deadZoneError = newDeadzone;
 }
 
 // Update PIDController upon reception of new PID values
-void ActuatorController::updatePIDControllerP(const float& newP, const bool& velocityPID) {
+void ActuatorController::updatePIDControllerP(const float newP, const bool isVelocityPID) {
   // Change P, but keep I and D the same
-  velocityPID ? m_velocityPIDController.setTunings(newP, m_velocityPIDController.getIParam(),
+  isVelocityPID ? m_velocityPIDController.setTunings(newP, m_velocityPIDController.getIParam(),
                                                    m_velocityPIDController.getDParam())
               : m_positionPIDController.setTunings(newP, m_positionPIDController.getIParam(),
                                                    m_positionPIDController.getDParam());
 }
 
-void ActuatorController::updatePIDControllerI(const float& newI, const bool& velocityPID) {
+void ActuatorController::updatePIDControllerI(const float newI, const bool isVelocityPID) {
   // Change I, but keep P and D the same
-  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), newI,
+  isVelocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(), newI,
                                                    m_velocityPIDController.getDParam())
               : m_positionPIDController.setTunings(m_positionPIDController.getPParam(), newI,
                                                    m_positionPIDController.getDParam());
 }
 
-void ActuatorController::updatePIDControllerD(const float& newD, const bool& velocityPID) {
+void ActuatorController::updatePIDControllerD(const float newD, const bool isVelocityPID) {
   // Change D, but keep I and P the same
-  velocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(),
+  isVelocityPID ? m_velocityPIDController.setTunings(m_velocityPIDController.getPParam(),
                                                    m_velocityPIDController.getIParam(), newD)
               : m_positionPIDController.setTunings(m_positionPIDController.getPParam(),
                                                    m_positionPIDController.getIParam(), newD);
 }
 
-void ActuatorController::updatePIDControllerBias(const float& newBias, const bool& velocityPID) {
-  velocityPID ? m_velocityPIDController.setBias(newBias) : m_positionPIDController.setBias(newBias);
+void ActuatorController::updatePIDControllerBias(const float newBias, const bool isVelocityPID) {
+  isVelocityPID ? m_velocityPIDController.setBias(newBias) : m_positionPIDController.setBias(newBias);
 }
 
-void ActuatorController::updatePIDControllerDeadzone(const float& newDeadzone, const bool& velocityPID) {
-  velocityPID ? m_velocityPIDController.setDeadZoneError(newDeadzone)
+void ActuatorController::updatePIDControllerDeadzone(const float newDeadzone, const bool isVelocityPID) {
+  isVelocityPID ? m_velocityPIDController.setDeadZoneError(newDeadzone)
               : m_positionPIDController.setDeadZoneError(newDeadzone);
 }
 
-void ActuatorController::updatePIDP(const float& newP, const bool& velocityPID) {
-  updateActuatorConfigP(newP, velocityPID);
-  updatePIDControllerP(newP, velocityPID);
+void ActuatorController::updatePIDP(const float newP, const bool isVelocityPID) {
+  updateActuatorConfigP(newP, isVelocityPID);
+  updatePIDControllerP(newP, isVelocityPID);
 }
 
-void ActuatorController::updatePIDI(const float& newI, const bool& velocityPID) {
-  updateActuatorConfigI(newI, velocityPID);
-  updatePIDControllerI(newI, velocityPID);
+void ActuatorController::updatePIDI(const float newI, const bool isVelocityPID) {
+  updateActuatorConfigI(newI, isVelocityPID);
+  updatePIDControllerI(newI, isVelocityPID);
 }
 
-void ActuatorController::updatePIDD(const float& newD, const bool& velocityPID) {
-  updateActuatorConfigD(newD, velocityPID);
-  updatePIDControllerD(newD, velocityPID);
+void ActuatorController::updatePIDD(const float newD, const bool isVelocityPID) {
+  updateActuatorConfigD(newD, isVelocityPID);
+  updatePIDControllerD(newD, isVelocityPID);
 }
 
-void ActuatorController::updatePIDBias(const float& newBias, const bool& velocityPID) {
-  updateActuatorConfigBias(newBias, velocityPID);
-  updatePIDControllerBias(newBias, velocityPID);
+void ActuatorController::updatePIDBias(const float newBias, const bool isVelocityPID) {
+  updateActuatorConfigBias(newBias, isVelocityPID);
+  updatePIDControllerBias(newBias, isVelocityPID);
 }
 
-void ActuatorController::updatePIDDeadzone(const float& newDeadzone, const bool& velocityPID) {
-  updateActuatorConfigDeadzone(newDeadzone, velocityPID);
-  updatePIDControllerDeadzone(newDeadzone, velocityPID);
+void ActuatorController::updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID) {
+  updateActuatorConfigDeadzone(newDeadzone, isVelocityPID);
+  updatePIDControllerDeadzone(newDeadzone, isVelocityPID);
 }

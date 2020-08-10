@@ -50,11 +50,11 @@ class ActuatorController {
   bool isPastMinAngle();
   bool isPastMaxAngle();
 
-  void updatePIDP(const float& newP, const bool& velocityPID);
-  void updatePIDI(const float& newI, const bool& velocityPID);
-  void updatePIDD(const float& newD, const bool& velocityPID);
-  void updatePIDBias(const float& newBias, const bool& velocityPID);
-  void updatePIDDeadzone(const float& newDeadzone, const bool& velocityPID);
+  void updatePIDP(const float newP, const bool isVelocityPID);
+  void updatePIDI(const float newI, const bool isVelocityPID);
+  void updatePIDD(const float newD, const bool isVelocityPID);
+  void updatePIDBias(const float newBias, const bool isVelocityPID);
+  void updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID);
 
  private:
   t_actuatorControlMode m_controlMode;
@@ -75,17 +75,17 @@ class ActuatorController {
 
   void initializePIDControllers();
 
-  void updateActuatorConfigP(const float& newP, const bool& velocityPID);
-  void updateActuatorConfigI(const float& newI, const bool& velocityPID);
-  void updateActuatorConfigD(const float& newD, const bool& velocityPID);
-  void updateActuatorConfigBias(const float& newBias, const bool& velocityPID);
-  void updateActuatorConfigDeadzone(const float& newDeadzone, const bool& velocityPID);
+  void updateActuatorConfigP(const float newP, const bool isVelocityPID);
+  void updateActuatorConfigI(const float newI, const bool isVelocityPID);
+  void updateActuatorConfigD(const float newD, const bool isVelocityPID);
+  void updateActuatorConfigBias(const float newBias, const bool isVelocityPID);
+  void updateActuatorConfigDeadzone(const float newDeadzone, const bool isVelocityPID);
 
-  void updatePIDControllerP(const float& newP, const bool& velocityPID);
-  void updatePIDControllerI(const float& newI, const bool& velocityPID);
-  void updatePIDControllerD(const float& newD, const bool& velocityPID);
-  void updatePIDControllerBias(const float& newBias, const bool& velocityPID);
-  void updatePIDControllerDeadzone(const float& newDeadzone, const bool& velocityPID);
+  void updatePIDControllerP(const float newP, const bool isVelocityPID);
+  void updatePIDControllerI(const float newI, const bool isVelocityPID);
+  void updatePIDControllerD(const float newD, const bool isVelocityPID);
+  void updatePIDControllerBias(const float newBias, const bool isVelocityPID);
+  void updatePIDControllerDeadzone(const float newDeadzone, const bool isVelocityPID);
   // The test driver must access private data
   friend class testPIDTuningApi;
 };
