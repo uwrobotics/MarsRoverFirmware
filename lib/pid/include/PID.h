@@ -44,8 +44,7 @@
  *  http://www.controlguru.com/
  */
 
-#ifndef PID_H
-#define PID_H
+#pragma once
 
 /**
  * Includes
@@ -281,5 +280,3 @@ class PID {
   // Controller output as a real world value.
   volatile double realOutput_;
 };
-
-#endif /* PID_H */

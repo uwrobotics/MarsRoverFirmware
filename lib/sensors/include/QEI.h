@@ -123,8 +123,7 @@
  * of pulses per revolution.
  */
 
-#ifndef QEI_H
-#define QEI_H
+#pragma once
 
 /**
  * Includes
@@ -246,5 +245,3 @@ class QEI {
 
   float movingAvgSmoothingParam_;  // 0.1: minimal smoothing, 0.9: strong smoothing
 };
-
-#endif /* QEI_H */
