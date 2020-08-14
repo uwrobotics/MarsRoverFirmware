@@ -53,8 +53,9 @@ class INA_226 {
   int configureSensor(SensorModes configuration_bits);
   u_int16_t readConfigRegister();
   int setMaskEnableRegister(u_int16_t bits_to_set);
-  u_int16_t getAlertLimit();
+  u_int16_t readMaskRegister();
   int setAlertLimit(u_int16_t alert_limit);
+  u_int16_t getAlertLimit();
 
   char* getSensorName();
 

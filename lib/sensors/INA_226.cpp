@@ -128,6 +128,17 @@ int INA_226::setMaskEnableRegister(u_int16_t bits_to_set) {
   return 0;
 }
 
+u_int16_t INA_226::readMaskRegister(){
+  char cmd[2] = {MASK_ENABLE_REGISTER, 0x00};
+
+  m_i2c.write(m_sensor_address, cmd, 1);
+  m_i2c.read(m_sensor_address, cmd, 2, false);
+
+  u_int16_t mask_bits = (cmd[1] << 8 | cmd[0]);
+
+  return mask_bits;
+}
+
 // result can be used to compare to the value in the Mask/Enable register to determine if a limit has been exceeded
 u_int16_t INA_226::getAlertLimit() {
   char cmd[2] = {ALERT_LIMIT_REGISTER, 0x00};
