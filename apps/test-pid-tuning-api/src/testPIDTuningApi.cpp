@@ -59,19 +59,19 @@ mbed_error_status_t testPIDTuningApi::setPIDParameter(CANMsg &msg) {
   }
   switch (msg.id) {
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      temp->updatePIDP(payload.value, payload.velocity);
+      temp->updatePIDP(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      temp->updatePIDI(payload.value, payload.velocity);
+      temp->updatePIDI(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      temp->updatePIDD(payload.value, payload.velocity);
+      temp->updatePIDD(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_PID_DEADZONE:
-      temp->updatePIDDeadzone(payload.value, payload.velocity);
+      temp->updatePIDDeadzone(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
-      temp->updatePIDBias(payload.value, payload.velocity);
+      temp->updatePIDBias(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     default:
       printf("ERROR: Invalid PID parameter\n");
@@ -103,7 +103,7 @@ void testPIDTuningApi::printAllActuatorDetails() const {
 
 std::string testPIDTuningApi::getActuatorDetails(const ActuatorController &actuator) const {
   std::string actuatorDetails;
-  actuatorDetails = "\tVelocity = " + getPIDControllerDetails(actuator.m_velocityPIDController);
+  actuatorDetails = "\tisVelocityPID = " + getPIDControllerDetails(actuator.m_velocityPIDController);
   actuatorDetails += "\tPosition = " + getPIDControllerDetails(actuator.m_positionPIDController);
   return actuatorDetails;
 }

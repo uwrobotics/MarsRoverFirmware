@@ -218,19 +218,19 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   }
   switch (msg.id) {
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      temp->updatePIDP(payload.value, payload.velocity);
+      temp->updatePIDP(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      temp->updatePIDI(payload.value, payload.velocity);
+      temp->updatePIDI(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      temp->updatePIDD(payload.value, payload.velocity);
+      temp->updatePIDD(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_PID_DEADZONE:
-      temp->updatePIDDeadzone(payload.value, payload.velocity);
+      temp->updatePIDDeadzone(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
-      temp->updatePIDBias(payload.value, payload.velocity);
+      temp->updatePIDBias(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     default:
       printf("ERROR: Invalid PID parameter\n");
