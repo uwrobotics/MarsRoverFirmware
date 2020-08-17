@@ -1,6 +1,8 @@
 #pragma once
 
+#ifndef PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE
 #define PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE 12
+#endif
 
 #include "mbed.h"
 
