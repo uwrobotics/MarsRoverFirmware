@@ -28,7 +28,8 @@
  *******************************************************************************
  */
 
-#pragma once
+#ifndef MBED_PINNAMES_H
+#define MBED_PINNAMES_H
 
 #include "PinNamesTypes.h"
 #include "cmsis.h"
@@ -40,7 +41,8 @@ extern "C" {
 typedef enum { ALT0 = 0x100, ALT1 = 0x200, ALT2 = 0x300, ALT3 = 0x400 } ALTx;
 
 typedef enum {
-  PA_0       = 0x00,
+  PA_0 = 0x00,
+
   PA_0_ALT0  = PA_0 | ALT0,
   PA_0_ALT1  = PA_0 | ALT1,
   PA_1       = 0x01,
@@ -165,6 +167,11 @@ typedef enum {
   BUTTON_1 = PB_0,
   BUTTON_2 = PB_1,
 
+  /**** Servo Pins *****/
+
+  SRVO_PWM_1 = PB_2,
+  SRVO_PWM_2 = PB_10,
+
   /**** Actuator Pins ****/
   MTR_PWM_1 = PA_6,
   MTR_DIR_1 = PA_5,
@@ -178,8 +185,9 @@ typedef enum {
   LIM_SW_4 = PC_12,
 
   /**** Encoder Pins ****/
-  ENC_DCI_A = PB_6,
-  ENC_DCI_B = PB_7,
+  ENC_DCI_A  = PB_6,
+  ENC_DCI_B  = PB_7,
+  ENC_SCI_IN = PB_5,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
@@ -223,4 +231,6 @@ typedef enum {
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
