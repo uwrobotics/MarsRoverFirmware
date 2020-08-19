@@ -182,9 +182,10 @@ using the CLI ([documentation here](https://clang.llvm.org/docs/ClangFormat.html
 your IDE of choice. For example, CLion has [built-in Clang-Format support](https://www.jetbrains.com/help/clion/clangformat-as-alternative-formatter.html) 
 and VS Code has a [decent extension](https://marketplace.visualstudio.com/items?itemName=xaver.clang-format).
 
-You may have to edit the settings of the plugin to match the version of clang-format that we are using. The current version can be seen [here](.github/workflows/clang-format.yaml')
- To download the version of LLVM we want(contains clang-format):
- ```shell script
+You may have to edit the settings of the plugin to match the version of clang-format that we are using. The current version can be seen [here](.github/workflows/clang-format.yaml) under `clangFormatVersion`.
+
+To download the matching version of LLVM(contains clang-format):
+```shell script
 wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 sudo ./llvm.sh <version number>
