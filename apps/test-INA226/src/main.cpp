@@ -1,10 +1,8 @@
 #include "CANMsg.h"
 #include "INA_226.h"
 #include "mbed.h"
-#include "rover_config.h"
-
-// Serial communications for debugging
-Serial pc(SERIAL_TX, SERIAL_RX, ROVER_DEFAULT_SERIAL_BAUD_RATE);
+#include "hw_bridge.h"
+//#include "rover_config.h"
 
 // if in range returns 1, otherwise returns 0
 bool inToleranceRange(float tolerance, float expected_val, float measured_val) {
@@ -26,15 +24,17 @@ bool inToleranceRange(float tolerance, float expected_val, float measured_val) {
 int main() {
   // Modify the sensor address, the shunt resistance and the maximum expected current
   // these values follow the pin names in the respective order
-  ComponentConfig testing_config = {"TEST", CUR_SEN_I2C_SDA, CUR_SEN_I2C_SCL, 0x00, 0.003, 28.75};
+  char* test_name = (char*)"Test";
+  //i2c pins may be incorrect
+  ComponentConfig testing_config = {test_name, I2C_SDA, I2C_SCL, 0x00, 0.003, 28.75};
 
-  pc.printf("Attempting to create sensor object");
+  printf("Attempting to create sensor object");
   INA_226 testing_sensor(testing_config);
-  pc.printf("Created INA sensor object");
+  printf("Created INA sensor object");
   
-  pc.printf("Calibrating Sensor\r\n");
+  printf("Calibrating Sensor\r\n");
   testing_sensor.calibrateSensor();
-  pc.printf("Sensor Calibrated\r\n");
+  printf("Sensor Calibrated\r\n");
 
   /////////////////////////
   //TEST CURRENT SAMPLING//
@@ -44,11 +44,11 @@ int main() {
   float expected_current  = 5;
   float measured_current  = testing_sensor.getCurrentData();
   if (inToleranceRange(current_tolerance, expected_current, measured_current)) {
-    pc.printf("Measured current is within expected range. Measured value: %f\r\n", measured_current);
+    printf("Measured current is within expected range. Measured value: %f\r\n", measured_current);
   }
   else
   {
-    pc.printf("Measured current is not within expected range. Measured value: %f\r\n", measured_current);
+    printf("Measured current is not within expected range. Measured value: %f\r\n", measured_current);
   }
 
   /////////////////////////
@@ -59,11 +59,11 @@ int main() {
   float expected_voltage  = 5;
   float measured_voltage  = testing_sensor.getVoltageData();
   if (inToleranceRange(voltage_tolerance, expected_voltage, measured_voltage)) {
-    pc.printf("Measured voltage is within expected range. Measured value: %f\r\n", measured_voltage);
+    printf("Measured voltage is within expected range. Measured value: %f\r\n", measured_voltage);
   }
   else
   {
-    pc.printf("Measured voltage is within expected range. Measured value: %f\r\n", measured_voltage);
+    printf("Measured voltage is within expected range. Measured value: %f\r\n", measured_voltage);
   }
 
   /////////////////////////
@@ -74,11 +74,11 @@ int main() {
   float expected_power  = 5;
   float measured_power  = testing_sensor.getPowerData();
   if (inToleranceRange(power_tolerance, expected_power, measured_power)) {
-    pc.printf("Measured power is within expected range. Measured value: %f\r\n", measured_power);
+    printf("Measured power is within expected range. Measured value: %f\r\n", measured_power);
   }
   else
   {
-    pc.printf("Measured power is within expected range. Measured value: %f\r\n", measured_power);
+    printf("Measured power is within expected range. Measured value: %f\r\n", measured_power);
   }
   
   //These tests run on their own without intervention
@@ -88,10 +88,10 @@ int main() {
   /////////////////////////////////
   // test config > 0 100 111 011 011 001
   SensorModes test_config      = {0x00, 0x04, 0x07, 0x03, 0x03};
-  u_int16_t test_config_binary = 0100111011011001;
+  u_int16_t test_config_binary = 0x4ED9; //0100111011011001
   testing_sensor.configureSensor(test_config);
   if (!(testing_sensor.readConfigRegister() == test_config_binary)) {
-    pc.printf("Incorrect config register setting recieved\r\n");
+    printf("Incorrect config register setting recieved\r\n");
   }
   
   ///////////////////////////
@@ -101,7 +101,7 @@ int main() {
   u_int16_t default_settings      = 0x127;  // 0 000 100 100 111
   testing_sensor.configureSensor(reset_sensor_config);
   if (!(testing_sensor.readConfigRegister() == default_settings)) {
-    pc.printf("Incorrect default config register setting recieved\r\n");
+    printf("Incorrect default config register setting recieved\r\n");
   }
   
   ////////////////////////////////
@@ -112,20 +112,20 @@ int main() {
   u_int16_t alert = testing_sensor.getAlertLimit(); 
   if (alert != alert_limit )
   {
-    pc.printf("Incorrect alert limit %u\n", alert);
+    printf("Incorrect alert limit %u\n", alert);
   }
 
   ///////////////////////////////
   //TEST SETTING MASK REGISTER //
   ///////////////////////////////
-  u_int16_t INA_control = 0x1111111111111111;
+  u_int16_t INA_control =  0xFFFF; //0x1111111111111111
   testing_sensor.setMaskEnableRegister(INA_control);
   u_int16_t mask_bits = testing_sensor.readMaskRegister();
   if(mask_bits != INA_control)
   {
-    pc.printf("Incorrect mask data %u\n", mask_bits);
+    printf("Incorrect mask data %u\n", mask_bits);
   } 
-  pc.printf("END OF TESTING\n"); 
+  printf("END OF TESTING\n"); 
   
   return 0; 
 }

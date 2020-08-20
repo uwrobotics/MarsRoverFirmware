@@ -27,3 +27,15 @@ add_library(QEI STATIC)
 target_sources(QEI PRIVATE src/QEI.cpp)
 target_include_directories(QEI PUBLIC include)
 target_set_mbed_dependency(QEI)
+
+add_library(VoltageThermistor STATIC)
+target_sources(VoltageThermistor PRIVATE src/Voltage_Divider_Thermistor.cpp)
+target_include_directories(VoltageThermistor PUBLIC include)
+target_set_mbed_dependency(VoltageThermistor)
+
+add_library(INA226 STATIC)
+target_sources(INA226 PRIVATE src/INA_226.cpp)
+target_include_directories(INA226 PUBLIC include)
+target_link_libraries(INA226 PUBLIC uwrt-mars-rover-hw-bridge)
+target_set_mbed_dependency(INA226)
+

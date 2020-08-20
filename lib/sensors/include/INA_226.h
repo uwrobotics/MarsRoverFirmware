@@ -1,7 +1,6 @@
 #ifndef INA_226_H
 #define INA_226_H
 #include "mbed.h"
-#include "rover_config.h"
 
 // Datasheet for INA226 http://www.ti.com/lit/ds/symlink/ina226.pdf
 // current sensor data https://docs.google.com/spreadsheets/d/1Qn4QbEJ1Ia54vYnTgaTvLxHralQvCz6PEGaSF_O1L20/edit#gid=0
