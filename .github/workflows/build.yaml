@@ -1,0 +1,81 @@
+name: build
+
+on: [pull_request]
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ARM_TOOLS_URL: https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
+  ARM_TOOLS_DIR: gcc-arm-none-eabi-9-2020-q2-update
+
+jobs:
+  setup-build-matrix:
+    runs-on: ubuntu-18.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.4.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v2.3.1
+
+      - name: Set Build Matrix Output
+        id: set-matrix
+        run: echo "::set-output name=matrix::`./build_configurations_helper.py print-ci-json`"
+
+  build:
+    needs: setup-build-matrix
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix: ${{fromJson(needs.setup-build-matrix.outputs.matrix)}}
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2.3.1
+        with:
+          submodules: 'recursive'
+
+      - name: Set Working Directory as Home
+        run: echo "::set-env name=HOME::$HOME"
+
+      - name: Update Path with Toolchain
+        run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
+
+      - name: Load Cached Arm Toolchain
+        uses: actions/cache@v2.1.0
+        id: toolchain-cache
+        with:
+          path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
+          key: ${{ env.ARM_TOOLS_DIR }}
+
+      - name: Install Arm Toolchain (if not cached)
+        if: steps.toolchain-cache.outputs.cache-hit != 'true'
+        run: wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xvf /tmp/arm-tools.tar.gz -C ${{ env.HOME }}
+
+      - name: Setup CMake (auto-caches)
+        uses: lukka/get-cmake@latest
+
+      - name: Print Toolchain Versions
+        run: |
+          cmake --version
+          make --version
+          arm-none-eabi-gcc --version
+
+      - name: Run CMake (bash)
+        uses: lukka/run-cmake@v2.5
+        env: ${{matrix.env}}
+        with:
+          cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          cmakeAppendedArgs: '-G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/toolchain.cmake -DAPP=${{ env.APP }} -DTARGET=${{ env.TARGET }}'
+          buildDirectory: '${{ github.workspace }}/build/'
+          buildWithCMakeArgs: '--target ${{ env.APP }}.${{ env.TARGET }}-board.elf --clean-first -- -j$(nproc)'
+          useShell: bash
+          cmakeGenerator: "Unix Makefiles" # This setting doesn't do anything in CMakeListsTxtAdvanced mode. This is only to show valid debug info in Github Actions

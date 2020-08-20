@@ -1,0 +1,78 @@
+# Commented boards should be supported, but currently are not
+
+# Rover Apps
+arm:
+  - arm
+
+controller:
+  - controller
+
+gimbtonomy:
+  - gimbtonomy
+
+safety:
+  - safety
+
+science:
+  - science
+
+# Test Apps
+test-aeat-8800:
+  - nucleo
+
+test-actuator-controller:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - science
+
+test-blinky:
+  - nucleo
+  - arm
+  - controller
+  - gimbtonomy
+  - safety
+  - science
+
+test-blockingneo:
+#  - nucleo
+  - gimbtonomy
+
+test-can:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - safety
+#  - science
+
+test-enc-abs-pwm:
+  #  - nucleo
+  - arm
+#  - gimbtonomy
+#  - science
+
+test-moisture:
+  #  - nucleo
+  - science
+
+test-pid:
+  - nucleo
+#  - arm
+#  - gimbtonomy
+#  - science
+
+test-pwm:
+  - nucleo
+  - arm
+  - gimbtonomy
+  - science
+
+test-pwmin:
+  #  - nucleo
+  - arm
+#  - controller
+#  - gimbtonomy
+#  - science
+
+test-INA226:
+  - nucleo

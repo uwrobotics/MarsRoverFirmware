@@ -4,7 +4,7 @@
 ## Platform: [STM32F446xE](https://www.st.com/resource/en/datasheet/stm32f446re.pdf) / [NUCLEO-F446RE](https://os.mbed.com/platforms/ST-Nucleo-F446RE/)
 
 This repository contains:
-- Arm MBED OS 5 SDK source [[mbed-os](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/mbed-os)]
+- Arm MBED OS 6 SDK source [[mbed-os](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/mbed-os)]
 - Custom and external libaries [[lib](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/lib)]
 - Applications for running on each control board [[apps](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps)]
 - Test applications for testing code components [[apps/test_xxxx](https://github.com/uwrobotics/MarsRover2020-firmware/tree/master/apps)]
@@ -26,47 +26,62 @@ This repository contains:
 - Squash when merging pull requests
 
 ## UWRT Firmware Development Instructions
-
-1. Download the development toolchain (gcc and make) and serial interface software
+1. Download the development toolchain (gcc and cmake) and serial interface software
    
-   For Ubuntu (18.04 preferred)
+    For Ubuntu (18.04 preferred)
     - `sudo apt update`
-    - `sudo apt install make`
+    - `sudo apt install make` for build
     - `sudo apt install screen can-utils` for serial and CAN interfacing
     - Install/update ARM GCC toolchain:
-
-	      sudo apt autoremove gcc-arm-none-eabi
-          wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
-          sudo tar -xvf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 -C /opt/
-          echo "PATH=\$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin" >> ~/.bashrc
-          export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2019-q4-major/bin 
-       **Note:** If you are not using Ubuntu 18.04 and/or bash you may need to modify this script's paths/files. 
-	
-	For Windows
+        ```
+        sudo apt autoremove gcc-arm-none-eabi
+        wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
+        sudo tar -xvf gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -C /opt/
+        echo "PATH=\$PATH:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin" >> ~/.bashrc
+        export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin 
+        ```
+        **Note:** If you are not using Ubuntu 18.04 and/or bash you may need to modify this script's paths/files.
+    - Install CMake:
+        * Follow [kitware instructions](https://apt.kitware.com/) to add Latest CMake apt repository
+        * `sudo apt install cmake`
+    
+    For Windows
     - Install [Windows Subsystem for Linux (WSL)](https://linuxconfig.org/how-to-install-ubuntu-18-04-on-windows-10) with Ubuntu 18.04
     - Follow Ubuntu setup instructions (optionally instead of `screen` you can use [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/), a GUI Windows app)
-	
-	For Mac
+    
+    For Mac (Not Recommended)
     - Open Command Line
-    - Install Homebrew if not installed 
-    	`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+    - Install Homebrew if not installed
+        ```
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        ```
     - Download auto-run script, which will auto install with latest version:
-    	`brew tap ARMmbed/homebrew-formulae`
+        ```
+        brew tap ARMmbed/homebrew-formulae
+        ```
     - Install ARM GCC toolchain via HomeBrew:
-    	`brew install arm-none-eabi-gcc`
+        ```
+        brew install arm-none-eabi-gcc
+        ```
     - Install [ZOC](https://www.emtec.com/zoc/index.html) for serial interfacing
 
 2. Verify the the toolchains were installed correctly
 
     Open a new Command Prompt / Terminal window and run the following commands:
-
-    `make --version                    # Should be v3.8.x or newer`  
-    `arm-none-eabi-gcc --version       # Should be v9.2.x or newer`
+    ```shell script
+    make --version                    # Should be v3.8.x or newer
+    arm-none-eabi-gcc --version       # Should be v9.3.x or newer
+    cmake --version                   # Should be v3.15.7 or newer
+    ```
 
 3. Download source code
 
-    `git clone https://github.com/uwrobotics/MarsRover2020-firmware.git`  
-    `cd MarsRover2020-firmware`
+    ```shell script
+    git clone --recurse-submodules https://github.com/uwrobotics/MarsRover2020-firmware.git
+    cd MarsRover2020-firmware
+    ```
+
+    **Note:** The repository has a submodule. To update the submodule, use `git submodule update`
 
 4. Run make with the target application and board
 
@@ -77,13 +92,21 @@ This repository contains:
     `make APP=test-can TARGET=safety`
     
     After compiling an application you should see a message similar to the following:  
-    `===== bin file ready to flash: ../build/test_serial/test_serial_nucleo.bin =====`
+    ```shell script
+    [100%] Linking CXX executable arm.arm-board.elf
+    Generating bin from elf
+    make[4]: Leaving directory '/home/wmmc88/MarsRover2020-firmware/build-arm-board'
+    [100%] Built target arm.arm-board.elf
+    make[3]: Leaving directory '/home/wmmc88/MarsRover2020-firmware/build-arm-board'
+    make[2]: Leaving directory '/home/wmmc88/MarsRover2020-firmware/build-arm-board'
+    make[1]: Leaving directory '/home/wmmc88/MarsRover2020-firmware/build-arm-board'
+    ```
     
     **Note:** Our makefile automatically detects the number of available execution threads and uses them all to significantly speed up compile time.
 
 5. Deploy onto board (see below for how to connect to a rover control board)
 
-    Find the application .bin file, located in the build/app directory.
+    Find the application .bin file, located in the build-<TARGET>-board/apps/<APP> directory.
 
 	For Ubuntu
 		
@@ -152,3 +175,58 @@ On Ubuntu
 - Run `candump can0` to show all traffic received by can0
 
 See the [CANable Getting Started guide](https://canable.io/getting-started.html) for more information including Windows support.
+
+## Clang-Format
+This repository follows the formatting rules outlines in the [.clang-format](.clang-format) file. You can make your code conformant by 
+using the CLI ([documentation here](https://clang.llvm.org/docs/ClangFormat.html)) or by installing a clang-format plugin/extension in 
+your IDE of choice. For example, CLion has [built-in Clang-Format support](https://www.jetbrains.com/help/clion/clangformat-as-alternative-formatter.html) 
+and VS Code has a [decent extension](https://marketplace.visualstudio.com/items?itemName=xaver.clang-format).
+
+You may have to edit the settings of the plugin to match the version of clang-format that we are using. The current version can be seen [here](.github/workflows/clang-format.yaml) under `clangFormatVersion`.
+
+To download the matching version of LLVM(contains clang-format):
+```shell script
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh <version number>
+```
+
+## Writing Test Apps
+For every feature that gets added, a test app that tests the feature in isolation should be written to verify that the feature actually functions properly in our hardware. The author of the feature should ensure that the test app works on all the board targets that make sense. Typically this means that the test app should work on at least the nucleo board and the board that the feature was designed for. For example, the `test-can` app should be able to be compiled and run successfully for all of our boards, including a nucleo dev board.
+
+## Add New Apps, Libraries, and Board Targets
+You can take a look at the apps, libraries, and board targets that are already added in existing CMakeLists to see how you declare new CMake targets. If more clarification is needed, you can refer to the [official CMake documentation](https://cmake.org/documentation/).
+
+Tips:
+* target_set_mbed_dependency(_my-library-target-name_) is a custom CMake function that should be used on all library targets. It is what links the library to mbed (and the board target) and also provides precompiled headers.
+* target_set_firmware_properties(_my-app-name_.${TARGET}-board.elf) is a custom CMake function that should be used on all app elf targets. It links against mbed, applies the proper linker script and generates the .bin target.
+* target_compile_options(_my-cmake-target-name_ PRIVATE -w) can be used to disable all warnings from within this target. This should **only** be used to disable warnings coming from mbed in board targets.
+* target_compile_options(_my-board-target-name_ PRIVATE $<$<COMPILE_LANGUAGE:C,CXX>:-include${CMAKE_SOURCE_DIR}/config/mbed_config.h>) should be used on all board targets to make sure that mbed is compiled with correct settings. 
+
+**Important Note:** Whenever an app or board target is added, make sure to also add the relevant configurations to the `supported_build_configurations.yaml`. This list is used to keep track of what app-target tuples are "supported" and should always build properly. For example, if you add a new board target, add the board target to each app that should be able to compile for your new board. As another example, if you add a new app, you should add the app to the `supported_build_configurations.yaml` and list out all the boards it should be able to be built on. 
+
+
+## CMake: Adding mbed-os features
+This repository uses our own custom CMake files to configure and compile our applications, including mbed-os. Only certain parts of mbed are currently compiled into the mbed-os library target. If other mbed features are required, add the required sources to the `target_sources` property and the required include paths to the `target_include_directories`of the `mbed-os` target. 
+
+**Tip:** These commands may be useful in determining what files you need to include:
+```
+// Outputs a alphabetically-sorted list of the paths to all source files within a directory and all subdirectories 
+find <path to desired feature folder> -name "*.cpp" -or -name "*.cxx" -or -name "*.c" -or -name "*.S" -or -name "*.s" | sort -n
+
+// Outputs a alphabetically-sorted list of the paths to all header files within a directory and all subdirectories 
+find <path to desired feature folder> -name "*.hpp" -or -name "*.h"| sort -n
+```
+## Updating Files from Upstream
+Most of this repositories upstream code is contained within the `mbed-os` git submodule and can be updated by just changing the tag that the submodule is pinned to; however, there are some exceptions. These exceptions must be manually updated:
+* `test-blinky/main.cpp`: This file is a mirror of the main.cpp from the https://github.com/ARMmbed/mbed-os-example-blinky repository
+* `targets/nucleo/include/PeripheralNames.h`: This file is from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/include/PinNames.h`: This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/include/stm32f4xx_hal_conf.h`: This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/src/PeripheralPins.h`: This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/nucleo/src/system_clock.c` : This file is a mirror of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/include/PeripheralNames.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/include/PinNames.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/include/stm32f4xx_hal_conf.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/src/PeripheralPins.h`: This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
+* `targets/<non-nucleo target>/src/system_clock.c` : This file is a customized version of the file from the `targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE` within the mbed-os git submodule.
