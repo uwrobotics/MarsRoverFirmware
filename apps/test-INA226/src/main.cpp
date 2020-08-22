@@ -2,7 +2,6 @@
 #include "INA_226.h"
 #include "mbed.h"
 #include "hw_bridge.h"
-//#include "rover_config.h"
 
 // if in range returns 1, otherwise returns 0
 bool inToleranceRange(float tolerance, float expected_val, float measured_val) {
@@ -90,8 +89,9 @@ int main() {
   SensorModes test_config      = {0x00, 0x04, 0x07, 0x03, 0x03};
   u_int16_t test_config_binary = 0x4ED9; //0100111011011001
   testing_sensor.configureSensor(test_config);
-  if (!(testing_sensor.readConfigRegister() == test_config_binary)) {
-    printf("Incorrect config register setting recieved\r\n");
+  auto config_register = testing_sensor.readConfigRegister();
+  if (config_register != test_config_binary) {
+    printf("Incorrect config register setting recieved: %u\r\n", config_register);
   }
   
   ///////////////////////////
@@ -100,14 +100,15 @@ int main() {
   SensorModes reset_sensor_config = {0x01, 0x00, 0x00, 0x00, 0x00};
   u_int16_t default_settings      = 0x127;  // 0 000 100 100 111
   testing_sensor.configureSensor(reset_sensor_config);
-  if (!(testing_sensor.readConfigRegister() == default_settings)) {
-    printf("Incorrect default config register setting recieved\r\n");
+  config_register = testing_sensor.readConfigRegister();
+  if (config_register != default_settings) {
+    printf("Incorrect default config register setting recieved %u\r\n", config_register);
   }
   
   ////////////////////////////////
   //TEST SETTING ALERT REGISTER //
   ////////////////////////////////
-  u_int16_t alert_limit = 1;
+  u_int16_t alert_limit = 0x01;
   testing_sensor.setAlertLimit(alert_limit);
   u_int16_t alert = testing_sensor.getAlertLimit(); 
   if (alert != alert_limit )
