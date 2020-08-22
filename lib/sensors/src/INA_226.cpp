@@ -1,4 +1,5 @@
 #include "INA_226.h"
+
 #include "hw_bridge.h"
 // Datasheet for INA226 http://www.ti.com/lit/ds/symlink/ina226.pdf
 // current sensor data https://docs.google.com/spreadsheets/d/1Qn4QbEJ1Ia54vYnTgaTvLxHralQvCz6PEGaSF_O1L20/edit#gid=0
@@ -128,7 +129,7 @@ int INA_226::setMaskEnableRegister(u_int16_t bits_to_set) {
   return 0;
 }
 
-u_int16_t INA_226::readMaskRegister(){
+u_int16_t INA_226::readMaskRegister() {
   char cmd[2] = {MASK_ENABLE_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
