@@ -20,63 +20,7 @@ testPIDTuningApi::testPIDTuningApi()
       allowPIDTuning(false) {}
 
 mbed_error_status_t testPIDTuningApi::setPIDParameter(CANMsg &msg) {
-  printf("Received request to update PID params over CAN\n");
-  if (!allowPIDTuning) {
-    printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
-    printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\n");
-    return MBED_ERROR_ASSERTION_FAILED;
-  }
-  /** ------------------------------------
-   * | 32 bits  | 8 bits   |  8 bits     |
-   * | data     | vel/pos  |  Actuator ID|
-   *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-  HWBRIDGE::ARM::PID::tuningApiPayload payload;
-  msg.getPayload(payload);
-  printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
-  ActuatorController *temp = nullptr;
-  switch (payload.actuatorID) {
-    case HWBRIDGE::ARM::ACTUATOR::TURNTABLE:
-      temp = &testTurnTableActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::SHOULDER:
-      temp = &testShoulderActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::ELBOW:
-      temp = &testElbowActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::WRISTLEFT:
-      temp = &testWristLeftActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::WRISTRIGHT:
-      temp = &testWristRightActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::CLAW:
-      temp = &testClawController;
-      break;
-    default:
-      printf("ERROR: Invalid Actuator ID\n");
-      return MBED_ERROR_INVALID_ARGUMENT;
-  }
-  switch (msg.id) {
-    case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      temp->updatePIDP(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
-    case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      temp->updatePIDI(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
-    case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      temp->updatePIDD(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
-    case HWBRIDGE::CANID::SET_PID_DEADZONE:
-      temp->updatePIDDeadzone(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
-    case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
-      temp->updatePIDBias(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
-    default:
-      printf("ERROR: Invalid PID parameter\n");
-      return MBED_ERROR_INVALID_ARGUMENT;
-  }
+  return MBED_SUCCESS;
 }
 
 mbed_error_status_t testPIDTuningApi::setPIDTuningMode(CANMsg &msg) {

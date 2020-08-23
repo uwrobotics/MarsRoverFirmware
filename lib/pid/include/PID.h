@@ -208,20 +208,20 @@ class PID {
   double compute(void);
 
   // Getters.
-  float getInMin() const;
-  float getInMax() const;
-  float getOutMin() const;
-  float getOutMax() const;
+  double getInMin() const;
+  double getInMax() const;
+  double getOutMin() const;
+  double getOutMax() const;
   std::chrono::duration<double> getInterval() const;
-  float getPParam() const;
-  float getIParam() const;
-  float getDParam() const;
-  float getBiasParam() const;
-  float getDeadzoneParam() const;
-  float getATunePParam() const;
-  float getATuneIParam() const;
-  float getATuneDParam() const;
-  float getSetPoint() const;
+  double getPParam() const;
+  double getIParam() const;
+  double getDParam() const;
+  double getBiasParam() const;
+  double getDeadzoneParam() const;
+  double getATunePParam() const;
+  double getATuneIParam() const;
+  double getATuneDParam() const;
+  double getSetPoint() const;
 
  private:
   bool usingFeedForward;

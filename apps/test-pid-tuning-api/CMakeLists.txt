@@ -1,9 +1,8 @@
 add_executable(test-pid-tuning-api.${TARGET}-board.elf)
 target_sources(test-pid-tuning-api.${TARGET}-board.elf PRIVATE src/main.cpp)
 target_link_libraries(test-pid-tuning-api.${TARGET}-board.elf
-        PUBLIC
-        PID
         PRIVATE
+        PID
         CANBuffer
         EncoderRelative_Quadrature
         Motor

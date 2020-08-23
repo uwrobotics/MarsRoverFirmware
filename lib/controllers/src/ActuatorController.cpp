@@ -22,6 +22,8 @@ ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, Motor &m
   m_updateTimer.start();
 
   setControlMode(actuatorConfig.defaultControlMode);
+
+  disallowPIDTuning();
 }
 
 ActuatorController::t_actuatorControlMode ActuatorController::getControlMode() {
@@ -275,26 +277,44 @@ void ActuatorController::updatePIDControllerDeadzone(const float newDeadzone, co
 }
 
 void ActuatorController::updatePIDP(const float newP, const bool isVelocityPID) {
-  updateActuatorConfigP(newP, isVelocityPID);
-  updatePIDControllerP(newP, isVelocityPID);
+  if(allowPIDTuning) {
+    updateActuatorConfigP(newP, isVelocityPID);
+    updatePIDControllerP(newP, isVelocityPID);
+  }
 }
 
 void ActuatorController::updatePIDI(const float newI, const bool isVelocityPID) {
-  updateActuatorConfigI(newI, isVelocityPID);
-  updatePIDControllerI(newI, isVelocityPID);
+  if(allowPIDTuning) {
+    updateActuatorConfigI(newI, isVelocityPID);
+    updatePIDControllerI(newI, isVelocityPID);
+  }
 }
 
 void ActuatorController::updatePIDD(const float newD, const bool isVelocityPID) {
-  updateActuatorConfigD(newD, isVelocityPID);
-  updatePIDControllerD(newD, isVelocityPID);
+  if(allowPIDTuning) {
+    updateActuatorConfigD(newD, isVelocityPID);
+    updatePIDControllerD(newD, isVelocityPID);
+  }
 }
 
 void ActuatorController::updatePIDBias(const float newBias, const bool isVelocityPID) {
-  updateActuatorConfigBias(newBias, isVelocityPID);
-  updatePIDControllerBias(newBias, isVelocityPID);
+  if(allowPIDTuning) {
+    updateActuatorConfigBias(newBias, isVelocityPID);
+    updatePIDControllerBias(newBias, isVelocityPID);
+  }
 }
 
 void ActuatorController::updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID) {
-  updateActuatorConfigDeadzone(newDeadzone, isVelocityPID);
-  updatePIDControllerDeadzone(newDeadzone, isVelocityPID);
+  if(allowPIDTuning) {
+    updateActuatorConfigDeadzone(newDeadzone, isVelocityPID);
+    updatePIDControllerDeadzone(newDeadzone, isVelocityPID);
+  }
+}
+
+void ActuatorController::allowPIDTuning() {
+  m_allowPIDTuning = true;
+}
+
+void ActuatorController::disallowPIDTuning() {
+  m_allowPIDTuning = false;
 }

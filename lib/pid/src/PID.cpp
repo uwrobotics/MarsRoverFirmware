@@ -443,19 +443,19 @@ double PID::compute() {
   return ((controllerOutput_ * outSpan_) + outMin_);
 }
 
-float PID::getInMin() const {
+double PID::getInMin() const {
   return inMin_;
 }
 
-float PID::getInMax() const {
+double PID::getInMax() const {
   return inMax_;
 }
 
-float PID::getOutMin() const {
+double PID::getOutMin() const {
   return outMin_;
 }
 
-float PID::getOutMax() const {
+double PID::getOutMax() const {
   return outMax_;
 }
 
@@ -463,38 +463,38 @@ std::chrono::duration<double> PID::getInterval() const {
   return tSample_;
 }
 
-float PID::getPParam() const {
+double PID::getPParam() const {
   return pParam_;
 }
 
-float PID::getIParam() const {
+double PID::getIParam() const {
   return iParam_;
 }
 
-float PID::getDParam() const {
+double PID::getDParam() const {
   return dParam_;
 }
 
-float PID::getBiasParam() const {
+double PID::getBiasParam() const {
   return bias_;
 }
 
-float PID::getDeadzoneParam() const {
+double PID::getDeadzoneParam() const {
   return deadZoneError_;
 }
 
-float PID::getATunePParam() const {
+double PID::getATunePParam() const {
   return autoTuneKc_;
 }
 
-float PID::getATuneIParam() const {
+double PID::getATuneIParam() const {
   return autoTuneTauR_;
 }
 
-float PID::getATuneDParam() const {
+double PID::getATuneDParam() const {
   return autoTuneTauD_;
 }
 
-float PID::getSetPoint() const {
+double PID::getSetPoint() const {
   return setPoint_;
 }

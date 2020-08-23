@@ -58,9 +58,6 @@ DifferentialWristController wristController(wristLeftActuator, wristRightActuato
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor,
                               clawTooltipServo, 180.0, 0.0);
 
-// Prevents PID params from being tuned over CAN inadvertently
-static bool allowPIDParamTuning = false;
-
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
 
@@ -173,18 +170,28 @@ static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
 // Enable or disable PID tuning mode
 // Manually send CAN message to SET_PID_TUNING_MODE with appropriate boolean
 static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
-  msg.getPayload(allowPIDParamTuning);
+  if(msg.getPayload()) {
+    turnTableActuator.allowPIDTuning();
+    shoulderActuator.allowPIDTuning();
+    elbowActuator.allowPIDTuning();
+    wristLeftActuator.allowPIDTuning();
+    wristRightActuator.allowPIDTuning();
+    clawController.allowPIDTuning();
+  }
+  else {
+    turnTableActuator.disallowPIDTuning();
+    shoulderActuator.disallowPIDTuning();
+    elbowActuator.disallowPIDTuning();
+    wristLeftActuator.disallowPIDTuning();
+    wristRightActuator.disallowPIDTuning();
+    clawController.disallowPIDTuning();
+  }
   return MBED_SUCCESS;
 }
 
 // Configure PID parameters
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   printf("Received request to update PID params over CAN\n");
-  if (!allowPIDParamTuning) {
-    printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
-    printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\n");
-    return MBED_ERROR_ASSERTION_FAILED;
-  }
   /** ------------------------------------
    * | 32 bits  | 8 bits   |  8 bits     |
    * | data     | vel/pos  |  Actuator ID|
@@ -192,45 +199,35 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::ARM::PID::tuningApiPayload payload;
   msg.getPayload(payload);
   printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
-  ActuatorController *temp = nullptr;
-  switch (payload.actuatorID) {
-    case HWBRIDGE::ARM::ACTUATOR::TURNTABLE:
-      temp = &turnTableActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::SHOULDER:
-      temp = &shoulderActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::ELBOW:
-      temp = &elbowActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::WRISTLEFT:
-      temp = &wristLeftActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::WRISTRIGHT:
-      temp = &wristRightActuator;
-      break;
-    case HWBRIDGE::ARM::ACTUATOR::CLAW:
-      temp = &clawController;
-      break;
-    default:
-      printf("ERROR: Invalid Actuator ID\n");
-      return MBED_ERROR_INVALID_ARGUMENT;
+  /*constexpr std::array<HWBRIDGE::ARM::PID::actuatorID, HWBRIDGE::ARM::PID::ACTUATORCOUNT> actuatorIDs = {HWBRIDGE::ARM::ACTUATOR::TURNTABLE, HWBRIDGE::ARM::ACTUATOR::SHOULDER, HWBRIDGE::ARM::ACTUATOR::ELBOW, HWBRIDGE::ARM::ACTUATOR::WRISTLEFT, HWBRIDGE::ARM::ACTUATOR::WRISTRIGHT, HWBRIDGE::ARM::ACTUATOR::CLAW};
+  constexpr std::array<ActuatorController&, HWBRIDGE::ARM::PID::ACTUATORCOUNT> actuators = {turnTableActuator, shoulderActuator, elbowActuator, wristLeftActuator, wristRightActuator, clawController};
+  static_assert(actuatorIDs.size() == actuators.size());
+  auto it = std::find(actuatorIDs.begin(), actuatorIDs.end(), payload.actuatorID);*/
+  LUT<HWBRIDGE::ARM::PID::actuatorID, ActuatorController&> actuatorLUT = {{HWBRIDGE::ARM::ACTUATOR::TURNTABLE, turnTableActuator},
+                                                                          {HWBRIDGE::ARM::ACTUATOR::SHOULDER, shoulderActuator},
+                                                                          {HWBRIDGE::ARM::ACTUATOR::ELBOW, elbowActuator},
+                                                                          {HWBRIDGE::ARM::ACTUATOR::WRISTLEFT, wristLeftActuator},
+                                                                          {HWBRIDGE::ARM::ACTUATOR::WRISTRIGHT, wristRightActuator}};
+  if(it == actuatorIDs.end()) {
+    printf("ERROR: Invalid Actuator ID\n");
+    return MBED_ERROR_INVALID_ARGUMENT;
   }
+  ActuatorController& targetActuator = actuators.at(std::distance(actuatorIDs.begin(), it));
   switch (msg.id) {
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      temp->updatePIDP(payload.value, payload.isVelocityPID);
+      targetActuator.updatePIDP(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      temp->updatePIDI(payload.value, payload.isVelocityPID);
+      targetActuator.updatePIDI(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      temp->updatePIDD(payload.value, payload.isVelocityPID);
+      targetActuator.updatePIDD(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_PID_DEADZONE:
-      temp->updatePIDDeadzone(payload.value, payload.isVelocityPID);
+      targetActuator.updatePIDDeadzone(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
-      temp->updatePIDBias(payload.value, payload.isVelocityPID);
+      targetActuator.updatePIDBias(payload.value, payload.isVelocityPID);
       return MBED_SUCCESS;
     default:
       printf("ERROR: Invalid PID parameter\n");
@@ -279,7 +276,7 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      if (canHandlerMap.count(rxMsg.id) > 0) {
+      if (canHandlerMap.at(rxMsg.id).has_value()) {
         canHandlerMap[rxMsg.id](rxMsg);
       } else {
         // TODO: Warn about unsupported CAN command (without flooding)

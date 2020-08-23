@@ -64,10 +64,9 @@ test-pid:
 test-pid-tuning-api:
   - nucleo
   - arm
-#  - gimbtonomy
-#  - controller
-#  - safety
-#  - science
+  - gimbtonomy
+  - safety
+  - science
 
 test-pwm:
   - nucleo
