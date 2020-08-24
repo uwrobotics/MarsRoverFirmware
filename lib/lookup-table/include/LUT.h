@@ -27,10 +27,12 @@ class LUT {
   // range based constructor
   template <typename InputIterator>
   LUT(InputIterator first, InputIterator last);
-  // copy constructor
+  // copy constructor and assignment
   LUT(const LUT &copy) = default;
-  // move constructor
+  LUT& operator= (const LUT &) = default;	
+  // move constructor and assignment
   LUT(LUT &&move) = default;
+  LUT& operator= (LUT &&) = default;	
   // initializer list constructor
   LUT(std::initializer_list<value_type> init, size_type bucket_count = 0, const Hash& hash = Hash(), const key_equal& equal = key_equal(), const Allocator& alloc = Allocator());
 
