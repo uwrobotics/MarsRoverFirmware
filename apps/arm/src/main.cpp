@@ -58,6 +58,13 @@ DifferentialWristController wristController(wristLeftActuator, wristRightActuato
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor,
                               clawTooltipServo, 180.0, 0.0);
 
+static LUT<HWBRIDGE::ARM::PID::actuatorID, ActuatorController&> actuatorLUT = {{HWBRIDGE::ARM::ACTUATORID::TURNTABLE, turnTableActuator},
+                                                                               {HWBRIDGE::ARM::ACTUATORID::SHOULDER, shoulderActuator},
+                                                                               {HWBRIDGE::ARM::ACTUATORID::ELBOW, elbowActuator},
+                                                                               {HWBRIDGE::ARM::ACTUATORID::WRISTLEFT, wristLeftActuator},
+                                                                               {HWBRIDGE::ARM::ACTUATORID::WRISTRIGHT, wristRightActuator},
+                                                                               {HWBRIDGE::ARM::ACTUATORID::CLAW, clawController}};
+
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
 
@@ -199,40 +206,40 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::ARM::PID::tuningApiPayload payload;
   msg.getPayload(payload);
   printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
-  /*constexpr std::array<HWBRIDGE::ARM::PID::actuatorID, HWBRIDGE::ARM::PID::ACTUATORCOUNT> actuatorIDs = {HWBRIDGE::ARM::ACTUATOR::TURNTABLE, HWBRIDGE::ARM::ACTUATOR::SHOULDER, HWBRIDGE::ARM::ACTUATOR::ELBOW, HWBRIDGE::ARM::ACTUATOR::WRISTLEFT, HWBRIDGE::ARM::ACTUATOR::WRISTRIGHT, HWBRIDGE::ARM::ACTUATOR::CLAW};
-  constexpr std::array<ActuatorController&, HWBRIDGE::ARM::PID::ACTUATORCOUNT> actuators = {turnTableActuator, shoulderActuator, elbowActuator, wristLeftActuator, wristRightActuator, clawController};
-  static_assert(actuatorIDs.size() == actuators.size());
-  auto it = std::find(actuatorIDs.begin(), actuatorIDs.end(), payload.actuatorID);*/
-  LUT<HWBRIDGE::ARM::PID::actuatorID, ActuatorController&> actuatorLUT = {{HWBRIDGE::ARM::ACTUATOR::TURNTABLE, turnTableActuator},
-                                                                          {HWBRIDGE::ARM::ACTUATOR::SHOULDER, shoulderActuator},
-                                                                          {HWBRIDGE::ARM::ACTUATOR::ELBOW, elbowActuator},
-                                                                          {HWBRIDGE::ARM::ACTUATOR::WRISTLEFT, wristLeftActuator},
-                                                                          {HWBRIDGE::ARM::ACTUATOR::WRISTRIGHT, wristRightActuator}};
-  if(it == actuatorIDs.end()) {
+  auto val = actuatorLUT[payload.actuatorID];
+  if(!val.has_value()) {
     printf("ERROR: Invalid Actuator ID\n");
     return MBED_ERROR_INVALID_ARGUMENT;
   }
-  ActuatorController& targetActuator = actuators.at(std::distance(actuatorIDs.begin(), it));
+  ActuatorController& targetActuator = val.value();
   switch (msg.id) {
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      targetActuator.updatePIDP(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
+      if(targetActuator.updatePIDP(payload.value, payload.isVelocityPID))
+        return MBED_SUCCESS;
+      break;
     case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      targetActuator.updatePIDI(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
+      if(targetActuator.updatePIDI(payload.value, payload.isVelocityPID))
+        return MBED_SUCCESS;
+      break;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      targetActuator.updatePIDD(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
+      if(targetActuator.updatePIDD(payload.value, payload.isVelocityPID))
+        return MBED_SUCCESS;
+      break;
     case HWBRIDGE::CANID::SET_PID_DEADZONE:
-      targetActuator.updatePIDDeadzone(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
+      if(targetActuator.updatePIDDeadzone(payload.value, payload.isVelocityPID))
+        return MBED_SUCCESS;
+      break;
     case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
-      targetActuator.updatePIDBias(payload.value, payload.isVelocityPID);
-      return MBED_SUCCESS;
+      if(targetActuator.updatePIDBias(payload.value, payload.isVelocityPID))
+        return MBED_SUCCESS;
+      break;
     default:
       printf("ERROR: Invalid PID parameter\n");
       return MBED_ERROR_INVALID_ARGUMENT;
   }
+  printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
+  printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\n");
+  return MBED_ERROR_ASSERTION_FAILED;
 }
 
 // Handler function mappings

@@ -1,33 +1,24 @@
 #include "LUT.h"
 
-template <typename InputIterator>
 LUT::LUT(InputIterator first, InputIterator last) : _unordered_map(first, last) {}
 
-template <typename K, typename V>
-LUT::LUT(const std::unordered_map<K, V> &copy) : _unordered_map(copy) {}
+LUT::LUT(std::initializer_list<value_type> init, size_type bucket_count = 0, const Hash& hash = Hash(), const key_equal& equal = key_equal(), const Allocator& alloc = Allocator()) : _unordered_map(init, bucket_count, hash, equal, alloc) {}
 
-template <typename K, typename V>
-LUT::LUT(std::unordered_map<K, V> &&move) : _unordered_map(move) {}
-
-template <typename K, typename V>
-LUT::LUT(std::initializer_list<std::pair<const K, V>> il) : _unordered_map(il) {}
-
-template <typename K, typename V>
-typename std::unordered_map<K, V>::iterator LUT::begin() noexcept {
+typename std::unordered_map<Key, Value>::iterator LUT::begin() {
   return _unordered_map.begin();
 }
-typename std::unordered_map<K, V>::iterator LUT::end() noexcept {
+typename std::unordered_map<Key, Value>::iterator LUT::end() {
   return _unordered_map.end();
 }
 
-std::size_t LUT::size() const noexcept {
+std::size_t LUT::size() const {
   return _unordered_map.size();
 }
-std::size_t LUT::max_size() const noexcept {
+std::size_t LUT::max_size() const {
   return _unordered_map.max_size();
 }
 
-bool LUT::empty() const noexcept {
+bool LUT::empty() const {
   return _unordered_map.empty();
 }
 

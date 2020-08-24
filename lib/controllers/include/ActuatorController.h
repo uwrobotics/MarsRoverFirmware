@@ -50,11 +50,11 @@ class ActuatorController {
   bool isPastMinAngle();
   bool isPastMaxAngle();
 
-  void updatePIDP(const float newP, const bool isVelocityPID);
-  void updatePIDI(const float newI, const bool isVelocityPID);
-  void updatePIDD(const float newD, const bool isVelocityPID);
-  void updatePIDBias(const float newBias, const bool isVelocityPID);
-  void updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID);
+  bool updatePIDP(const float newP, const bool isVelocityPID);
+  bool updatePIDI(const float newI, const bool isVelocityPID);
+  bool updatePIDD(const float newD, const bool isVelocityPID);
+  bool updatePIDBias(const float newBias, const bool isVelocityPID);
+  bool updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID);
 
   void allowPIDTuning();
   void disallowPIDTuning();
