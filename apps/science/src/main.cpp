@@ -12,8 +12,8 @@
 #include "mbed_config.h"
 
 // motors
-Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
 Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
+Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
 
 // Servo
 Servo coverServo(SRVO_PWM_1, ScienceConfig::coverServoType, ScienceConfig::coverServoRange,
@@ -24,30 +24,35 @@ Servo diggerServo(SRVO_PWM_2, ScienceConfig::diggerServoType, ScienceConfig::dig
 // encoders
 EncoderAbsolute_PWM elevatorEncoder(ScienceConfig::elevatorEncoderConfig);
 EncoderRelative_Quadrature indexerEncoder(ScienceConfig::centrifugeEncoderConfig);
-// limit switches
 
-DigitalIn indexerLimFront(LIM_SW_1);
-DigitalIn indexerLimBack(LIM_SW_2);
+// limit switches
 DigitalIn elevatorLimTop(LIM_SW_3);
 DigitalIn elevatorLimBottom(LIM_SW_4);
+DigitalIn indexerLimFront(LIM_SW_1);
+DigitalIn indexerLimBack(LIM_SW_2);
 
 // Actuators
-ActuatorController indexerActuator(ScienceConfig::indexerActuatorConfig, indexerMotor, indexerEncoder, indexerLimFront,
-                                   indexerLimBack);
 ActuatorController elevatorActuator(ScienceConfig::diggerLiftActuatorConfig, elevatorMotor, elevatorEncoder,
                                     elevatorLimBottom, elevatorLimTop);
+ActuatorController indexerActuator(ScienceConfig::indexerActuatorConfig, indexerMotor, indexerEncoder, indexerLimFront,
+                                   indexerLimBack);
 
 // I2C
-
 MoistureSensor moistureSensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
+// LEDs
 DigitalOut led1(LED1);
 DigitalOut ledR(LED_R);
 DigitalOut ledG(LED_G);
 DigitalOut ledB(LED_B);
 
+// Declaring can object
 CAN can(CAN1_RX, CAN1_TX, ROVER_CANBUS_FREQUENCY);
 
+// k interval
+const int k_interval_ms = 500;
+
+// static objects
 static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
@@ -67,11 +72,6 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
       return MBED_ERROR_INVALID_ARGUMENT;
   }
 }
-const int k_interval_ms = 500;
-
-// CAN Threads
-Thread rxCANProcessorThread;
-Thread txCANProcessorThread;
 
 static CANMsg::CANMsgHandlerMap canHandleMap = {{CANID::SET_INDEXER_POS, setMotionData},
                                                 {CANID::SET_ELEVATOR_POS, setMotionData},
@@ -79,6 +79,11 @@ static CANMsg::CANMsgHandlerMap canHandleMap = {{CANID::SET_INDEXER_POS, setMoti
                                                 {CANID::SET_DIGGER_POS, setMotionData},
                                                 {CANID::SET_MOISTURE_SENSOR, setMotionData}};
 
+// CAN Threads
+Thread rxCANProcessorThread;
+Thread txCANProcessorThread;
+
+// recieving CAN messages
 void rxCANProcessor() {
   CANMsg rxMsg;
 
