@@ -9,8 +9,8 @@ DigitalOut ledRX(LED2);
 Timer timer;
 uint8_t counter = 0;
 
-#define TX_ID 0x100
-#define RX_ID 0x101
+constexpr int TX_ID 0x100;
+constexpr int RX_ID 0x101;
 
 /**
  * @brief   Prints CAN msg to PC's serial terminal
