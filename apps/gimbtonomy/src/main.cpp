@@ -17,7 +17,7 @@
 
 #define DEBUG
 
-#define ACK_FLAG (1UL << 0)
+constexpr unsigned long ACK_FLAG(1UL << 0);
 
 // Init. Components
 // Servos
