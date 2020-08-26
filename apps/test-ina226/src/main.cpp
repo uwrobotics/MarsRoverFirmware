@@ -24,8 +24,10 @@ int main() {
   // Modify the sensor address, the shunt resistance and the maximum expected current
   // these values follow the pin names in the respective order
   char* test_name = (char*)"Test";
+  u_int8_t addr   = (u_int8_t)0x128;
   // i2c pins may be incorrect
-  ComponentConfig testing_config = {test_name, I2C_SDA, I2C_SCL, 0x00, 0.003, 28.75};
+  // name of sensor, SDA pin, SCL pin, addr of chip, shunt resistance, max exptect current
+  ComponentConfig testing_config = {test_name, I2C_SDA, I2C_SCL, addr, 0.003, 28.75};
 
   printf("Attempting to create sensor object");
   INA_226 testing_sensor(testing_config);
