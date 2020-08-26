@@ -277,7 +277,7 @@ void ActuatorController::updatePIDControllerDeadzone(const float newDeadzone, co
 }
 
 bool ActuatorController::updatePIDP(const float newP, const bool isVelocityPID) {
-  if(allowPIDTuning) {
+  if(m_allowPIDTuning) {
     updateActuatorConfigP(newP, isVelocityPID);
     updatePIDControllerP(newP, isVelocityPID);
     return true;
@@ -286,7 +286,7 @@ bool ActuatorController::updatePIDP(const float newP, const bool isVelocityPID) 
 }
 
 bool ActuatorController::updatePIDI(const float newI, const bool isVelocityPID) {
-  if(allowPIDTuning) {
+  if(m_allowPIDTuning) {
     updateActuatorConfigI(newI, isVelocityPID);
     updatePIDControllerI(newI, isVelocityPID);
     return true;
@@ -295,7 +295,7 @@ bool ActuatorController::updatePIDI(const float newI, const bool isVelocityPID) 
 }
 
 bool ActuatorController::updatePIDD(const float newD, const bool isVelocityPID) {
-  if(allowPIDTuning) {
+  if(m_allowPIDTuning) {
     updateActuatorConfigD(newD, isVelocityPID);
     updatePIDControllerD(newD, isVelocityPID);
     return true;
@@ -304,7 +304,7 @@ bool ActuatorController::updatePIDD(const float newD, const bool isVelocityPID) 
 }
 
 bool ActuatorController::updatePIDBias(const float newBias, const bool isVelocityPID) {
-  if(allowPIDTuning) {
+  if(m_allowPIDTuning) {
     updateActuatorConfigBias(newBias, isVelocityPID);
     updatePIDControllerBias(newBias, isVelocityPID);
     return true;
@@ -313,7 +313,7 @@ bool ActuatorController::updatePIDBias(const float newBias, const bool isVelocit
 }
 
 bool ActuatorController::updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID) {
-  if(allowPIDTuning) {
+  if(m_allowPIDTuning) {
     updateActuatorConfigDeadzone(newDeadzone, isVelocityPID);
     updatePIDControllerDeadzone(newDeadzone, isVelocityPID);
     return true;

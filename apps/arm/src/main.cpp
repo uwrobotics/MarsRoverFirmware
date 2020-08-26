@@ -58,7 +58,7 @@ DifferentialWristController wristController(wristLeftActuator, wristRightActuato
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor,
                               clawTooltipServo, 180.0, 0.0);
 
-static LUT<HWBRIDGE::ARM::PID::actuatorID, ActuatorController&> actuatorLUT = {{HWBRIDGE::ARM::ACTUATORID::TURNTABLE, turnTableActuator},
+static LUT<HWBRIDGE::ARM::ACTUATORID, ActuatorController&> actuatorLUT = {{HWBRIDGE::ARM::ACTUATORID::TURNTABLE, turnTableActuator},
                                                                                {HWBRIDGE::ARM::ACTUATORID::SHOULDER, shoulderActuator},
                                                                                {HWBRIDGE::ARM::ACTUATORID::ELBOW, elbowActuator},
                                                                                {HWBRIDGE::ARM::ACTUATORID::WRISTLEFT, wristLeftActuator},
@@ -177,7 +177,9 @@ static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
 // Enable or disable PID tuning mode
 // Manually send CAN message to SET_PID_TUNING_MODE with appropriate boolean
 static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
-  if(msg.getPayload()) {
+  bool allowPIDTuning;
+  msg.getPayload(allowPIDTuning);
+  if(allowPIDTuning) {
     turnTableActuator.allowPIDTuning();
     shoulderActuator.allowPIDTuning();
     elbowActuator.allowPIDTuning();
