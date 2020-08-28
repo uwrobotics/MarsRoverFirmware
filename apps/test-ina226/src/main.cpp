@@ -24,7 +24,7 @@ int main() {
   // Modify the sensor address, the shunt resistance and the maximum expected current
   // these values follow the pin names in the respective order
   char* test_name = (char*)"Test";
-  u_int8_t addr   = (u_int8_t)0x128;
+  u_int8_t addr   = 128;
   // i2c pins may be incorrect
   // name of sensor, SDA pin, SCL pin, addr of chip, shunt resistance, max exptect current
   ComponentConfig testing_config = {test_name, I2C_SDA, I2C_SCL, addr, 0.003, 28.75};
@@ -118,9 +118,9 @@ int main() {
   testing_sensor.setMaskEnableRegister(INA_control);
   u_int16_t mask_bits = testing_sensor.readMaskRegister();
   if (mask_bits != INA_control) {
-    printf("Incorrect mask data %u\n", mask_bits);
+    printf("Incorrect mask data %u\r\n", mask_bits);
   }
-  printf("END OF TESTING\n");
+  printf("END OF TESTING\r\n");
 
   return 0;
 }

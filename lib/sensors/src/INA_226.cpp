@@ -26,9 +26,11 @@ float INA_226::getCurrentData() {
   char cmd[2] = {CURRENT_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
-  m_i2c.read(m_sensor_address, cmd, 2, false);
+  m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t current_data = (cmd[1] << 8 | cmd[0]);
+
+  printf("Raw val = %u | Adjusted val = %f \r\n", current_data, current_data * INA_226_CURRENT_REGISTER_LSB);
 
   return current_data * INA_226_CURRENT_REGISTER_LSB;  // multiply by 1 mA/bit to get Amps
 }
@@ -37,20 +39,24 @@ float INA_226::getVoltageData() {
   char cmd[2] = {VOLTAGE_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
-  m_i2c.read(m_sensor_address, cmd, 2, false);
+  m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t voltage_data = (cmd[1] << 8 | cmd[0]);
+
+  printf("Raw val = %u | Adjusted val = %f \r\n", voltage_data, voltage_data * INA_226_VOLTAGE_REGISTER_LSB);
 
   return voltage_data * INA_226_VOLTAGE_REGISTER_LSB;  // multiply by 1.25mV/bit to get Volts
 }
 
 float INA_226::getPowerData() {
-  char cmd[2] = {POWER_REGISTER};
+  char cmd[2] = {POWER_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
-  m_i2c.read(m_sensor_address, cmd, 2, false);
+  m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t power_data = (cmd[1] << 8 | cmd[0]);
+
+  printf("Raw val = %u | Adjusted val = %f \r\n", power_data, power_data * INA_226_POWER_REGISTER_LSB);
 
   return power_data * INA_226_POWER_REGISTER_LSB;  // multiply by 25 * current lsb to get Watts
 }
@@ -84,7 +90,7 @@ u_int16_t INA_226::readConfigRegister() {
   u_int16_t registerData = 0x00;
 
   m_i2c.write(m_sensor_address, cmd, 1);
-  m_i2c.read(m_sensor_address, cmd, 2, false);
+  m_i2c.read(m_sensor_address, cmd, 2);
 
   registerData = (cmd[1] << 8 | cmd[0]);
 
@@ -92,7 +98,7 @@ u_int16_t INA_226::readConfigRegister() {
 }
 
 int INA_226::calibrateSensor() {
-  int cal = INA_226_CALIBRATION_REGISTER_CONSTANT / (m_current_lsb * m_shunt_resistance);
+  u_int16_t cal = INA_226_CALIBRATION_REGISTER_CONSTANT / (m_current_lsb * m_shunt_resistance);
 
   char cmd[3] = {CALIBRATION_REGISTER, 0x00, 0x00};
 
@@ -133,7 +139,7 @@ u_int16_t INA_226::readMaskRegister() {
   char cmd[2] = {MASK_ENABLE_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
-  m_i2c.read(m_sensor_address, cmd, 2, false);
+  m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t mask_bits = (cmd[1] << 8 | cmd[0]);
 
@@ -145,7 +151,7 @@ u_int16_t INA_226::getAlertLimit() {
   char cmd[2] = {ALERT_LIMIT_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
-  m_i2c.read(m_sensor_address, cmd, 2, false);
+  m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t alert = (cmd[1] << 8 | cmd[0]);
 
