@@ -54,8 +54,9 @@
 /**
  * Defines
  */
-#define PID_MANUAL_MODE 0
-#define PID_AUTO_MODE   1
+
+constexpr unsigned uint8_t PID_MANUAL_MODE = 0;
+constexpr unsigned uint8_t PID_AUTO_MODE   = 1;
 
 /**
  * Proportional-integral-derivative controller.
