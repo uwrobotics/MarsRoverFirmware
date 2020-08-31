@@ -4,6 +4,7 @@ target_link_libraries(test-pid-tuning-api.${TARGET}-board.elf
         PRIVATE
         PID
         LookupTable
+        CANBus
         CANBuffer
         EncoderRelative_Quadrature
         Motor

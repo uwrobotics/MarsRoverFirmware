@@ -4,6 +4,7 @@
  */
 
 #include "ActuatorController.h"
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
@@ -38,7 +39,7 @@ EncoderAbsolute_PWM panEncoder(GimbtonomyConfig::panEncoderConfig);
 ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor, panEncoder);
 
 // CAN Object
-CAN can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;
 
 // neopixel

@@ -1,3 +1,4 @@
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "hw_bridge.h"
 #include "testPIDTuningApi.h"
@@ -11,7 +12,7 @@
   of this test is based upon visual inspection. The printed details should match the selection made on the GUI.*/
 
 int main() {
-  CAN can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+  CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
   testPIDTuningApi testDriver;
   while (true) {
     CANMsg msg;

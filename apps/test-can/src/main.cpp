@@ -1,7 +1,8 @@
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "mbed.h"
 
-CAN can(CAN_RX, CAN_TX);
+CANBus can(CAN_RX, CAN_TX);
 CANMsg rxMsg;
 CANMsg txMsg;
 DigitalOut ledTX(LED1);
