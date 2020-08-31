@@ -1,2 +1,2 @@
-add_library(LUT INTERFACE)
-target_include_directories(LUT INTERFACE include)
+add_library(LookupTable INTERFACE)
+target_include_directories(LookupTable INTERFACE include)

@@ -202,7 +202,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::ARM::PID::tuningApiPayload payload;
   msg.getPayload(payload);
   printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
-  LUT<HWBRIDGE::ARM::ACTUATORID, std::reference_wrapper<ActuatorController>> actuatorIDLUT = {
+  LookupTable<HWBRIDGE::ARM::ACTUATORID, std::reference_wrapper<ActuatorController>> actuatorIDLUT = {
       {HWBRIDGE::ARM::ACTUATORID::TURNTABLE, turnTableActuator},
       {HWBRIDGE::ARM::ACTUATORID::SHOULDER, shoulderActuator},
       {HWBRIDGE::ARM::ACTUATORID::ELBOW, elbowActuator},

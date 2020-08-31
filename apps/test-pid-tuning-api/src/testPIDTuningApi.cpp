@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "LUT.h"
+#include "LookupTable.h"
 #include "hw_bridge.h"
 
 testPIDTuningApi::testPIDTuningApi()

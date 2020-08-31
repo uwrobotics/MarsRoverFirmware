@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LUT.h"
+#include "LookupTable.h"
 
 #include "hw_bridge.h"
 #include "mbed.h"
@@ -8,7 +8,7 @@
 class CANMsg : public CANMessage {
  public:
   typedef mbed_error_status_t (*CANMsgHandler)(CANMsg &);
-  typedef LUT<HWBRIDGE::CANID, CANMsg::CANMsgHandler> CANMsgHandlerMap;
+  typedef LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler> CANMsgHandlerMap;
 
   template <class T>
   union CANPayload {

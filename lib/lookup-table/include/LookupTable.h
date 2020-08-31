@@ -5,7 +5,7 @@
 
 // This a LUT type. It is not meant to be mutated after initilization.
 template < class Key, class Value, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>,class Allocator = std::allocator<std::pair<const Key, Value>> > 
-class LUT {
+class LookupTable {
  private:
  const std::unordered_map<Key, Value, Hash, KeyEqual, Allocator> _unordered_map;
 
@@ -22,20 +22,20 @@ class LUT {
   using const_reference = const value_type&;
   using pointer = std::allocator_traits<Allocator>::pointer;
   using const_pointer = std::allocator_traits<Allocator>::const_pointer;
-  
-  LUT() = delete;
+
+  LookupTable() = delete;
 
   // range based constructor
   template <typename InputIterator>
-  LUT(InputIterator first, InputIterator last) : _unordered_map(first, last) {}
+  LookupTable(InputIterator first, InputIterator last) : _unordered_map(first, last) {}
   // copy constructor and assignment
-  LUT(const LUT &copy) = default;
-  LUT& operator= (const LUT &) = default;	
+  LookupTable(const LookupTable &copy) = default;
+  LookupTable& operator= (const LookupTable &) = default;
   // move constructor and assignment
-  LUT(LUT &&move) = default;
-  LUT& operator= (LUT &&) = default;	
+  LookupTable(LookupTable &&move) = default;
+  LookupTable& operator= (LookupTable &&) = default;
   // initializer list constructor
-  LUT(std::initializer_list<value_type> init, size_type bucket_count = 0, const Hash& hash = Hash(), const key_equal& equal = key_equal(), const Allocator& alloc = Allocator()) : _unordered_map(init, bucket_count, hash, equal, alloc) {}
+  LookupTable(std::initializer_list<value_type> init, size_type bucket_count = 0, const Hash& hash = Hash(), const key_equal& equal = key_equal(), const Allocator& alloc = Allocator()) : _unordered_map(init, bucket_count, hash, equal, alloc) {}
 
   typename std::unordered_map<Key, Value>::iterator begin() {
     return _unordered_map.begin();
