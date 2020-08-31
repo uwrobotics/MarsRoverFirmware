@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include "LUT.h"
 #include "hw_bridge.h"
 
 testPIDTuningApi::testPIDTuningApi()
@@ -12,20 +13,78 @@ testPIDTuningApi::testPIDTuningApi()
       testEncoderConfig{.pin_PWM = PA_3, .degreesPerUnit = 360.0},
       testEncoder(testEncoderConfig),
       testTurnTableActuator(testConfig, testMotor, testEncoder),
-      testShoulderActuator(testTurnTableActuator),
-      testElbowActuator(testTurnTableActuator),
-      testWristLeftActuator(testTurnTableActuator),
-      testWristRightActuator(testTurnTableActuator),
-      testClawController(testTurnTableActuator),
-      allowPIDTuning(false) {}
+      testShoulderActuator(testConfig, testMotor, testEncoder),
+      testElbowActuator(testConfig, testMotor, testEncoder),
+      testWristLeftActuator(testConfig, testMotor, testEncoder),
+      testWristRightActuator(testConfig, testMotor, testEncoder),
+      testClawController(testConfig, testMotor, testEncoder) {}
 
 mbed_error_status_t testPIDTuningApi::setPIDParameter(CANMsg &msg) {
-  return MBED_SUCCESS;
+  printf("Received request to update PID params over CAN\n");
+  /** ------------------------------------
+   * | 32 bits  | 8 bits   |  8 bits     |
+   * | data     | vel/pos  |  Actuator ID|
+   *  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+  HWBRIDGE::ARM::PID::tuningApiPayload payload;
+  msg.getPayload(payload);
+  printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
+  LUT<HWBRIDGE::ARM::ACTUATORID, std::reference_wrapper<ActuatorController>> actuatorIDLUT = {
+      {HWBRIDGE::ARM::ACTUATORID::TURNTABLE, testTurnTableActuator},
+      {HWBRIDGE::ARM::ACTUATORID::SHOULDER, testShoulderActuator},
+      {HWBRIDGE::ARM::ACTUATORID::ELBOW, testElbowActuator},
+      {HWBRIDGE::ARM::ACTUATORID::WRISTLEFT, testWristLeftActuator},
+      {HWBRIDGE::ARM::ACTUATORID::WRISTRIGHT, testWristRightActuator},
+      {HWBRIDGE::ARM::ACTUATORID::CLAW, testClawController}};
+  auto potentialTargetActuator = actuatorIDLUT[payload.actuatorID];
+  if (!potentialTargetActuator.has_value()) {
+    printf("ERROR: Invalid Actuator ID\n");
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+  ActuatorController &targetActuator = potentialTargetActuator.value();
+  switch (msg.getID()) {
+    case HWBRIDGE::CANID::SET_JOINT_PID_P:
+      if (targetActuator.updatePIDP(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
+      break;
+    case HWBRIDGE::CANID::SET_JOINT_PID_I:
+      if (targetActuator.updatePIDI(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
+      break;
+    case HWBRIDGE::CANID::SET_JOINT_PID_D:
+      if (targetActuator.updatePIDD(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
+      break;
+    case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
+      if (targetActuator.updatePIDBias(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
+      break;
+    case HWBRIDGE::CANID::SET_PID_DEADZONE:
+      if (targetActuator.updatePIDDeadzone(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
+      break;
+    default:
+      break;
+  }
+  printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\r\n");
+  printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\r\n");
+  return MBED_ERROR_ASSERTION_FAILED;
 }
 
 mbed_error_status_t testPIDTuningApi::setPIDTuningMode(CANMsg &msg) {
+  bool allowPIDTuning;
+  bool updateFailed = false;
   msg.getPayload(allowPIDTuning);
-  return MBED_SUCCESS;
+  if (allowPIDTuning) {
+    updateFailed |= testTurnTableActuator.allowPIDTuning();
+    updateFailed |= testShoulderActuator.allowPIDTuning();
+    updateFailed |= testElbowActuator.allowPIDTuning();
+    updateFailed |= testWristLeftActuator.allowPIDTuning();
+    updateFailed |= testWristRightActuator.allowPIDTuning();
+    updateFailed |= testClawController.allowPIDTuning();
+  } else {
+    updateFailed |= testTurnTableActuator.disallowPIDTuning();
+    updateFailed |= testShoulderActuator.disallowPIDTuning();
+    updateFailed |= testElbowActuator.disallowPIDTuning();
+    updateFailed |= testWristLeftActuator.disallowPIDTuning();
+    updateFailed |= testWristRightActuator.disallowPIDTuning();
+    updateFailed |= testClawController.disallowPIDTuning();
+  }
+  return updateFailed ? MBED_ERROR_MUTEX_LOCK_FAILED : MBED_SUCCESS;
 }
 
 void testPIDTuningApi::printAllActuatorDetails() const {

@@ -1,3 +1,4 @@
+#pragma once
 #include <iterator>
 #include <optional>
 #include <unordered_map>

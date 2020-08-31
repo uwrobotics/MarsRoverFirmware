@@ -16,7 +16,7 @@ int main() {
   while (true) {
     CANMsg msg;
     if (can.read(msg)) {
-      msg.id == HWBRIDGE::CANID::SET_PID_TUNING_MODE ? testDriver.setPIDTuningMode(msg)
+      msg.getID() == HWBRIDGE::CANID::SET_PID_TUNING_MODE ? testDriver.setPIDTuningMode(msg)
                                                      : testDriver.setPIDParameter(msg);
       testDriver.printAllActuatorDetails();
     }

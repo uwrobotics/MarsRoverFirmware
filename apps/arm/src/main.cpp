@@ -1,6 +1,7 @@
 #include "ActuatorController.h"
 #include "ArmConfig.h"
 #include "CANBuffer.h"
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "ClawController.h"
 #include "DifferentialWristController.h"
@@ -58,13 +59,6 @@ DifferentialWristController wristController(wristLeftActuator, wristRightActuato
 ClawController clawController(ArmConfig::clawActuatorConfig, clawMotor, clawEncoder, clawLimOpen, clawForceSensor,
                               clawTooltipServo, 180.0, 0.0);
 
-static LUT<HWBRIDGE::ARM::ACTUATORID, ActuatorController&> actuatorLUT = {{HWBRIDGE::ARM::ACTUATORID::TURNTABLE, turnTableActuator},
-                                                                               {HWBRIDGE::ARM::ACTUATORID::SHOULDER, shoulderActuator},
-                                                                               {HWBRIDGE::ARM::ACTUATORID::ELBOW, elbowActuator},
-                                                                               {HWBRIDGE::ARM::ACTUATORID::WRISTLEFT, wristLeftActuator},
-                                                                               {HWBRIDGE::ARM::ACTUATORID::WRISTRIGHT, wristRightActuator},
-                                                                               {HWBRIDGE::ARM::ACTUATORID::CLAW, clawController}};
-
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
 
@@ -95,7 +89,7 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
   ActuatorController::t_actuatorControlMode controlMode;
   msg.getPayload(controlMode);
 
-  switch (msg.id) {
+  switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE:
       return turnTableActuator.setControlMode(controlMode);
     case HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE:
@@ -118,7 +112,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
 
-  switch (msg.id) {
+  switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA:
       return turnTableActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA:
@@ -178,24 +172,24 @@ static mbed_error_status_t setToolTipDeployment(CANMsg &msg) {
 // Manually send CAN message to SET_PID_TUNING_MODE with appropriate boolean
 static mbed_error_status_t setPIDTuningMode(CANMsg &msg) {
   bool allowPIDTuning;
+  bool updateFailed = false;
   msg.getPayload(allowPIDTuning);
-  if(allowPIDTuning) {
-    turnTableActuator.allowPIDTuning();
-    shoulderActuator.allowPIDTuning();
-    elbowActuator.allowPIDTuning();
-    wristLeftActuator.allowPIDTuning();
-    wristRightActuator.allowPIDTuning();
-    clawController.allowPIDTuning();
+  if (allowPIDTuning) {
+    updateFailed |= turnTableActuator.allowPIDTuning();
+    updateFailed |= shoulderActuator.allowPIDTuning();
+    updateFailed |= elbowActuator.allowPIDTuning();
+    updateFailed |= wristLeftActuator.allowPIDTuning();
+    updateFailed |= wristRightActuator.allowPIDTuning();
+    updateFailed |= clawController.allowPIDTuning();
+  } else {
+    updateFailed |= turnTableActuator.disallowPIDTuning();
+    updateFailed |= shoulderActuator.disallowPIDTuning();
+    updateFailed |= elbowActuator.disallowPIDTuning();
+    updateFailed |= wristLeftActuator.disallowPIDTuning();
+    updateFailed |= wristRightActuator.disallowPIDTuning();
+    updateFailed |= clawController.disallowPIDTuning();
   }
-  else {
-    turnTableActuator.disallowPIDTuning();
-    shoulderActuator.disallowPIDTuning();
-    elbowActuator.disallowPIDTuning();
-    wristLeftActuator.disallowPIDTuning();
-    wristRightActuator.disallowPIDTuning();
-    clawController.disallowPIDTuning();
-  }
-  return MBED_SUCCESS;
+  return updateFailed ? MBED_ERROR_MUTEX_LOCK_FAILED : MBED_SUCCESS;
 }
 
 // Configure PID parameters
@@ -208,39 +202,40 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::ARM::PID::tuningApiPayload payload;
   msg.getPayload(payload);
   printf("payload: %s", HWBRIDGE::ARM::PID::str(payload).c_str());
-  auto val = actuatorLUT[payload.actuatorID];
-  if(!val.has_value()) {
+  LUT<HWBRIDGE::ARM::ACTUATORID, std::reference_wrapper<ActuatorController>> actuatorIDLUT = {
+      {HWBRIDGE::ARM::ACTUATORID::TURNTABLE, turnTableActuator},
+      {HWBRIDGE::ARM::ACTUATORID::SHOULDER, shoulderActuator},
+      {HWBRIDGE::ARM::ACTUATORID::ELBOW, elbowActuator},
+      {HWBRIDGE::ARM::ACTUATORID::WRISTLEFT, wristLeftActuator},
+      {HWBRIDGE::ARM::ACTUATORID::WRISTRIGHT, wristRightActuator},
+      {HWBRIDGE::ARM::ACTUATORID::CLAW, clawController}};
+  auto potentialTargetActuator = actuatorIDLUT[payload.actuatorID];
+  if (!potentialTargetActuator.has_value()) {
     printf("ERROR: Invalid Actuator ID\n");
     return MBED_ERROR_INVALID_ARGUMENT;
   }
-  ActuatorController& targetActuator = val.value();
-  switch (msg.id) {
+  ActuatorController &targetActuator = potentialTargetActuator.value();
+  switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      if(targetActuator.updatePIDP(payload.value, payload.isVelocityPID))
-        return MBED_SUCCESS;
+      if (targetActuator.updatePIDP(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      if(targetActuator.updatePIDI(payload.value, payload.isVelocityPID))
-        return MBED_SUCCESS;
+      if (targetActuator.updatePIDI(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      if(targetActuator.updatePIDD(payload.value, payload.isVelocityPID))
-        return MBED_SUCCESS;
-      break;
-    case HWBRIDGE::CANID::SET_PID_DEADZONE:
-      if(targetActuator.updatePIDDeadzone(payload.value, payload.isVelocityPID))
-        return MBED_SUCCESS;
+      if (targetActuator.updatePIDD(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_BIAS:
-      if(targetActuator.updatePIDBias(payload.value, payload.isVelocityPID))
-        return MBED_SUCCESS;
+      if (targetActuator.updatePIDBias(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
+      break;
+    case HWBRIDGE::CANID::SET_PID_DEADZONE:
+      if (targetActuator.updatePIDDeadzone(payload.value, payload.isVelocityPID)) return MBED_SUCCESS;
       break;
     default:
-      printf("ERROR: Invalid PID parameter\n");
-      return MBED_ERROR_INVALID_ARGUMENT;
+      break;
   }
-  printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\n");
-  printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\n");
+  printf("Unable to update PID params over CAN. Ensure arm is in a safe state and update Tuning Mode.\r\n");
+  printf("To allow PID param tuning over CAN, send true to CAN address SET_PID_TUNING_MODE\r\n");
   return MBED_ERROR_ASSERTION_FAILED;
 }
 
@@ -276,7 +271,7 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_OVERRIDE_
 /******************/
 
 // Interface and recieve buffer
-CAN can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 // CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
 
 // Incoming message processor
@@ -285,8 +280,8 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      if (canHandlerMap.at(rxMsg.id).has_value()) {
-        canHandlerMap[rxMsg.id](rxMsg);
+      if (canHandlerMap.at(rxMsg.getID()).has_value()) {
+        canHandlerMap[rxMsg.getID()].value()(rxMsg);
       } else {
         // TODO: Warn about unsupported CAN command (without flooding)
       }
@@ -320,42 +315,42 @@ void txCANProcessor() {
   } motionReport;
 
   while (true) {
-    txMsg.id              = HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION);
     motionReport.position = turnTableActuator.getAngle_Degrees();
     motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_SHOULDER_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_SHOULDER_MOTION);
     motionReport.position = shoulderActuator.getAngle_Degrees();
     motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_ELBOW_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_ELBOW_MOTION);
     motionReport.position = elbowActuator.getAngle_Degrees();
     motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION);
     motionReport.position = wristController.getPitchAngle_Degrees();
     motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION);
     motionReport.position = wristController.getRollAngle_Degrees();
     motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_CLAW_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_CLAW_MOTION);
     motionReport.position = clawController.getGapDistance_Cm();
     motionReport.velocity = clawController.getGapVelocity_CmPerSec();
     txMsg.setPayload(motionReport);
@@ -376,9 +371,8 @@ int main() {
   printf("ARM APPLICATION STARTED\r\n");
   printf("=======================\r\n");
 
-  // CAN init stuff
-  can1.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK,
-              CANStandard);
+  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK,
+                 CANStandard);
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 

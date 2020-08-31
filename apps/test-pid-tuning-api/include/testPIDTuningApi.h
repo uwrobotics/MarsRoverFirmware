@@ -15,7 +15,6 @@ class testPIDTuningApi {
   ActuatorController testWristLeftActuator;
   ActuatorController testWristRightActuator;
   ActuatorController testClawController;
-  bool allowPIDTuning;
   std::string getActuatorDetails(const ActuatorController& actuator) const;
   std::string getPIDControllerDetails(const PID& pid) const;
 

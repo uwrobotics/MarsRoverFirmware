@@ -56,8 +56,8 @@ class ActuatorController {
   bool updatePIDBias(const float newBias, const bool isVelocityPID);
   bool updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID);
 
-  void allowPIDTuning();
-  void disallowPIDTuning();
+  bool allowPIDTuning();
+  bool disallowPIDTuning();
 
  private:
   t_actuatorControlMode m_controlMode;
@@ -91,6 +91,7 @@ class ActuatorController {
   void updatePIDControllerDeadzone(const float newDeadzone, const bool isVelocityPID);
 
   bool m_allowPIDTuning;
+  Mutex m_allowPIDTuningMutex;
   // The test driver must access private data
   friend class testPIDTuningApi;
 };
