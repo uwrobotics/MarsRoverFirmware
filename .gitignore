@@ -14,3 +14,4 @@ firmware.code-workspace
 *.idea/
 *cmake-build-*
 venv
+__pycache__
