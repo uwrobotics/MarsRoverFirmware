@@ -277,8 +277,8 @@ void ActuatorController::updatePIDControllerDeadzone(const float newDeadzone, co
 }
 
 bool ActuatorController::updatePIDP(const float newP, const bool isVelocityPID) {
-  if(!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
-  if(m_allowPIDTuning) {
+  if (!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
+  if (m_allowPIDTuning) {
     updateActuatorConfigP(newP, isVelocityPID);
     updatePIDControllerP(newP, isVelocityPID);
     m_allowPIDTuningMutex.unlock();
@@ -289,8 +289,8 @@ bool ActuatorController::updatePIDP(const float newP, const bool isVelocityPID) 
 }
 
 bool ActuatorController::updatePIDI(const float newI, const bool isVelocityPID) {
-  if(!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
-  if(m_allowPIDTuning) {
+  if (!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
+  if (m_allowPIDTuning) {
     updateActuatorConfigI(newI, isVelocityPID);
     updatePIDControllerI(newI, isVelocityPID);
     m_allowPIDTuningMutex.unlock();
@@ -301,8 +301,8 @@ bool ActuatorController::updatePIDI(const float newI, const bool isVelocityPID) 
 }
 
 bool ActuatorController::updatePIDD(const float newD, const bool isVelocityPID) {
-  if(!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
-  if(m_allowPIDTuning) {
+  if (!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
+  if (m_allowPIDTuning) {
     updateActuatorConfigD(newD, isVelocityPID);
     updatePIDControllerD(newD, isVelocityPID);
     m_allowPIDTuningMutex.unlock();
@@ -313,8 +313,8 @@ bool ActuatorController::updatePIDD(const float newD, const bool isVelocityPID) 
 }
 
 bool ActuatorController::updatePIDBias(const float newBias, const bool isVelocityPID) {
-  if(!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
-  if(m_allowPIDTuning) {
+  if (!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
+  if (m_allowPIDTuning) {
     updateActuatorConfigBias(newBias, isVelocityPID);
     updatePIDControllerBias(newBias, isVelocityPID);
     m_allowPIDTuningMutex.unlock();
@@ -325,8 +325,8 @@ bool ActuatorController::updatePIDBias(const float newBias, const bool isVelocit
 }
 
 bool ActuatorController::updatePIDDeadzone(const float newDeadzone, const bool isVelocityPID) {
-  if(!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
-  if(m_allowPIDTuning) {
+  if (!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
+  if (m_allowPIDTuning) {
     updateActuatorConfigDeadzone(newDeadzone, isVelocityPID);
     updatePIDControllerDeadzone(newDeadzone, isVelocityPID);
     m_allowPIDTuningMutex.unlock();
@@ -337,14 +337,14 @@ bool ActuatorController::updatePIDDeadzone(const float newDeadzone, const bool i
 }
 
 bool ActuatorController::allowPIDTuning() {
-  if(!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
+  if (!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
   m_allowPIDTuning = true;
   m_allowPIDTuningMutex.unlock();
   return true;
 }
 
 bool ActuatorController::disallowPIDTuning() {
-  if(!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
+  if (!m_allowPIDTuningMutex.trylock_for(200ms)) return false;
   m_allowPIDTuning = false;
   m_allowPIDTuningMutex.unlock();
   return true;

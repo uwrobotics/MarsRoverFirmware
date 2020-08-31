@@ -7,7 +7,7 @@
   Setup: This test can be run on any target. The target must be connected to the Jetson through CAN bus. Before PID
   parameters can be modified, we must manually enable the allowPIDTuning bool by sending true to SET_PID_TUNING_MODE
   Description: The Jetson runs a ROS node which presents users with a GUI, which sends appropriate CAN msgs.
-  For details on how to run the ROS node, refer to the Tuning PID API ROS Node. Test Execution: The success 
+  For details on how to run the ROS node, refer to the Tuning PID API ROS Node. Test Execution: The success
   of this test is based upon visual inspection. The printed details should match the selection made on the GUI.*/
 
 int main() {
@@ -17,7 +17,7 @@ int main() {
     CANMsg msg;
     if (can.read(msg)) {
       msg.getID() == HWBRIDGE::CANID::SET_PID_TUNING_MODE ? testDriver.setPIDTuningMode(msg)
-                                                     : testDriver.setPIDParameter(msg);
+                                                          : testDriver.setPIDParameter(msg);
       testDriver.printAllActuatorDetails();
     }
   }
