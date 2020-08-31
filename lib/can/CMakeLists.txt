@@ -13,6 +13,7 @@ target_include_directories(CANMsg INTERFACE include)
 target_link_libraries(CANMsg
         INTERFACE
         LUT
+        uwrt-mars-rover-hw-bridge
         )
 
 add_library(CANBus STATIC)
