@@ -280,10 +280,11 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      if (canHandlerMap.at(rxMsg.getID()).has_value()) {
-        canHandlerMap[rxMsg.getID()].value()(rxMsg);
+      auto potentialCANProcessorFunction = canHandlerMap.at(rxMsg.getID());
+      if (potentialCANProcessorFunction.has_value()) {
+        potentialCANProcessorFunction.value()(rxMsg);
       } else {
-        // TODO: Warn about unsupported CAN command (without flooding)
+        // TODO: Logger warn about unsupported CAN command (without flooding)
       }
     }
 

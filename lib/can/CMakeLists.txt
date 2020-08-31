@@ -10,6 +10,10 @@ target_set_mbed_dependency(CANBuffer)
 
 add_library(CANMsg INTERFACE)
 target_include_directories(CANMsg INTERFACE include)
+target_link_libraries(CANMsg
+        INTERFACE
+        LUT
+        )
 
 add_library(CANBus STATIC)
 target_sources(CANBus PRIVATE src/CANBus.cpp)

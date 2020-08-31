@@ -73,7 +73,7 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg) {
       neopixel.shutdown();
       break;
     default:
-      printf("Neo pixels tried to be set to unknow mode\r\n");
+      printf("Neo pixels tried to be set to unknown mode\r\n");
       break;
   }
 }
@@ -87,7 +87,7 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      switch (rxMsg.id) {
+      switch (rxMsg.getID()) {
         case HWBRIDGE::CANID::GIMBAL_PAN_POSITION:
           rxMsg.getPayload(pan_pos);
           panServoActuator.setMotionData(pan_pos);
@@ -139,7 +139,7 @@ void txCANProcessor() {
     printf("Sending neopixel acknowledgement message\r\n");
 #endif
     txMsg.clear();
-    txMsg.id = HWBRIDGE::CANID::NEOPIXEL_ACK;
+    txMsg.setID(HWBRIDGE::CANID::NEOPIXEL_ACK);
     txMsg << true;
     can1.write(txMsg);
 #ifdef DEBUG

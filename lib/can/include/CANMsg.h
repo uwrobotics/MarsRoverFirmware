@@ -35,7 +35,7 @@ class CANMsg : public CANMessage {
     id = (uint16_t) newID;
   }
 
-  /* Returns the ID of the CAN message
+  /** Returns the ID of the CAN message
    */
   HWBRIDGE::CANID getID() const {
     return (HWBRIDGE::CANID) id;
