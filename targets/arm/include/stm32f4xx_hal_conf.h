@@ -16,10 +16,7 @@
  *
  ******************************************************************************
  */
-
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32F4xx_HAL_CONF_H
-#define __STM32F4xx_HAL_CONF_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,10 +87,12 @@ extern "C" {
  */
 #if !defined(HSE_VALUE)
 #define HSE_VALUE 25000000U /*!< Value of the External oscillator in Hz */
+
 #endif /* HSE_VALUE */
 
 #if !defined(HSE_STARTUP_TIMEOUT)
 #define HSE_STARTUP_TIMEOUT 100U /*!< Time out for HSE start up, in ms */
+
 #endif /* HSE_STARTUP_TIMEOUT */
 
 /**
@@ -103,6 +102,7 @@ extern "C" {
  */
 #if !defined(HSI_VALUE)
 #define HSI_VALUE 16000000U /*!< Value of the Internal oscillator in Hz */
+
 #endif /* HSI_VALUE */
 
 /**
@@ -110,6 +110,7 @@ extern "C" {
  */
 #if !defined(LSI_VALUE)
 #define LSI_VALUE 32000U /*!< LSI Typical Value in Hz */
+
 #endif /* LSI_VALUE */ /*!< Value of the Internal Low Speed oscillator in Hz    \
                             The real value may vary depending on the variations \
                             in voltage and temperature. */
@@ -118,10 +119,12 @@ extern "C" {
  */
 #if !defined(LSE_VALUE)
 #define LSE_VALUE 32768U /*!< Value of the External Low Speed oscillator in Hz */
+
 #endif /* LSE_VALUE */
 
 #if !defined(LSE_STARTUP_TIMEOUT)
 #define LSE_STARTUP_TIMEOUT 5000U /*!< Time out for LSE start up, in ms */
+
 #endif /* LSE_STARTUP_TIMEOUT */
 
 /**
@@ -131,6 +134,7 @@ extern "C" {
  */
 #if !defined(EXTERNAL_CLOCK_VALUE)
 #define EXTERNAL_CLOCK_VALUE 12288000U /*!< Value of the External oscillator in Hz*/
+
 #endif /* EXTERNAL_CLOCK_VALUE */
 
 /* Tip: To avoid modifying this file each time you need to use different HSE,
@@ -460,7 +464,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* __STM32F4xx_HAL_CONF_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

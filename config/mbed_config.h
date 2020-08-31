@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-#ifndef __MBED_CONFIG_DATA__
-#define __MBED_CONFIG_DATA__
+#pragma once
 
 #include "mbed_config_target.h"
 
@@ -156,5 +155,3 @@
       PRINT_WARNING("Failed assertion: %s\r\n", #assertion); \
     }                                                        \
   }
-
-#endif

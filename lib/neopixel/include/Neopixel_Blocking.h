@@ -1,5 +1,4 @@
-#ifndef NEOPIXEL_BLOCKING_H
-#define NEOPIXEL_BLOCKING_H
+#pragma once
 #include "mbed.h"
 
 /*
@@ -30,5 +29,3 @@ class Neopixel_Blocking {
   void flashGreen(int numFlashes, std::chrono::duration<double> delay);
   void shutdown();
 };
-
-#endif /* Neopixel_Blocking_H */

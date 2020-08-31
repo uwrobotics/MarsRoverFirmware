@@ -27,8 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************
  */
-#ifndef MBED_PERIPHERALNAMES_H
-#define MBED_PERIPHERALNAMES_H
+#pragma once
 
 #include "cmsis.h"
 
@@ -84,6 +83,4 @@ typedef enum { USB_FS = (int)USB_OTG_FS_PERIPH_BASE, USB_HS = (int)USB_OTG_HS_PE
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif
