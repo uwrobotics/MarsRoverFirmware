@@ -1,7 +1,5 @@
 #pragma once
 
-constexpr uint8_t PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE = 12;
-
 #include "mbed.h"
 
 /** PwmIn class to read PWM inputs
