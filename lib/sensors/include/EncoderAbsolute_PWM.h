@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr unsigned uint_8 PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE = 12;
+constexpr uint8_t PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE = 12;
 
 #include "Encoder.h"
 #include "PwmIn.h"
