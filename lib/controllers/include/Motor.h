@@ -1,6 +1,6 @@
 #pragma once
 
-#include <bits/stdint-uintn.h>
+#include <cstdint>
 constexpr unsigned uint16_t MOTOR_DEFAULT_FREQUENCY = 244;
 
 #include "mbed.h"
