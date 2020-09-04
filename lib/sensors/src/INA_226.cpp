@@ -18,6 +18,7 @@ INA_226::INA_226(ComponentConfig component_config) : m_i2c(component_config.SDA_
 
   m_shunt_resistance = component_config.shunt_resistance;
   m_sensor_address   = component_config.sensor_address << 1;  // 7 bit address
+  m_i2c.frequency(component_config.i2c_frequency);//0.4mhz
 }
 
 INA_226::~INA_226() {}

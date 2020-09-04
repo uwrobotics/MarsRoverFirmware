@@ -21,6 +21,7 @@ struct ComponentConfig {
   PinName SDA_pinname;
   PinName SCL_pinname;
   u_int8_t sensor_address;
+  int i2c_frequency;
   float shunt_resistance;
   float max_expected_current;
 };

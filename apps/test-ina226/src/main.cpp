@@ -25,9 +25,10 @@ int main() {
   // these values follow the pin names in the respective order
   char* test_name = (char*)"Test";
   u_int8_t addr   = 128;
+  int i2c_frequency = 4000; //0.4mhz
   // i2c pins may be incorrect
   // name of sensor, SDA pin, SCL pin, addr of chip, shunt resistance, max exptect current
-  ComponentConfig testing_config = {test_name, I2C_SDA, I2C_SCL, addr, 0.003, 28.75};
+  ComponentConfig testing_config = {test_name, I2C_SDA, I2C_SCL, addr, i2c_frequency, 0.003, 28.75};
 
   printf("Attempting to create sensor object");
   INA_226 testing_sensor(testing_config);
