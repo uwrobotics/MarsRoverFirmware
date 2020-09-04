@@ -134,11 +134,11 @@
 /**
  * Defines
  */
-constexpr unsigned uint_8 PREV_MASK = 0x1;  // Mask for the previous state in determining direction
+constexpr uint8_t PREV_MASK = 0x1;  // Mask for the previous state in determining direction
 // of rotation.
-constexpr unsigned uint_8 CURR_MASK = 0x2;  // Mask for the current state in determining direction
+constexpr uint8_t CURR_MASK = 0x2;  // Mask for the current state in determining direction
 // of rotation.
-constexpr unsigned uint_8 INVALID = 0x3;  // XORing two states where both bits have changed.
+constexpr uint8_t INVALID = 0x3;  // XORing two states where both bits have changed.
 
 /**
  * Quadrature Encoder Interface.
