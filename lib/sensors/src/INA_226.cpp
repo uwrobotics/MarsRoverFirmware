@@ -27,6 +27,7 @@ float INA_226::getCurrentData() {
   char cmd[2] = {CURRENT_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
+  ThisThread::sleep_for(250ms);
   m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t current_data = (cmd[1] << 8 | cmd[0]);
@@ -40,6 +41,7 @@ float INA_226::getVoltageData() {
   char cmd[2] = {VOLTAGE_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
+  ThisThread::sleep_for(250ms);
   m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t voltage_data = (cmd[1] << 8 | cmd[0]);
@@ -53,6 +55,7 @@ float INA_226::getPowerData() {
   char cmd[2] = {POWER_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
+  ThisThread::sleep_for(250ms);
   m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t power_data = (cmd[1] << 8 | cmd[0]);
@@ -91,6 +94,7 @@ u_int16_t INA_226::readConfigRegister() {
   u_int16_t registerData = 0x00;
 
   m_i2c.write(m_sensor_address, cmd, 1);
+  ThisThread::sleep_for(250ms);
   m_i2c.read(m_sensor_address, cmd, 2);
 
   registerData = (cmd[1] << 8 | cmd[0]);
@@ -140,6 +144,7 @@ u_int16_t INA_226::readMaskRegister() {
   char cmd[2] = {MASK_ENABLE_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
+  ThisThread::sleep_for(250ms);
   m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t mask_bits = (cmd[1] << 8 | cmd[0]);
@@ -152,6 +157,7 @@ u_int16_t INA_226::getAlertLimit() {
   char cmd[2] = {ALERT_LIMIT_REGISTER, 0x00};
 
   m_i2c.write(m_sensor_address, cmd, 1);
+  ThisThread::sleep_for(250ms);
   m_i2c.read(m_sensor_address, cmd, 2);
 
   u_int16_t alert = (cmd[1] << 8 | cmd[0]);
