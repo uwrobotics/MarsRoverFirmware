@@ -257,7 +257,7 @@ Status_e IMU::init_IMU(void) {
   }
 
   // delay a bit
-  ThisThread::sleep_for(50);
+  ThisThread::sleep_for(50ms);
 
   // wake up imu
   retval = sleep(false);

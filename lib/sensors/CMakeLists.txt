@@ -27,3 +27,8 @@ add_library(QEI STATIC)
 target_sources(QEI PRIVATE src/QEI.cpp)
 target_include_directories(QEI PUBLIC include)
 target_set_mbed_dependency(QEI)
+
+add_library(IMU STATIC)
+target_sources(IMU PRIVATE src/IMU.cpp src/IMU_MadgwickFilter.cpp)
+target_include_directories(IMU PUBLIC include)
+target_set_mbed_dependency(IMU)
