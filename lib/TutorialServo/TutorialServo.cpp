@@ -2,8 +2,8 @@
 
 
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1,
-                             float maxPulsewidthInMs = 2) 
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees , float minPulsewidthInMs ,
+                             float maxPulsewidthInMs) 
 	: _servoPwmOut(servoPin),
       _minPulseWidthInMs(minPulsewidthInMs),
       _maxPulseWidthInMs(maxPulsewidthInMs),
