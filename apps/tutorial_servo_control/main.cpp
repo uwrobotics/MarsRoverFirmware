@@ -1,4 +1,4 @@
-
+#include "mbed.h"
 AnalogIn potVoltageIn(PA_0);
 PwmOut servoPwmOut(PA_1);
 
