@@ -6,7 +6,6 @@
 #include "mbed.h"
 
 // Blinking rate in millisecond
-
 constexpr auto BLINKING_RATE = 500ms;
 
 int main() {

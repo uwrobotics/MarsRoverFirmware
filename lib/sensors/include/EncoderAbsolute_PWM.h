@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE
-constexpr uint8_t PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE = 12;
-#endif
-
 #include "Encoder.h"
 #include "PwmIn.h"
 #include "mbed.h"
