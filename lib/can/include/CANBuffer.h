@@ -6,10 +6,10 @@
 #include "CircularBuffer.h"
 #include "mbed.h"
 
-constexpr unsigned uint_8 CANBUFFER_SIZE = 8;
+constexpr uint_8 CANBUFFER_SIZE = 8;
 
-constexpr unsigned uint_8 CANBUFFER_FLAG_DATA_READY(1UL << 0);
-constexpr unsigned uint_8 CANBUFFER_FLAG_FULL(1UL << 1);
+constexpr uint_8 CANBUFFER_FLAG_DATA_READY(1UL << 0);
+constexpr uint_8 CANBUFFER_FLAG_FULL(1UL << 1);
 
 class CANBuffer : public CircularBuffer<CANMsg, CANBUFFER_SIZE> {
  public:

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-constexpr uint16_t MOTOR_DEFAULT_FREQUENCY_HZ = 244;
+constexpr uint8_t MOTOR_DEFAULT_FREQUENCY_HZ = 244;
 
 #include "mbed.h"
 
