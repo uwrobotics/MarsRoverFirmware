@@ -9,6 +9,8 @@ public:
 	void setAngleRangeInDegrees(float degrees);
 	void setPulseWidthRangeInMs(float minPulseWidthInMs, float maxPulseWidthInMs);
 	void setServoPositionInDegrees(float degrees);
+	void setServoPositionWithPercent(float percent);
+
 
 private:
 	PwmOut _servoPwmOut;
@@ -16,4 +18,3 @@ private:
 	float _maxPulseWidthInMs;
     float _servoRangeInDegrees;
 };
-

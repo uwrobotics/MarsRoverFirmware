@@ -3,7 +3,11 @@
 
 
 TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees , float minPulsewidthInMs ,
+<<<<<<< HEAD
                              float maxPulsewidthInMs) 
+=======
+                             float maxPulsewidthInMs ) 
+>>>>>>> Younes PR Comments
 	: _servoPwmOut(servoPin),
       _minPulseWidthInMs(minPulsewidthInMs),
       _maxPulseWidthInMs(maxPulsewidthInMs),
@@ -23,6 +27,10 @@ void TutorialServo::setPulseWidthRangeInMs(float minPulseWidthInMs, float maxPul
 	_minPulseWidthInMs = minPulseWidthInMs/1000;
 	_maxPulseWidthInMs = maxPulseWidthInMs/1000;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> Younes PR Comments
 
 void TutorialServo::setServoPositionWithPercent(float percent) {
   //user cannot enter a percent bigger than 100
@@ -32,7 +40,23 @@ void TutorialServo::setServoPositionWithPercent(float percent) {
   float value;
   value = ((_maxPulseWidthInMs - _minPulseWidthInMs) / 100) * percent) + _minPulseWidthInMs;
   _servoPwmOut.pulsewidth(value);
+<<<<<<< HEAD
 
+}
+void TutorialServo::setServoPositionInDegrees(float degrees) {
+	
+	float value;
+
+	value = (degrees/_servoRangeInDegrees)*100;
+	setServoPositionWithPercent(value);
+	/* alternate method to setting servo position
+
+	value = ((_maxPulseWidthInMs - _minPulseWidthInMs) / _servoRangeInDegrees) * degrees) + _minPulseWidthInMs;
+	_servoPwmOut.pulsewidth(value);
+=======
+>>>>>>> Younes PR Comments
+
+	*/
 }
 void TutorialServo::setServoPositionInDegrees(float degrees) {
 	
