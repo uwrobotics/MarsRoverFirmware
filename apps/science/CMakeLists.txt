@@ -4,7 +4,9 @@ target_link_libraries(science.${TARGET}-board.elf
     PRIVATE
     CANMsg
     ActuatorController
+    ScienceConfig
     Encoder
+    Servo
     uwrt-mars-rover-hw-bridge)
 target_set_firmware_properties(science.${TARGET}-board.elf)
 

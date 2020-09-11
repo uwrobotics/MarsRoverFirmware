@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../targets/science/PinNames.h"
 #include "ActuatorController.h"
 #include "Encoder.h"
+#include "PinNames.h"
 #include "Servo.h"
 #include "mbed.h"
 

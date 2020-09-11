@@ -7,9 +7,8 @@
 #include "MoistureSensor.h"
 #include "ScienceConfig.h"
 #include "Servo.h"
-#include "can_config.h"
+#include "hw_bridge.h"
 #include "mbed.h"
-#include "mbed_config.h"
 
 // motors
 Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
