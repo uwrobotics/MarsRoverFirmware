@@ -55,6 +55,9 @@ test-moisture:
   #  - nucleo
   - science
 
+test-netzer-encoder:
+  - nucleo
+
 test-pid:
   - nucleo
 #  - arm
