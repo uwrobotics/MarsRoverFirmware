@@ -5,7 +5,10 @@ SPI spi(SPI_MOSI, SPI_MISO, SPI_SCK);  // mosi, miso, sclk (PA_7, PA_6, PA_5)
 int main() {
 
   uint16_t upper, lower;
-  uint16_t ack, start, zero, data, error, warn, crc;
+  uint32_t msg;
+
+  uint16_t ack, start, zero, error, warn, crc;
+  uint32_t pos;
 
   const uint8_t crcPolynomial = 0x03;
 
@@ -21,22 +24,24 @@ int main() {
     upper = spi.write(0x8000);
     lower = spi.write(0x0000);
 
-    ack   = (upper >> 13) & 1;
-    start = (upper >> 12) & 1;
-    zero  = (upper >> 11) & 1;
+    msg   = (((upper << 16) | lower) >> 2) & 0x0FFFFFFF;
 
-    data = (upper << 5) | (lower >> 11);
+    ack   = (msg >> 27) & 1;
+    start = (msg >> 26) & 1;
+    zero  = (msg >> 25) & 1;
 
-    error = (lower >> 10) & 1;
-    warn  = (lower >> 9) & 1;
+    pos  = (msg >> 8) & 0x1FFFF;
 
-    crc = (lower << 9) >> 11;
+    error = (msg >> 7) & 1; // 1 = good
+    warn  = (msg >> 6) & 1; // 1 = good
 
-    uint32_t msg = crc | (warn << 6) | (error << 7) | (data << 8);
-    uint32_t rem = msg % crcPolynomial;
+    crc   = msg & 0x3F;
+
+    uint32_t rem = (msg & 0x1FFFFFF) % crcPolynomial;
 
     printf("Upper: 0x%04X \t Lower: 0x%04X \n", upper, lower);
-    printf("Ack: %d \t Start: %d \t Zero: %d \t Data: %d \t Error: %d \t Warn: %d \t CRC: %d \t Rem: %d \n\n",
-           ack, start, zero, data, error, warn, crc, (int) rem);
+    printf("Ack: %d \t Start: %d \t Zero: %d \t Pos: %d \t Error: %d \t Warn: %d \t CRC: %d \t Rem: %d \n",
+           ack, start, zero, (int) pos, error, warn, crc, (int) rem);
+    printf("Pos: 0x%08X \t CRC: 0x%04X \t Msg: 0x%08X \n\n", (unsigned int) pos, crc, (unsigned int) msg);
   }
 }
