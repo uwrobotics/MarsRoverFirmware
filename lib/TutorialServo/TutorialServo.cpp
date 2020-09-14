@@ -9,7 +9,7 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 	      
   _minPulseWidthInMs = _minPulseWidthInMs / 1000;
   _maxPulseWidthInMs = _maxPulseWidthInMs / 1000;
-   // default period of servo is 50Hz or 20 milliseconds 
+  // default period of servo is 50Hz or 20 milliseconds 
   _servoPwmOut.period(0.020);
 }
 
