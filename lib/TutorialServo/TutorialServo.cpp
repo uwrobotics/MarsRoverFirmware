@@ -25,10 +25,10 @@ void TutorialServo::setPulseWidthRangeInMs(float minPulseWidthInMs, float maxPul
 
 
 void TutorialServo::setServoPositionWithPercent(float percent) {
-  //user cannot enter a percent bigger than 100
-  percent = (percent >100) ? 100: percent;
-  //user cannot enter a percent less than 0
-  percent = (percent < 0) ? 0: percent;
+  // user cannot enter a percent bigger than 100
+  percent = (percent > 100) ? 100: percent;
+  // user cannot enter a percent less than 0
+  percent = (percent < 0) ? 0 : percent;
   float value;
   value = ((_maxPulseWidthInMs - _minPulseWidthInMs) / 100) * percent) + _minPulseWidthInMs;
   _servoPwmOut.pulsewidth(value);
