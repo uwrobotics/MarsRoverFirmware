@@ -19,8 +19,8 @@ void TutorialServo::setAngleRangeInDegrees(float degrees) {
 }
 
 void TutorialServo::setPulseWidthRangeInMs(float minPulseWidthInMs, float maxPulseWidthInMs) {
- _minPulseWidthInMs = minPulseWidthInMs/1000;
- _maxPulseWidthInMs = maxPulseWidthInMs/1000;
+  _minPulseWidthInMs = minPulseWidthInMs/1000;
+  _maxPulseWidthInMs = maxPulseWidthInMs/1000;
 }
 
 
