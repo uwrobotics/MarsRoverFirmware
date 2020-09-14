@@ -36,14 +36,14 @@ void TutorialServo::setServoPositionWithPercent(float percent) {
 }
 void TutorialServo::setServoPositionInDegrees(float degrees) {
 	
-	float value;
+  float value;
 
-	value = (degrees/_servoRangeInDegrees)*100;
-	setServoPositionWithPercent(value);
-	/* alternate method to setting servo position
+  value = (degrees/_servoRangeInDegrees)*100;
+  setServoPositionWithPercent(value);
+  /* alternate method to setting servo position
 
-	value = ((_maxPulseWidthInMs - _minPulseWidthInMs) / _servoRangeInDegrees) * degrees) + _minPulseWidthInMs;
-	_servoPwmOut.pulsewidth(value);
+  value = ((_maxPulseWidthInMs - _minPulseWidthInMs) / _servoRangeInDegrees) * degrees) + _minPulseWidthInMs;
+  _servoPwmOut.pulsewidth(value);
 
-	*/
+  */
 }
