@@ -13,11 +13,12 @@
 // motors
 Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
 Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
+
 /*
 // Servo
 LimServo coverServo(SRVO_PWM_1, ScienceConfig::coverServoRange, ScienceConfig::coverServoMaxPulse,
-                    ScienceConfig::coverServoMinPulse);   // these two constructors are not working
-                    // we are recieving an error saying that there is no such constructor that exists
+                    ScienceConfig::coverServoMinPulse);  // these two constructors are not working
+// we are recieving an error saying that there is no such constructor that exists
 LimServo diggerServo(SRVO_PWM_2, ScienceConfig::diggerServoRange, ScienceConfig::diggerServoMaxPulse,
                      ScienceConfig::diggerServoMinPulse);
 */
@@ -59,26 +60,26 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   msg.getPayload(motionData);
 
   switch (msg.id) {
-    case CANID::SET_INDEXER_POS:
+    case HWBRIDGE::CANID::SET_INDEXER_POS:  // not declared in hw_bridge
       return indexerActuator.setMotionData(motionData);
-    case CANID::SET_ELEVATOR_POS:
+    case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // not declared in hw_bridge
       return elevatorActuator.setMotionData(motionData);
-    case CANID::SET_COVER_POS:
+    case HWBRIDGE::CANID::SET_COVER_POS:  // not declared in hw_bridge
       return coverServo.set_position(motionData);
-    case CANID::SET_DIGGER_POS:
+    case HWBRIDGE::CANID::SET_DIGGER_POS:
       return diggerServo.set_position(motionData);
-    case CANID::SET_MOISTURE_SENSOR:
+    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:
       return moistureSensor.Is_Initialized();
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
   }
 }
 
-static CANMsg::CANMsgHandlerMap canHandleMap = {{CANID::SET_INDEXER_POS, setMotionData},
-                                                {CANID::SET_ELEVATOR_POS, setMotionData},
-                                                {CANID::SET_COVER_POS, setMotionData},
-                                                {CANID::SET_DIGGER_POS, setMotionData},
-                                                {CANID::SET_MOISTURE_SENSOR, setMotionData}};
+static CANMsg::CANMsgHandlerMap canHandleMap = {{HWBRIDGE::CANID::SET_INDEXER_POS, setMotionData},
+                                                {HWBRIDGE::CANID::SET_ELEVATOR_POS, setMotionData},
+                                                {HWBRIDGE::CANID::SET_COVER_POS, setMotionData},
+                                                {HWBRIDGE::CANID::SET_DIGGER_POS, setMotionData},
+                                                {HWBRIDGE::CANID::SET_MOISTURE_SENSOR, setMotionData}};
 
 // CAN Threads
 Thread rxCANProcessorThread;
