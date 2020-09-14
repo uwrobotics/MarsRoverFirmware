@@ -15,14 +15,13 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 }
 
 void TutorialServo::setAngleRangeInDegrees(float degrees) {
-   _servoRangeInDegrees = degrees; 
+  _servoRangeInDegrees = degrees; 
 }
 
 void TutorialServo::setPulseWidthRangeInMs(float minPulseWidthInMs, float maxPulseWidthInMs) {
   _minPulseWidthInMs = minPulseWidthInMs / 1000;
   _maxPulseWidthInMs = maxPulseWidthInMs / 1000;
 }
-
 
 void TutorialServo::setServoPositionWithPercent(float percent) {
   // user cannot enter a percent bigger than 100
