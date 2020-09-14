@@ -60,15 +60,15 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   msg.getPayload(motionData);
 
   switch (msg.id) {
-    case HWBRIDGE::CANID::SET_INDEXER_POS:  // not declared in hw_bridge
+    case HWBRIDGE::CANID::SET_INDEXER_POS:  // not declared in hw_bridge (included in can_config.h)
       return indexerActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // not declared in hw_bridge
+    case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // not declared in hw_bridge (included in can_config.h)
       return elevatorActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_COVER_POS:  // not declared in hw_bridge
+    case HWBRIDGE::CANID::SET_COVER_POS:  // not declared in hw_bridge (included in can_config.h)
       return coverServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_DIGGER_POS:  // not declared in hw_bridge
+    case HWBRIDGE::CANID::SET_DIGGER_POS:  // not declared in hw_bridge (included in can_config.h)
       return diggerServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // not declared in hw_bridge
+    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // not declared in hw_bridge (included in can_config.h)
       return moistureSensor.Is_Initialized();
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
@@ -107,10 +107,10 @@ void txCANProcessor() {
   CANMsg txMsg;
 
   while (true) {
-    txMsg.id = SEND_INDEXER_POS;
+    txMsg.id = SEND_INDEXER_POS;  // again this is in the can_config.h file
     txMsg.setPayload(indexerActuator.getAngle_Degrees());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod_millisec);  // error says we should provide an integer number of seconds to sleep for
 
     txMsg.id = SEND_ELEVATOR_POS;
     txMsg.setPayload(elevatorActuator.getAngle_Degrees());
