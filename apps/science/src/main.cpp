@@ -66,15 +66,16 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
       return elevatorActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_COVER_POS:  // not declared in hw_bridge
       return coverServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_DIGGER_POS:
+    case HWBRIDGE::CANID::SET_DIGGER_POS:  // not declared in hw_bridge
       return diggerServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:
+    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // not declared in hw_bridge
       return moistureSensor.Is_Initialized();
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
   }
 }
-
+// it seems like a lot of these are not listed in the hw_bridge namespace, perhaps they are all under different names
+// now?
 static CANMsg::CANMsgHandlerMap canHandleMap = {{HWBRIDGE::CANID::SET_INDEXER_POS, setMotionData},
                                                 {HWBRIDGE::CANID::SET_ELEVATOR_POS, setMotionData},
                                                 {HWBRIDGE::CANID::SET_COVER_POS, setMotionData},
