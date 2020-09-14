@@ -1,5 +1,6 @@
 #include "mbed.h"
-#include "header.h"
+#include "TutorialServo.h"
+#include "CANMsg.h"
 
 
 CAN can(CAN1_RX, CAN1_TX);
@@ -19,3 +20,4 @@ int main() {
         }
         return 0;
 }
+

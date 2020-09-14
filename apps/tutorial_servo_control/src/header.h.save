@@ -1,6 +1,5 @@
 #ifndef TUTORIAL_SERVO_H
 #define TUTORIAL_SERVO_H
-
 #include "mbed.h"
 
 class TutorialServo{
@@ -48,4 +47,5 @@ class TutorialServo{
 
         }
 
+};
 #endif
