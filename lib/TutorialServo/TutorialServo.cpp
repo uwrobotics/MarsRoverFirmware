@@ -9,18 +9,22 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 	      
   _minPulseWidthInMs = _minPulseWidthInMs / 1000;
   _maxPulseWidthInMs = _maxPulseWidthInMs / 1000;
+  
   // default period of servo is 50Hz or 20 milliseconds 
   _servoPwmOut.period(0.020);
 }
 
 void TutorialServo::setAngleRangeInDegrees(float degrees) {
+  
   _servoRangeInDegrees = degrees; 
+	
 }
 
 void TutorialServo::setPulseWidthRangeInMs(float minPulseWidthInMs, float maxPulseWidthInMs) {
   _minPulseWidthInMs = minPulseWidthInMs / 1000;
   _maxPulseWidthInMs = maxPulseWidthInMs / 1000;
 }
+
 
 void TutorialServo::setServoPositionWithPercent(float percent) {
   // user cannot enter a percent bigger than 100
