@@ -1,8 +1,6 @@
 #pragma once
 
 #include "LookupTable.h"
-
-#include <map>
 #include "mbed.h"
 
 class CANMsg : public CANMessage {
