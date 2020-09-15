@@ -1,0 +1,2 @@
+add_library(LookupTable INTERFACE)
+target_include_directories(LookupTable INTERFACE include)
