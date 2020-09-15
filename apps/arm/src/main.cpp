@@ -8,7 +8,6 @@
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
 #include "LimServo.h"
-#include "LookupTable.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
