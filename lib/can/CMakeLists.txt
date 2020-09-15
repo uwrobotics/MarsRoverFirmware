@@ -4,7 +4,7 @@ target_include_directories(CANBuffer PUBLIC include)
 #target_link_libraries(CANBuffer
         #PRIVATE
        # LookupTable
-       )    
+       #)    
 target_set_mbed_dependency(CANBuffer)
 
 add_library(CANMsg INTERFACE)

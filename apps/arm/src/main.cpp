@@ -8,6 +8,7 @@
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
 #include "LimServo.h"
+#include "LookupTable.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
@@ -218,8 +219,9 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      if (canHandlerMap.count(rxMsg.id) > 0) {
-        canHandlerMap[rxMsg.id](rxMsg);
+      auto ret = canHandlerMap.at(rxMsg.id);
+      if (ret.has_value()) {
+        ret.value()(rxMsg);
       } else {
         // TODO: Warn about unsupported CAN command (without flooding)
       }

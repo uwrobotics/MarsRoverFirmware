@@ -1,6 +1,6 @@
 #pragma once
 
-#inlude "LookupTable.h"
+#include "LookupTable.h"
 
 #include <map>
 #include "mbed.h"
@@ -8,7 +8,7 @@
 class CANMsg : public CANMessage {
  public:
   typedef mbed_error_status_t (*CANMsgHandler)(CANMsg &);
-  typedef std::map<unsigned int, CANMsg::CANMsgHandler> CANMsgHandlerMap;
+  typedef LookupTable<uint16_t, CANMsg::CANMsgHandler> CANMsgHandlerMap;
 
   template <class T>
   union CANPayload {
