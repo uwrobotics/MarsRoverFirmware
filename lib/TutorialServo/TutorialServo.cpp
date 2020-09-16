@@ -1,21 +1,21 @@
 #include "TutorialServo.h"
 
 TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs,
-                             float maxPulsewidthInMs)		                                
+                             float maxPulsewidthInMs)
     : _servoPwmOut(servoPin),
       _minPulseWidthInMs(minPulsewidthInMs),
       _maxPulseWidthInMs(maxPulsewidthInMs),
-      _servoRangeInDegrees(servoRangeInDegrees) { 
+      _servoRangeInDegrees(servoRangeInDegrees) {
 	      
   _minPulseWidthInMs = _minPulseWidthInMs / 1000;
   _maxPulseWidthInMs = _maxPulseWidthInMs / 1000;
   
-  // default period of servo is 50Hz or 20 milliseconds 
+  // default period of servo is 50Hz or 20 milliseconds
   _servoPwmOut.period(0.020);
 }
 
 void TutorialServo::setAngleRangeInDegrees(float degrees) {
-  _servoRangeInDegrees = degrees; 
+  _servoRangeInDegrees = degrees;
 }
 
 void TutorialServo::setPulseWidthRangeInMs(float minPulseWidthInMs, float maxPulseWidthInMs) {
@@ -33,7 +33,7 @@ void TutorialServo::setServoPositionWithPercent(float percent) {
   _servoPwmOut.pulsewidth(value);
 }
 
-void TutorialServo::setServoPositionInDegrees(float degrees) {	
+void TutorialServo::setServoPositionInDegrees(float degrees) {
   float value;
 
   value = (degrees / _servoRangeInDegrees) * 100;
