@@ -23,11 +23,10 @@ int main() {
     if (can.read(rxMsg)) {
       printf("-------------------------------------\r\n");
       printf("CAN message received\r\n");
-    
 
       // Filtering performed by software:
       if (rxMsg.id == RX_ID) {
-        rxMsg >> percent;  // extract data from the received CAN message        
+        rxMsg >> percent;  // extract data from the received CAN message
         servo_can.setServoPositionWithPercent(percent);
       }
     }
