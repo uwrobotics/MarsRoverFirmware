@@ -14,8 +14,8 @@ PwmIn::PwmIn(PinName pwmSense, int numSamplesToAverage)
   m_prevAvgDutyCycle     = 0;
   m_avgDutyCycleVelocity = 0;
 
-  p_periodSamples     = new std::chrono::duration<double>[m_numSamplesToAverage]();
-  p_pulseWidthSamples = new std::chrono::duration<double>[m_numSamplesToAverage]();
+  p_periodSamples     = new std::chrono::duration<float>[m_numSamplesToAverage]();
+  p_pulseWidthSamples = new std::chrono::duration<float>[m_numSamplesToAverage]();
 
   m_timer.start();
 }
@@ -25,31 +25,31 @@ PwmIn::~PwmIn() {
   delete[] p_periodSamples;
 }
 
-std::chrono::duration<double> PwmIn::period() {
+std::chrono::duration<float> PwmIn::period() {
   return m_period;
 }
 
-std::chrono::duration<double> PwmIn::avgPeriod() {
+std::chrono::duration<float> PwmIn::avgPeriod() {
   return m_avgPeriod;
 }
 
-std::chrono::duration<double> PwmIn::pulseWidth() {
+std::chrono::duration<float> PwmIn::pulseWidth() {
   return m_pulseWidth;
 }
 
-std::chrono::duration<double> PwmIn::avgPulseWidth() {
+std::chrono::duration<float> PwmIn::avgPulseWidth() {
   return m_avgPulseWidth;
 }
 
-double PwmIn::dutyCycle() {
+float PwmIn::dutyCycle() {
   return m_pulseWidth / m_period;
 }
 
-double PwmIn::avgDutyCycle() {
+float PwmIn::avgDutyCycle() {
   return m_avgDutyCycle;
 }
 
-double PwmIn::avgDutyCycleVelocity() {
+float PwmIn::avgDutyCycleVelocity() {
   return m_avgDutyCycleVelocity;
 }
 
@@ -75,9 +75,9 @@ void PwmIn::fall() {
   }
 }
 
-std::chrono::duration<double> PwmIn::movingAvg(std::chrono::duration<double>* p_samples,
-                                               std::chrono::duration<double>* p_sampleSum,
-                                               std::chrono::duration<double> newSample, int newIndex) {
+std::chrono::duration<float> PwmIn::movingAvg(std::chrono::duration<float>* p_samples,
+                                               std::chrono::duration<float>* p_sampleSum,
+                                               std::chrono::duration<float> newSample, int newIndex) {
   *p_sampleSum -= p_samples[newIndex];
   p_samples[newIndex] = newSample;
   *p_sampleSum += p_samples[newIndex];

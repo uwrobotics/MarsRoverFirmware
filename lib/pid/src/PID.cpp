@@ -75,7 +75,7 @@
 
 #include "PID.h"
 
-PID::PID(double Kc, double tauI, double tauD, std::chrono::duration<double> interval) {
+PID::PID(float Kc, float tauI, float tauD, std::chrono::duration<float> interval) {
   usingFeedForward = false;
   inAuto           = false;
 
@@ -102,7 +102,7 @@ PID::PID(double Kc, double tauI, double tauD, std::chrono::duration<double> inte
   realOutput_ = 0.0;
 }
 
-void PID::setInputLimits(double inMin, double inMax) {
+void PID::setInputLimits(float inMin, float inMax) {
   // Make sure we haven't been given impossible values.
   if (inMin >= inMax) {
     return;
@@ -125,7 +125,7 @@ void PID::setInputLimits(double inMin, double inMax) {
   inMax_ = inMax;
 }
 
-void PID::setOutputLimits(double outMin, double outMax) {
+void PID::setOutputLimits(float outMin, float outMax) {
   // Make sure we haven't been given impossible values.
   if (outMin >= outMax) {
     return;
@@ -146,7 +146,7 @@ void PID::setOutputLimits(double outMin, double outMax) {
   outSpan_ = outMax - outMin;
 }
 
-void PID::setTunings(double Kc, double tauI, double tauD) {
+void PID::setTunings(float Kc, float tauI, float tauD) {
   // Verify that the tunings make sense.
   if (Kc == 0.0 || tauI < 0.0 || tauD < 0.0) {
     return;
@@ -157,7 +157,7 @@ void PID::setTunings(double Kc, double tauI, double tauD) {
   iParam_ = tauI;
   dParam_ = tauD;
 
-  double tempTauR;
+  float tempTauR;
 
   if (tauI == 0.0) {
     tempTauR = 0.0;
@@ -180,7 +180,7 @@ void PID::setTunings(double Kc, double tauI, double tauD) {
 }
 
 void PID::reset(void) {
-  double scaledBias = 0.0;
+  float scaledBias = 0.0;
 
   if (usingFeedForward) {
     scaledBias = (bias_ - outMin_) / outSpan_;
@@ -205,7 +205,7 @@ void PID::setMode(int mode) {
   inAuto = (mode != 0);
 }
 
-void PID::setInterval(std::chrono::duration<double> interval) {
+void PID::setInterval(std::chrono::duration<float> interval) {
   if (interval > 0s) {
     // Convert the time-based tunings to reflect this change.
     tauR_ *= (interval / tSample_);
@@ -215,28 +215,28 @@ void PID::setInterval(std::chrono::duration<double> interval) {
   }
 }
 
-void PID::setSetPoint(double sp) {
+void PID::setSetPoint(float sp) {
   setPoint_ = sp;
 }
 
-void PID::setProcessValue(double pv) {
+void PID::setProcessValue(float pv) {
   processVariable_ = pv;
 }
 
-void PID::setBias(double bias) {
+void PID::setBias(float bias) {
   bias_            = bias;
   usingFeedForward = 1;
 }
 
-void PID::setDeadZoneError(double error) {
+void PID::setDeadZoneError(float error) {
   deadZoneError_ = error;
 }
 
-void PID::setRealOutput(double realOutput) {
+void PID::setRealOutput(float realOutput) {
   realOutput_ = realOutput;
 }
 
-void PID::setupAutoTune(void *outputPointer, double *inputPointer, int actuatorType) {
+void PID::setupAutoTune(void *outputPointer, float *inputPointer, int actuatorType) {
   // set actuator type
   actuatorType_ = actuatorType;
 
@@ -250,11 +250,11 @@ void PID::setupAutoTune(void *outputPointer, double *inputPointer, int actuatorT
 void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   Timer timer;
   bool isMax, isMin, justchanged;
-  double absMax, absMin, refVal, Ku, Pu;
-  std::chrono::duration<double> peak1, peak2;
+  float absMax, absMin, refVal, Ku, Pu;
+  std::chrono::duration<float> peak1, peak2;
   int peakType, peakCount;
-  double lastInputs[101] = {0};
-  double peaks[10];
+  float lastInputs[101] = {0};
+  float peaks[10];
 
   // if no config struct was passed, create one with default values
   // outputStart = half of range, oStep = 10% of range, noiseBand = 1% of range
@@ -262,7 +262,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     autoTuneConfig             = new PID::t_AutoTuneConfig();
     autoTuneConfig->nLookBack  = 40;
     autoTuneConfig->sampleTime = 250ms;
-    double outputStart         = outMax_ / 2;
+    float outputStart         = outMax_ / 2;
     if (outputStart < outMin_) outputStart = outMin_;
     autoTuneConfig->outputStart = outputStart;
     autoTuneConfig->oStep       = outSpan_ * 0.15;
@@ -288,7 +288,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
       break;
     }
 
-    std::chrono::duration<double> last_timer_time = timer.elapsed_time();
+    std::chrono::duration<float> last_timer_time = timer.elapsed_time();
 
     refVal = *input_;
 
@@ -306,7 +306,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
 
     // id peaks
     for (int i = autoTuneConfig->nLookBack - 1; i >= 0; i--) {
-      double val = lastInputs[i];
+      float val = lastInputs[i];
       if (isMax) isMax = refVal > val;
       if (isMin) isMin = refVal < val;
       lastInputs[i + 1] = lastInputs[i];
@@ -336,7 +336,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
 
     // Transition, check if we can autotune based on the last peaks
     if (justchanged && peakCount > 2) {
-      double avgSeparation =
+      float avgSeparation =
           (abs(peaks[peakCount - 1] - peaks[peakCount - 2]) + abs(peaks[peakCount - 2] - peaks[peakCount - 3])) / 2;
       if (avgSeparation < 0.05 * (absMax - absMin)) break;
     }
@@ -363,7 +363,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
   }
 }
 
-void PID::setOutput(double output) {
+void PID::setOutput(float output) {
   // bound output to limits
   if (output > outMax_)
     output = outMax_;
@@ -378,7 +378,7 @@ void PID::setOutput(double output) {
       break;
     }
     default:
-      *(double *)output_ = output;
+      *(float *)output_ = output;
   }
 }
 
@@ -386,9 +386,9 @@ void PID::setAutoTuneParams() {
   setTunings(autoTuneKc_, autoTuneTauR_, autoTuneTauD_);
 }
 
-double PID::compute() {
+float PID::compute() {
   // Pull in the input and setpoint, and scale them into percent span.
-  double scaledPV = (processVariable_ - inMin_) / inSpan_;
+  float scaledPV = (processVariable_ - inMin_) / inSpan_;
 
   if (scaledPV > 1.0) {
     scaledPV = 1.0;
@@ -396,14 +396,14 @@ double PID::compute() {
     scaledPV = 0.0;
   }
 
-  double scaledSP = (setPoint_ - inMin_) / inSpan_;
+  float scaledSP = (setPoint_ - inMin_) / inSpan_;
   if (scaledSP > 1.0) {
     scaledSP = 1;
   } else if (scaledSP < 0.0) {
     scaledSP = 0;
   }
 
-  double error = scaledSP - scaledPV;
+  float error = scaledSP - scaledPV;
 
   if (fabs(error) < deadZoneError_) {
     error = 0;
@@ -416,9 +416,9 @@ double PID::compute() {
   }
 
   // Compute the current slope of the input signal.
-  double dMeas = (scaledPV - prevProcessVariable_) / tSample_.count();
+  float dMeas = (scaledPV - prevProcessVariable_) / tSample_.count();
 
-  double scaledBias = 0.0;
+  float scaledBias = 0.0;
 
   if (usingFeedForward) {
     scaledBias = (bias_ - outMin_) / outSpan_;
@@ -443,50 +443,50 @@ double PID::compute() {
   return ((controllerOutput_ * outSpan_) + outMin_);
 }
 
-double PID::getInMin() {
+float PID::getInMin() {
   return inMin_;
 }
 
-double PID::getInMax() {
+float PID::getInMax() {
   return inMax_;
 }
 
-double PID::getOutMin() {
+float PID::getOutMin() {
   return outMin_;
 }
 
-double PID::getOutMax() {
+float PID::getOutMax() {
   return outMax_;
 }
 
-std::chrono::duration<double> PID::getInterval() {
+std::chrono::duration<float> PID::getInterval() {
   return tSample_;
 }
 
-double PID::getPParam() {
+float PID::getPParam() {
   return pParam_;
 }
 
-double PID::getIParam() {
+float PID::getIParam() {
   return iParam_;
 }
 
-double PID::getDParam() {
+float PID::getDParam() {
   return dParam_;
 }
 
-double PID::getATunePParam() {
+float PID::getATunePParam() {
   return autoTuneKc_;
 }
 
-double PID::getATuneIParam() {
+float PID::getATuneIParam() {
   return autoTuneTauR_;
 }
 
-double PID::getATuneDParam() {
+float PID::getATuneDParam() {
   return autoTuneTauD_;
 }
 
-double PID::getSetPoint() {
+float PID::getSetPoint() {
   return setPoint_;
 }
