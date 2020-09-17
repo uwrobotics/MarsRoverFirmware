@@ -84,7 +84,7 @@ class PwmIn {
 
   void rise();
   void fall();
-  std::chrono::duration<double> movingAvg(std::chrono::duration<float>* p_samples,
+  std::chrono::duration<float> movingAvg(std::chrono::duration<float>* p_samples,
                                           std::chrono::duration<float>* p_sampleSum,
                                           std::chrono::duration<float> newSample, int newIndex);
 };

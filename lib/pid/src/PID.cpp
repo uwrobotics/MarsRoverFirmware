@@ -371,7 +371,7 @@ void PID::setOutput(float output) {
     output = outMin_;
 
   // cast void pointer based on required output type
-  // add desired output types here and convert from double as necessary
+  // add desired output types here and convert from float as necessary
   switch (actuatorType_) {
     case PWM_MOTOR: {
       *static_cast<PwmOut *>(output_) = output;

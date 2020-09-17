@@ -16,8 +16,8 @@ class ServoMotor : public Motor {
    * @param max_pulsewidth  Pwm pulse width for maximum speed
    * @param limit     Maximum speed magnitude
    */
-  ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<double> min_pulsewidth = 1ms,
-             std::chrono::duration<double> max_pulsewidth = 2ms, float limit = 1.0);
+  ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<float> min_pulsewidth = 1ms,
+             std::chrono::duration<float> max_pulsewidth = 2ms, float limit = 1.0);
 
   ServoMotor(Motor::t_motorConfig motorConfig);
 
@@ -39,7 +39,7 @@ class ServoMotor : public Motor {
   void servoSetSpeed(float speed_);
   float servoRead(void);
   float servoGetMaxSpeed(void);
-  void servoSetPeriod(std::chrono::duration<double> period);
+  void servoSetPeriod(std::chrono::duration<float> period);
 
  protected:
   bool m_inverted;
