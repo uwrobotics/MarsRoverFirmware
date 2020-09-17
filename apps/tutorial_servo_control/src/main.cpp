@@ -1,4 +1,5 @@
 #include "mbed.h"
+#include "stdio.h"
 #include "TutorialServo.h"
 #include "CANMsg.h"
 
@@ -13,9 +14,8 @@ int main() {
         while (true) {
                 if(can.read(msg)){
 
-                        printf("Message received: %d\n", msg.data[0]);
-                        float range{servo.getRangeInDegrees()};
-                        servo.setPositionInDegrees(range * msg.data[0]);
+                        printf("Message received: %d\n", msg.getPayload());
+                        servo.setPositionInDegrees(msg.getPayload());
                 }
         }
         return 0;

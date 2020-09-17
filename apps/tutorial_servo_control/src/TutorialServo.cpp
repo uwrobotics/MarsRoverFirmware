@@ -1,32 +1,31 @@
 #include "TutorialServo.h"
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180, float minPulseInMs = 1, float maxPulsewidthInMs = 2){
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs , float maxPulsewidthInMs){
         m_servoRangeInDegrees =  servoRangeInDegrees;
         m_minPulsewidthInMs = minPulsewidthInMs;
 	m_maxPulsewidthInMs = maxPulsewidthInMs;
 }
 
-void TutorialServo::setAngleRangeInDegrees(float degrees){
+float TutorialServo::getServoRangeInDegrees() const{
 
-        m_servoRangeInDegrees = degrees;
+        return (m_servoRangeInDegrees);
 }
 
-void TutorialServo::setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulsewidthMs){
+float TutorialServo::getMinPulseWidthInMs()const{
 
-        m_minPulsewidthInMs = minPulsewidthMs;
-        m_maxPulsewidthInMs = maxPulsewidthMs;
+        return (m_minPulsewidthInMs);
+
 }
+float TutorialServo::getMaxPulseWidthInMs()const{
 
+        return (m_maxPulsewidthInMs);
+
+}
 void TutorialServo::setPositionInDegrees(float degrees){
 
-         float slope{0.0}, pulse{0.0};
+         float slope{0.0}, pulse{0.0}, range{m_maxPulsewidthInMs - m_minPulsewidthInMs};
          slope = (m_maxPulsewidthInMs - m_minPulsewidthInMs)/(m_servoRangeInDegrees*1000);
-         pulse = (m_minPulsewidthInMs/1000) + degrees/slope;
+         pulse = (m_minPulsewidthInMs/1000) + (range*degrees)/slope;
          m_servoPwmOut.pulsewidth(pulse);
-
 }
 
-float TutorialServo::getRangeInDegrees(){
-
-         return m_servoRangeInDegrees;
-}
