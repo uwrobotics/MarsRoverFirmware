@@ -14,14 +14,12 @@
 Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
 Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
 
-/*
 // Servo
 LimServo coverServo(SRVO_PWM_1, ScienceConfig::coverServoRange, ScienceConfig::coverServoMaxPulse,
                     ScienceConfig::coverServoMinPulse);  // these two constructors are not working
 // we are recieving an error saying that there is no such constructor that exists
 LimServo diggerServo(SRVO_PWM_2, ScienceConfig::diggerServoRange, ScienceConfig::diggerServoMaxPulse,
                      ScienceConfig::diggerServoMinPulse);
-*/
 
 // encoders
 EncoderAbsolute_PWM elevatorEncoder(ScienceConfig::elevatorEncoderConfig);
