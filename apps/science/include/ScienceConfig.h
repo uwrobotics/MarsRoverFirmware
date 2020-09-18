@@ -23,13 +23,13 @@ static Encoder::t_encoderConfig centrifugeEncoderConfig{.pin_ChannelA = ENC_DCI_
                                                         .zeroOffset_Degrees = 0.0};
 
 /* Servo Config */
-static double coverServoRange    = 120.0;
-static double coverServoMaxPulse = 2.2;
-static double coverServoMinPulse = 0.8;
+static float coverServoRange                           = 120.0;
+static std::chrono::duration<float> coverServoMaxPulse = 2.2ms;
+static std::chrono::duration<float> coverServoMinPulse = 0.8ms;
 
-static double diggerServoRange    = 120.0;
-static double diggerServoMaxPulse = 2.2;
-static double diggerServoMinPulse = 0.8;
+static float diggerServoRange                           = 120.0;
+static std::chrono::duration<float> diggerServoMaxPulse = 2.2ms;
+static std::chrono::duration<float> diggerServoMinPulse = 0.8ms;
 
 static ActuatorController::t_actuatorConfig diggerLiftActuatorConfig = {
     .defaultControlMode = ActuatorController::t_actuatorControlMode::position,

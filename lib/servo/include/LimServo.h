@@ -7,8 +7,7 @@ class LimServo : public Servo {
  public:
   LimServo(PinName pin);
   LimServo(PinName pin, double range);
-  LimServo(PinName pin, double range, std::chrono::duration<double> max_pulse_ms,
-           std::chrono::duration<double> min_pulse_ms);
+  LimServo(PinName pin, double range, std::chrono::duration<float> max_pulse, std::chrono::duration<float> min_pulse);
 
   mbed_error_status_t setRange(double range);
   double getRange(void);

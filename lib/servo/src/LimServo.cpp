@@ -11,12 +11,12 @@ LimServo::LimServo(PinName pin) : Servo(pin) {
   m_pwm.period(PERIOD.count());
 }
 
-LimServo::LimServo(PinName pin, double range) : LimServo(pin) {
+LimServo::LimServo(PinName pin, float range) : LimServo(pin) {
   m_range = range;
 }
 
-LimServo::LimServo(PinName pin, double range, std::chrono::duration<double> max_pulse,
-                   std::chrono::duration<double> min_pulse)
+LimServo::LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse,
+                   std::chrono::duration<float> min_pulse)
     : LimServo(pin, range) {
   m_max_pulse = max_pulse;
   m_min_pulse = min_pulse;
