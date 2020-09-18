@@ -11,27 +11,27 @@ LimServo::LimServo(PinName pin) : Servo(pin) {
   m_pwm.period(PERIOD.count());
 }
 
-LimServo::LimServo(PinName pin, double range) : LimServo(pin) {
+LimServo::LimServo(PinName pin, float range) : LimServo(pin) {
   m_range = range;
 }
 
-LimServo::LimServo(PinName pin, double range, std::chrono::duration<double> max_pulse,
-                   std::chrono::duration<double> min_pulse)
+LimServo::LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse,
+                   std::chrono::duration<float> min_pulse)
     : LimServo(pin, range) {
   m_max_pulse = max_pulse;
   m_min_pulse = min_pulse;
 }
 
-mbed_error_status_t LimServo::setRange(double range) {
+mbed_error_status_t LimServo::setRange(float range) {
   m_range = range;
   return MBED_SUCCESS;
 }
 
-double LimServo::getRange(void) {
+float LimServo::getRange(void) {
   return m_range;
 }
 
-mbed_error_status_t LimServo::setPosition(double angle) {
+mbed_error_status_t LimServo::setPosition(float angle) {
   m_pos = (std::abs(angle) < m_range) ? angle : m_range * getSign(angle);
   // angle = -1 * m_range -> pwm m_min_pulse_ms; angle = +1 * m_range -> pwm m_max_pulse_ms
   // now, if we add m_range to angle, angle = 0 -> pwm m_min_pulse_ms; angle = 2 * m_range -> pwm m_max_pulse_ms
@@ -42,6 +42,6 @@ mbed_error_status_t LimServo::setPosition(double angle) {
   return MBED_SUCCESS;
 }
 
-double LimServo::read(void) {
+float LimServo::read(void) {
   return m_pos;
 }

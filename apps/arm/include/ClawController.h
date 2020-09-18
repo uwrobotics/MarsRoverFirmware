@@ -33,7 +33,7 @@ class ClawController : public ActuatorController {
   float m_tooltipExtendedAngle_Degrees;
   float m_tooltipRetractedAngle_Degrees;
 
-  std::chrono::duration<double> m_calibrationTimeout;
+  std::chrono::duration<float> m_calibrationTimeout;
 
   float convertShaftPositionDegreesToGapCm(float shaftPosition_Degrees);
   float convertShaftVelocityDegreesToGapVelocityCm(float shaftPosition_DegreesPerSec);
