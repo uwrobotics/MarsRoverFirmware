@@ -19,6 +19,6 @@ class ContServo : public Servo {
 
  protected:
   float m_max_speed,  // MAXIMUM ROTATION SPEED in ANGLES PER SECOND (from -max speed to + max speed),  only valid for
-                       // CONTINUOUS_SERVO types
-      m_speed;         // ROTATING SPEED in ANGLES PER SECOND
+                      // CONTINUOUS_SERVO types
+      m_speed;        // ROTATING SPEED in ANGLES PER SECOND
 };

@@ -76,8 +76,8 @@ void PwmIn::fall() {
 }
 
 std::chrono::duration<float> PwmIn::movingAvg(std::chrono::duration<float>* p_samples,
-                                               std::chrono::duration<float>* p_sampleSum,
-                                               std::chrono::duration<float> newSample, int newIndex) {
+                                              std::chrono::duration<float>* p_sampleSum,
+                                              std::chrono::duration<float> newSample, int newIndex) {
   *p_sampleSum -= p_samples[newIndex];
   p_samples[newIndex] = newSample;
   *p_sampleSum += p_samples[newIndex];
