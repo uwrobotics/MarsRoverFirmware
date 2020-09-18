@@ -14,7 +14,7 @@ class Servo {
   static constexpr std::chrono::duration<float> PERIOD = 1.0s / PWM_FREQ;  // DEFAULT PERIOD LENGTH
 
   std::chrono::duration<float> m_max_pulse,  // PULSE LENGTH for MAX ANGLE/SPEED
-      m_min_pulse;                            // PULSE LENGTH for MIN ANGLE/SPEED
+      m_min_pulse;                           // PULSE LENGTH for MIN ANGLE/SPEED
 
   int getSign(int val) {
     return (val >= 0) ? 1 : -1;

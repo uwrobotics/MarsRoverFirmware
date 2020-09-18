@@ -21,5 +21,5 @@ class LimServo : public Servo {
   const int DEFAULT_RANGE = 180;  // DEFAULT RANGE for LIMITED Servos
 
   float m_range,  // RANGE OF MOTION (from -range to + range), only valid for LIMIT_SERVO types
-      m_pos;       // POSITION of servo, can be negative
+      m_pos;      // POSITION of servo, can be negative
 };

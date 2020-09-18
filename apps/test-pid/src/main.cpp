@@ -23,8 +23,8 @@ Timer timer;
 // Variables
 uint64_t pulseCount    = 0;
 uint64_t oldPulseCount = 0;
-float motorRPM        = 0.0;
-float motorPWMDuty    = 0.0;
+float motorRPM         = 0.0;
+float motorPWMDuty     = 0.0;
 Ticker interruptTimer;
 
 // PID AutoTune config struct for specific DC motor, change depending on actuator

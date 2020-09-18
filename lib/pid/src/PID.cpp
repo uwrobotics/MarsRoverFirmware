@@ -262,7 +262,7 @@ void PID::autoTune(bool PI, PID::t_AutoTuneConfig *autoTuneConfig) {
     autoTuneConfig             = new PID::t_AutoTuneConfig();
     autoTuneConfig->nLookBack  = 40;
     autoTuneConfig->sampleTime = 250ms;
-    float outputStart         = outMax_ / 2;
+    float outputStart          = outMax_ / 2;
     if (outputStart < outMin_) outputStart = outMin_;
     autoTuneConfig->outputStart = outputStart;
     autoTuneConfig->oStep       = outSpan_ * 0.15;
