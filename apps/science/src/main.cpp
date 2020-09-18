@@ -156,6 +156,6 @@ int main() {
     indexerActuator.update();
     elevatorActuator.update();
 
-    ThisThread::sleep_for(2);
+    ThisThread::sleep_for(2000ms);
   }
 }
