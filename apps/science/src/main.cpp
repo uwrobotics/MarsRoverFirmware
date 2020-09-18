@@ -101,46 +101,46 @@ void rxCANProcessor() {
 
 // Send outgoing CAN messages
 void txCANProcessor() {
-  const int txPeriod_millisec = 500;
+  constexpr std::chrono::milliseconds txPeriod = 500ms;
   CANMsg txMsg;
 
   while (true) {
     txMsg.id = SEND_INDEXER_POS;  // again this is in the can_config.h file
     txMsg.setPayload(indexerActuator.getAngle_Degrees());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);  // error says we should provide an integer number of seconds to sleep for
+    ThisThread::sleep_for(txPeriod);  // error says we should provide an integer number of seconds to sleep for
 
     txMsg.id = SEND_ELEVATOR_POS;
     txMsg.setPayload(elevatorActuator.getAngle_Degrees());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod);
 
     txMsg.id = SEND_COVER_POS;
     txMsg.setPayload(coverServo.read());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod);
 
     txMsg.id = SEND_DIGGER_POS;
 
     txMsg.setPayload(diggerServo.read());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod);
 
     txMsg.id = SEND_DIGGER_POS;
     txMsg.setPayload(diggerServo.read());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod);
 
     // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
     txMsg.id = SEND_MOISTURE;
     txMsg.setPayload((int)moistureSensor.Read_Moisture());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod);
 
     txMsg.id = SEND_TEMPERATURE;
     txMsg.setPayload(moistureSensor.Read_Temperature());
     can.write(txMsg);
-    ThisThread::sleep_for(txPeriod_millisec);
+    ThisThread::sleep_for(txPeriod);
   }
 }
 
