@@ -22,16 +22,16 @@ LimServo::LimServo(PinName pin, float range, std::chrono::duration<float> max_pu
   m_min_pulse = min_pulse;
 }
 
-mbed_error_status_t LimServo::setRange(double range) {
+mbed_error_status_t LimServo::setRange(float range) {
   m_range = range;
   return MBED_SUCCESS;
 }
 
-double LimServo::getRange(void) {
+float LimServo::getRange(void) {
   return m_range;
 }
 
-mbed_error_status_t LimServo::setPosition(double angle) {
+mbed_error_status_t LimServo::setPosition(float angle) {
   m_pos = (std::abs(angle) < m_range) ? angle : m_range * getSign(angle);
   // angle = -1 * m_range -> pwm m_min_pulse_ms; angle = +1 * m_range -> pwm m_max_pulse_ms
   // now, if we add m_range to angle, angle = 0 -> pwm m_min_pulse_ms; angle = 2 * m_range -> pwm m_max_pulse_ms
@@ -42,6 +42,6 @@ mbed_error_status_t LimServo::setPosition(double angle) {
   return MBED_SUCCESS;
 }
 
-double LimServo::read(void) {
+float LimServo::read(void) {
   return m_pos;
 }
