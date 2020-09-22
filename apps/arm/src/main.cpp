@@ -254,7 +254,7 @@ void txCANProcessor() {
   } motionReport;
 
   while (true) {
-    txMsg.setID(HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION); 
+    txMsg.setID(HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION);
     motionReport.position = turnTableActuator.getAngle_Degrees();
     motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
@@ -311,7 +311,8 @@ int main() {
   printf("=======================\r\n");
 
   // CAN init stuff
-  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
+  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,
+                 HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 

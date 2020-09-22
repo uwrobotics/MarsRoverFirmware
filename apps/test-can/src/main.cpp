@@ -31,19 +31,19 @@ void printMsg(CANMessage& msg) {
 }
 
 int main(void) {
-  ledTX = 0;              // set transmit LED off
-  ledRX = 0;              // set recieve LED off
-  timer.start();          // start timer
+  ledTX = 0;      // set transmit LED off
+  ledRX = 0;      // set recieve LED off
+  timer.start();  // start timer
   printf("CAN_Hello\r\n");
 
   while (1) {
-    if (timer.elapsed_time() >= 1s) {  // check for timeout
-      timer.reset();                   // reset timer
-      counter++;                       // increment counter
-      txMsg.clear();                   // clear Tx message storage
-      txMsg.setID((HWBRIDGE::CANID)TX_ID);              // set ID
-      txMsg << counter;                // copy counter value to CAN msg payload
-      if (can.write(txMsg)) {          // transmit message
+    if (timer.elapsed_time() >= 1s) {       // check for timeout
+      timer.reset();                        // reset timer
+      counter++;                            // increment counter
+      txMsg.clear();                        // clear Tx message storage
+      txMsg.setID((HWBRIDGE::CANID)TX_ID);  // set ID
+      txMsg << counter;                     // copy counter value to CAN msg payload
+      if (can.write(txMsg)) {               // transmit message
         printf("-------------------------------------\r\n");
         printf("CAN message sent\r\n");
         printMsg(txMsg);

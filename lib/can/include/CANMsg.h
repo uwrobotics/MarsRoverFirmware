@@ -22,7 +22,8 @@ class CANMsg : public CANMessage {
 
   /** Creates CAN message with specific content.
    */
-  CANMsg(HWBRIDGE::CANID _id, const char *_data, char _len = 8, CANType _type = CANData, CANFormat _format = CANStandard)
+  CANMsg(HWBRIDGE::CANID _id, const char *_data, char _len = 8, CANType _type = CANData,
+         CANFormat _format = CANStandard)
       : CANMessage((uint16_t)_id, _data, _len, _type, _format) {}
 
   /** Creates CAN remote message.
