@@ -1,7 +1,8 @@
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "mbed.h"
 
-CAN can(CAN_RX, CAN_TX);
+CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg;
 CANMsg txMsg;
 DigitalOut ledTX(LED1);
@@ -29,7 +30,6 @@ void printMsg(CANMessage& msg) {
 }
 
 int main(void) {
-  can.frequency(500000);  // set bit rate to 50kbps
   ledTX = 0;              // set transmit LED off
   ledRX = 0;              // set recieve LED off
   timer.start();          // start timer
@@ -40,7 +40,7 @@ int main(void) {
       timer.reset();                   // reset timer
       counter++;                       // increment counter
       txMsg.clear();                   // clear Tx message storage
-      txMsg.id = TX_ID;                // set ID
+      txMsg.setID(TX_ID);              // set ID
       txMsg << counter;                // copy counter value to CAN msg payload
       if (can.write(txMsg)) {          // transmit message
         printf("-------------------------------------\r\n");
@@ -59,7 +59,7 @@ int main(void) {
       printMsg(rxMsg);
 
       // Filtering performed by software:
-      if (rxMsg.id == RX_ID) {
+      if (rxMsg.getID() == RX_ID) {
         rxMsg >> counter;  // extract data from the received CAN message
         printf("  counter = %d\r\n", counter);
         timer.start();  // transmission lag
