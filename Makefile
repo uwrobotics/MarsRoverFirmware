@@ -7,6 +7,9 @@
 # Phony Targets
 .PHONY := build verify_app_target_tuple_config verify_app_target_tuple_is_specified clean
 
+# Environment Options
+UWRT_FIRMWARE_MAX_JOBS ?= $(nproc)
+
 # PATHS
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 TARGETS_DIR  := $(abspath $(MAKEFILE_DIR)/targets)
@@ -47,8 +50,13 @@ verify_app_target_tuple_config: verify_app_target_tuple_is_specified
 build: verify_app_target_tuple_config
 	@mkdir -p build-$(TARGET)-board
 	@cmake -S $(MAKEFILE_DIR) -B build-$(TARGET)-board -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$(MAKEFILE_DIR)/toolchain.cmake -DAPP=$(APP) -DTARGET=$(TARGET)
-	@cmake --build build-$(TARGET)-board --target $(APP).$(TARGET)-board.elf --parallel $(nproc)
+	$(info Building $(APP) app for $(TARGET) board with max $(UWRT_FIRMWARE_MAX_JOBS) jobs)
+	@cmake --build build-$(TARGET)-board --target $(APP).$(TARGET)-board.elf --parallel $(UWRT_FIRMWARE_MAX_JOBS)
+
+all:
+
 
 clean:
+	$(info Deleting all build files)
 	rm -rf build-*-board
 
