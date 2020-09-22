@@ -8,8 +8,8 @@
 
 constexpr uint8_t CANBUFFER_SIZE = 8;
 
-constexpr uint8_t CANBUFFER_FLAG_DATA_READY(1UL << 0);
-constexpr uint8_t CANBUFFER_FLAG_FULL(1UL << 1);
+constexpr uint8_t CANBUFFER_FLAG_DATA_READY{1UL << 0};
+constexpr uint8_t CANBUFFER_FLAG_FULL{1UL << 1};
 
 class CANBuffer : public CircularBuffer<CANMsg, CANBUFFER_SIZE> {
  public:
