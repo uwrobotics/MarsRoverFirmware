@@ -1,5 +1,6 @@
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 
 CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
@@ -40,7 +41,7 @@ int main(void) {
       timer.reset();                   // reset timer
       counter++;                       // increment counter
       txMsg.clear();                   // clear Tx message storage
-      txMsg.setID(TX_ID);              // set ID
+      txMsg.setID((HWBRIDGE::CANID)TX_ID);              // set ID
       txMsg << counter;                // copy counter value to CAN msg payload
       if (can.write(txMsg)) {          // transmit message
         printf("-------------------------------------\r\n");
@@ -59,7 +60,7 @@ int main(void) {
       printMsg(rxMsg);
 
       // Filtering performed by software:
-      if (rxMsg.getID() == RX_ID) {
+      if (rxMsg.getID() == (HWBRIDGE::CANID)RX_ID) {
         rxMsg >> counter;  // extract data from the received CAN message
         printf("  counter = %d\r\n", counter);
         timer.start();  // transmission lag
