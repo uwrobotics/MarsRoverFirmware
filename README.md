@@ -112,6 +112,8 @@ This repository contains:
     echo "export UWRT_FIRMWARE_MAX_JOBS=<max number of threads>" >> ~/.bashrc
     ``` 
    
+   **Tip:** You can choose to build all the supported app/target configs at once using `make all`
+   
 
 5. Deploy onto board (see below for how to connect to a rover control board)
 
