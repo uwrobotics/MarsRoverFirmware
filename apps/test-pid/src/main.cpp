@@ -2,7 +2,7 @@
 #include "mbed.h"
 
 // Defines
-constexpr uint8_t MIN_RPM           = 0; // change min/max RPMs based on motor used
+constexpr uint8_t MIN_RPM           = 0;  // change min/max RPMs based on motor used
 constexpr uint16_t MAX_RPM          = 300;
 constexpr int COUNTS_PER_REV        = 1200;   // motor property
 constexpr auto TIMER_INTERRUPT_FREQ = 250ms;  // frequency of timer interrupt for input calculation
