@@ -190,7 +190,7 @@ class PID {
 
   /**
    * Set the output from within the PID class, needed for autotuning
-   * @param output output as a double, casting done in function based on actuator type
+   * @param output output as a float, casting done in function based on actuator type
    */
   void setOutput(float output);
 
@@ -202,7 +202,7 @@ class PID {
   /**
    * PID calculation.
    *
-   * @return The controller output as a double between outMin and outMax.
+   * @return The controller output as a float between outMin and outMax.
    */
   float compute(void);
 
