@@ -62,9 +62,9 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
       return indexerActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // not declared in hw_bridge (included in can_config.h)
       return elevatorActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_COVER_POS:  // not declared in hw_bridge (included in can_config.h)
+    case HWBRIDGE::CANID::SET_COVER_INDEX:  // not declared in hw_bridge (included in can_config.h)
       return coverServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_DIGGER_POS:  // not declared in hw_bridge (included in can_config.h)
+    case HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT:  // not declared in hw_bridge (included in can_config.h)
       return diggerServo.set_position(motionData);
     case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // not declared in hw_bridge (included in can_config.h)
       return moistureSensor.Is_Initialized();
@@ -76,8 +76,8 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 // now?
 static CANMsg::CANMsgHandlerMap canHandleMap = {{HWBRIDGE::CANID::SET_INDEXER_POS, setMotionData},
                                                 {HWBRIDGE::CANID::SET_ELEVATOR_POS, setMotionData},
-                                                {HWBRIDGE::CANID::SET_COVER_POS, setMotionData},
-                                                {HWBRIDGE::CANID::SET_DIGGER_POS, setMotionData},
+                                                {HWBRIDGE::CANID::SET_COVER_INDEX, setMotionData},
+                                                {HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT, setMotionData},
                                                 {HWBRIDGE::CANID::SET_MOISTURE_SENSOR, setMotionData}};
 
 // CAN Threads
