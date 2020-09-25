@@ -58,15 +58,16 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   msg.getPayload(motionData);
 
   switch (msg.id) {
-    case HWBRIDGE::CANID::SET_INDEXER_POS:  // not declared in hw_bridge (included in can_config.h)
+    // we need indexes for indexer pos, elevator pos, and moisture sensor
+    case HWBRIDGE::CANID::SET_INDEXER_POS:
       return indexerActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // not declared in hw_bridge (included in can_config.h)
+    case HWBRIDGE::CANID::SET_ELEVATOR_POS:
       return elevatorActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_COVER_INDEX:  // not declared in hw_bridge (included in can_config.h)
+    case HWBRIDGE::CANID::SET_COVER_INDEX:
       return coverServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT:  // not declared in hw_bridge (included in can_config.h)
+    case HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT:
       return diggerServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // not declared in hw_bridge (included in can_config.h)
+    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:
       return moistureSensor.Is_Initialized();
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
