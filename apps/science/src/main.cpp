@@ -16,8 +16,8 @@ Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
 
 // Servo
 LimServo coverServo(SRVO_PWM_1, ScienceConfig::coverServoRange, ScienceConfig::coverServoMaxPulse,
-                    ScienceConfig::coverServoMinPulse);  // these two constructors are not working
-// we are recieving an error saying that there is no such constructor that exists
+                    ScienceConfig::coverServoMinPulse);
+
 LimServo diggerServo(SRVO_PWM_2, ScienceConfig::diggerServoRange, ScienceConfig::diggerServoMaxPulse,
                      ScienceConfig::diggerServoMinPulse);
 
@@ -59,15 +59,15 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 
   switch (msg.id) {
     // we need indexes for indexer pos, elevator pos, and moisture sensor
-    case HWBRIDGE::CANID::SET_INDEXER_POS:
+    case HWBRIDGE::CANID::SET_INDEXER_POS:  // resolve conflict in the future
       return indexerActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_ELEVATOR_POS:
+    case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // resolve conflict in the future
       return elevatorActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_COVER_INDEX:
+    case HWBRIDGE::CANID::SET_COVER_INDEX:  // this one works
       return coverServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT:
+    case HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT:  // this one works
       return diggerServo.set_position(motionData);
-    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:
+    case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // this one will be added later
       return moistureSensor.Is_Initialized();
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
