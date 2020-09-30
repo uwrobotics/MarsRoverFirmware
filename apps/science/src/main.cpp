@@ -64,9 +64,9 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
     case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // resolve conflict in the future
       return elevatorActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_COVER_INDEX:  // this one works
-      return coverServo.set_position(motionData);
+      return coverServo.setPosition(motionData);
     case HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT:  // this one works
-      return diggerServo.set_position(motionData);
+      return diggerServo.setPosition(motionData);
     case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // this one will be added later
       return moistureSensor.Is_Initialized();
     default:
