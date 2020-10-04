@@ -7,7 +7,7 @@
 
 #include "AnalogInputGroup.h"
 #include "DigitalInputGroup.h"
-#include "FrameController.h"
+#include "FrameArbiter.h"
 #include "mbed.h"
 
 using namespace FrameProtocol;
@@ -30,13 +30,13 @@ BusIn digital_inputs_bus_switches(SW_1A, SW_1B, SW_2A, SW_2B);
 DigitalInputGroup btns(digital_inputs_bus_btns, NUM_BTNS, InputDebounceType::INTERGRATING, DEBOUNCE_THRES);
 DigitalInputGroup switches(digital_inputs_bus_switches, NUM_SWITCHES, InputDebounceType::INTERGRATING, DEBOUNCE_THRES);
 
-FrameController::DigitalFrameConfig btns_frame_config = {
+FrameArbiter::DigitalFrameConfig btns_frame_config = {
     .boardType  = BoardType::MASTER,
     .inputType  = DigitalInputType::BTN,
     .inputGroup = btns,
 };
 
-FrameController::DigitalFrameConfig switches_frame_config = {
+FrameArbiter::DigitalFrameConfig switches_frame_config = {
     .boardType  = BoardType::MASTER,
     .inputType  = DigitalInputType::SWITCH,
     .inputGroup = switches,
@@ -48,13 +48,13 @@ AnalogBusIn analog_inputs_bus_pots(POT_AL, SLIDE_POT_AL);
 AnalogInputGroup joys(analog_inputs_bus_joys, NUM_JOYS, AveragingAlgoType::SMA, ANALOG_NUM_SAMPLE_AVERAGE);
 AnalogInputGroup pots(analog_inputs_bus_pots, NUM_POTS, AveragingAlgoType::SMA, ANALOG_NUM_SAMPLE_AVERAGE);
 
-FrameController::AnalogFrameConfig joys_frame_config = {
+FrameArbiter::AnalogFrameConfig joys_frame_config = {
     .boardType  = BoardType::MASTER,
     .inputType  = AnalogInputType::JOY,
     .inputGroup = joys,
 };
 
-FrameController::AnalogFrameConfig pots_frame_config = {
+FrameArbiter::AnalogFrameConfig pots_frame_config = {
     .boardType  = BoardType::MASTER,
     .inputType  = AnalogInputType::POT,
     .inputGroup = pots,
@@ -65,10 +65,10 @@ Timer timer;
 // Serial object for sending data to PC
 UnbufferedSerial pc(USBTX, USBRX);
 
-FrameController frame_controller(&pc);
+FrameArbiter frame_controller(&pc);
 
 int main() {
-  printf("Beginning robot controller fw app.\r\n");
+  printf("Beginning robot gamepad fw app.\r\n");
 
   // set flow control, as we will be sending a lot stuffs
   pc.set_flow_control(SerialBase::RTSCTS, USB_RTS, USB_CTS);
