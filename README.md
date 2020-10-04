@@ -102,7 +102,18 @@ This repository contains:
     make[1]: Leaving directory '/home/wmmc88/MarsRover2020-firmware/build-arm-board'
     ```
     
-    **Note:** Our makefile automatically detects the number of available execution threads and uses them all to significantly speed up compile time.
+    **Note:** Our makefile automatically detects the number of available execution threads and uses them all to 
+    significantly speed up compile time. You can choose to use fewer threads during build with the following command:
+    ```
+    UWRT_FIRMWARE_MAX_JOBS=<max number of threads> make APP=<app-name> TARGET=<target-name>
+    ```
+    You can add the `UWRT_FIRMWARE_MAX_JOBS` to your `.bashrc` to have this max thread limit be persistent.
+    ```
+    echo "export UWRT_FIRMWARE_MAX_JOBS=<max number of threads>" >> ~/.bashrc
+    ``` 
+   
+   **Tip:** You can choose to build all the supported app/target configs at once using `make all`
+   
 
 5. Deploy onto board (see below for how to connect to a rover control board)
 

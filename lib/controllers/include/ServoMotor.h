@@ -16,8 +16,8 @@ class ServoMotor : public Motor {
    * @param max_pulsewidth  Pwm pulse width for maximum speed
    * @param limit     Maximum speed magnitude
    */
-  ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<double> min_pulsewidth = 1ms,
-             std::chrono::duration<double> max_pulsewidth = 2ms, double limit = 1.0);
+  ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<float> min_pulsewidth = 1ms,
+             std::chrono::duration<float> max_pulsewidth = 2ms, float limit = 1.0);
 
   ServoMotor(Motor::t_motorConfig motorConfig);
 
@@ -25,24 +25,24 @@ class ServoMotor : public Motor {
    *
    * @param percentage The speed of the motor as a normalised value between -1.0 and 1.0
    */
-  void setPower(double percentage);
-  ServoMotor& operator=(double percentage);
+  void setPower(float percentage);
+  ServoMotor& operator=(float percentage);
 
   /** Read the current speed of the motor
    *
    * @return Current speed of motor
    */
-  double getPower();
+  float getPower();
 
   // ContServo type exclusive functions
-  void servoSetMaxSpeed(double max_speed_);
-  void servoSetSpeed(double speed_);
+  void servoSetMaxSpeed(float max_speed_);
+  void servoSetSpeed(float speed_);
   float servoRead(void);
   float servoGetMaxSpeed(void);
-  void servoSetPeriod(std::chrono::duration<double> period);
+  void servoSetPeriod(std::chrono::duration<float> period);
 
  protected:
   bool m_inverted;
-  double m_limit;
+  float m_limit;
   ContServo m_servo;
 };
