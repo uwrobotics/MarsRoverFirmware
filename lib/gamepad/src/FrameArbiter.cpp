@@ -1,16 +1,16 @@
-#include "FrameController.h"
+#include "FrameArbiter.h"
 
 using namespace FrameProtocol;
 
-FrameController::FrameController(UnbufferedSerial* dest) : m_dest(dest) {
+FrameArbiter::FrameArbiter(UnbufferedSerial* dest) : m_dest(dest) {
   for (unsigned i = 0; i < MAX_NUM_REDIRECT_FRAME; i++) {
     m_sendSerialThreads[i] = make_unique<Thread>(osPriorityNormal, SERIAL_THREAD_STACK_SIZE, m_sendSerialThreadMems[i]);
   }
 }
 
-FrameController::~FrameController() {}
+FrameArbiter::~FrameArbiter() {}
 
-void FrameController::sendFrame(DigitalFrameConfig& frameConfig) {
+void FrameArbiter::sendFrame(DigitalFrameConfig& frameConfig) {
   static uint8_t m_digitalFrame[FRAME_SIZE_DIGITAL] = {0};
 
   m_digitalFrame[0]     = SOF_DIGITAL;
@@ -63,7 +63,7 @@ void FrameController::sendFrame(DigitalFrameConfig& frameConfig) {
   m_mutex.unlock();
 }
 
-void FrameController::sendFrame(AnalogFrameConfig& frameConfig) {
+void FrameArbiter::sendFrame(AnalogFrameConfig& frameConfig) {
   static uint8_t m_analogFrame[FRAME_SIZE_ANALOG] = {0};
 
   static uint16_t analog_values[AnalogInputGroup::MAX_INPUTS_NUM] = {0};
@@ -128,7 +128,7 @@ void FrameController::sendFrame(AnalogFrameConfig& frameConfig) {
 
         The important assumption is that the queue is large enough, else we could be losing data
 */
-void FrameController::redirectFrame(UnbufferedSerial* source) {
+void FrameArbiter::redirectFrame(UnbufferedSerial* source) {
   uint8_t i = m_numRegistredFrameRedirections;
 
   // fail if we try to redirect too much frame
