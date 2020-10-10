@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder,
+ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, DCMotor &motor, Encoder &encoder,
                                        DigitalIn &limSwitchMin, DigitalIn &limSwitchMax)
     :
 
@@ -135,6 +135,7 @@ mbed_error_status_t ActuatorController::resetEncoder() {
 }
 
 mbed_error_status_t ActuatorController::update() {
+  // THIS HAS A BUG FIX THISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
   auto updateInterval = m_updateTimer.elapsed_time();
   m_updateTimer.reset();
 

@@ -5,7 +5,7 @@
 
 class ClawController : public ActuatorController {
  public:
-  explicit ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
+  explicit ClawController(t_actuatorConfig actuatorConfig, DCMotor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
                           AnalogIn &forceSensor, LimServo &tooltipServo, float tooltipExtendedAngle_Degrees = 180.0,
                           float tooltipRetractedAngle_Degrees = 0.0, chrono::duration<float> calibrationTimeout = 10s);
 

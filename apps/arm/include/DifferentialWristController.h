@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ActuatorController.h"
-#include "Motor.h"
+#include "DCMotor.h"
 #include "PinNames.h"
 #include "PwmIn.h"
 #include "mbed.h"

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "ContServo.h"
-#include "Motor.h"
+#include "DCMotor.h"
 #include "mbed.h"
 
 // Control a continuous rotation servo like a motor
 
-class ServoMotor : public Motor {
+class ServoMotor : public DCMotor {
  public:
   /** Create a motor control interface
    *
@@ -19,7 +19,7 @@ class ServoMotor : public Motor {
   ServoMotor(PinName pwm, bool inverted = false, std::chrono::duration<float> min_pulsewidth = 1ms,
              std::chrono::duration<float> max_pulsewidth = 2ms, float limit = 1.0);
 
-  ServoMotor(Motor::t_motorConfig motorConfig);
+  ServoMotor(DCMotor::t_motorConfig motorConfig);
 
   /** Set the speed of the motor
    *

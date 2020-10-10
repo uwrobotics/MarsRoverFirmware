@@ -1,0 +1,10 @@
+add_library(DCMotor STATIC)
+target_sources(DCMotor PRIVATE src/DCMotor.cpp)
+target_include_directories(DCMotor PUBLIC include)
+target_set_mbed_dependency(DCMotor)
+
+add_library(ServoMotor STATIC)
+target_sources(ServoMotor PRIVATE src/ServoMotor.cpp)
+target_include_directories(ServoMotor PUBLIC include)
+target_link_libraries(ServoMotor PRIVATE ContServo DCMotor)
+target_set_mbed_dependency(ServoMotor)
