@@ -2,8 +2,8 @@
 
 CANBus::CANBus(PinName rd, PinName td) : CAN(rd, td) {}
 
-CANBus::CANBus(PinName rd, PinName td, int hz) : CAN(rd, td, hz) {}
+CANBus::CANBus(PinName rd, PinName td, uint32_t hz) : CAN(rd, td, hz) {}
 
 int CANBus::setFilter(HWBRIDGE::CANFILTER canFilter, CANFormat format, uint16_t mask, int handle) {
-  return CAN::filter((uint16_t)canFilter, mask, format, handle);
+  return CAN::filter(static_cast<uint16_t>(canFilter), mask, format, handle);
 }

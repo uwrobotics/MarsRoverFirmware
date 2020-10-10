@@ -9,7 +9,7 @@ class CANBus : public CAN {
   CANBus(PinName rd, PinName td);
   /* Initialize CAN interface pins and frequency
    */
-  CANBus(PinName rd, PinName td, int hz);
+  CANBus(PinName rd, PinName td, uint32_t hz);
   /* Filter out incoming CAN msgs
    */
   int setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANAny,
