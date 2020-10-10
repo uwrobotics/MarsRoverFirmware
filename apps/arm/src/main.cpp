@@ -16,12 +16,12 @@
 /**********************/
 
 // Motors
-Motor turnTableMotor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
-Motor shoulderMotor(MTR_PWM_SHLDR, MTR_DIR_SHLDR, false);
-Motor elbowMotor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
-Motor wristLeftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
-Motor wristRightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
-Motor clawMotor(MTR_PWM_CLAW, MTR_DIR_CLAW, false);
+DCMotor turnTableMotor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
+DCMotor shoulderMotor(MTR_PWM_SHLDR, MTR_DIR_SHLDR, false);
+DCMotor elbowMotor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
+DCMotor wristLeftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
+DCMotor wristRightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
+DCMotor clawMotor(MTR_PWM_CLAW, MTR_DIR_CLAW, false);
 LimServo clawTooltipServo(SRVO_PWM_CLAW, 180.0, 2.0ms, 1.0ms);
 
 // Encoders

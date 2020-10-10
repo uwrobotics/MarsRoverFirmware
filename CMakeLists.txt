@@ -129,7 +129,11 @@ include(mbed-os.cmake)
 add_subdirectory(lib/can)
 add_subdirectory(lib/gamepad)
 add_subdirectory(lib/controllers)
+<<<<<<< HEAD
 add_subdirectory(lib/lookup-table)
+=======
+add_subdirectory(lib/motor)
+>>>>>>> initial commit
 add_subdirectory(lib/neopixel)
 add_subdirectory(lib/pid)
 add_subdirectory(lib/sensors)

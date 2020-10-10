@@ -34,7 +34,7 @@ ActuatorController::t_actuatorConfig actuatorConfig = {.defaultControlMode = Act
 
                                                        .positionPID = {.P = 1.0, .I = 0.0, .D = 0.0}};
 
-Motor motor(PA_5, PA_6);
+DCMotor motor(PA_5, PA_6);
 
 ActuatorController actuatorAbs(actuatorConfig, motor, encAbs);
 ActuatorController actuatorRel(actuatorConfig, motor, encAbs);
