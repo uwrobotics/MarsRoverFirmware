@@ -6,6 +6,7 @@ target_link_libraries(arm.${TARGET}-board.elf
         PRIVATE
         ClawController
         CANBuffer
+        CANBus
         DifferentialWristController
         EncoderRelative_Quadrature
         LimServo
