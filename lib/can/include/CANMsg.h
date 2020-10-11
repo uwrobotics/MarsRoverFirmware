@@ -24,7 +24,7 @@ class CANMsg : public CANMessage {
    */
   CANMsg(HWBRIDGE::CANID _id, const char *_data, char _len = 8, CANType _type = CANData,
          CANFormat _format = CANStandard)
-      : CANMessage((uint16_t)_id, _data, _len, _type, _format) {}
+      : CANMessage(static_cast<uint16_t>(_id), _data, _len, _type, _format) {}
 
   /** Creates CAN remote message.
    */
@@ -33,13 +33,13 @@ class CANMsg : public CANMessage {
   /** Sets the ID for a CAN messages
    */
   void setID(const HWBRIDGE::CANID newID) {
-    id = (uint16_t)newID;
+    id = static_cast<uint16_t>(newID);
   }
 
   /** Returns the ID of the CAN message
    */
   HWBRIDGE::CANID getID() const {
-    return (HWBRIDGE::CANID)id;
+    return static_cast<HWBRIDGE::CANID>(id);
   }
 
   /** Clears CAN message content
