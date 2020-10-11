@@ -37,13 +37,13 @@ int main(void) {
   printf("CAN_Hello\r\n");
 
   while (1) {
-    if (timer.elapsed_time() >= 1s) {       // check for timeout
-      timer.reset();                        // reset timer
-      counter++;                            // increment counter
-      txMsg.clear();                        // clear Tx message storage
+    if (timer.elapsed_time() >= 1s) {                    // check for timeout
+      timer.reset();                                     // reset timer
+      counter++;                                         // increment counter
+      txMsg.clear();                                     // clear Tx message storage
       txMsg.setID(static_cast<HWBRIDGE::CANID>(TX_ID));  // set ID
-      txMsg << counter;                     // copy counter value to CAN msg payload
-      if (can.write(txMsg)) {               // transmit message
+      txMsg << counter;                                  // copy counter value to CAN msg payload
+      if (can.write(txMsg)) {                            // transmit message
         printf("-------------------------------------\r\n");
         printf("CAN message sent\r\n");
         printMsg(txMsg);
