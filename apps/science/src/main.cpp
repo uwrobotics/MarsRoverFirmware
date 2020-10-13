@@ -117,12 +117,12 @@ void txCANProcessor() {
   CANMsg txMsg;
 
   while (true) {
-    txMsg.id = SEND_INDEXER_POS;
+    txMsg.id = HWBRIDGE::CANID::REPORT_GENEVA_INDEX;  // formerly send_indexer_pos
     txMsg.setPayload(indexerActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = SEND_ELEVATOR_POS;
+    txMsg.id = HWBRIDGE::CANID::REPORT_SCOOPER_POS;  // formerly send_elevator_pos
     txMsg.setPayload(elevatorActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
