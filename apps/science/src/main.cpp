@@ -69,9 +69,9 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 
   switch (msg.id) {
     // we need indexes for indexer pos, elevator pos, and moisture sensor
-    case HWBRIDGE::CANID::SET_INDEXER_POS:  // resolve conflict in the future
+    case HWBRIDGE::CANID::SET_GENEVA_INDEX:  // formerly known as set_indexer_pos
       return indexerActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_ELEVATOR_POS:  // resolve conflict in the future
+    case HWBRIDGE::CANID::SET_SCOOPER_INDEX:  // formerly known as set_elevator_pos
       return elevatorActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_COVER_INDEX:  // this one works
       return coverServo.setPosition(motionData);
@@ -85,11 +85,12 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 }
 // it seems like a lot of these are not listed in the hw_bridge namespace, perhaps they are all under different names
 // now?
-static CANMsg::CANMsgHandlerMap canHandleMap = {{HWBRIDGE::CANID::SET_INDEXER_POS, setMotionData},
-                                                {HWBRIDGE::CANID::SET_ELEVATOR_POS, setMotionData},
-                                                {HWBRIDGE::CANID::SET_COVER_INDEX, setMotionData},
-                                                {HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT, setMotionData},
-                                                {HWBRIDGE::CANID::SET_MOISTURE_SENSOR, setMotionData}};
+static CANMsg::CANMsgHandlerMap canHandleMap = {
+    {HWBRIDGE::CANID::SET_GENEVA_INDEX, setMotionData},   // formerly known as set_indexer_pos
+    {HWBRIDGE::CANID::SET_SCOOPER_INDEX, setMotionData},  // formerly known as set_elevator_pos
+    {HWBRIDGE::CANID::SET_COVER_INDEX, setMotionData},
+    {HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT, setMotionData},
+    {HWBRIDGE::CANID::SET_MOISTURE_SENSOR, setMotionData}};
 
 // CAN Threads
 Thread rxCANProcessorThread;
