@@ -12,12 +12,12 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 // Set servo position (ex. 45deg)
 void TutorialServo::setPositionInDegrees(const float degrees){
     float finalPulsewidth = ((degrees/m_servoRangeInDegrees) * (m_maxPulsewidthInMs-m_minPulsewidthInMs)) + m_minPulsewidthInMs;
-    servoPwmOut.pulsewidth_ms(finalPulsewidth);
+    m_servoPwmOut.pulsewidth_ms(finalPulsewidth);
 }
 
  void TutorialServo::setPositionInPercentage(const float percentage){
      float finalPulseWidth = (percentage * (m_maxPulsewidthInMs-m_minPulsewidthInMs)) + m_minPulsewidthInMs;
-     servoPwmOut.pulsewidth_ms(finalPulsewidth);
+     m_servoPwmOut.pulsewidth_ms(finalPulsewidth);
  }
 
 // Get the servo range in degrees (ex. 90deg)
