@@ -73,3 +73,6 @@ test-pwmin:
 #  - gamepad
 #  - gimbtonomy
 #  - science
+
+tutorial-servo-pot-control:
+        - nucleo
