@@ -55,6 +55,10 @@ This repository contains:
         ```
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
         ```
+    - Install CMake
+        ```
+        brew install cmake
+        ```
     - Download auto-run script, which will auto install with latest version:
         ```
         brew tap ARMmbed/homebrew-formulae
