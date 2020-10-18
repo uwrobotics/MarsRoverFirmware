@@ -1,18 +1,19 @@
 #pragma once
 
 #include "mbed.h"
+#include "Sensor.h"
 
-class MoistureSensor {
+class MoistureSensor : public Sensor {
  public:
   MoistureSensor(PinName sda, PinName scl);
   ~MoistureSensor() = default;
 
-  uint8_t Read_HW_ID();
-  void Reset_Sensor();
-  bool Is_Initialized();
+  //uint8_t Read_HW_ID();
+  //void Reset_Sensor();
+  //bool Is_Initialized();
 
-  uint16_t Read_Moisture();
-  float Read_Temperature();
+  float primaryRead();
+  float alternateRead();
 
  private:
   I2C i2c_;
