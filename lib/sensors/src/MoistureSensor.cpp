@@ -15,11 +15,7 @@ constexpr int Sensor_Status_Reset      = 0x7F;
 
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl) {}
 
-bool MoistureSensor::Is_Initialized() {
-  return (this->Read_HW_ID() == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
-}
-
-void MoistureSensor::Reset_Sensor() {
+void MoistureSensor::resetSensor() {
   char cmd[3];
   cmd[0] = Sensor_Status_Base;  // initialize registers for clearing sensor memory
   cmd[1] = Sensor_Status_Reset;
@@ -28,7 +24,7 @@ void MoistureSensor::Reset_Sensor() {
   i2c_.write(Sensor_I2C_Address, cmd, 3);  // set all registers on sensor to default values
 }
 
-uint8_t MoistureSensor::Read_HW_ID() {
+bool MoistureSensor::getSensorStatus() {
   char cmd[2];
   cmd[0] = Sensor_Status_Base;
   cmd[1] = Sensor_Status_HW_ID;
@@ -39,11 +35,12 @@ uint8_t MoistureSensor::Read_HW_ID() {
   ThisThread::sleep_for(125ms);
   i2c_.read(Sensor_I2C_Address, check, 1);  // read device ID
 
-  return check[0];
-}
+   return (check[0] == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
+} 
 
-uint16_t MoistureSensor::Read_Moisture() {
-  if (!(this->Is_Initialized())) {  // checks if device is initialized, returns 65534 if there is an issue
+//read moisture reading of device
+uint16_t MoistureSensor::primaryRead() {
+  if (!(this->getSensorStatus())) {  // checks if device is initialized, returns 65534 if there is an issue
     return 65534;
   }
 
@@ -72,8 +69,9 @@ uint16_t MoistureSensor::Read_Moisture() {
   return ret;
 }
 
-float MoistureSensor::Read_Temperature() {
-  if (!(this->Is_Initialized())) {  // checks if device is initialized, returns -273.0 if there is an issue
+//read temperature of device
+float MoistureSensor::alternateRead() {
+  if (!(this->getSensorStatus())) {  // checks if device is initialized, returns -273.0 if there is an issue
     return -273.0;
   }
 
