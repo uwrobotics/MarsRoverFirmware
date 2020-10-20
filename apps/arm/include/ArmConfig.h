@@ -7,6 +7,9 @@ constexpr uint8_t FLAG_DISABLE_LIMIT_SWITCH_CHECKS{1U << 0};
 constexpr uint8_t FLAG_DISABLE_ANGLE_BOUNDS_CHECKS{1U << 1};
 constexpr uint8_t FLAG_DISABLE_FEEDBACK{1U << 2};
 
+constexpr float SHOULDER_DISTANCE_TO_BASE = 8.0;
+constexpr float SHOULDER_DISTANCE_TO_TOP = 11.267;
+
 namespace ArmConfig {
 
 /*** ENCODER CONFIG ***/

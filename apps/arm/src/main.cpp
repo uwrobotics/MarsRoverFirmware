@@ -10,6 +10,7 @@
 #include "LimServo.h"
 #include "hw_bridge.h"
 #include "mbed.h"
+#include <cmath>
 
 /*** ARM COMPONENTS ***/
 /**********************/
@@ -92,6 +93,15 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
     case HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE:
       return turnTableActuator.setControlMode(controlMode);
     case HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE:
+      double theta = 3; //Arbitrarily set (assuming radians), I don't know how to get the current angle the shoulder makes with the base
+      double lengthOfActuator = sqrt(SHOULDER_DISTANCE_TO_BASE*SHOULDER_DISTANCE_TO_BASE + SHOULDER_DISTANCE_TO_TOP*SHOULDER_DISTANCE_TO_TOP - 2*SHOULDER_DISTANCE_TO_TOP*SHOULDER_DISTANCE_TO_BASE*cos(theta));
+      double dxdtheta = 0.5*lengthOfActuator*(2*SHOULDER_DISTANCE_TO_BASE*SHOULDER_DISTANCE_TO_TOP*sin(theta)); //derivative calculations
+      double angularVelocity = controlMode/180 * M_PI; //converting desired angular velocity into radians per second
+      double linearVelocity = angularVelocity*dxdtheta;
+      
+      //Need to implement conversion to linear velocity, and how to convert that into motor power percentage
+      //Need to implement method to get current angle state of shoulder, and how to update it every tick
+
       return shoulderActuator.setControlMode(controlMode);
     case HWBRIDGE::CANID::SET_ELBOW_CONTROL_MODE:
       return elbowActuator.setControlMode(controlMode);
@@ -115,6 +125,8 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
     case HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA:
       return turnTableActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA:
+      float angularVelocity = motionData;
+      float linearVelocity = ()
       return shoulderActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_ELBOW_MOTIONDATA:
       return elbowActuator.setMotionData(motionData);
@@ -263,6 +275,7 @@ void txCANProcessor() {
     txMsg.id              = HWBRIDGE::CANID::REPORT_SHOULDER_MOTION;
     motionReport.position = shoulderActuator.getAngle_Degrees();
     motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
+    
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
