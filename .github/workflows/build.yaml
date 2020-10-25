@@ -4,8 +4,7 @@ on:
   push:
   pull_request:
   schedule: # Trigger a job on master at midnight UTC every day
-    branches: [master]
-      - cron: '0 0 * * *'
+    - cron: '0 0 * * *'    
 
 defaults:
   run:
