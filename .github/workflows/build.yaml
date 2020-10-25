@@ -1,6 +1,11 @@
 name: build
 
-on: [pull_request]
+on:
+  push:
+  pull_request:
+  schedule: # Trigger a job on master at midnight UTC every day
+    branches: [master]
+      - cron: '0 0 * * *'
 
 defaults:
   run:
