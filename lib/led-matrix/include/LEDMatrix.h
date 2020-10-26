@@ -23,10 +23,10 @@ class LEDMatrix {
 	void clear();
 	// This is just for convenience
 	
-	enum class color { RED, GREEN, BLUE	};
+	enum class color { RED, GREEN, BLUE};
 	
   private:
-	PwmOut _RChannel;
+    PwmOut _RChannel;
 	PwmOut _GChannel;
 	PwmOut _BChannel;
 	//any other functions 
