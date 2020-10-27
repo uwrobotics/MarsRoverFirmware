@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule: # Trigger a job on master at midnight UTC every day
-    - cron: '0 0 * * *'    
+    - cron: '0 0 * * *'
 
 defaults:
   run:
@@ -21,11 +21,6 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.4.1
-        with:
-          access_token: ${{ github.token }}
-
       - name: Checkout repository
         uses: actions/checkout@v2.3.3
 
