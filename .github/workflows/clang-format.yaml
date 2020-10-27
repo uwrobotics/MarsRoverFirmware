@@ -17,7 +17,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Clang format Check
-        uses: wmmc88/clang-format-lint-action@master
+        uses: DoozyX/clang-format-lint-action@master
         with:
           exclude: './mbed-os'
           clangFormatVersion: 11
