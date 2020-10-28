@@ -15,6 +15,8 @@ constexpr int Sensor_Status_Reset      = 0x7F;
 
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl) {}
 
+MoistureSensor::~MoistureSensor() {}
+
 void MoistureSensor::resetSensor() {
   char cmd[3];
   cmd[0] = Sensor_Status_Base;  // initialize registers for clearing sensor memory
@@ -39,7 +41,7 @@ bool MoistureSensor::getSensorStatus() {
 } 
 
 //read moisture reading of device
-uint16_t MoistureSensor::primaryRead() {
+float MoistureSensor::primaryRead() {
   if (!(this->getSensorStatus())) {  // checks if device is initialized, returns 65534 if there is an issue
     return 65534;
   }
@@ -50,7 +52,7 @@ uint16_t MoistureSensor::primaryRead() {
 
   char buf[2];
 
-  uint16_t ret = 65535;
+  float ret = 65535;
 
   uint8_t counter = 10;  // initialize counter to break out of loop if reading isn't working (prevent infinite looping)
 

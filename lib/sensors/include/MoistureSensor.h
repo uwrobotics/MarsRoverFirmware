@@ -6,7 +6,7 @@
 class MoistureSensor : public Sensor {
  public:
   MoistureSensor(PinName sda, PinName scl);
-  ~MoistureSensor() = default;
+  ~MoistureSensor();
 
   //functions to read sensor data
   //primary read -> reads moisture data

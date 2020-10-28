@@ -6,7 +6,7 @@ class Sensor{
 	
 	//need to create a struct to pass into constructor?
 	Sensor() = default;
-	virtual ~Sensor();
+	virtual ~Sensor(){ };
 
 	//main read function, must be implemented
 	virtual float primaryRead() = 0;
