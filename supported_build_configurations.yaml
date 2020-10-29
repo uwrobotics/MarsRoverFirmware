@@ -72,4 +72,10 @@ test-pwmin:
   - arm
 #  - gamepad
 #  - gimbtonomy
-#  - science
+#  - science 
+
+tutorial-servo-pot-control:
+  - nucleo
+
+tutorial-servo-can-control:
+  -nucleo
