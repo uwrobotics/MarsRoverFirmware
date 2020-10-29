@@ -6,7 +6,7 @@ class LEDMatrix {
  public:
   // Constructor: An LED Matrix is defined by the pins it is connected to.
   LEDMatrix(PinName R, PinName G, PinName B);
-	
+  
   // Take in values from 0 to 255 for each color stream and maps them to a PWM signal.
   void setColorRGB(uint8_t R, uint8_t G, uint8_t B);
 

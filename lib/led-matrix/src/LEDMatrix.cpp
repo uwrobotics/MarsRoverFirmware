@@ -14,7 +14,7 @@ LEDMatrix ::void setColorRGB(uint8_t R, uint8_t G, uint8_t B) {
 
 // Just for convenience. Call setColorRGB().
 LEDMatrix ::void setColor(color c) {
-  switch (c) {     
+  switch (c) {
     case color::RED:
       setColorRGB(255, 0, 0);
       break;
@@ -35,7 +35,7 @@ LEDMatrix ::void setFlashingColorRGB(uint8_t R, uint8_t G, uint8_t B, uint8_t fr
   for (uint8_t i = 0; i < flash_num; i++) {
     setColour(R, G, B);
     std::ThisThread::sleep_for(
-        std::chrono::milliseconds(timeout_ms/2));  // Div by 2 cuz theres 2 timeouts in each loop
+        std::chrono::milliseconds(timeout_ms / 2));  // Div by 2 cuz theres 2 timeouts in each loop
     clear();
     std::ThisThread::sleep_for(std::chrono::milliseconds(timeout_ms / 2));
   }
@@ -43,7 +43,7 @@ LEDMatrix ::void setFlashingColorRGB(uint8_t R, uint8_t G, uint8_t B, uint8_t fr
 
 // Just for convenience. Call setFlashingColorRBG().
 LEDMatrix ::void setFlashingColor(color c, uint8_t frequency_hz) {
-  switch(c) {
+  switch (c) {
     case color::RED:
       setFlashingColorRGB(255, 0, 0, frequency_hz);
       break;
@@ -53,7 +53,7 @@ LEDMatrix ::void setFlashingColor(color c, uint8_t frequency_hz) {
     case color::BLUE:
       setFlashingColorRGB(0, 0, 255, frequency_hz);
       break;
-  }    
+  }
 }
 
 // Turn off all the LEDs. Call setColor(0,0,0).

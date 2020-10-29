@@ -6,7 +6,7 @@ int main() {
   LEDMatrix blinky(PA_1);
 
   while (true) {
-    blinky.setColorRGB(238, 130, 238);  // violet 
+    blinky.setColorRGB(238, 130, 238);
     std::ThisThread::sleep_for(std::chrono::milliseconds(1000));
     blinky.setColor(RED);
     std::ThisThread::sleep_for(std::chrono::milliseconds(1000));
