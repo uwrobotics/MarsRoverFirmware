@@ -7,12 +7,8 @@ class LimServo : public Servo {
  public:
   LimServo(PinName pin);
   LimServo(PinName pin, float range);
-<<<<<<< HEAD
-  LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse, std::chrono::duration<float> min_pulse);
-=======
   LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse_ms,
            std::chrono::duration<float> min_pulse_ms);
->>>>>>> origin/master
 
   mbed_error_status_t setRange(float range);
   float getRange(void);

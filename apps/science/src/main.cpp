@@ -67,7 +67,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
 
-  switch (msg.id) {
+  switch (msg.getID()) {
     // we need indexes for geneva index, elevator pos, and moisture sensor
     case HWBRIDGE::CANID::SET_GENEVA_INDEX:  // formerly known as set_indexer_pos
       return indexerActuator.setMotionData(motionData);
@@ -99,8 +99,8 @@ void rxCANProcessor() {
 
   while (true) {
     if (can.read(rxMsg)) {
-      if (canHandleMap.count(rxMsg.id) > 0) {
-        canHandleMap[rxMsg.id](rxMsg);
+      if (canHandleMap.count(rxMsg.getID()) > 0) {
+        canHandleMap[rxMsg.getID()](rxMsg);
       } else {
         // ruh roh
       }
@@ -114,33 +114,33 @@ void txCANProcessor() {
   CANMsg txMsg;
 
   while (true) {
-    txMsg.id = HWBRIDGE::CANID::REPORT_GENEVA_INDEX;  // formerly send_indexer_pos
+    txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_INDEX);  // formerly send_indexer_pos
     txMsg.setPayload(indexerActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = HWBRIDGE::CANID::REPORT_SCOOPER_ANGLE;  // formerly send_elevator_pos
+    txMsg.setID(HWBRIDGE::CANID::REPORT_SCOOPER_ANGLE);  // formerly send_elevator_pos
     txMsg.setPayload(elevatorActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = HWBRIDGE::CANID::REPORT_COVER_ANGLE;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_COVER_ANGLE);
     txMsg.setPayload(coverServo.read());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = HWBRIDGE::CANID::REPORT_ELEVATOR_HEIGHT;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_ELEVATOR_HEIGHT);
     txMsg.setPayload(diggerServo.read());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
     // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
-    txMsg.id = HWBRIDGE::CANID::REPORT_MOISTURE_DATA;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_MOISTURE_DATA);
     txMsg.setPayload((int)moistureSensor.Read_Moisture());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = HWBRIDGE::CANID::REPORT_TEMPERATURE_DATA;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_TEMPERATURE_DATA);
     txMsg.setPayload(moistureSensor.Read_Temperature());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
