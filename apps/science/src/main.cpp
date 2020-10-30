@@ -68,14 +68,14 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   msg.getPayload(motionData);
 
   switch (msg.id) {
-    // we need indexes for indexer pos, elevator pos, and moisture sensor
+    // we need indexes for geneva index, elevator pos, and moisture sensor
     case HWBRIDGE::CANID::SET_GENEVA_INDEX:  // formerly known as set_indexer_pos
       return indexerActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_SCOOPER_INDEX:  // formerly known as set_elevator_pos
+    case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:  // formerly known as set_elevator_pos
       return elevatorActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_COVER_INDEX:  // this one works
+    case HWBRIDGE::CANID::SET_COVER_ANGLE:  // this one works
       return coverServo.setPosition(motionData);
-    case HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT:  // this one works
+    case HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT:  // this one works
       return diggerServo.setPosition(motionData);
     case HWBRIDGE::CANID::SET_MOISTURE_SENSOR:  // this one will be added later
       return moistureSensor.Is_Initialized();
@@ -87,9 +87,9 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 // now?
 static CANMsg::CANMsgHandlerMap canHandleMap = {
     {HWBRIDGE::CANID::SET_GENEVA_INDEX, setMotionData},   // formerly known as set_indexer_pos
-    {HWBRIDGE::CANID::SET_SCOOPER_INDEX, setMotionData},  // formerly known as set_elevator_pos
-    {HWBRIDGE::CANID::SET_COVER_INDEX, setMotionData},
-    {HWBRIDGE::CANID::SET_DIGGER_LIFT_HEIGHT, setMotionData},
+    {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},  // formerly known as set_elevator_pos
+    {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
+    {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData},
     {HWBRIDGE::CANID::SET_MOISTURE_SENSOR, setMotionData}};
 
 // CAN Threads
@@ -122,17 +122,17 @@ void txCANProcessor() {
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = HWBRIDGE::CANID::REPORT_SCOOPER_POS;  // formerly send_elevator_pos
+    txMsg.id = HWBRIDGE::CANID::REPORT_SCOOPER_ANGLE;  // formerly send_elevator_pos
     txMsg.setPayload(elevatorActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = HWBRIDGE::CANID::REPORT_COVER_POS;
+    txMsg.id = HWBRIDGE::CANID::REPORT_COVER_ANGLE;
     txMsg.setPayload(coverServo.read());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.id = HWBRIDGE::CANID::REPORT_DIGGER_LIFT_POS;
+    txMsg.id = HWBRIDGE::CANID::REPORT_ELEVATOR_HEIGHT;
     txMsg.setPayload(diggerServo.read());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
