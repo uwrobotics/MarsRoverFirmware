@@ -1,6 +1,10 @@
 name: build
 
-on: [pull_request]
+on:
+  push:
+  pull_request:
+  schedule: # Trigger a job on master at midnight UTC every day
+    - cron: '0 0 * * *'
 
 defaults:
   run:
@@ -17,13 +21,8 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.4.1
-        with:
-          access_token: ${{ github.token }}
-
       - name: Checkout repository
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v2.3.3
 
       - name: Set Build Matrix Output
         id: set-matrix
@@ -38,7 +37,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v2.3.3
         with:
           submodules: 'recursive'
 
@@ -49,7 +48,7 @@ jobs:
         run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
 
       - name: Load Cached Arm Toolchain
-        uses: actions/cache@v2.1.0
+        uses: actions/cache@v2.1.2
         id: toolchain-cache
         with:
           path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
@@ -69,7 +68,7 @@ jobs:
           arm-none-eabi-gcc --version
 
       - name: Run CMake (bash)
-        uses: lukka/run-cmake@v2.5
+        uses: lukka/run-cmake@v3.1
         env: ${{matrix.env}}
         with:
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'

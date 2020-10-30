@@ -5,7 +5,10 @@
 .SUFFIXES :=
 
 # Phony Targets
-.PHONY := build verify_app_target_tuple_config verify_app_target_tuple_is_specified clean
+.PHONY := build verify_app_target_tuple_config verify_app_target_tuple_is_specified clean all
+
+# Environment Options
+UWRT_FIRMWARE_MAX_JOBS ?= $(nproc)
 
 # PATHS
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -14,6 +17,8 @@ APPS_DIR     := $(abspath $(MAKEFILE_DIR)/apps)
 
 TARGETS_LIST := $(sort $(patsubst $(TARGETS_DIR)/%/,%, $(wildcard $(TARGETS_DIR)/*/)))
 APPS_LIST    := $(sort $(patsubst $(APPS_DIR)/%/,%, $(wildcard $(APPS_DIR)/*/)))
+
+NUMBER_OF_SUPPORTED_CONFIGS := $(shell python3 build_configurations_helper.py count-supported-configs)
 
 verify_app_target_tuple_is_specified:
 ifeq (,$(findstring $(TARGET), $(TARGETS_LIST)))
@@ -47,8 +52,21 @@ verify_app_target_tuple_config: verify_app_target_tuple_is_specified
 build: verify_app_target_tuple_config
 	@mkdir -p build-$(TARGET)-board
 	@cmake -S $(MAKEFILE_DIR) -B build-$(TARGET)-board -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$(MAKEFILE_DIR)/toolchain.cmake -DAPP=$(APP) -DTARGET=$(TARGET)
-	@cmake --build build-$(TARGET)-board --target $(APP).$(TARGET)-board.elf --parallel $(nproc)
+	@echo Building $(APP) app for $(TARGET) board with max $(UWRT_FIRMWARE_MAX_JOBS) concurrent jobs
+	@cmake --build build-$(TARGET)-board --target $(APP).$(TARGET)-board.elf --parallel $(UWRT_FIRMWARE_MAX_JOBS)
+
+
+
+all:
+	@echo Building all $(NUMBER_OF_SUPPORTED_CONFIGS) supported app/target configs with max $(UWRT_FIRMWARE_MAX_JOBS) concurrent jobs
+	@number=0 ; while [ $$number -lt $(NUMBER_OF_SUPPORTED_CONFIGS) ] ; do \
+		i=$$(python3 build_configurations_helper.py print-supported-config $$number) ; \
+		make $$i ; \
+		number=$$((number+1)) ; \
+	done
+
 
 clean:
+	@echo "Deleting all build files"
 	rm -rf build-*-board
 

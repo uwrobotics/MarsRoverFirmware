@@ -102,7 +102,18 @@ This repository contains:
     make[1]: Leaving directory '/home/wmmc88/MarsRover2020-firmware/build-arm-board'
     ```
     
-    **Note:** Our makefile automatically detects the number of available execution threads and uses them all to significantly speed up compile time.
+    **Note:** Our makefile automatically detects the number of available execution threads and uses them all to 
+    significantly speed up compile time. You can choose to use fewer threads during build with the following command:
+    ```
+    UWRT_FIRMWARE_MAX_JOBS=<max number of threads> make APP=<app-name> TARGET=<target-name>
+    ```
+    You can add the `UWRT_FIRMWARE_MAX_JOBS` to your `.bashrc` to have this max thread limit be persistent.
+    ```
+    echo "export UWRT_FIRMWARE_MAX_JOBS=<max number of threads>" >> ~/.bashrc
+    ``` 
+   
+   **Tip:** You can choose to build all the supported app/target configs at once using `make all`
+   
 
 5. Deploy onto board (see below for how to connect to a rover control board)
 
@@ -153,7 +164,7 @@ After deploying the binary to the board, the Nucleo's `LD1` LED will flash red a
 
 ## Serial Communication
 
-The boards can be communicated with through the serial interface exposed through the debug pins. You can use the USB-serial interface built into the Nucleo dev boards to communicate with the control boards by connecting the TX pin to the board's RX pin and the RX pin to the board's TX pin (transmit to recieve and vice versa). 
+The boards can be communicated with through the serial interface exposed through the debug pins. You can use the USB-serial interface built into the Nucleo dev boards to communicate with the control boards by connecting the TX pin to the board's RX pin and the RX pin to the board's TX pin (transmit to recieve and vice versa). Ensure the program running on the nucleo is not printing too.
 
 On Ubuntu
 - Run `screen /dev/serial/by-id/usb-STM* 115200` from the terminal. You may need to prepend this with `sudo`.
@@ -182,9 +193,10 @@ using the CLI ([documentation here](https://clang.llvm.org/docs/ClangFormat.html
 your IDE of choice. For example, CLion has [built-in Clang-Format support](https://www.jetbrains.com/help/clion/clangformat-as-alternative-formatter.html) 
 and VS Code has a [decent extension](https://marketplace.visualstudio.com/items?itemName=xaver.clang-format).
 
-You may have to edit the settings of the plugin to match the version of clang-format that we are using. The current version can be seen [here](.github/workflows/clang-format.yaml')
- To download the version of LLVM we want(contains clang-format):
- ```shell script
+You may have to edit the settings of the plugin to match the version of clang-format that we are using. The current version can be seen [here](.github/workflows/clang-format.yaml) under `clangFormatVersion`.
+
+To download the matching version of LLVM(contains clang-format):
+```shell script
 wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 sudo ./llvm.sh <version number>

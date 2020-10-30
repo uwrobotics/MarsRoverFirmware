@@ -4,6 +4,7 @@
  */
 
 #include "ActuatorController.h"
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
@@ -38,7 +39,7 @@ EncoderAbsolute_PWM panEncoder(GimbtonomyConfig::panEncoderConfig);
 ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor, panEncoder);
 
 // CAN Object
-CAN can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;
 
 // neopixel
@@ -87,7 +88,7 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      switch (rxMsg.id) {
+      switch (rxMsg.getID()) {
         case HWBRIDGE::CANID::GIMBAL_PAN_POSITION:
           rxMsg.getPayload(pan_pos);
           panServoActuator.setMotionData(pan_pos);
@@ -139,7 +140,7 @@ void txCANProcessor() {
     printf("Sending neopixel acknowledgement message\r\n");
 #endif
     txMsg.clear();
-    txMsg.id = HWBRIDGE::CANID::NEOPIXEL_ACK;
+    txMsg.setID(HWBRIDGE::CANID::NEOPIXEL_ACK);
     txMsg << true;
     can1.write(txMsg);
 #ifdef DEBUG

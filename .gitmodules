@@ -4,4 +4,4 @@
 
 [submodule "uwrt-mars-rover-hw-bridge"]
     path = uwrt-mars-rover-hw-bridge
-    url = ../uwrt_mars_rover_hw_bridge.git
+    url = https://github.com/uwrobotics/uwrt_mars_rover_hw_bridge.git
