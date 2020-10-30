@@ -89,8 +89,7 @@ static CANMsg::CANMsgHandlerMap canHandleMap = {
     {HWBRIDGE::CANID::SET_GENEVA_INDEX, setMotionData},   // formerly known as set_indexer_pos
     {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},  // formerly known as set_elevator_pos
     {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
-    {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData},
-    {HWBRIDGE::CANID::SET_MOISTURE_SENSOR, setMotionData}};
+    {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData}};
 
 // CAN Threads
 Thread rxCANProcessorThread;
