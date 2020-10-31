@@ -7,7 +7,7 @@ DifferentialWristController::DifferentialWristController(ActuatorController &wri
                                                          DigitalIn &wristLimCenter, DigitalIn &wristLimDown,
                                                          float leftToRightMotorPowerBias, float maxPitchAngle_Degrees,
                                                          float minPitchAngle_Degrees,
-                                                         std::chrono::duration<double> calibrationTimeout)
+                                                         std::chrono::duration<float> calibrationTimeout)
     : r_wristActuatorLeft(wristActuatorLeft),
       r_wristActuatorRight(wristActuatorRight),
       r_limSwitchUp(wristLimUp),

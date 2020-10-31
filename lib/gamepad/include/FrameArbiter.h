@@ -7,7 +7,7 @@
 #include "mbed.h"
 
 /*
-  When sending controller board data to the PC, we will use a custom protocol with two different
+  When sending gamepad board data to the PC, we will use a custom protocol with two different
   frames for digital and analog inputs respectively.
   Digital inputs frame (one frame per digital inputs group):
     SOF(4 bits, 0b1010, i.e. 0xA),
@@ -89,7 +89,7 @@ class SerialSendThread {
 /*
         The class that encapsulates our custom protocol
 */
-class FrameController {
+class FrameArbiter {
  public:
   struct DigitalFrameConfig {
     BoardType boardType;
@@ -103,9 +103,9 @@ class FrameController {
     AnalogInputGroup& inputGroup;
   };
 
-  FrameController(UnbufferedSerial* dest);
+  FrameArbiter(UnbufferedSerial* dest);
 
-  ~FrameController();
+  ~FrameArbiter();
 
   void sendFrame(DigitalFrameConfig& frameConfig);
 

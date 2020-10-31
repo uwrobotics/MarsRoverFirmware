@@ -9,6 +9,7 @@ template <class Key, class Value, class Hash = std::hash<Key>, class KeyEqual = 
 class LookupTable {
  private:
   const std::unordered_map<Key, Value, Hash, KeyEqual, Allocator> _unordered_map;
+  const Value _defaultValue; 
 
  public:
   using key_type        = Key;
@@ -28,7 +29,7 @@ class LookupTable {
 
   // range based constructor
   template <typename InputIterator>
-  LookupTable(InputIterator first, InputIterator last) : _unordered_map(first, last) {}
+  LookupTable(InputIterator first, InputIterator last, Value defaultValue) : _unordered_map(first, last), _defaultValue(defaultValue) {}
   // copy constructor and assignment
   LookupTable(const LookupTable &copy) = default;
   LookupTable &operator=(const LookupTable &) = default;
@@ -40,10 +41,10 @@ class LookupTable {
               const key_equal &equal = key_equal(), const Allocator &alloc = Allocator())
       : _unordered_map(init, bucket_count, hash, equal, alloc) {}
 
-  typename std::unordered_map<Key, Value>::iterator begin() {
+  typename std::unordered_map<Key, Value>::iterator begin() const {
     return _unordered_map.begin();
   }
-  typename std::unordered_map<Key, Value>::iterator end() {
+  typename std::unordered_map<Key, Value>::iterator end() const {
     return _unordered_map.end();
   }
 
@@ -59,8 +60,9 @@ class LookupTable {
   }
 
   std::optional<Value> at(const Key &key) const {
-    if (_unordered_map.find(key) == _unordered_map.end()) return std::nullopt;
-    return _unordered_map.at(key);
+    bool value_exists = _unordered_map.find(key) == _unordered_map.end();
+    MBED_ASSERT(value_exists);
+    return value_exists ? std::nullopt : std::optional<Value>{_unordered_map.at(key)};
   }
   std::optional<Value> operator[](const Key &key) const {
     return at(key);

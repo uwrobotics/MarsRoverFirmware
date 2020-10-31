@@ -28,63 +28,63 @@ class PwmIn {
    *
    * @returns the period in seconds
    */
-  std::chrono::duration<double> period();
+  std::chrono::duration<float> period();
 
   /** Read the average period
    *
    * @returns the average period in seconds
    */
-  std::chrono::duration<double> avgPeriod();
+  std::chrono::duration<float> avgPeriod();
 
   /** Read the current pulse width
    *
    * @returns the pulsewidth in seconds
    */
-  std::chrono::duration<double> pulseWidth();
+  std::chrono::duration<float> pulseWidth();
 
   /** Read the average pulse width
    *
    * @returns the average pulsewidth in seconds
    */
-  std::chrono::duration<double> avgPulseWidth();
+  std::chrono::duration<float> avgPulseWidth();
 
   /** Read the current duty cycle
    *
    * @returns the duty cycle as a percentage, represented between 0.0-1.0
    */
-  double dutyCycle();
+  float dutyCycle();
 
   /** Read the average duty cycle
    *
    * @returns the average duty cycle as a percentage, represented between 0.0-1.0
    */
-  double avgDutyCycle();
+  float avgDutyCycle();
 
   /** Read the average duty cycle velocity
    *
    * @returns the average duty cycle velocity as a 0.0-1.0 percentage/second
    */
-  double avgDutyCycleVelocity();
+  float avgDutyCycleVelocity();
 
  protected:
   InterruptIn m_pwmSense;
   Timer m_timer;
 
-  std::chrono::duration<double> m_pulseWidth, m_period, m_avgPulseWidth, m_avgPeriod;
-  double m_avgDutyCycle, m_prevAvgDutyCycle, m_avgDutyCycleVelocity;
+  std::chrono::duration<float> m_pulseWidth, m_period, m_avgPulseWidth, m_avgPeriod;
+  float m_avgDutyCycle, m_prevAvgDutyCycle, m_avgDutyCycleVelocity;
 
   int m_sampleCount;
   int m_numSamplesToAverage;
 
-  std::chrono::duration<double>* p_pulseWidthSamples;
-  std::chrono::duration<double>* p_periodSamples;
+  std::chrono::duration<float>* p_pulseWidthSamples;
+  std::chrono::duration<float>* p_periodSamples;
 
-  std::chrono::duration<double> m_pulseWidthSampleSum;
-  std::chrono::duration<double> m_periodSampleSum;
+  std::chrono::duration<float> m_pulseWidthSampleSum;
+  std::chrono::duration<float> m_periodSampleSum;
 
   void rise();
   void fall();
-  std::chrono::duration<double> movingAvg(std::chrono::duration<double>* p_samples,
-                                          std::chrono::duration<double>* p_sampleSum,
-                                          std::chrono::duration<double> newSample, int newIndex);
+  std::chrono::duration<float> movingAvg(std::chrono::duration<float>* p_samples,
+                                         std::chrono::duration<float>* p_sampleSum,
+                                         std::chrono::duration<float> newSample, int newIndex);
 };

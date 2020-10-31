@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LookupTable.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 
 class CANMsg : public CANMessage {
@@ -20,12 +21,25 @@ class CANMsg : public CANMessage {
 
   /** Creates CAN message with specific content.
    */
-  CANMsg(int _id, const char *_data, char _len = 8, CANType _type = CANData, CANFormat _format = CANStandard)
-      : CANMessage(_id, _data, _len, _type, _format) {}
+  CANMsg(HWBRIDGE::CANID _id, const char *_data, char _len = 8, CANType _type = CANData,
+         CANFormat _format = CANStandard)
+      : CANMessage(static_cast<uint16_t>(_id), _data, _len, _type, _format) {}
 
   /** Creates CAN remote message.
    */
-  CANMsg(int _id, CANFormat _format = CANStandard) : CANMessage(_id, _format) {}
+  CANMsg(HWBRIDGE::CANID _id, CANFormat _format = CANStandard) : CANMessage((uint16_t)_id, _format) {}
+
+  /** Sets the ID for a CAN messages
+   */
+  void setID(const HWBRIDGE::CANID newID) {
+    id = static_cast<uint16_t>(newID);
+  }
+
+  /** Returns the ID of the CAN message
+   */
+  HWBRIDGE::CANID getID() const {
+    return static_cast<HWBRIDGE::CANID>(id);
+  }
 
   /** Clears CAN message content
    */
