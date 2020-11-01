@@ -9,8 +9,8 @@ class CANMsg : public CANMessage {
   using CAN_Message::id;
  public:
   using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
-  //typedef LookupTable<uint16_t, CANMsg::CANMsgHandler> CANMsgHandlerMap;
-  using CANMsgHandlerMap = LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, +[](CANMsg &)->mbed_error_status_t {return MBED_SUCCESS;}>;
+  using CANMsgHandlerMap = LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler,
+                                       +[](CANMsg &)->mbed_error_status_t {return MBED_SUCCESS;}>;
 
   template <class T>
   union CANPayload {
