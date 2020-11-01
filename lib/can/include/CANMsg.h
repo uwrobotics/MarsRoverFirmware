@@ -6,7 +6,7 @@
 
 class CANMsg : public CANMessage {
  private:
-  using CANMessage::id;
+  using CAN_Message::id;
  public:
   using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
   //typedef LookupTable<uint16_t, CANMsg::CANMsgHandler> CANMsgHandlerMap;
@@ -30,7 +30,7 @@ class CANMsg : public CANMessage {
 
   /** Creates CAN remote message.
    */
-  CANMsg(HWBRIDGE::CANID _id, CANFormat _format = CANStandard) : CANMessage((uint16_t)_id, _format) {}
+  CANMsg(HWBRIDGE::CANID _id, CANFormat _format = CANStandard) : CANMessage(static_cast<uint16_t>(_id), _format) {}
 
   /** Sets the ID for a CAN messages
    */
