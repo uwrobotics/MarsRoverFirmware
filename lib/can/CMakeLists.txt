@@ -3,6 +3,7 @@ target_sources(CANBuffer PRIVATE src/CANBuffer.cpp)
 target_include_directories(CANBuffer PUBLIC include)
 target_link_libraries(CANBuffer
         PRIVATE
+        uwrt-mars-rover-hw-bridge
         LookupTable
        )    
 target_set_mbed_dependency(CANBuffer)

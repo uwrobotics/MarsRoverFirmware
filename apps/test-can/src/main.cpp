@@ -21,6 +21,7 @@ uint8_t counter = 0;
  * @retval
  */
 void printMsg(CANMessage& msg) {
+  // FIND A WAY TO DIASLLOAW MSG.ID!!! REPLACE WITH REINTERPRET_CAST<UINT16_T>(MSG.GETID())
   printf("  ID      = 0x%.3x\r\n", msg.id);
   printf("  Type    = %d\r\n", msg.type);
   printf("  Format  = %d\r\n", msg.format);

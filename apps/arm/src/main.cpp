@@ -219,18 +219,14 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      if (auto function = canHandlerMap.at(rxMsg.id)) {
-        function.value(rxMsg);
-      } else {
-        // TODO: Warn about unsupported CAN command (without flooding)
-      }
+      canHandlerMap.at(rxMsg.getID())(rxMsg);
     }
 
     // rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
 
-    // if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.id) != canHandlerMap.end())) {
-    //     if (canHandlerMap.count(rxMsg.id) > 0) {
-    //         canHandlerMap[rxMsg.id](rxMsg);
+    // if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.getID()) != canHandlerMap.end())) {
+    //     if (canHandlerMap.count(rxMsg.getID()) > 0) {
+    //         canHandlerMap[rxMsg.getID()](rxMsg);
     //     }
     //     else {
     //         // TODO: Warn about unsupported CAN command (without flooding serial)
