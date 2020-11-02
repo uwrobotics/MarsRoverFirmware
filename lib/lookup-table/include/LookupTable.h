@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 namespace LookupTableInternal {
-  struct unusedDefaultValue{};
+  struct UnusedDefaultValue{};
 }
 // This a LUT type. It is not meant to be mutated after initilization.
 template <typename Key, typename Value, const auto defaultValue = LookupTableInternal::unusedDefaultValue(), 
