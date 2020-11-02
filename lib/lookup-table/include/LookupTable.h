@@ -4,15 +4,16 @@
 #include <unordered_map>
 
 namespace LookupTableInternal {
-  struct UnusedDefaultValue{};
-}
+struct UnusedDefaultValue {};
+}  // namespace LookupTableInternal
 // This a LUT type. It is not meant to be mutated after initilization.
-template <typename Key, typename Value, const auto defaultValue = LookupTableInternal::UnusedDefaultValue(), 
+template <typename Key, typename Value, const auto defaultValue = LookupTableInternal::UnusedDefaultValue(),
           typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>,
           typename Allocator = std::allocator<std::pair<const Key, Value>>>
 class LookupTable {
  private:
   const std::unordered_map<Key, Value, Hash, KeyEqual, Allocator> _unordered_map;
+
  public:
   using key_type        = Key;
   using mapped_type     = Value;
@@ -68,7 +69,7 @@ class LookupTable {
   }
   template <typename V = Value>
   typename std::enable_if<!std::is_same<V, decltype(defaultValue)>::value, std::optional<V>>::type at(
-    const Key &key) const {
+      const Key &key) const {
     bool value_exists = _unordered_map.find(key) != _unordered_map.end();
     return value_exists ? std::optional<Value>{_unordered_map.at(key)} : std::nullopt;
   }
@@ -79,7 +80,7 @@ class LookupTable {
   }
   template <typename V = Value>
   typename std::enable_if<!std::is_same<V, decltype(defaultValue)>::value, std::optional<V>>::type operator[](
-    const Key &key) const {
+      const Key &key) const {
     return at(key);
   }
 };
