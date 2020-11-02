@@ -7,10 +7,6 @@
 mbed_error_status_t trivial1(CANMsg& msg);
 mbed_error_status_t trivial2(CANMsg& msg);
 
-void dumb();
-void dumber();
-void dumbDefault();
-
 int main() {
     printf("\n LookupTable Test App Started \r\n");
     // No default case
