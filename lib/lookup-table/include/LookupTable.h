@@ -4,16 +4,15 @@
 #include <unordered_map>
 
 namespace LookupTableInternal {
-  struct unusedDefaultValue{};
+  struct UnusedDefaultValue{};
 }
 // This a LUT type. It is not meant to be mutated after initilization.
-template <typename Key, typename Value, const auto defaultValue = LookupTableInternal::unusedDefaultValue(), 
+template <typename Key, typename Value, const auto defaultValue = LookupTableInternal::UnusedDefaultValue(), 
           typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>,
           typename Allocator = std::allocator<std::pair<const Key, Value>>>
 class LookupTable {
  private:
   const std::unordered_map<Key, Value, Hash, KeyEqual, Allocator> _unordered_map;
-
  public:
   using key_type        = Key;
   using mapped_type     = Value;
@@ -25,8 +24,8 @@ class LookupTable {
   using allocator_type  = Allocator;
   using reference       = value_type &;
   using const_reference = const value_type &;
-  using pointer         = std::allocator_traits<Allocator>::pointer;
-  using const_pointer   = std::allocator_traits<Allocator>::const_pointer;
+  using pointer         = typename std::allocator_traits<Allocator>::pointer;
+  using const_pointer   = typename std::allocator_traits<Allocator>::const_pointer;
 
   LookupTable() = delete;
 
@@ -62,25 +61,23 @@ class LookupTable {
     return _unordered_map.empty();
   }
 
-  template <typename V = value>
+  template <typename V = Value>
   typename std::enable_if<std::is_same<V, decltype(defaultValue)>::value, V>::type at(const Key &key) const {
-    bool value_exists = _unordered_map.find(key) == _unordered_map.end();
-    MBED_ASSERT(value_exists);
+    bool value_exists = _unordered_map.find(key) != _unordered_map.end();
     return value_exists ? _unordered_map.at(key) : defaultValue;
   }
-  template <typename V = value>
+  template <typename V = Value>
   typename std::enable_if<!std::is_same<V, decltype(defaultValue)>::value, std::optional<V>>::type at(
     const Key &key) const {
-    bool value_exists = _unordered_map.find(key) == _unordered_map.end();
-    MBED_ASSERT(value_exists);
+    bool value_exists = _unordered_map.find(key) != _unordered_map.end();
     return value_exists ? std::optional<Value>{_unordered_map.at(key)} : std::nullopt;
   }
 
-  template <typename V = value>
+  template <typename V = Value>
   typename std::enable_if<std::is_same<V, decltype(defaultValue)>::value, V>::type operator[](const Key &key) const {
     return at(key);
   }
-  template <typename V = value>
+  template <typename V = Value>
   typename std::enable_if<!std::is_same<V, decltype(defaultValue)>::value, std::optional<V>>::type operator[](
     const Key &key) const {
     return at(key);

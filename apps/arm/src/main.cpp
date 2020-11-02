@@ -179,7 +179,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
 }
 
 // Handler function mappings
-static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_OVERRIDE_FLAGS, &setOverrideFlags},
+const static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_OVERRIDE_FLAGS, &setOverrideFlags},
 
                                                  {HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
                                                  {HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE, &setControlMode},

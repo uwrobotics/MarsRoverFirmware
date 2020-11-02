@@ -51,6 +51,12 @@ test-enc-abs-pwm:
 #  - gimbtonomy
 #  - science
 
+test-lookup-table:
+  - nucleo
+  #- arm
+  #- gimbtonomy
+  #- safety
+
 test-moisture:
   #  - nucleo
   - science
