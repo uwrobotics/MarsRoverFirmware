@@ -33,7 +33,8 @@ int main() {
   printf("Non-Existing Key \r\nNOTE THE TERMINATION OF THE PROGRAM: \r\n");
   c[HWBRIDGE::CANID::TPDO3](msg);
 
-  while (true);
+  while (true)
+    ;
 }
 
 mbed_error_status_t trivial1(CANMsg& msg) {
