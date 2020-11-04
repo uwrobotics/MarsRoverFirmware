@@ -15,6 +15,11 @@ constexpr int Sensor_Status_Reset      = 0x7F;
 
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl) {}
 
+/*
+** NOTE FROM YEHIA, I AM UNSURE FOR THE TIMING FUNCTIONS IN THIS CODE PREVIOUS CODE DIDNT HAVE ANY
+UNITS FOR THE SLEEP FUNCTIONS AND SO I GUESSED EVERYTHING IN MS**
+*/
+
 bool MoistureSensor::Is_Initialized() {
   return (this->Read_HW_ID() == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
 }
@@ -35,8 +40,8 @@ uint8_t MoistureSensor::Read_HW_ID() {
 
   char check[1];
 
-  i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for checking device ID
-  ThisThread::sleep_for(125);
+  i2c_.write(Sensor_I2C_Address, cmd, 2);   // initialize registers for checking device ID
+  ThisThread::sleep_for(125ms);             // i dont actually know how long to sleep for (prev value was 125 w no unit)
   i2c_.read(Sensor_I2C_Address, check, 1);  // read device ID
 
   return check[0];
@@ -58,9 +63,9 @@ uint16_t MoistureSensor::Read_Moisture() {
   uint8_t counter = 10;  // initialize counter to break out of loop if reading isn't working (prevent infinite looping)
 
   do {
-    ThisThread::sleep_for(1);
+    ThisThread::sleep_for(1ms);
     i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading moisture
-    ThisThread::sleep_for(1000);
+    ThisThread::sleep_for(1000ms);
     i2c_.read(Sensor_I2C_Address, buf, 2);  // read moisture
 
     ret = ((uint16_t)buf[0] << 8 | buf[1]);  // concatenate bytes together
@@ -84,7 +89,7 @@ float MoistureSensor::Read_Temperature() {
   char buf[4];
 
   i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading temperature
-  ThisThread::sleep_for(1000);
+  ThisThread::sleep_for(1000ms);
   i2c_.read(Sensor_I2C_Address, buf, 4);  // read temp
 
   int32_t ret = ((uint32_t)buf[0] << 24) | ((uint32_t)buf[1] << 16) |  // concatenate bytes together
