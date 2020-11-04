@@ -10,16 +10,6 @@
 #include "hw_bridge.h"
 #include "mbed.h"
 
-// YOUNES COMMENT DELETE ONCE READ: CANIDS WERE UPDATE IN THE HW BRIDGE
-/* THERES 4 CANIDS THAT U CAN RECEIVE. THEY ASK YOU TO MAKE CERTAIN MOTORS MOVE A CERTAIN WAY*/
-// THERES 6 CANIDS U CAN SEND. IMPLEMENT ALL THE REPORTS EXCEPT FOR REPORT DIGGER AND REPORT COVER
-
-/* SOME QUESTIONS YOU NEED TO THINK ABT AND ANSWER:
-HOW DO WE TRANSLATE AN INDEX TO A CMD WE CAN GIVE THE MOTOR (FOR SET INDEX FUNCITONALITY) NEED TO UNDERSTAND GENEVA
-DRIVE MECHANISM
-
-*/
-
 // motors
 Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
 Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
@@ -68,26 +58,22 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   msg.getPayload(motionData);
 
   switch (msg.getID()) {
-    // we need indexes for geneva index, elevator pos, and moisture sensor
-    case HWBRIDGE::CANID::SET_GENEVA_INDEX:  // formerly known as set_indexer_pos
+    case HWBRIDGE::CANID::SET_GENEVA_INDEX:
       return indexerActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:  // formerly known as set_elevator_pos
-      return elevatorActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_COVER_ANGLE:  // this one works
+    case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:
+    case HWBRIDGE::CANID::SET_COVER_ANGLE:
       return coverServo.setPosition(motionData);
-    case HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT:  // this one works
+    case HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT:
       return diggerServo.setPosition(motionData);
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
   }
 }
-// it seems like a lot of these are not listed in the hw_bridge namespace, perhaps they are all under different names
-// now?
-static CANMsg::CANMsgHandlerMap canHandleMap = {
-    {HWBRIDGE::CANID::SET_GENEVA_INDEX, setMotionData},   // formerly known as set_indexer_pos
-    {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},  // formerly known as set_elevator_pos
-    {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
-    {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData}};
+
+static CANMsg::CANMsgHandlerMap canHandleMap = {{HWBRIDGE::CANID::SET_GENEVA_INDEX, setMotionData},
+                                                {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},
+                                                {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
+                                                {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData}};
 
 // CAN Threads
 Thread rxCANProcessorThread;
@@ -114,12 +100,12 @@ void txCANProcessor() {
   CANMsg txMsg;
 
   while (true) {
-    txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_INDEX);  // formerly send_indexer_pos
+    txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_INDEX);
     txMsg.setPayload(indexerActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
-    txMsg.setID(HWBRIDGE::CANID::REPORT_SCOOPER_ANGLE);  // formerly send_elevator_pos
+    txMsg.setID(HWBRIDGE::CANID::REPORT_SCOOPER_ANGLE);
     txMsg.setPayload(elevatorActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);

@@ -7,6 +7,7 @@ target_link_libraries(science.${TARGET}-board.elf
     ScienceConfig
     Encoder
     LimServo
+    MoistureSensor
     uwrt-mars-rover-hw-bridge)
 target_set_firmware_properties(science.${TARGET}-board.elf)
 
