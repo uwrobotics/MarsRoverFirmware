@@ -1,4 +1,5 @@
 #include <string>
+
 #include "CANMsg.h"
 #include "LookupTable.h"
 #include "hw_bridge.h"
