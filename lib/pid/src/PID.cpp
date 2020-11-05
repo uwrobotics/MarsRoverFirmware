@@ -65,7 +65,6 @@ float PID::computePPath(float error) const {
 }
 
 float PID::computeIPath(float error, int64_t dt) const {
-  // figure out this fetch add what 2nd arg to pass?
   m_IPath.fetch_add(error * dt * m_IGain.load());
   m_IPath.store(std::clamp(m_IPath.load(), static_cast<float>(m_lowerBound), static_cast<float>(m_upperBound)));
   return m_IPath.load();
