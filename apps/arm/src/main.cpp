@@ -1,6 +1,7 @@
 #include "ActuatorController.h"
 #include "ArmConfig.h"
 #include "CANBuffer.h"
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "ClawController.h"
 #include "DifferentialWristController.h"
@@ -88,7 +89,7 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
   ActuatorController::t_actuatorControlMode controlMode;
   msg.getPayload(controlMode);
 
-  switch (msg.id) {
+  switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE:
       return turnTableActuator.setControlMode(controlMode);
     case HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE:
@@ -111,7 +112,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
 
-  switch (msg.id) {
+  switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA:
       return turnTableActuator.setMotionData(motionData);
     case HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA:
@@ -209,7 +210,7 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_OVERRIDE_
 /******************/
 
 // Interface and recieve buffer
-CAN can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 // CANBuffer rxCANBuffer(can1, CANBuffer::BufferType::rx);
 
 // Incoming message processor
@@ -218,8 +219,8 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      if (canHandlerMap.count(rxMsg.id) > 0) {
-        canHandlerMap[rxMsg.id](rxMsg);
+      if (canHandlerMap.count(rxMsg.getID()) > 0) {
+        canHandlerMap[rxMsg.getID()](rxMsg);
       } else {
         // TODO: Warn about unsupported CAN command (without flooding)
       }
@@ -253,42 +254,42 @@ void txCANProcessor() {
   } motionReport;
 
   while (true) {
-    txMsg.id              = HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION);
     motionReport.position = turnTableActuator.getAngle_Degrees();
     motionReport.velocity = turnTableActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_SHOULDER_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_SHOULDER_MOTION);
     motionReport.position = shoulderActuator.getAngle_Degrees();
     motionReport.velocity = shoulderActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_ELBOW_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_ELBOW_MOTION);
     motionReport.position = elbowActuator.getAngle_Degrees();
     motionReport.velocity = elbowActuator.getVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION);
     motionReport.position = wristController.getPitchAngle_Degrees();
     motionReport.velocity = wristController.getPitchVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_WRIST_PITCH_MOTION);
     motionReport.position = wristController.getRollAngle_Degrees();
     motionReport.velocity = wristController.getRollVelocity_DegreesPerSec();
     txMsg.setPayload(motionReport);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    txMsg.id              = HWBRIDGE::CANID::REPORT_CLAW_MOTION;
+    txMsg.setID(HWBRIDGE::CANID::REPORT_CLAW_MOTION);
     motionReport.position = clawController.getGapDistance_Cm();
     motionReport.velocity = clawController.getGapVelocity_CmPerSec();
     txMsg.setPayload(motionReport);
@@ -310,8 +311,8 @@ int main() {
   printf("=======================\r\n");
 
   // CAN init stuff
-  can1.filter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK,
-              CANStandard);
+  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,
+                 HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 
