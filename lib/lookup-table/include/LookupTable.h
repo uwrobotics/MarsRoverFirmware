@@ -3,6 +3,7 @@
 #include <optional>
 #include <unordered_map>
 
+namespace lookup_table {
 namespace LookupTableInternal {
 struct UnusedDefaultValue {};
 }  // namespace LookupTableInternal
@@ -84,3 +85,4 @@ class LookupTable {
     return at(key);
   }
 };
+}  // namespace lookup_table
