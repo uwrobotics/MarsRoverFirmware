@@ -42,10 +42,9 @@ class PID {
   // WARNING: THESE ARE CALLED IN CANRX THREAD
   void reset();
   // WARNING: COMPUTE IS CALLED IN MAIN THREAD
-  float compute(float setPoint, float processVariable);
+  float compute(float setPoint, float processVariable) const;
 
  private:
-  // This prevents changing values or resetting timer mid-compute
   Mutex m_mutex;
   Timer m_timer;
   uint32_t m_PGain, m_IGain, m_DGain;

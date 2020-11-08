@@ -64,20 +64,20 @@ void PID::reset() {
   m_timer.reset();
 }
 
-// TODO maybe use a lamba for these
 float PID::computePPath(float error) const {
+  // no mutex lock needed since inside compute() only
   return error * m_PGain;
 }
 
-// TODO maybe use a lamba for these
 float PID::computeIPath(float error, int64_t dt) const {
+  // no mutex lock needed since inside compute() only
   m_IPath += error * dt * m_IGain;
   m_IPath = std::clamp(m_IPath, static_cast<float>(m_lowerBound), static_cast<float>(m_upperBound));
   return m_IPath;
 }
 
-// TODO maybe use a lamba for these
 float PID::computeDPathOnError(float error, int64_t dt) const {
+  // no mutex lock needed since inside compute() only
   float derivativePath = 0;
   if (dt != 0) {
     derivativePath = m_DGain * (error - m_pastError) / dt;
@@ -86,6 +86,7 @@ float PID::computeDPathOnError(float error, int64_t dt) const {
 }
 
 float PID::computeDPathOnPV(float processVariable, int64_t dt) const {
+  // no mutex lock needed since inside compute() only
   float derivativePath = 0;
   if (dt != 0) {
     derivativePath = m_DGain * (processVariable - m_pastPV) / dt;
@@ -93,7 +94,7 @@ float PID::computeDPathOnPV(float processVariable, int64_t dt) const {
   return derivativePath;
 }
 
-float PID::compute(float setPoint, float processVariable) {
+float PID::compute(float setPoint, float processVariable) const{
   std::lock_guard<Mutex> lock(m_mutex);
   float error = setPoint - processVariable;
   if (std::abs(error) < m_deadzone) {
