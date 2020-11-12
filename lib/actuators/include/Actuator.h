@@ -15,10 +15,13 @@
 
 class Actuator {
  public:
-  Actuator()          = default;
-  virtual ~Actuator() = default;
+  Actuator()                      = default;  // TODO: Don't want default constructor?
+  Actuator(const Actuator& other) = default;
+  virtual ~Actuator()             = default;
 
   virtual void setValue(float value) {}
+
+  Actuator& operator=(float value);  // undefined atm
 
   virtual float getValue() {
     return -1;

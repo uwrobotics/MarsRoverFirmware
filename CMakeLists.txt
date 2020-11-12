@@ -133,7 +133,6 @@ add_subdirectory(lib/controllers)
 add_subdirectory(lib/neopixel)
 add_subdirectory(lib/pid)
 add_subdirectory(lib/sensors)
-add_subdirectory(lib/servo)
 
 if (NOT DEFINED APP)
     message(FATAL_ERROR "APP variable not set in CACHE. Please invoke CMake with \"-DAPP=<app-name>\"")
