@@ -126,6 +126,7 @@ add_compile_options(${PROCESSOR_FLAGS} ${COMPILE_FLAGS})
 include(mbed-os.cmake)
 
 # Include library CMakeLists
+add_subdirectory(lib/actuators)
 add_subdirectory(lib/can)
 add_subdirectory(lib/gamepad)
 add_subdirectory(lib/controllers)

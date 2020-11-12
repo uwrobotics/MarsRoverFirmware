@@ -1,12 +1,10 @@
 #pragma once
 
 #include "Actuator.h"
-#include "mbed.h"
 
 class Servo : public Actuator {
  public:
   Servo(PinName pin) : m_pin(pin), m_pwm(pin){};
-  virtual ~Servo() = default;
 
   // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
   void setPeriod(std::chrono::duration<float> period) {

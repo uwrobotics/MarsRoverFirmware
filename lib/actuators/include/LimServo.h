@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Servo.h"
-#include "mbed.h"
 
 class LimServo : public Servo {
  public:
@@ -27,7 +26,7 @@ class LimServo : public Servo {
    * @param angle The position of the servo in degrees
    */
   void setValue(float position);
-  Actuator& operator=(float position);
+  LimServo& operator=(float position);
 
   /** Read the current position of the servo
    *

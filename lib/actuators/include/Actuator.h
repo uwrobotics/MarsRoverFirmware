@@ -1,15 +1,14 @@
 #pragma once
 
-#include "mbed.h"
-
 /*
  * The Actuator class is an abstracted class that encompasses
- * DC motors, limit servos, and continuous servos. What "value"
- * represents depends on the actuator type:
+ * DC motors, brushless motors, limit servos, and continuous servos.
+ * What "value" represents depends on the actuator type:
  *
  *      Actuator Type       Value
  *      ------------------------------
  *      DC Motor            Speed
+ *      Brushless Motor     ???
  *      Limit Servo         Position
  *      Continuous Servo    Speed
  */
@@ -19,9 +18,7 @@ class Actuator {
   Actuator()          = default;
   virtual ~Actuator() = default;
 
-  virtual void setValue(float value){};
-
-  virtual Actuator& operator=(float value){};
+  virtual void setValue(float value) {}
 
   virtual float getValue() {
     return -1;

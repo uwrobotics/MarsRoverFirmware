@@ -1,8 +1,8 @@
-#include "../include/Motor.h"  //TODO
-
 #include <cmath>
 
-Motor::Motor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
+#include "DCMotor.h"
+
+DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
     : m_pwm(pwm), m_dir(dir), m_inverted(inverted), m_limit(limit) {
   // Set initial condition of PWM
   m_pwm.period(1.0 / freqInHz);
@@ -15,19 +15,19 @@ Motor::Motor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
   m_limit = fmin(m_limit, 1.0);
 }
 
-Motor::Motor(t_motorConfig motorConfig)
-    : Motor(motorConfig.pwmPin, motorConfig.dirPin, motorConfig.inverted, motorConfig.freqInHz, motorConfig.limit) {}
+DCMotor::DCMotor(t_motorConfig motorConfig)
+    : DCMotor(motorConfig.pwmPin, motorConfig.dirPin, motorConfig.inverted, motorConfig.freqInHz, motorConfig.limit) {}
 
-void Motor::setValue(float dutyCycle) {
+void DCMotor::setValue(float dutyCycle) {
   m_dir = ((dutyCycle > 0.0) != m_inverted);
   m_pwm = fmin(fabs(dutyCycle), m_limit);
 }
 
-Actuator& Motor::operator=(float dutyCycle) {
+DCMotor& DCMotor::operator=(float dutyCycle) {
   this->setValue(dutyCycle);
   return *this;
 }
 
-float Motor::getValue() {
+float DCMotor::getValue() {
   return m_dir ? m_pwm.read() : -m_pwm.read();
 }

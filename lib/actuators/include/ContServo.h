@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Servo.h"
-#include "mbed.h"
 
 class ContServo : public Servo {
  public:
   ContServo(PinName pin);
-  ContServo(PinName pin, float max_speed);
-  ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse,
+  ContServo(PinName pin, bool inverted, float max_speed);
+  ContServo(PinName pin, bool inverted, float max_speed, std::chrono::duration<float> max_pulse,
             std::chrono::duration<float> min_pulse);
 
   /** Set the maximum speed of the servo
@@ -27,7 +26,7 @@ class ContServo : public Servo {
    * @param speed The speed of the servo (can be negative)
    */
   void setValue(float speed);
-  Actuator& operator=(float speed);
+  ContServo& operator=(float speed);
 
   /** Read the current speed of the servo
    *
@@ -39,4 +38,5 @@ class ContServo : public Servo {
   float m_max_speed,  // MAXIMUM ROTATION SPEED in ANGLES PER SECOND (from -max_speed to + max_speed),  only valid for
                       // CONTINUOUS_SERVO types
       m_speed;        // ROTATING SPEED in ANGLES PER SECOND
+  bool m_inverted;
 };

@@ -1,4 +1,4 @@
-#include "../include/LimServo.h"
+#include "LimServo.h"
 
 LimServo::LimServo(PinName pin) : Servo(pin) {
   m_range = DEFAULT_RANGE;
@@ -40,7 +40,7 @@ void LimServo::setValue(float position) {
   m_pwm.pulsewidth(((m_max_pulse - m_min_pulse) * position / (m_range * 2) + m_min_pulse).count());
 }
 
-Actuator& LimServo::operator=(float position) {
+LimServo& LimServo::operator=(float position) {
   this->setValue(position);
   return *this;
 }
