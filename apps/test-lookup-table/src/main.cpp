@@ -23,6 +23,13 @@ int main() {
   printf("Existing Key: %d\r\n", b[1]);
   printf("Non-Existing Key: %d\r\n", b[2]);
   printf("\r\n");
+  // Here's how you iterate over a map
+  // TODO IMPLEMENT THIS
+  /*for(auto [key, value] : b) {
+    // do things with key and value
+    (void) key;
+    (void) value;
+  }*/
 
   // Function pointer example
   const CANMsg::CANMsgHandlerMap c = {{HWBRIDGE::CANID::TPDO1, trivial1}, {HWBRIDGE::CANID::TPDO2, trivial2}};

@@ -4,11 +4,11 @@
 #include <unordered_map>
 
 namespace lookup_table {
-namespace LookupTableInternal {
+namespace internal {
 struct UnusedDefaultValue {};
-}  // namespace LookupTableInternal
+}  // namespace internal
 // This a LUT type. It is not meant to be mutated after initilization.
-template <typename Key, typename Value, const auto defaultValue = LookupTableInternal::UnusedDefaultValue(),
+template <typename Key, typename Value, const auto defaultValue = internal::UnusedDefaultValue(),
           typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>,
           typename Allocator = std::allocator<std::pair<const Key, Value>>>
 class LookupTable {
