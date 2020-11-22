@@ -46,8 +46,8 @@ jobs:
         run: echo "HOME=$HOME" >> $GITHUB_ENV
 
       - name: Update Path with Toolchain
-        run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
-        #run: echo "action_state=yellow" >> $GITHUB_ENV
+        #run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
+        run: echo "${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin" >> $GITHUB_PATH
 
       - name: Load Cached Arm Toolchain
         uses: actions/cache@v2.1.2
