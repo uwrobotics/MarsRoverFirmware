@@ -17,11 +17,11 @@ uint8_t counter = 0;
 /**
  * @brief   Prints CAN msg to PC's serial terminal
  * @note
- * @param   CANMessage to print
+ * @param   CANMsg to print
  * @retval
  */
-void printMsg(CANMessage& msg) {
-  printf("  ID      = 0x%.3x\r\n", msg.id);
+void printMsg(CANMsg& msg) {
+  printf("  ID      = 0x%.3x\r\n", static_cast<uint16_t>(msg.getID()));
   printf("  Type    = %d\r\n", msg.type);
   printf("  Format  = %d\r\n", msg.format);
   printf("  Length  = %d\r\n", msg.len);
