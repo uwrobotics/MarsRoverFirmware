@@ -42,11 +42,9 @@ jobs:
           submodules: 'recursive'
 
       - name: Set Working Directory as Home
-        #run: echo "::set-env name=HOME::$HOME"
         run: echo "HOME=$HOME" >> $GITHUB_ENV
 
       - name: Update Path with Toolchain
-        #run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
         run: echo "${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin" >> $GITHUB_PATH
 
       - name: Load Cached Arm Toolchain
