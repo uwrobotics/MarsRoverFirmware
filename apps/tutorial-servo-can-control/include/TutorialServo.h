@@ -3,15 +3,14 @@
 #include "mbed.h"
 
 class TutorialServo {
-
-public:
+ public:
   // Constructor
   // Takes in servo pin name, and optionally a servo range (default value of
   // 180.0 degrees), a min pulsewidth (default 1ms) and max pulsewidth (default
   // 2ms)
 
-  TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0,
-                float minPulsewidthInMs = 1, float maxPulsewidthInMs = 2);
+  TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1,
+                float maxPulsewidthInMs = 2);
 
   // Set servo position in degrees (ex. 45deg)
   void setPositionInDegrees(const float degrees);
@@ -28,7 +27,7 @@ public:
   // Get the max pulse width in ms (ex: 2ms)
   float getMaxPulseWidthInMs() const;
 
-private:
+ private:
   PwmOut m_servoPwmOut;
   const float m_servoRangeInDegrees;
   const float m_minPulsewidthInMs;
