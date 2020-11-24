@@ -1,6 +1,5 @@
 #include "TutorialServo.h"
-#include <cmath>
-
+#include <algorithm>
 TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs, float maxPulsewidthInMs)
               : m_servoRangeInDegrees(servoRangeInDegrees), m_minPulsewidthInMs(minPulsewidthInMs), m_maxPulsewidthInMs(maxPulsewidthInMs)
 {
@@ -12,7 +11,8 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 
 // Set servo position (ex. 45deg)
 void TutorialServo::setPositionInDegrees(const float degrees){
-    float finalPulsewidth = (((fabs(degrees) / m_servoRangeInDegrees) - floor(fabs(degrees)/m_servoRangeInDegrees)) * (m_maxPulsewidthInMs-m_minPulsewidthInMs)) + m_minPulsewidthInMs;
+
+    float finalPulsewidth = ((std::max(0,std::min(degrees,m_servoRangeInDegrees))/m_servoRangeInDegrees) * (m_maxPulsewidthInMs-m_minPulsewidthInMs)) + m_minPulsewidthInMs;
     m_servoPwmOut.pulsewidth_ms(finalPulsewidth);
 }
 
