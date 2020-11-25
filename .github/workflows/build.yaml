@@ -68,7 +68,7 @@ jobs:
           arm-none-eabi-gcc --version
 
       - name: Run CMake (bash)
-        uses: lukka/run-cmake@v3.1
+        uses: lukka/run-cmake@v3.2
         env: ${{matrix.env}}
         with:
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
