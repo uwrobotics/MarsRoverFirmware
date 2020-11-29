@@ -5,18 +5,18 @@
 
 class MoistureSensor : public Sensor {
  public:
-  MoistureSensor(PinName sda, PinName scl);
+  MoistureSensor(PinName sda, PinName scl) override;
   ~MoistureSensor();
 
   //functions to read sensor data
   //primary read -> reads moisture data
-  float primaryRead();
+  float read() override;
   //alternate read -> reads temperature data
-  float alternateRead();
+  float alternateRead() override;
 
-  void resetSensor();
+  void reset() override;
   //reads the HW ID and checks that it is correct
-  bool getSensorStatus();
+  bool getStatus() override;
 
  private:
   I2C i2c_;

@@ -13,11 +13,11 @@ int main() {
   MoistureSensor sensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
   while (1) {
-    sensor.resetSensor();  // reset all registers on sensor to default values
+    sensor.reset();  // reset all registers on sensor to default values
 
     ThisThread::sleep_for(500ms);
 
-    led1 = (sensor.getSensorStatus());  // turn on LED if the sensor's HW_ID code matches the known value
+    led1 = (sensor.getStatus());  // turn on LED if the sensor's HW_ID code matches the known value
 
     printf("\r\nChecking Device ID...\r\n");  // read device HW_ID, reading of 85 is expected
 
@@ -25,7 +25,7 @@ int main() {
 
     printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates unsuccessful
                                             // initialization
-    moisture = sensor.primaryRead();
+    moisture = sensor.read();
     printf("Moisture: %f \r\n", moisture);
 
     ThisThread::sleep_for(100ms);

@@ -17,7 +17,7 @@ MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl) {}
 
 MoistureSensor::~MoistureSensor() {}
 
-void MoistureSensor::resetSensor() {
+void MoistureSensor::reset() {
   char cmd[3];
   cmd[0] = Sensor_Status_Base;  // initialize registers for clearing sensor memory
   cmd[1] = Sensor_Status_Reset;
@@ -26,7 +26,7 @@ void MoistureSensor::resetSensor() {
   i2c_.write(Sensor_I2C_Address, cmd, 3);  // set all registers on sensor to default values
 }
 
-bool MoistureSensor::getSensorStatus() {
+bool MoistureSensor::getStatus() {
   char cmd[2];
   cmd[0] = Sensor_Status_Base;
   cmd[1] = Sensor_Status_HW_ID;
@@ -41,7 +41,7 @@ bool MoistureSensor::getSensorStatus() {
 } 
 
 //read moisture reading of device
-float MoistureSensor::primaryRead() {
+float MoistureSensor::read() {
   if (!(this->getSensorStatus())) {  // checks if device is initialized, returns 65534 if there is an issue
     return 65534;
   }
