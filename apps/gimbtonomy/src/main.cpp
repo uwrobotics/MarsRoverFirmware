@@ -26,8 +26,7 @@
 • Pitch: HS-422 (https://www.robotshop.com/en/hitec-hs-422-servo-motor.html)
 • Roll: SG90 (https://datasheetspdf.com/pdf/791970/TowerPro/SG90/1)
 */
-ContServo panServoMotor(SRVO_PWM_CR, false, 38, 2.1ms,
-                        0.9ms);  // 38 RPM (228 deg/sec) at 4.8V, max->2100us PW, min->900us PW.
+ContServo panServoMotor(SRVO_PWM_CR, 38, 2.1ms, 0.9ms);  // 38 RPM (228 deg/sec) at 4.8V, max->2100us PW, min->900us PW.
 LimServo pitchServo(SRVO_PWM_HS, 180, 2.1ms, 0.9ms);
 /* @TODO: electrical hasn't choose a pin for this servo yet, I'm just using a random free pin for this for now*/
 LimServo rollServo(SRVO_PWM_SG, 180, 2ms, 1ms);

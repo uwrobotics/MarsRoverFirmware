@@ -1,6 +1,6 @@
-#include <cmath>
-
 #include "DCMotor.h"
+
+#include <cmath>
 
 DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
     : m_pwm(pwm), m_dir(dir), m_inverted(inverted), m_limit(limit) {
@@ -24,10 +24,10 @@ void DCMotor::setValue(float dutyCycle) {
 }
 
 DCMotor& DCMotor::operator=(float dutyCycle) {
-  this->setValue(dutyCycle);
+  setValue(dutyCycle);
   return *this;
 }
 
-float DCMotor::getValue() {
+float DCMotor::getValue() const {
   return m_dir ? m_pwm.read() : -m_pwm.read();
 }

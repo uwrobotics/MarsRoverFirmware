@@ -32,14 +32,14 @@ class DCMotor : public Actuator {
    *
    * @param dutyCycle The speed of the motor as a normalised value between -1.0 and 1.0
    */
-  void setValue(float dutyCycle);
+  void setValue(float dutyCycle) override;
   DCMotor& operator=(float dutyCycle);
 
   /** Read the current speed of the motor
    *
    * @return Current speed of motor
    */
-  float getValue();
+  float getValue() const override;
 
  protected:
   PwmOut m_pwm;

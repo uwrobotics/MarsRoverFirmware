@@ -10,7 +10,7 @@ target_link_libraries(ActuatorController
         )
 target_set_mbed_dependency(ActuatorController)
 
-add_library(Motor STATIC)
-target_sources(Motor PRIVATE src/Motor.cpp)
-target_include_directories(Motor PUBLIC include)
-target_set_mbed_dependency(Motor)
+# add_library(Motor STATIC)
+# target_sources(Motor PRIVATE src/Motor.cpp)
+# target_include_directories(Motor PUBLIC include)
+# target_set_mbed_dependency(Motor)

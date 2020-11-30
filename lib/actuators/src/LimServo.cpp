@@ -1,6 +1,6 @@
 #include "LimServo.h"
 
-LimServo::LimServo(PinName pin) : Servo(pin) {
+LimServo::LimServo(PinName pin) : m_pin(pin), m_pwm(pin) {
   m_range = DEFAULT_RANGE;
   m_pos   = 0;
 
@@ -26,7 +26,7 @@ void LimServo::setRange(float range) {
   m_range = range;
 }
 
-float LimServo::getRange(void) {
+float LimServo::getRange(void) const {
   return m_range;
 }
 
@@ -41,10 +41,10 @@ void LimServo::setValue(float position) {
 }
 
 LimServo& LimServo::operator=(float position) {
-  this->setValue(position);
+  setValue(position);
   return *this;
 }
 
-float LimServo::getValue(void) {
+float LimServo::getValue(void) const {
   return m_pos;
 }
