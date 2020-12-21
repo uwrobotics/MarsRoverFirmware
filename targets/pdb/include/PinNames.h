@@ -157,19 +157,29 @@ typedef enum {
 #endif
 
   /**** UI ****/
-  LED1 = PC_0,
-  LED2 = PC_1,
-  LED3 = PC_2,
-  LED4 = PC_3,
+  LED1 = PA_0,
+  LED2 = PA_1,
+  LED3 = PA_2,
 
-  BUTTON1 = PB_0,
-  BUTTON2 = PB_1,
+  BUTTON1 = PA_3,
 
   /**** Voltage Measurement ****/
-  BUS_5V_ANLG_IN  = PA_1,
-  BUS_12V_ANLG_IN = PA_2,
-  BUS_24V_ANLG_IN = PA_3,
-  TEMP_ANLG_IN    = PA_4,
+  RAIL_5V_ANLG_IN  = PA_4,
+  RAIL_17V_ANLG_IN = PA_5,
+  RAIL_24V_ANLG_IN = PB_0,
+  RAIL_BATTERY_ANLG_IN = PB_1,
+  // TEMP_ANLG_IN    = PA_4, TODO: what's this for?
+
+  /**** LED Matrix ****/
+  LED_MATRIX_R_CHANNEL = PB_4,
+  LED_MATRIX_G_CHANNEL = PB_5,
+  LED_MATRIX_B_CHANNEL = PB_6,
+
+  /**** Ultrasonic Sensor ****/
+  ULTRASONIC_FRONT_LEFT = ,
+  ULTRASONIC_FRONT_RIGHT = ,
+  ULTRASONIC_BACK_LEFT = ,
+  ULTRASONIC_BACK_RIGHT = ,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
@@ -178,18 +188,9 @@ typedef enum {
   CAN2_TX = PB_13,
   CAN2_RX = PB_12,
 
-  CAN_TX = CAN1_TX,
-  CAN_RX = CAN1_RX,
-
-  CUR_SEN_I2C_SCL = PB_8,
-  CUR_SEN_I2C_SDA = PB_9,
-
   SERIAL_TX  = STDIO_UART_TX,
   SERIAL_RX  = STDIO_UART_RX,
   SERIAL_RTS = PA_15,
-
-  USBTX = STDIO_UART_TX,
-  USBRX = STDIO_UART_RX,
 
   /**** OSCILLATOR pins ****/
   RCC_OSC32_IN  = PC_14,

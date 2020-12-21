@@ -4,8 +4,8 @@
 #include "hw_bridge.h"
 
 UltrasonicSensor frontLeft, frontRight, backLeft, backRight;
-LEDMatrix matrix;
-AnalogIn railBattery, rail5V, rail17V, rail24V;  // add voltage range (as percentage) to hw bridge also allocate can id for reporting if outside range
+LEDMatrix matrix(LED_MATRIX_R_CHANNEL, LED_MATRIX_G_CHANNEL, LED_MATRIX_B_CHANNEL);
+AnalogIn railBattery(RAIL_BATTERY_ANLG_IN), rail5V(RAIL_5V_ANLG_IN), rail17V(RAIL_17V_ANLG_IN), rail24V(RAIL_24V_ANLG_IN);  // add voltage range (as percentage) to hw bridge also allocate can id for reporting if outside range
 
 CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
