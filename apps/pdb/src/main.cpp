@@ -11,7 +11,7 @@ CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 void rxCANProcessor();
 void txCANProcessor();
 
-void setLEDMatrix(); // simple switch statement that calls a different function based on contents of CAN msg
+void setLEDMatrix();  // simple switch statement that calls a different function based on contents of CAN msg
 
 const static CANMsg::CANMsgHandlerMap canHandlerMap = {
     {HWBRIDGE::CANID::NEOPIXEL_SET, &setLEDMatrix}};  // rename NEOPIXEL_SET to LEDMATRIX_SET
@@ -20,7 +20,7 @@ int main() {
   Thread rxCANProcessorThread(osPriorityAboveNormal);
   Thread txCANProcessorThread(osPriorityBelowNormal);
   while (true) {
-    // if(rail outside range) {send can msg to Xavier} need to define 
+    // if(rail outside range) {send can msg to Xavier} need to define
   }
 }
 
@@ -38,10 +38,10 @@ void txCANProcessor() {
   CANMsg txMsg;
   while (true) {
     // stream ultrasonic data
-    ThisThread::sleep_for(2ms); // TODO: define the sleep rate in the bridge
+    ThisThread::sleep_for(2ms);  // TODO: define the sleep rate in the bridge
   }
 }
-#else 
+#else
 #define BLINKING_RATE 500ms
 int main() {
   // Initialise the digital pin LED1 as an output
@@ -54,4 +54,3 @@ int main() {
   }
 }
 #endif
-
