@@ -2,8 +2,10 @@
 #include <algorithm>
 #include <mutex>
 
-PID::PID(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
-         int32_t upperBound, float deadzone, bool antiKickback)
+using namespace PID;
+
+Pid::Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
+         int32_t upperBound, uint8_t deadzone, bool antiKickback)
     : m_PGain(proportionalGain),
       m_IGain(intregralGain),
       m_DGain(derivativeGain),
@@ -15,47 +17,47 @@ PID::PID(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeG
       m_pastError(0),
       m_pastPV(0) {}
 
-void PID::updateProportionalGain(uint32_t p) {
+void Pid::updateProportionalGain(uint32_t p) {
   std::lock_guard<Mutex> lock(m_mutex);
   m_PGain = p;
 }
 
-void PID::updateIntegralGain(uint32_t i) {
+void Pid::updateIntegralGain(uint32_t i) {
   std::lock_guard<Mutex> lock(m_mutex);
   m_IGain = i;
 }
 
-void PID::updateDerivativeGain(uint32_t d) {
+void Pid::updateDerivativeGain(uint32_t d) {
   std::lock_guard<Mutex> lock(m_mutex);
   m_DGain = d;
 }
 
-void PID::updateDeadzone(float deadzone) {
+void Pid::updateDeadzone(uint8_t deadzone) {
   std::lock_guard<Mutex> lock(m_mutex);
   m_deadzone = deadzone;
 }
 
-uint32_t PID::reportProportionalGain() const {
+uint32_t Pid::reportProportionalGain() const {
   std::lock_guard<Mutex> lock(m_mutex);
   return m_PGain;
 }
 
-uint32_t PID::reportIntegralGain() const {
+uint32_t Pid::reportIntegralGain() const {
   std::lock_guard<Mutex> lock(m_mutex);
   return m_IGain;
 }
 
-uint32_t PID::reportDerivativeGain() const {
+uint32_t Pid::reportDerivativeGain() const {
   std::lock_guard<Mutex> lock(m_mutex);
   return m_DGain;
 }
 
-float PID::reportDeadzone() const {
+float Pid::reportDeadzone() const {
   std::lock_guard<Mutex> lock(m_mutex);
   return m_deadzone;
 }
 
-void PID::reset() {
+void Pid::reset() {
   std::lock_guard<Mutex> lock(m_mutex);
   m_IPath = 0;
   m_pastError = 0;
@@ -64,19 +66,19 @@ void PID::reset() {
   m_timer.reset();
 }
 
-float PID::computePPath(float error) const {
+float Pid::computePPath(float error) const {
   // no mutex lock needed since inside compute() only
   return error * m_PGain;
 }
 
-float PID::computeIPath(float error, int64_t dt) const {
+float Pid::computeIPath(float error, int64_t dt) const {
   // no mutex lock needed since inside compute() only
   m_IPath += error * dt * m_IGain;
   m_IPath = std::clamp(m_IPath, static_cast<float>(m_lowerBound), static_cast<float>(m_upperBound));
   return m_IPath;
 }
 
-float PID::computeDPathOnError(float error, int64_t dt) const {
+float Pid::computeDPathOnError(float error, int64_t dt) const {
   // no mutex lock needed since inside compute() only
   float derivativePath = 0;
   if (dt != 0) {
@@ -85,7 +87,7 @@ float PID::computeDPathOnError(float error, int64_t dt) const {
   return derivativePath;
 }
 
-float PID::computeDPathOnPV(float processVariable, int64_t dt) const {
+float Pid::computeDPathOnPV(float processVariable, int64_t dt) const {
   // no mutex lock needed since inside compute() only
   float derivativePath = 0;
   if (dt != 0) {
@@ -94,10 +96,10 @@ float PID::computeDPathOnPV(float processVariable, int64_t dt) const {
   return derivativePath;
 }
 
-float PID::compute(float setPoint, float processVariable) const{
+float Pid::compute(float setPoint, float processVariable) const{
   std::lock_guard<Mutex> lock(m_mutex);
   float error = setPoint - processVariable;
-  if (std::abs(error) < m_deadzone) {
+  if (std::abs(error) < m_deadzone/100.0) {
     error = 0;
   }
 

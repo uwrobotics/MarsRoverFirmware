@@ -21,17 +21,17 @@
 
 // TODO: WRITE A TEST APP AND FIX COMMENTS
 
-
-class PID {
+namespace PID {
+class Pid {
  public:
-  PID(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
-      int32_t upperBound, float deadzone, bool useAntiDerivativeKickback = true);
+  Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
+      int32_t upperBound, uint8_t deadzone, bool useAntiDerivativeKickback = true);
 
   // WARNING: THESE ARE CALLED IN THE CANRX THREAD
   void updateProportionalGain(uint32_t p);
   void updateIntegralGain(uint32_t i);
   void updateDerivativeGain(uint32_t d);
-  void updateDeadzone(float deadzone);
+  void updateDeadzone(uint8_t deadzone);
 
   // WARNING: THESE ARE CALLED IN CANRX THREAD
   uint32_t reportProportionalGain() const;
@@ -49,7 +49,7 @@ class PID {
   Timer m_timer;
   uint32_t m_PGain, m_IGain, m_DGain;
   const int32_t m_lowerBound, m_upperBound;
-  float m_deadzone;
+  uint8_t m_deadzone;
   mutable float m_IPath;
   float m_pastError, m_pastPV;
   const bool m_antiKickback;
@@ -58,3 +58,4 @@ class PID {
   float computeDPathOnError(float error, int64_t dt) const;
   float computeDPathOnPV(float PV, int64_t dt) const;
 };
+}
