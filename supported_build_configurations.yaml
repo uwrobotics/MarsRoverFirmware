@@ -16,6 +16,9 @@ safety:
 science:
   - science
 
+pdb:
+  - pdb
+
 # Test Apps
 test-aeat-8800:
   - nucleo

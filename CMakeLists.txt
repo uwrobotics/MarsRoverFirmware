@@ -159,6 +159,7 @@ add_subdirectory(apps/gamepad)
 add_subdirectory(apps/gimbtonomy)
 add_subdirectory(apps/safety)
 add_subdirectory(apps/science)
+add_subdirectory(apps/pdb)
 
 # Include Test App CMakeLists
 add_subdirectory(apps/test-actuator-controller)
