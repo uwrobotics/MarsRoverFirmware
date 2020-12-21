@@ -1,10 +1,11 @@
 #ifdef TODO
 #include "CANMsg.h"
+#include <cmath>
 #include "hw_bridge.h"
 
 UltrasonicSensor frontLeft, frontRight, backLeft, backRight;
 LEDMatrix matrix;
-DigitalIn rail;  // add voltage range to led matrix also allocate can id for reporting if outside range
+AnalogIn railBattery, rail5V, rail17V, rail24V;  // add voltage range (as percentage) to hw bridge also allocate can id for reporting if outside range
 
 CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
@@ -20,7 +21,8 @@ int main() {
   Thread rxCANProcessorThread(osPriorityAboveNormal);
   Thread txCANProcessorThread(osPriorityBelowNormal);
   while (true) {
-    // if(rail outside range) {send can msg to Xavier} need to define
+    if(std::abs((railBattery.read()-3) * 100/3) < some percent defined in hw bridge) {send can msg to Xavier} 
+    // repeat for each digital in
   }
 }
 
