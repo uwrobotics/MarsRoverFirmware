@@ -29,7 +29,7 @@
  */
 
 #pragma once
-// TO DO CUSTOMIZE FOR PDB
+
 #include "PinNamesTypes.h"
 #include "cmsis.h"
 
@@ -134,39 +134,7 @@ typedef enum {
   PC_14      = 0x2E,
   PC_15      = 0x2F,
 
-  PD_0  = 0x30,
-  PD_1  = 0x31,
-  PD_2  = 0x32,
-  PD_3  = 0x33,
-  PD_4  = 0x34,
-  PD_5  = 0x35,
-  PD_6  = 0x36,
-  PD_7  = 0x37,
-  PD_8  = 0x38,
-  PD_9  = 0x39,
-  PD_10 = 0x3A,
-  PD_11 = 0x3B,
-  PD_12 = 0x3C,
-  PD_13 = 0x3D,
-  PD_14 = 0x3E,
-  PD_15 = 0x3F,
-
-  PE_0  = 0x40,
-  PE_1  = 0x41,
-  PE_2  = 0x42,
-  PE_3  = 0x43,
-  PE_4  = 0x44,
-  PE_5  = 0x45,
-  PE_6  = 0x46,
-  PE_7  = 0x47,
-  PE_8  = 0x48,
-  PE_9  = 0x49,
-  PE_10 = 0x4A,
-  PE_11 = 0x4B,
-  PE_12 = 0x4C,
-  PE_13 = 0x4D,
-  PE_14 = 0x4E,
-  PE_15 = 0x4F,
+  PD_2 = 0x32,
 
   PH_0 = 0x70,
   PH_1 = 0x71,
@@ -180,73 +148,28 @@ typedef enum {
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = PE_8,
+  STDIO_UART_TX = PC_10,
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = PE_7,
+  STDIO_UART_RX = PC_11,
 #endif
 
   /**** UI ****/
-  LED1 = PC_14,
-  LED2 = PC_15,
-  LED3 = PC_5,
-  LED4 = PE_15,
+  LED1 = PC_0,
+  LED2 = PC_1,
+  LED3 = PC_2,
+  LED4 = PC_3,
 
-  BUTTON_1 = PE_3,
-  BUTTON_2 = PC_13,
+  BUTTON1 = PB_0,
+  BUTTON2 = PB_1,
 
-  /**** Actuator Pins ****/
-  MTR_PWM_TRNTBL = PD_14,
-  MTR_DIR_TRNTBL = PD_10,
-
-  MTR_PWM_SHLDR = PD_13,
-  MTR_DIR_SHLDR = PD_9,
-
-  MTR_PWM_ELBW = PD_15,
-  MTR_DIR_ELBW = PD_11,
-
-  MTR_PWM_WRST_LHS = PB_8,
-  MTR_DIR_WRST_LHS = PE_0,
-
-  MTR_PWM_WRST_RHS = PB_9,
-  MTR_DIR_WRST_RHS = PE_1,
-
-  MTR_PWM_CLAW = PD_12,
-  MTR_DIR_CLAW = PD_8,
-
-  SRVO_PWM_CLAW = PA_7,
-
-  /**** Limit Switch Pins ****/
-  LIM_TRNTBL_LHS = PD_2,
-  LIM_TRNTBL_RHS = PD_3,
-
-  LIM_ELBW_UP = PD_0,
-  LIM_ELBW_DN = PD_7,
-
-  LIM_WRST_UP   = PD_4,
-  LIM_WRST_CNTR = PD_5,
-  LIM_WRST_DN   = PD_6,
-
-  LIM_CLAW_OPEN = PC_12,
-
-  /**** Encoder Pins ****/
-  ENC_PWM_TRNTBL = PB_14,
-  ENC_PWM_SHLDR  = PC_6,
-  ENC_PWM_ELBW   = PE_5,
-
-  ENC_QUAD_CLAW_A = PE_9,
-  ENC_QUAD_CLAW_B = PE_11,
-
-  ENC_QUAD_WRST_LHS_A = PA_0,
-  ENC_QUAD_WRST_LHS_B = PA_1,
-
-  ENC_QUAD_WRST_RHS_A = PB_4,
-  ENC_QUAD_WRST_RHS_B = PC_7,
-
-  /**** Other Sensor Pins ****/
-  FORCE_CLAW = PC_1,
+  /**** Voltage Measurement ****/
+  BUS_5V_ANLG_IN  = PA_1,
+  BUS_12V_ANLG_IN = PA_2,
+  BUS_24V_ANLG_IN = PA_3,
+  TEMP_ANLG_IN    = PA_4,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
@@ -258,21 +181,12 @@ typedef enum {
   CAN_TX = CAN1_TX,
   CAN_RX = CAN1_RX,
 
-  SPI1_SCK  = PB_3,
-  SPI1_MOSI = PB_5,
-  SPI1_MISO = PA_6,
-
-  SPI2_SCK  = PB_10,
-  SPI2_MOSI = PC_3,
-  SPI2_MISO = PC_2,
-
-  SPI4_SCK  = PE_2,
-  SPI4_MOSI = PE_6,
-  SPI4_MISO = PE_13,
+  CUR_SEN_I2C_SCL = PB_8,
+  CUR_SEN_I2C_SDA = PB_9,
 
   SERIAL_TX  = STDIO_UART_TX,
   SERIAL_RX  = STDIO_UART_RX,
-  SERIAL_RTS = PC_8,
+  SERIAL_RTS = PA_15,
 
   USBTX = STDIO_UART_TX,
   USBRX = STDIO_UART_RX,
@@ -290,8 +204,10 @@ typedef enum {
   SYS_JTMS_SWDIO = PA_13,
   SYS_JTRST      = PB_4,
   SYS_TRACED0    = PC_8,
-  SYS_WKUP0      = PA_0,
-  SYS_WKUP1      = PC_13,
+
+  SYS_WKUP0 = PA_0,
+  SYS_WKUP1 = PC_13,
+  // no WKUP1
 
   // Not connected
   NC = (int)0xFFFFFFFF

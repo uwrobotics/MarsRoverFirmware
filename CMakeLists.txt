@@ -157,7 +157,6 @@ add_subdirectory(uwrt-mars-rover-hw-bridge)
 add_subdirectory(apps/arm)
 add_subdirectory(apps/gamepad)
 add_subdirectory(apps/gimbtonomy)
-add_subdirectory(apps/safety)
 add_subdirectory(apps/science)
 add_subdirectory(apps/pdb)
 
