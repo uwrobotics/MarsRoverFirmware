@@ -148,12 +148,12 @@ typedef enum {
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = PB_3, // JTDO
+  STDIO_UART_TX = PB_3,   // JTDO
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = PA_15, // JTDI
+  STDIO_UART_RX = PA_15,  // JTDI
 #endif
 
   /**** UI ****/
@@ -164,9 +164,9 @@ typedef enum {
   BUTTON1 = PA_3,
 
   /**** Voltage Measurement ****/
-  RAIL_5V_ANLG_IN  = PA_4,
-  RAIL_17V_ANLG_IN = PA_5,
-  RAIL_24V_ANLG_IN = PB_0,
+  RAIL_5V_ANLG_IN      = PA_4,
+  RAIL_17V_ANLG_IN     = PA_5,
+  RAIL_24V_ANLG_IN     = PB_0,
   RAIL_BATTERY_ANLG_IN = PB_1,
   // TEMP_ANLG_IN    = PA_4, TODO: what's this for?
 
