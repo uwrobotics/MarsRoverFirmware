@@ -148,12 +148,12 @@ typedef enum {
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = PC_10,
+  STDIO_UART_TX = PA_9, // new method of printing so change
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = PC_11,
+  STDIO_UART_RX = PA_10,
 #endif
 
   /**** UI ****/
@@ -176,10 +176,8 @@ typedef enum {
   LED_MATRIX_B_CHANNEL = PB_6,
 
   /**** Ultrasonic Sensor ****/
-  ULTRASONIC_FRONT_LEFT = ,
-  ULTRASONIC_FRONT_RIGHT = ,
-  ULTRASONIC_BACK_LEFT = ,
-  ULTRASONIC_BACK_RIGHT = ,
+  ULTRASONIC_TX = PC_10,
+  ULTRASONIC_RX = PC_11,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
