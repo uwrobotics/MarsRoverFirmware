@@ -148,7 +148,7 @@ typedef enum {
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = PB_3,   // JTDO
+  STDIO_UART_TX = PB_3,  // JTDO
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
@@ -168,7 +168,6 @@ typedef enum {
   RAIL_17V_ANLG_IN     = PA_5,
   RAIL_24V_ANLG_IN     = PB_0,
   RAIL_BATTERY_ANLG_IN = PB_1,
-  // TEMP_ANLG_IN    = PA_4, TODO: what's this for?
 
   /**** LED Matrix ****/
   LED_MATRIX_R_CHANNEL = PB_4,
