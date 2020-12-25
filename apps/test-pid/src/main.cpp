@@ -1,3 +1,4 @@
+#if false
 #include "PID.h"
 #include "mbed.h"
 
@@ -28,7 +29,7 @@ float motorPWMDuty     = 0.0;
 Ticker interruptTimer;
 
 // PID AutoTune config struct for specific DC motor, change depending on actuator
-PID::t_AutoTuneConfig autoTuneConfig = {
+PID::Pid::t_AutoTuneConfig autoTuneConfig = {
     .nLookBack = 40, .sampleTime = 250ms, .outputStart = 0.4, .oStep = 0.25, .noiseBand = 0.01, .setpoint = 120};
 
 // Setup velocity PID controller
@@ -107,4 +108,10 @@ int main() {
     interval = std::chrono::duration_cast<std::chrono::duration<float>>(timer.elapsed_time());
     timer.reset();
   }
+}
+#endif
+#include "setpoint.h"
+int main() {
+  int a = 5;
+  while(true);
 }

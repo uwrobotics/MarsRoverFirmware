@@ -19,43 +19,37 @@
 #include <atomic>
 #include "mbed.h"
 
-// TODO: WRITE A TEST APP AND FIX COMMENTS
-
 namespace PID {
 class Pid {
  public:
   Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
-      int32_t upperBound, uint8_t deadzone, bool useAntiDerivativeKickback = true);
+      int32_t upperBound, uint8_t deadzone, bool antiKickback = true);
 
-  // WARNING: THESE ARE CALLED IN THE CANRX THREAD
   void updateProportionalGain(uint32_t p);
   void updateIntegralGain(uint32_t i);
   void updateDerivativeGain(uint32_t d);
   void updateDeadzone(uint8_t deadzone);
 
-  // WARNING: THESE ARE CALLED IN CANRX THREAD
   uint32_t reportProportionalGain() const;
   uint32_t reportIntegralGain() const;
   uint32_t reportDerivativeGain() const;
   float reportDeadzone() const;
 
-  // WARNING: THESE ARE CALLED IN CANRX THREAD
   void reset();
-  // WARNING: COMPUTE IS CALLED IN MAIN THREAD
-  float compute(float setPoint, float processVariable) const;
+  float compute(float setPoint, float processVariable);
 
  private:
-  Mutex m_mutex;
+  mutable Mutex m_mutex;
   Timer m_timer;
   uint32_t m_PGain, m_IGain, m_DGain;
   const int32_t m_lowerBound, m_upperBound;
   uint8_t m_deadzone;
-  mutable float m_IPath;
+  float m_IPath;
   float m_pastError, m_pastPV;
   const bool m_antiKickback;
-  float computePPath(float error) const;
-  float computeIPath(float error, int64_t dt) const;
-  float computeDPathOnError(float error, int64_t dt) const;
-  float computeDPathOnPV(float PV, int64_t dt) const;
+  float computePPath(float error);
+  float computeIPath(float error, int64_t dt);
+  float computeDPathOnError(float error, int64_t dt);
+  float computeDPathOnPV(float PV, int64_t dt);
 };
 }

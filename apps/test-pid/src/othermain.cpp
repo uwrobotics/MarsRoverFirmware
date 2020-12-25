@@ -1,3 +1,4 @@
+#if false
 #include "PID.h"
 
 constexpr uint8_t arbitrary_gain = 10;
@@ -26,7 +27,7 @@ void countPulses();
 
 int main() {
   printf("##################### PID TEST APP STARTED #####################\r\n");
-  PID::Pid controller(arbitrary_gain, arbitrary_gain, arbitrary_gain, min_rpm, max_rpm, deadzone);
+  PID::Pid::Pid controller(arbitrary_gain, arbitrary_gain, arbitrary_gain, min_rpm, max_rpm, deadzone);
   motor_t motor(D8, D9);
   encoder_t encoder(D2, D3);
   
@@ -44,3 +45,4 @@ int main() {
     timer.reset();
   }
 }
+#endif
