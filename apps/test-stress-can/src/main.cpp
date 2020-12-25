@@ -1,7 +1,9 @@
 #include "mbed.h"
 #include "CANBus.h"
+#include "CANMsg.h"
 
 CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANMsg msg;
 
 DigitalOut led(LED1);
 InterruptIn btn(BUTTON_1);
@@ -13,7 +15,9 @@ uint16_t received = 0;
 EventQueue queue;
  
 void receiveMessage() {
-  received++;
+  if (can.read(msg)){
+    received++;
+  }
 }
  
 int main() {
@@ -22,7 +26,8 @@ int main() {
   eventThread.start(callback(&queue, &EventQueue::dispatch_forever));
  
   // wrap calls in queue.event to automatically defer to the queue's thread
-  btn.fall(queue.event(&receiveMessage));
+  can.attach(&receiveMessage, CANBus::RxIrq);
+  //btn.fall(queue.event(&receiveMessage));
  
   for(;;);
 }
