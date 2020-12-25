@@ -4,8 +4,8 @@
 arm:
   - arm
 
-controller:
-  - controller
+gamepad:
+  - gamepad
 
 gimbtonomy:
   - gimbtonomy
@@ -29,7 +29,7 @@ test-actuator-controller:
 test-blinky:
   - nucleo
   - arm
-  - controller
+  - gamepad
   - gimbtonomy
   - safety
   - science
@@ -51,6 +51,9 @@ test-enc-abs-pwm:
 #  - gimbtonomy
 #  - science
 
+test-lookup-table:
+  - nucleo
+
 test-moisture:
   #  - nucleo
   - science
@@ -70,6 +73,6 @@ test-pwm:
 test-pwmin:
   #  - nucleo
   - arm
-#  - controller
+#  - gamepad
 #  - gimbtonomy
 #  - science
