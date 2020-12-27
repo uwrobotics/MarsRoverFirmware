@@ -18,6 +18,6 @@ void TutorialServo::setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulse
     m_maxPulsewidthInMs = maxPulsewidthInMs; 
 }
 
-void TutorialServo::setPositionInDegrees(float degrees){
+void TutorialServo::setPositionInDegrees(float degrees)   {
     servoPwmOut.pulsewidth(.001+.001*degrees/servoRangeInDegrees);
 }

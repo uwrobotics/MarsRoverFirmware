@@ -61,7 +61,7 @@ void txCANProcessor(){
 
 int main(){
   printf("\r\n\r\n");
-  printf("SCIENCE APPLICATION STARTED\r\n");
+  printf("TUTORIAL SERVO APPLICATION STARTED\r\n");
   printf("=======================\r\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
