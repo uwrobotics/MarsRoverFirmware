@@ -3,7 +3,6 @@
 #include "CANMsg.h"
 
 CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
-CANMsg msg;
 
 DigitalOut led(LED1);
 InterruptIn btn(BUTTON_1);
@@ -15,24 +14,31 @@ uint16_t received = 0;
 EventQueue queue;
 
 void receiveMessageOutside(CANMsg &msg) {
-  // process msg or something
+  // Print data received from the CAN msg 
+  printf("  Data    =");
+  for (int i = 0; i < msg.len; i++) printf(" 0x%.2X", msg.data[i]);
+  printf("\r\n");
+
   received++;
 }
  
-void receiveMessageInside() {
+void CANMsgIRQHandler() {
   CANMsg msg;
   if (can.read(msg)){
     queue.call(&receiveMessageOutside, msg);
+  }
+  else {
+    MBED_ASSERT(false);
   }
 }
  
 int main() {
   // create a thread that'll run the event queue's dispatch function
-  Thread eventThread;
-  eventThread.start(callback(&queue, &EventQueue::dispatch_forever));
+  Thread rxCANProcessorThread(osPriorityRealtime);
+  rxCANProcessorThread.start(callback(&queue, &EventQueue::dispatch_forever));
  
   // wrap calls in queue.event to automatically defer to the queue's thread
-  can.attach(&receiveMessageInside, CANBus::RxIrq);
+  can.attach(&CANMsgIRQHandler, CANBus::RxIrq);
  
-  for(;;);
+  while(true);
 }
