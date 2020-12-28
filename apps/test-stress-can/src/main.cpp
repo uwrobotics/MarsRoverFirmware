@@ -13,10 +13,16 @@ uint16_t received = 0;
  
 // create an event queue
 EventQueue queue;
+
+void receiveMessageOutside(CANMsg &msg) {
+  // process msg or something
+  received++;
+}
  
-void receiveMessage() {
+void receiveMessageInside() {
+  CANMsg msg;
   if (can.read(msg)){
-    received++;
+    queue.call(&receiveMessageOutside, msg);
   }
 }
  
@@ -26,8 +32,7 @@ int main() {
   eventThread.start(callback(&queue, &EventQueue::dispatch_forever));
  
   // wrap calls in queue.event to automatically defer to the queue's thread
-  can.attach(&receiveMessage, CANBus::RxIrq);
-  //btn.fall(queue.event(&receiveMessage));
+  can.attach(&receiveMessageInside, CANBus::RxIrq);
  
   for(;;);
 }
