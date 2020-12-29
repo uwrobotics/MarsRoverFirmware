@@ -10,11 +10,11 @@ gamepad:
 gimbtonomy:
   - gimbtonomy
 
-science:
-  - science
-
 pdb:
   - pdb
+
+science:
+  - science
 
 # Test Apps
 test-aeat-8800:
