@@ -5,7 +5,7 @@
 using namespace PID;
 
 PID::Pid::Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
-         int32_t upperBound, uint8_t deadzone, bool antiKickback)
+         int32_t upperBound, float deadzone, bool antiKickback)
     : m_PGain(proportionalGain),
       m_IGain(intregralGain),
       m_DGain(derivativeGain),
@@ -32,7 +32,7 @@ void PID::Pid::updateDerivativeGain(uint32_t d) {
   m_DGain = d;
 }
 
-void PID::Pid::updateDeadzone(uint8_t deadzone) {
+void PID::Pid::updateDeadzone(float deadzone) {
   std::lock_guard<Mutex> lock(m_mutex);
   m_deadzone = deadzone;
 }
@@ -99,13 +99,12 @@ float PID::Pid::computeDPathOnPV(float processVariable, int64_t dt) {
 float PID::Pid::compute(float setPoint, float processVariable) {
   std::lock_guard<Mutex> lock(m_mutex);
   float error = setPoint - processVariable;
-  if (std::abs(error) < m_deadzone/100.0) {
+  if (std::abs(error) < m_deadzone) {
     error = 0;
   }
 
   m_timer.stop();
-  int64_t dt = m_timer.elapsed_time().count();
-
+  float dt = chrono::duration_cast<chrono::duration<float>>(m_timer.elapsed_time()).count(); // seconds
   float paths = computePPath(error);
   paths += computeIPath(error, dt);
   paths += m_antiKickback ? computeDPathOnPV(error, dt) : computeDPathOnError(processVariable, dt);
@@ -113,6 +112,7 @@ float PID::Pid::compute(float setPoint, float processVariable) {
 
   m_pastError = error;
   m_pastPV = processVariable;
+  m_timer.reset();
   m_timer.start();
   return paths;
 }

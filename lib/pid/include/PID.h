@@ -23,12 +23,12 @@ namespace PID {
 class Pid {
  public:
   Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
-      int32_t upperBound, uint8_t deadzone, bool antiKickback = true);
+      int32_t upperBound, float deadzone, bool antiKickback = true);
 
   void updateProportionalGain(uint32_t p);
   void updateIntegralGain(uint32_t i);
   void updateDerivativeGain(uint32_t d);
-  void updateDeadzone(uint8_t deadzone);
+  void updateDeadzone(float deadzone);
 
   uint32_t reportProportionalGain() const;
   uint32_t reportIntegralGain() const;
@@ -36,14 +36,14 @@ class Pid {
   float reportDeadzone() const;
 
   void reset();
-  float compute(float setPoint, float processVariable);
+  float compute(float setPoint, float processVariable); // take ~17us to run
 
  private:
   mutable Mutex m_mutex;
   Timer m_timer;
   uint32_t m_PGain, m_IGain, m_DGain;
   const int32_t m_lowerBound, m_upperBound;
-  uint8_t m_deadzone;
+  float m_deadzone;
   float m_IPath;
   float m_pastError, m_pastPV;
   const bool m_antiKickback;
