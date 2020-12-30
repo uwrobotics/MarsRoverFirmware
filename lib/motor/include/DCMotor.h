@@ -8,7 +8,7 @@
 
 // Interface to control a standard DC motor with an H-bridge using a PwmOut and 2 DigitalOuts
 
-class DCMotor {
+class Motor {
  public:
   typedef struct motorConfig {
     PinName pwmPin;
@@ -26,16 +26,16 @@ class DCMotor {
    * @param inverted  If true, then forward speed will set dir to 0 instead of 1, otherwise inverse
    * @param limit     Maximum speed magnitude
    */
-  DCMotor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0);
+  Motor(PinName pwm, PinName dir, bool inverted = false, int freqInHz = MOTOR_DEFAULT_FREQUENCY_HZ, float limit = 1.0);
 
-  DCMotor(t_motorConfig motorConfig);
+  Motor(t_motorConfig motorConfig);
 
   /** Set the speed of the motor
    *
    * @param dutyCycle The speed of the motor as a normalised value between -1.0 and 1.0
    */
   void setPower(float dutyCycle);
-  DCMotor& operator=(int dutyCycle);
+  Motor& operator=(int dutyCycle);
 
   /** Read the current speed of the motor
    *

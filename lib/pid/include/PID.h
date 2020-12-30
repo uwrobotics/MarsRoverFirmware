@@ -16,6 +16,7 @@
  *  Anti-Derivative-Kickback: Avoid jerkiness, by differentiating on PV. See Brett Beauregard blog
  *
  */
+#pragma once
 #include <atomic>
 #include "mbed.h"
 
@@ -36,7 +37,7 @@ class Pid {
   float reportDeadzone() const;
 
   void reset();
-  float compute(float setPoint, float processVariable); // take ~17us to run
+  float compute(float setPoint, float processVariable); // takes ~17us to run
 
  private:
   mutable Mutex m_mutex;

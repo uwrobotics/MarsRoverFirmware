@@ -6,6 +6,6 @@ target_link_libraries(ActuatorController
         PID
         PRIVATE
         EncoderAbsolute_PWM
-        DCMotor
+        Motor
         )
 target_set_mbed_dependency(ActuatorController)

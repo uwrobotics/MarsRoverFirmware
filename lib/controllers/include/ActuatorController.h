@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Encoder.h"
-#include "DCMotor.h"
+#include "Motor.h"
 #include "PID.h"
 #include "PinNames.h"
 #include "mbed.h"
@@ -24,7 +24,7 @@ class ActuatorController {
     std::chrono::duration<float> watchDogTimeout = 3.0s;
   } t_actuatorConfig;
 
-  explicit ActuatorController(t_actuatorConfig actuatorConfig, DCMotor &motor, Encoder &encoder,
+  explicit ActuatorController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder,
                               DigitalIn &limSwitchMin = NULL_DIGITAL_IN, DigitalIn &limSwitchMax = NULL_DIGITAL_IN);
 
   mbed_error_status_t setControlMode(t_actuatorControlMode controlMode);
@@ -54,7 +54,7 @@ class ActuatorController {
   t_actuatorControlMode m_controlMode;
   t_actuatorConfig m_actuatorConfig;
 
-  DCMotor &r_motor;
+  Motor &r_motor;
   Encoder &r_encoder;
   DigitalIn &r_limSwitchMin;
   DigitalIn &r_limSwitchMax;
