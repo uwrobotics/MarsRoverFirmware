@@ -28,5 +28,3 @@ void TutorialServo::setPositionInDegrees(const float degrees) {
     m_servoPwmOut.pulsewidth(m_minPulsewidthInMs * (1 + degrees / m_servoRangeInDegrees));
   }
 }
-
-
