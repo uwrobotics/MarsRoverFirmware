@@ -1,6 +1,6 @@
-#include "mbed.h"
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "mbed.h"
 
 CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
  
@@ -26,6 +26,7 @@ void CANMsgIRQHandler() {
     queue.call(&CANReceiveEventHandler, msg);
 
   } else {
+    printf("THIS SHOULD NEVER HAPPEN \r\n");
     MBED_ASSERT(false);
   }
 }
@@ -34,9 +35,11 @@ int main() {
   // create a thread that'll run the event queue's dispatch function
   Thread rxCANProcessorThread(osPriorityRealtime);
   rxCANProcessorThread.start(callback(&queue, &EventQueue::dispatch_forever));
- 
+
   // wrap calls in queue.event to automatically defer to the queue's thread
   can.attach(&CANMsgIRQHandler, CANBus::RxIrq);
- 
-  while (true);
+
+  while (true)
+    ;
+
 }
