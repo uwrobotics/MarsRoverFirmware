@@ -3,14 +3,12 @@
 #include "mbed.h"
 
 CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
- 
+
 // create an event queue
 EventQueue queue;
 
 void CANReceiveEventHandler(CANMsg &msg) {
-
   static uint16_t received = 0;
-
 
   // Print data received from the CAN msg 
   printf("  Data    =");
@@ -19,7 +17,7 @@ void CANReceiveEventHandler(CANMsg &msg) {
 
   received++;
 }
- 
+
 void CANMsgIRQHandler() {
   CANMsg msg;
   if (can.read(msg)) {
@@ -41,5 +39,4 @@ int main() {
 
   while (true)
     ;
-
 }

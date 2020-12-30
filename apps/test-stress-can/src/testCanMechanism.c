@@ -12,7 +12,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-
 int main(void) {
   int s;
   int nbytes;
@@ -22,14 +21,14 @@ int main(void) {
 
   const char *ifname = "vcan0";
 
-  if((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) == -1) {
-	perror("Error while opening socket");
-	return -1;
+  if ((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) == -1) {
+    perror("Error while opening socket");
+    return -1;
   }
 
   strcpy(ifr.ifr_name, ifname);
   ioctl(s, SIOCGIFINDEX, &ifr);
-	
+
   addr.can_family  = AF_CAN;
   addr.can_ifindex = ifr.ifr_ifindex;
   
@@ -44,9 +43,9 @@ int main(void) {
   frame.can_dlc = 2;
   frame.data[0] = 0x11;
   frame.data[1] = 0x22;
-  
+
   nbytes = write(s, &frame, sizeof(struct can_frame));
-  
+
   printf("Wrote %d bytes\n", nbytes);
   
   return 0;
