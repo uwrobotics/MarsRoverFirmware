@@ -17,6 +17,7 @@ CAN can(CAN1_RX, CAN1_TX);
 TutorialServo servo_1(PA_1);
 CANMessage msg;
 
+
 int main() {    
     while(true) {
         if(can.read(msg)){
