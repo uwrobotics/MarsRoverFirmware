@@ -17,7 +17,7 @@ target_set_firmware_properties(arm.${TARGET}-board.elf)
 add_library(DifferentialWristController STATIC)
 target_sources(DifferentialWristController PRIVATE src/DifferentialWristController.cpp)
 target_include_directories(DifferentialWristController PUBLIC include)
-target_link_libraries(DifferentialWristController PRIVATE ActuatorController Encoder PID)
+target_link_libraries(DifferentialWristController PRIVATE ActuatorController Encoder PID Motor)
 target_set_mbed_dependency(DifferentialWristController)
 
 add_library(ClawController STATIC)

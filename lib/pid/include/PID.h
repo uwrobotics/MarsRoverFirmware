@@ -17,8 +17,6 @@
  *
  */
 #pragma once
-#include <atomic>
-#include "mbed.h"
 
 namespace PID {
 class Pid {

@@ -19,8 +19,8 @@ class ActuatorController {
     float minVelocity_DegreesPerSec = -10.0, maxVelocity_DegreesPerSec = +10.0;
     float minAngle_Degrees = -90, maxAngle_Degrees = +90;
 
-    PID::Pid::t_pidConfig velocityPID, positionPID;
-    // TODO: USE THIS
+    PID::t_pidConfig velocityPID, positionPID;
+
     std::chrono::duration<float> watchDogTimeout = 3.0s;
   } t_actuatorConfig;
 

@@ -135,7 +135,6 @@ mbed_error_status_t ActuatorController::resetEncoder() {
 }
 
 mbed_error_status_t ActuatorController::update() {
-  // THIS HAS A BUG FIX THISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
   auto updateInterval = m_updateTimer.elapsed_time();
   m_updateTimer.reset();
 
