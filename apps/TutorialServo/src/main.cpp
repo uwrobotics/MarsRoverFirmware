@@ -13,6 +13,7 @@
 // PwmOut servoPwmOut(PA_1);
 
 CAN can(CAN1_RX, CAN1_TX);
+
 TutorialServo servo_1(PA_1);
 CANMessage msg;
 
