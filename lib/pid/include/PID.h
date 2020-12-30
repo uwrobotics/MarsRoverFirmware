@@ -19,10 +19,17 @@
 #pragma once
 
 namespace PID {
+typedef struct Config {
+  uint32_t proportionalGain, integralGain, derivativeGain;
+  int32_t lowerBound, upperBound;
+  float deadzone;
+  bool antiKickback = true;
+} Config;
 class Pid {
  public:
   Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
       int32_t upperBound, float deadzone, bool antiKickback = true);
+  Pid(const Config &config);
 
   void updateProportionalGain(uint32_t p);
   void updateIntegralGain(uint32_t i);
@@ -35,7 +42,7 @@ class Pid {
   float reportDeadzone() const;
 
   void reset();
-  float compute(float setPoint, float processVariable); // takes ~17us to run
+  float compute(float setPoint, float processVariable);  // takes ~17us to run
 
  private:
   mutable Mutex m_mutex;
@@ -51,4 +58,4 @@ class Pid {
   float computeDPathOnError(float error, int64_t dt);
   float computeDPathOnPV(float PV, int64_t dt);
 };
-}
+}  // namespace PID

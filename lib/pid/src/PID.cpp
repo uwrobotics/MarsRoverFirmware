@@ -5,7 +5,7 @@
 using namespace PID;
 
 PID::Pid::Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
-         int32_t upperBound, float deadzone, bool antiKickback)
+              int32_t upperBound, float deadzone, bool antiKickback)
     : m_PGain(proportionalGain),
       m_IGain(intregralGain),
       m_DGain(derivativeGain),
@@ -14,8 +14,12 @@ PID::Pid::Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t deriva
       m_deadzone(deadzone),
       m_IPath(0),
       m_pastError(0),
-      m_pastPV(0), 
+      m_pastPV(0),
       m_antiKickback(antiKickback) {}
+
+PID::Pid::Pid(const PID::Config &config)
+    : Pid(config.proportionalGain, config.integralGain, config.derivativeGain, config.lowerBound, config.upperBound,
+          config.deadzone, config.antiKickback) {}
 
 void PID::Pid::updateProportionalGain(uint32_t p) {
   std::lock_guard<Mutex> lock(m_mutex);
@@ -59,9 +63,9 @@ float PID::Pid::reportDeadzone() const {
 
 void PID::Pid::reset() {
   std::lock_guard<Mutex> lock(m_mutex);
-  m_IPath = 0;
+  m_IPath     = 0;
   m_pastError = 0;
-  m_pastPV = 0;
+  m_pastPV    = 0;
   m_timer.stop();
   m_timer.reset();
 }
@@ -78,7 +82,7 @@ float PID::Pid::computeIPath(float error, int64_t dt) {
   return m_IPath;
 }
 
-float PID::Pid::computeDPathOnError(float error, int64_t dt)  {
+float PID::Pid::computeDPathOnError(float error, int64_t dt) {
   // no mutex lock needed since inside compute() only
   float derivativePath = 0;
   if (dt != 0) {
@@ -104,14 +108,14 @@ float PID::Pid::compute(float setPoint, float processVariable) {
   }
 
   m_timer.stop();
-  float dt = chrono::duration_cast<chrono::duration<float>>(m_timer.elapsed_time()).count(); // seconds
+  float dt    = chrono::duration_cast<chrono::duration<float>>(m_timer.elapsed_time()).count();  // seconds
   float paths = computePPath(error);
   paths += computeIPath(error, dt);
   paths += m_antiKickback ? computeDPathOnPV(error, dt) : computeDPathOnError(processVariable, dt);
   paths = std::clamp(paths, static_cast<float>(m_lowerBound), static_cast<float>(m_upperBound));
 
   m_pastError = error;
-  m_pastPV = processVariable;
+  m_pastPV    = processVariable;
   m_timer.reset();
   m_timer.start();
   return paths;
