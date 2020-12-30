@@ -7,7 +7,7 @@ constexpr auto interval = 50ms;
 constexpr float k_step  = 0.02;
 
 int main() {
-  pwmLED.period(std::chrono::duration_cast<std::chrono::duration<double>>(k_period).count());
+  pwmLED.period(std::chrono::duration_cast<std::chrono::duration<float>>(k_period).count());
 
   float duty   = 0.0f;
   int inverter = 1;

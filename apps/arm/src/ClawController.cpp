@@ -2,7 +2,7 @@
 
 ClawController::ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
                                AnalogIn &forceSensor, LimServo &tooltipServo, float tooltipExtendedAngle_Degrees,
-                               float tooltipRetractedAngle_Degrees, chrono::duration<double> calibrationTimeout)
+                               float tooltipRetractedAngle_Degrees, chrono::duration<float> calibrationTimeout)
     : ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax),
       r_forceSensor(forceSensor),
       r_tooltipServo(tooltipServo),

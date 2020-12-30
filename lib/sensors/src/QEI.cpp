@@ -270,7 +270,7 @@ void QEI::encode(void) {
   period = timer_.elapsed_time();
   timer_.reset();
 
-  pulseVelocity = ((pulses_ - prevPulses)) / std::chrono::duration_cast<std::chrono::duration<double>>(period).count();
+  pulseVelocity = ((pulses_ - prevPulses)) / std::chrono::duration_cast<std::chrono::duration<float>>(period).count();
   movingAvgVelocity_PulsesPerSec_ =
       (1 - movingAvgSmoothingParam_) * pulseVelocity + movingAvgSmoothingParam_ * movingAvgVelocity_PulsesPerSec_;
 }
