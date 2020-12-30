@@ -16,5 +16,6 @@ int main() {
     led = !led;
     printf("Current LED State is %s\n", led ? "ON" : "OFF");
     ThisThread::sleep_for(BLINKING_RATE);
+    
   }
 }
