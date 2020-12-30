@@ -22,6 +22,12 @@ public:
    // Set servo position (ex. 45 deg)
    void setPositionInDegrees(float degrees);
 
+   float getServoRangeInDegrees( ) const;
+   // Get the min pulse width in ms (ex: 1ms)
+   float getMinPulseWidthInMs( ) const;
+   // Get the max pulse width in ms (ex: 2ms)
+   float getMaxPulseWidthInMs( ) const;
+
 private:
 
    PwmOut m_servoPwmOut;

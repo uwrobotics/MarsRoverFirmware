@@ -73,3 +73,5 @@ test-pwmin:
 #  - controller
 #  - gimbtonomy
 #  - science
+
+tutorial-servo-pot-control: -nucleo 
