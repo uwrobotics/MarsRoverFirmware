@@ -6,7 +6,6 @@
     ...(rest of program)...
     #endif
 */
-
 #include "mbed.h"
 
 class TutorialServo {
@@ -36,4 +35,4 @@ class TutorialServo {
   const float m_servoRangeInDegrees;
   const float m_minPulsewidthInMs;
   const float m_maxPulsewidthInMs;
-} ;
+};
