@@ -19,7 +19,7 @@ class ActuatorController {
     float minVelocity_DegreesPerSec = -10.0, maxVelocity_DegreesPerSec = +10.0;
     float minAngle_Degrees = -90, maxAngle_Degrees = +90;
 
-    PID::t_pidConfig velocityPID, positionPID;
+    PID::Config velocityPID, positionPID;
 
     std::chrono::duration<float> watchDogTimeout = 3.0s;
   } t_actuatorConfig;
@@ -62,8 +62,8 @@ class ActuatorController {
   bool m_limSwitchMin_Connected;
   bool m_limSwitchMax_Connected;
 
-  PID m_velocityPIDController;
-  PID m_positionPIDController;
+  PID::Pid m_velocityPIDController;
+  PID::Pid m_positionPIDController;
 
   Timer m_updateTimer;
 
