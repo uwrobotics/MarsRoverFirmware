@@ -76,3 +76,4 @@ test-pwmin:
 #  - science
 
 tutorial-servo-pot-control: -nucleo 
+tutorial-servo-can-control: -nucleo 

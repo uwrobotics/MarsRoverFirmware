@@ -6,7 +6,6 @@ add_executable(tutorial-servo-can-control.${TARGET}-board.elf)
 target_sources (TutorialServo PRIVATE src/TutorialServo.cpp)
 target_include_directories (TutorialServo PUBLIC include)
 target_set_mbed_dependency (TutorialServo)
-target_link_libraries (tutorial-servo-can-control. ${TARGET} -board.elf
-PRIVATE
+target_link_libraries (tutorial-servo-can-control. ${TARGET} -board.elfPRIVATE
 TutorialServo
 )
