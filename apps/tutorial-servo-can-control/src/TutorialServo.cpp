@@ -1,4 +1,10 @@
+/* mbed Microcontroller Library
+ * Copyright (c) 2019 ARM Limited
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "TutorialServo.h"
+
 #include "mbed.h"
 
 // CONSTRUCTOR
@@ -6,7 +12,6 @@ TutorialServo ::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.
                               float maxPulsewidthInMs = 2) {
   PwmOut servoPwmOut(servoPin);
   m_servoPwmOut = servoPwmOut;
-
   m_servoRangeInDegrees = servoRangeInDegrees;
   m_minPulsewidthInMs   = minPulsewidthInMs;
   m_maxPulsewidthInMs   = maxPulsewidthInMs;
@@ -20,20 +25,19 @@ void TutorialServo ::setPositionInDegrees(const float degrees) {
     newPosition = m_maxPulsewidthInMs;
   else if (newPosition < m_minPulsewidthInMs)
     newPosition = m_minPulsewidthInMs;
- 
   m_servoPwmOut.pulsewidth(newPosition);
 }
 
 // ACCESSORS
-// Get the servo range in degrees
-float TutorialServo ::getServoRangeInDegrees() const {
-  return m_servoRangeInDegrees;
+// Get the max pulse width in ms
+float TutorialServo ::getMaxPulseWidthInMs() const {
+  return m_maxPulsewidthInMs;
 }
 // Get the min pulse width in ms
 float TutorialServo ::getMinPulseWidthInMs() const {
   return m_minPulsewidthInMs;
 }
- // Get the max pulse width in ms
+// Get the max pulse width in ms
 float TutorialServo ::getMaxPulseWidthInMs() const {
   return m_maxPulsewidthInMs;
 }
