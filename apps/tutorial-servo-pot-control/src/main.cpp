@@ -9,9 +9,9 @@ AnalogIn potVoltageIn(PA_0);
 PwmOut servoPwmOut(PA_1);
 
 int main() {
-  servoPwmOut.period(0.020);
+  servoPwmOut.period_ms(20);
   while (true) {
     float potVoltage = potVoltageIn.read();
-    servoPwmOut.pulsewidth(0.001 + 0.001 * potVoltage / 3.3);
+    servoPwmOut.pulsewidth(1 + potVoltage / 3.3);
   }
 }
