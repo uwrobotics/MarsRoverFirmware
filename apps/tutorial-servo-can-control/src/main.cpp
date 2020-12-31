@@ -80,7 +80,7 @@ int main() {
   // CAN init stuff
   /*can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_TUT_RX, CANStandard,
                  HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);*/
-  // rxCANProcessorThread.start(rxCANProcessor);
+  rxCANProcessorThread.start(rxCANProcessor);
   // txCANProcessorThread.start(txCANProcessor);
 
   while (true) {
