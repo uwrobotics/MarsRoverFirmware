@@ -1,6 +1,6 @@
 #include "ClawController.h"
 
-ClawController::ClawController(t_actuatorConfig actuatorConfig, DCMotor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
+ClawController::ClawController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder, DigitalIn &limSwitchMax,
                                AnalogIn &forceSensor, LimServo &tooltipServo, float tooltipExtendedAngle_Degrees,
                                float tooltipRetractedAngle_Degrees, chrono::duration<float> calibrationTimeout)
     : ActuatorController(actuatorConfig, motor, encoder, NULL_DIGITAL_IN, limSwitchMax),

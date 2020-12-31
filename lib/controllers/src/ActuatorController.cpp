@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, DCMotor &motor, Encoder &encoder,
+ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, Motor &motor, Encoder &encoder,
                                        DigitalIn &limSwitchMin, DigitalIn &limSwitchMax)
     :
 

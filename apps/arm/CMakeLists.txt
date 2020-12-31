@@ -11,12 +11,8 @@ target_link_libraries(arm.${TARGET}-board.elf
         DifferentialWristController
         EncoderRelative_Quadrature
         LimServo
-<<<<<<< HEAD
         LookupTable
         Motor
-=======
-        DCMotor
->>>>>>> initial commit
         uwrt-mars-rover-hw-bridge
         )
 target_set_firmware_properties(arm.${TARGET}-board.elf)
@@ -24,11 +20,11 @@ target_set_firmware_properties(arm.${TARGET}-board.elf)
 add_library(DifferentialWristController STATIC)
 target_sources(DifferentialWristController PRIVATE src/DifferentialWristController.cpp)
 target_include_directories(DifferentialWristController PUBLIC include)
-target_link_libraries(DifferentialWristController PRIVATE ActuatorController Encoder PID DCMotor)
+target_link_libraries(DifferentialWristController PRIVATE ActuatorController Encoder PID Motor)
 target_set_mbed_dependency(DifferentialWristController)
 
 add_library(ClawController STATIC)
 target_sources(ClawController PRIVATE src/ClawController.cpp)
 target_include_directories(ClawController PUBLIC include)
-target_link_libraries(ClawController PRIVATE ActuatorController DCMotor Encoder PID LimServo uwrt-mars-rover-hw-bridge)
+target_link_libraries(ClawController PRIVATE ActuatorController Motor Encoder PID LimServo uwrt-mars-rover-hw-bridge)
 target_set_mbed_dependency(ClawController)

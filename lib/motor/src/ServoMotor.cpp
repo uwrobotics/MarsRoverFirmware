@@ -2,7 +2,7 @@
 
 ServoMotor::ServoMotor(PinName pwm, bool inverted, std::chrono::duration<float> min_pulsewidth,
                        std::chrono::duration<float> max_pulsewidth, float limit)
-    : DCMotor(NC, NC), m_inverted(inverted), m_servo(pwm, limit, max_pulsewidth, min_pulsewidth) {}
+    : Motor(NC, NC), m_inverted(inverted), m_servo(pwm, limit, max_pulsewidth, min_pulsewidth) {}
 
 ServoMotor::ServoMotor(t_motorConfig motorConfig) : ServoMotor(motorConfig.pwmPin, motorConfig.inverted) {}
 
