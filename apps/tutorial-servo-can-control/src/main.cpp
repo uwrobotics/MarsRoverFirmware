@@ -19,11 +19,9 @@ CANMsg rxMsg, txMsg;
 // Threads
 Thread rxCANProcessorThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
-// Event flags for communication between threads
-EventFlags event_flags;
 
 // Incoming Message Processor
-void rxCANProcessor() {
+/*void rxCANProcessor() {
   const auto rxPeriod = 2ms;
 
   float servo_pos = 0.0, servo_range = 180;
@@ -31,6 +29,7 @@ void rxCANProcessor() {
   while (true) {
     if (can1.read(rxMsg)) {
       switch (rxMsg.getID()) {
+        // had modifeid local hw-bridge
         case HWBRIDGE::CANID::SERVO_SET_POSITION:
           rxMsg.getPayload(servo_pos);
 
@@ -43,15 +42,15 @@ void rxCANProcessor() {
 
     ThisThread::sleep_for(rxPeriod);
   }
-}
+}*/
 
 // Outgoing message processor
-void txCANProcessor() {
+/*void txCANProcessor() {
   while (true) {
     // This thread does not sleep, but only executes if signaled by rxCANProcessor to write out a response
     // event_flags.wait_any(ACK_FLAG);
   }
-}
+}*/
 
 int main() {
   printf("\r\n\r\n");
@@ -59,12 +58,12 @@ int main() {
   printf("=======================\r\n");
 
   // CAN init stuff
-  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_TUT_RX, CANStandard,
-                 HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
-  rxCANProcessorThread.start(rxCANProcessor);
-  txCANProcessorThread.start(txCANProcessor);
+  /*can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_TUT_RX, CANStandard,
+                 HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);*/
+  // rxCANProcessorThread.start(rxCANProcessor);
+  // txCANProcessorThread.start(txCANProcessor);
 
   while (true) {
-    ThisThread::sleep_for(2ms);
+    // ThisThread::sleep_for(2ms);
   }
 }
