@@ -52,6 +52,26 @@ Thread txCANProcessorThread(osPriorityBelowNormal);
   }
 }*/
 
+// incoming message processor
+// assumption any message is for the servo
+
+void rxCANProcessor() {
+  const auto rxPeriod = 2ms;
+
+  float servo_pos = 0.0, servo_range = 180;
+
+  while (true) {
+    if (can1.read(rxMsg)) {
+      switch (rxMsg.getID()) {
+        default:
+          rxMsg.getPayload(servo_pos);
+          servo_1.setPositionInDegrees(servo_pos * servo_range);
+          break;
+      }
+    }
+  }
+}
+
 int main() {
   printf("\r\n\r\n");
   printf("TUTORIAL SERVO APPLICATION STARTED\r\n");
