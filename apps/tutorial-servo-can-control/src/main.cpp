@@ -84,6 +84,6 @@ int main() {
   // txCANProcessorThread.start(txCANProcessor);
 
   while (true) {
-    // ThisThread::sleep_for(2ms);
+    ThisThread::sleep_for(2ms);
   }
 }
