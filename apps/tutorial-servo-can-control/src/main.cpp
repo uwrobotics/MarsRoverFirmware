@@ -29,15 +29,11 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      switch (rxMSg.getID()) {
+      switch (rxMsg.getID()) {
         case HWBRIDGE::CANID::SERVO_SET_POSITION:
           rxMsg.getPayload(servo_pos);
 
           servo_1.setPositionInDegrees(servo_pos * servo_range);
-          break;
-        case HWBRIDGE::CANID::SERVO_SET_ANGLE_RANGE:
-          rxMsg.getPayload(servo_range);
-          servo_1.setAngleRangeInDegrees(servo_range);
           break;
         default:
           break;
