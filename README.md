@@ -88,8 +88,8 @@ This repository contains:
     Ex. Compile the science application for the science board:  
     `make APP=science TARGET=science`
 
-    Ex. Compile the CAN test application for the safety board:  
-    `make APP=test-can TARGET=safety`
+    Ex. Compile the arm application for the arm board:  
+    `make APP=arm TARGET=arm`
     
     After compiling an application you should see a message similar to the following:  
     ```shell script

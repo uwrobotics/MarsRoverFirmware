@@ -179,32 +179,33 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
 }
 
 // Handler function mappings
-static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_OVERRIDE_FLAGS, &setOverrideFlags},
+const static CANMsg::CANMsgHandlerMap canHandlerMap = {
+    {HWBRIDGE::CANID::SET_OVERRIDE_FLAGS, &setOverrideFlags},
 
-                                                 {HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
-                                                 {HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE, &setControlMode},
-                                                 {HWBRIDGE::CANID::SET_ELBOW_CONTROL_MODE, &setControlMode},
-                                                 {HWBRIDGE::CANID::SET_WRIST_CONTROL_MODE, &setControlMode},
-                                                 {HWBRIDGE::CANID::SET_CLAW_CONTROL_MODE, &setControlMode},
+    {HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
+    {HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE, &setControlMode},
+    {HWBRIDGE::CANID::SET_ELBOW_CONTROL_MODE, &setControlMode},
+    {HWBRIDGE::CANID::SET_WRIST_CONTROL_MODE, &setControlMode},
+    {HWBRIDGE::CANID::SET_CLAW_CONTROL_MODE, &setControlMode},
 
-                                                 {HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_ELBOW_MOTIONDATA, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_WRIST_PITCH_MOTIONDATA, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_WRIST_ROLL_MOTIONDATA, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_CLAW_MOTIONDATA, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_TOOL_TIP_DEPLOYMENT, &setToolTipDeployment},
+    {HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA, &setMotionData},
+    {HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA, &setMotionData},
+    {HWBRIDGE::CANID::SET_ELBOW_MOTIONDATA, &setMotionData},
+    {HWBRIDGE::CANID::SET_WRIST_PITCH_MOTIONDATA, &setMotionData},
+    {HWBRIDGE::CANID::SET_WRIST_ROLL_MOTIONDATA, &setMotionData},
+    {HWBRIDGE::CANID::SET_CLAW_MOTIONDATA, &setMotionData},
+    {HWBRIDGE::CANID::SET_TOOL_TIP_DEPLOYMENT, &setToolTipDeployment},
 
-                                                 {HWBRIDGE::CANID::RUN_WRIST_CALIBRATION, &runWristCalibration},
-                                                 {HWBRIDGE::CANID::RUN_CLAW_CALIBRATION, &runClawCalibration},
+    {HWBRIDGE::CANID::RUN_WRIST_CALIBRATION, &runWristCalibration},
+    {HWBRIDGE::CANID::RUN_CLAW_CALIBRATION, &runClawCalibration},
 
-                                                 {HWBRIDGE::CANID::SET_PID_TUNING_MODE, &setPIDTuningMode},
+    {HWBRIDGE::CANID::SET_PID_TUNING_MODE, &setPIDTuningMode},
 
-                                                 {HWBRIDGE::CANID::SET_PID_DEADZONE, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_P, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_I, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_D, &setPIDParameter},
-                                                 {HWBRIDGE::CANID::SET_JOINT_PID_BIAS, &setPIDParameter}};
+    {HWBRIDGE::CANID::SET_PID_DEADZONE, &setPIDParameter},
+    {HWBRIDGE::CANID::SET_JOINT_PID_P, &setPIDParameter},
+    {HWBRIDGE::CANID::SET_JOINT_PID_I, &setPIDParameter},
+    {HWBRIDGE::CANID::SET_JOINT_PID_D, &setPIDParameter},
+    {HWBRIDGE::CANID::SET_JOINT_PID_BIAS, &setPIDParameter}};
 
 /*** ARM CANBus ***/
 /******************/
@@ -219,18 +220,14 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      if (canHandlerMap.count(rxMsg.getID()) > 0) {
-        canHandlerMap[rxMsg.getID()](rxMsg);
-      } else {
-        // TODO: Warn about unsupported CAN command (without flooding)
-      }
+      canHandlerMap.at(rxMsg.getID())(rxMsg);
     }
 
     // rxCANBuffer.waitFlagsAny(CANBUFFER_FLAG_DATA_READY);
 
-    // if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.id) != canHandlerMap.end())) {
-    //     if (canHandlerMap.count(rxMsg.id) > 0) {
-    //         canHandlerMap[rxMsg.id](rxMsg);
+    // if (rxCANBuffer.pop(rxMsg) && (canHandlerMap.find(rxMsg.getID()) != canHandlerMap.end())) {
+    //     if (canHandlerMap.count(rxMsg.getID()) > 0) {
+    //         canHandlerMap[rxMsg.getID()](rxMsg);
     //     }
     //     else {
     //         // TODO: Warn about unsupported CAN command (without flooding serial)
