@@ -18,7 +18,7 @@ int main()
   {
     if(can_rx.read(msg))
       {
-        unit8_t extractedMsg = 0;
+        uint8_t extractedMsg = 0;
         msg >> extractedMsg; 
           //>>operator inserts CAN packet's data to extractedMsg, which will convert to an integer because of the unit8_t type
 
