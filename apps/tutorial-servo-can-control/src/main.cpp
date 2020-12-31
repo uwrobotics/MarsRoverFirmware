@@ -14,7 +14,7 @@
 
 CAN can(CAN1_RX, CAN1_TX);
 
-TutorialServo servo_1(PA_1);
+TutorialServo servo(PA_1);
 CANMessage msg;
 
 

@@ -9,8 +9,8 @@
 #include "mbed.h"
 
 TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1, float maxPulsewidthInMs = 2) : _pin(pin) {
-    _pin = 0;
-    m_servoPwmOut(_pin);
+    // _pin = 0;
+    m_servoPwmOut = m_servoPwmOut(servoPin);
     m_servoPwmOut.period(0.020);
     m_servoRangeInDegrees = servoRangeInDegrees;
     m_minPulsewidthInMs = minPulsewidthInMs;
