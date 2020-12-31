@@ -10,7 +10,7 @@ EventQueue queue;
 void CANReceiveEventHandler(CANMsg &msg) {
   static uint16_t received = 0;
 
-  // Print data received from the CAN msg 
+  // Print data received from the CAN msg
   printf("  Data    =");
   for (int i = 0; i < msg.len; i++) printf(" 0x%.2X", msg.data[i]);
   printf("\r\n");
