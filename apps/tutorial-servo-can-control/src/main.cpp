@@ -7,6 +7,7 @@
 #include "CANMsg.h"
 #include "TutorialServo.h"
 #include "hw_bridge.h"
+#include "mbed.h"
 
 // servo
 TutorialServo servo_1(PA_1);
