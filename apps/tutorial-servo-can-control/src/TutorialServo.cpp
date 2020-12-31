@@ -12,12 +12,12 @@ void TutorialServo::setPositionInDegrees(const float degrees) {
   servoPwmOut.pulsewidth(.001 + .001 * degrees / servoRangeInDegrees);
 }
 
-float getServoRangeInDegrees( ) const{
+float getServoRangeInDegrees() const {
   return m_servoRangeInDegrees;
 }
-float getMinPulseWidthInMs( ) const{
+float getMinPulseWidthInMs() const {
   return m_minPulsewidthInMs;
 }
-float getMaxPulseWidthInMs( ) const{
+float getMaxPulseWidthInMs() const {
   return m_MaxPulsewidthInMs;
 }
