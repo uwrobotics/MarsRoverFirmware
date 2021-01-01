@@ -73,3 +73,6 @@ test-pwmin:
 #  - gamepad
 #  - gimbtonomy
 #  - science
+
+test-urm04:
+  -nucleo

@@ -134,6 +134,7 @@ add_subdirectory(lib/pid)
 add_subdirectory(lib/sensors)
 add_subdirectory(lib/servo)
 
+
 if (NOT DEFINED APP)
     message(FATAL_ERROR "APP variable not set in CACHE. Please invoke CMake with \"-DAPP=<app-name>\"")
 elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/apps/${APP}")
@@ -170,3 +171,4 @@ add_subdirectory(apps/test-moisture)
 add_subdirectory(apps/test-pid)
 add_subdirectory(apps/test-pwm)
 add_subdirectory(apps/test-pwmin)
+add_subdirectory(apps/test-urm04)
