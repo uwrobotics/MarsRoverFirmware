@@ -1,14 +1,21 @@
 #pragma once
 
-#include <map>
-
+#include "LookupTable.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
 class CANMsg : public CANMessage {
+ private:
+  using CAN_Message::id;
+
  public:
-  typedef mbed_error_status_t (*CANMsgHandler)(CANMsg &);
-  typedef std::map<HWBRIDGE::CANID, CANMsg::CANMsgHandler> CANMsgHandlerMap;
+  using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
+  using CANMsgHandlerMap =
+      lookup_table::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, +[](CANMsg &) -> mbed_error_status_t {
+        MBED_ERROR(MBED_MAKE_ERROR(MBED_MODULE_APPLICATION, MBED_ERROR_CODE_INVALID_ARGUMENT),
+                   "Invalid key to CANMsgHandlerMap");
+        return MBED_ERROR_CODE_INVALID_ARGUMENT;
+      }>;
 
   template <class T>
   union CANPayload {
@@ -28,7 +35,7 @@ class CANMsg : public CANMessage {
 
   /** Creates CAN remote message.
    */
-  CANMsg(HWBRIDGE::CANID _id, CANFormat _format = CANStandard) : CANMessage((uint16_t)_id, _format) {}
+  CANMsg(HWBRIDGE::CANID _id, CANFormat _format = CANStandard) : CANMessage(static_cast<uint16_t>(_id), _format) {}
 
   /** Sets the ID for a CAN messages
    */
