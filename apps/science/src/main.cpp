@@ -89,7 +89,7 @@ void rxCANProcessor() {
       if (canHandleMap.size() > 0) {
         canHandleMap[rxMsg.getID()](rxMsg);
       } else {
-        // ruh roh
+        // canHandleMap has not been declared or there is some other error
       }
     }
   }
