@@ -83,15 +83,29 @@ Thread txCANProcessorThread;
 void rxCANProcessor() {
   CANMsg rxMsg;
 
+  // new while loop
   while (true) {
     if (can.read(rxMsg)) {
-      if (canHandleMap.count(rxMsg.getID()) > 0) {
+      if (canHandleMap.size() > 0) {
         canHandleMap[rxMsg.getID()](rxMsg);
       } else {
         // ruh roh
       }
     }
   }
+
+  /*
+  // this is the old while loop
+    while (true) {
+      if (can.read(rxMsg)) {
+        if (canHandleMap.count(rxMsg.getID()) > 0) {
+          canHandleMap[rxMsg.getID()](rxMsg);
+        } else {
+          // ruh roh
+        }
+      }
+    }
+    */
 }
 
 // Send outgoing CAN messages
