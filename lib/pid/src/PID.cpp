@@ -98,7 +98,7 @@ float PID::Pid::computeDPathOnPV(float processVariable, int64_t dt) {
   if (dt != 0) {
     derivativePath = m_DGain * (processVariable - m_pastPV) / dt;
   }
-  return derivativePath;
+  return -derivativePath;
 }
 
 float PID::Pid::compute(float setPoint, float processVariable) {
@@ -112,7 +112,7 @@ float PID::Pid::compute(float setPoint, float processVariable) {
   float dt    = chrono::duration_cast<chrono::duration<float>>(m_timer.elapsed_time()).count();  // seconds
   float paths = computePPath(error);
   paths += computeIPath(error, dt);
-  paths += m_antiKickback ? computeDPathOnPV(error, dt) : computeDPathOnError(processVariable, dt);
+  paths += m_antiKickback ? computeDPathOnPV(processVariable, dt) : computeDPathOnError(error, dt);
   paths = std::clamp(paths, static_cast<float>(m_lowerBound), static_cast<float>(m_upperBound));
 
   m_pastError = error;
