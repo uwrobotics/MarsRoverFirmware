@@ -62,8 +62,8 @@ class ActuatorController {
   bool m_limSwitchMin_Connected;
   bool m_limSwitchMax_Connected;
 
-  PID::Pid m_velocityPIDController;
-  PID::Pid m_positionPIDController;
+  PID::PID m_velocityPIDController;
+  PID::PID m_positionPIDController;
 
   Timer m_updateTimer;
 

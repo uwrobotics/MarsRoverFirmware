@@ -12,33 +12,38 @@
  *                 WARNING: Mutexes wait for lock indefinetly, since deadlock is currently impossible
  *                          If modifying the code, ensure deadlock remains impossible
  *  Anti-Windup: See this video: https://www.youtube.com/watch?v=NVLXCwc8HzM&t=571s&ab_channel=MATLAB
- *               See also Brett Beauregard blog
- *  Anti-Derivative-Kickback: Avoid jerkiness, by differentiating on PV. See Brett Beauregard blog
+ *               See also Brett Beauregard blog:
+ *               http://brettbeauregard.com/blog/2011/04/improving-the-beginner%e2%80%99s-pid-reset-windup/
+ * Anti-Derivative-Kickback: Avoid jerkiness, by differentiating on PV. See Brett Beauregard blog:
+ *                           http://brettbeauregard.com/blog/2011/04/improving-the-beginner%e2%80%99s-pid-derivative-kick/
+ * On-The-Fly Tuning: Allows gains to be changed with reduced joltiness. Done by multiplying the gain into the error
+ *                    accumulator:
+ * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%e2%80%99s-pid-tuning-changes/
  *
  */
 #pragma once
 
 namespace PID {
 typedef struct Config {
-  uint32_t proportionalGain, integralGain, derivativeGain;
-  int32_t lowerBound, upperBound;
+  float proportionalGain, integralGain, derivativeGain;
+  float lowerBound, upperBound;
   float deadzone;
   bool antiKickback = true;
 } Config;
-class Pid {
+class PID {
  public:
-  Pid(uint32_t proportionalGain, uint32_t intregralGain, uint32_t derivativeGain, int32_t lowerBound,
-      int32_t upperBound, float deadzone, bool antiKickback = true);
-  Pid(const Config &config);
+  PID(float proportionalGain, float intregralGain, float derivativeGain, float lowerBound, float upperBound,
+      float deadzone, bool antiKickback = true);
+  PID(const Config &config);
 
-  void updateProportionalGain(uint32_t p);
-  void updateIntegralGain(uint32_t i);
-  void updateDerivativeGain(uint32_t d);
+  void updateProportionalGain(float p);
+  void updateIntegralGain(float i);
+  void updateDerivativeGain(float d);
   void updateDeadzone(float deadzone);
 
-  uint32_t reportProportionalGain() const;
-  uint32_t reportIntegralGain() const;
-  uint32_t reportDerivativeGain() const;
+  float reportProportionalGain() const;
+  float reportIntegralGain() const;
+  float reportDerivativeGain() const;
   float reportDeadzone() const;
 
   void reset();
@@ -47,11 +52,11 @@ class Pid {
  private:
   mutable Mutex m_mutex;
   Timer m_timer;
-  uint32_t m_PGain, m_IGain, m_DGain;
-  const int32_t m_lowerBound, m_upperBound;
+  float m_PGain, m_IGain, m_DGain;
+  const float m_lowerBound, m_upperBound;
   float m_deadzone;
-  float m_IPath;
-  float m_pastError, m_pastPV;
+  float m_IAccumulator{0};
+  float m_pastError{0}, m_pastPV{0};
   const bool m_antiKickback;
   float computePPath(float error);
   float computeIPath(float error, int64_t dt);
