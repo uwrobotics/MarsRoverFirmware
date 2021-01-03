@@ -1,5 +1,6 @@
 /**
  * Matlab's PID functionality was used to generate a control signal from the setpoint and feedback signals.
+ * The Matlab code may be found in the pid-matlab-script branch
  */
 #pragma once
 #include <array>
