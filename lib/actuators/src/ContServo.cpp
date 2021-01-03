@@ -2,13 +2,17 @@
 
 ContServo::ContServo::ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse,
                                 std::chrono::duration<float> min_pulse, std::chrono::duration<float> period)
-    : m_pwm(pin), m_max_speed(max_speed), m_speed(0), m_max_pulse(max_pulse), m_min_pulse(min_pulse) {
+    : m_pwm(pin), m_max_speed(max_speed), m_speed(0) {
   // Set initial condition of PWM
   m_pwm.period(period.count());
   m_pwm = 0.0;
+
+  // Set max and min pulse widths
+  m_max_pulse = max_pulse;
+  m_min_pulse = min_pulse;
 }
 
-ContServo::ConServo::ContServo(const ContServo::Config &config)
+ContServo::ContServo::ContServo(const Config &config)
     : ContServo(config.pwmPin, config.max_speed, config.max_pulse, config.min_pulse, config.period) {}
 
 float ContServo::ContServo::getMaxSpeed(void) const {

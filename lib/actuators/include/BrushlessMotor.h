@@ -1,6 +1,6 @@
 #pragma once
 
-class Actuator;
+#include "Actuator.h"
 
 namespace BrushlessMotor {
 typedef struct {
@@ -47,8 +47,8 @@ class BrushlessMotor : public Actuator {
   static constexpr auto DEFAULT_MIN                            = 1ms;              // DEFAULT MIN WAVE LENGTH
   static constexpr std::chrono::duration<float> DEFAULT_PERIOD = 1.0s / PWM_FREQ;  // DEFAULT PERIOD LENGTH
 
-  float m_max_speed,  // MAXIMUM ROTATIONAL SPEED (from -max_speed to + max_speed)
-      m_speed;        // SPEED of motor, can be negative
   PwmOut m_pwm;
+  float m_max_speed,  // MAXIMUM ROTATIONAL SPEED in degrees per second (from -max_speed to + max_speed)
+      m_speed;        // SPEED of motor in degrees per second, can be negative
 };
 }  // namespace BrushlessMotor

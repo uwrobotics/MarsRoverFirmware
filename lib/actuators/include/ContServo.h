@@ -1,6 +1,6 @@
 #pragma once
 
-class Servo;
+#include "Servo.h"
 
 namespace ContServo {
 typedef struct {
@@ -17,12 +17,6 @@ class ContServo : public Servo {
             std::chrono::duration<float> min_pulse = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
 
   ContServo(const Config &config);
-
-  /** Set the maximum speed of the servo
-   *
-   * @param max_speed The maximum speed of the servo
-   */
-  void setMaxSpeed(float max_speed);
 
   /** Read the maximum speed of the servo
    *
@@ -43,8 +37,8 @@ class ContServo : public Servo {
   float getValue() const override;
 
  protected:
+  PwmOut m_pwm;
   float m_max_speed,  // MAXIMUM ROTATIONAL SPEED in degrees per second (from -max_speed to + max_speed)
       m_speed;        // SPEED of servo in degrees per second, can be negative
-  PwmOut m_pwm;
 };
 }  // namespace ContServo

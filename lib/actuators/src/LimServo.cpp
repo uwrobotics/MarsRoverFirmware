@@ -2,16 +2,20 @@
 
 LimServo::LimServo::LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse,
                              std::chrono::duration<float> min_pulse, std::chrono::duration<float> period)
-    : m_pwm(pin), m_range(range), m_pos(0), m_max_pulse(max_pulse), m_min_pulse(min_pulse) {
+    : m_pwm(pin), m_range(range), m_pos(0) {
   // Set initial condition of PWM
   m_pwm.period(period.count());
   m_pwm = 0.0;
+
+  // Set max and min pulse widths
+  m_max_pulse = max_pulse;
+  m_min_pulse = min_pulse;
 }
 
-LimServo::LimServo::LimServo(const LimServo::Config &config)
+LimServo::LimServo::LimServo(const Config &config)
     : LimServo(config.pwmPin, config.range, config.max_pulse, config.min_pulse, config.period) {}
 
-float LimServo::getRange(void) const {
+float LimServo::LimServo::getRange(void) const {
   return m_range;
 }
 

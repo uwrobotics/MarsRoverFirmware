@@ -1,6 +1,6 @@
 #pragma once
 
-class Actuator;
+#include "Actuator.h"
 
 class Servo : public Actuator {
  protected:

@@ -15,7 +15,7 @@ DCMotor::DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz,
   m_limit = fmin(m_limit, 1.0);
 }
 
-DCMotor::DCMotor::DCMotor(const DCMotor::Config &config)
+DCMotor::DCMotor::DCMotor(const Config &config)
     : DCMotor(config.pwmPin, config.dirPin, config.inverted, config.freqInHz, config.limit) {}
 
 void DCMotor::DCMotor::setValue(float dutyCycle) {

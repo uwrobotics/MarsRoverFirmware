@@ -1,6 +1,6 @@
 #pragma once
 
-class Servo;
+#include "Servo.h"
 
 namespace LimServo {
 typedef struct {
@@ -39,8 +39,8 @@ class LimServo : public Servo {
  protected:
   static constexpr int DEFAULT_RANGE = 180;
 
+  PwmOut m_pwm;
   float m_range,  // MAXIMUM ROTATION RANGE in degrees (from -range to + range)
       m_pos;      // POSITION of servo in degrees, can be negative
-  PwmOut m_pwm;
 };
 }  // namespace LimServo
