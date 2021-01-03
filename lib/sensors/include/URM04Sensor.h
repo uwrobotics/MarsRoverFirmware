@@ -2,7 +2,7 @@
 
 #include "mbed.h"
 
-namespace sensor {
+namespace URM04Sensor {
 
 class URM04Sensor {
  protected:
@@ -34,6 +34,8 @@ class URM04Sensor {
   PinName TX;
   // successful read
   bool read_success;
+  //serial
+  BufferedSerial serial; 
 
   // trigger the mesausrements from URM04
   void urmTrigger(int id);
