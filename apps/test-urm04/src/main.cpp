@@ -8,7 +8,7 @@ int main() {
     sensor.trigger_sensor();
     sensor.read_distance();
     ThisThread::sleep_for(std::chrono::milliseconds(10));
-  }    
+  }
 
   return 0;
 }

@@ -5,7 +5,6 @@
 namespace URM04Sensor {
 
 class URM04Sensor {
-
  protected:
   // constants
   static constexpr int BAUD_RATE     = 19200;
@@ -22,22 +21,22 @@ class URM04Sensor {
   // UART protocol pins
   PinName RX;
   PinName TX;
-  //serial
-  BufferedSerial serial; 
-  //variable to check if success_read
+  // serial
+  BufferedSerial serial;
+  // variable to check if success_read
   bool success;
-  //sensor distance
-  float m_distance; 
+  // sensor distance
+  float m_distance;
 
  public:
   // constructor
   URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX);
 
-  //Trigger Sensor
+  // Trigger Sensor
   void trigger_sensor();
 
-  //Read Distance
+  // Read Distance
   float read_distance();
 };
 
-}  // namespace sensor
+}  // namespace URM04Sensor
