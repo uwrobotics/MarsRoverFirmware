@@ -2,10 +2,21 @@
 
 class Servo;
 
+namespace ContServo {
+typedef struct {
+  PinName pwmPin;
+  float max_speed;
+  std::chrono::duration<float> max_pulse;
+  std::chrono::duration<float> min_pulse;
+  std::chrono::duration<float> period;
+} Config;
+
 class ContServo : public Servo {
  public:
   ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse = DEFAULT_MAX,
             std::chrono::duration<float> min_pulse = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
+
+  ContServo(const Config &config);
 
   /** Set the maximum speed of the servo
    *
@@ -31,11 +42,9 @@ class ContServo : public Servo {
    */
   float getValue() const override;
 
-  // Override default period
-  void setPeriod(std::chrono::duration<float> period);
-
  protected:
-  float m_max_speed,  // MAXIMUM ROTATIONAL SPEED (from -max_speed to + max_speed)
-      m_speed;        // SPEED of servo, can be negative
+  float m_max_speed,  // MAXIMUM ROTATIONAL SPEED in degrees per second (from -max_speed to + max_speed)
+      m_speed;        // SPEED of servo in degrees per second, can be negative
   PwmOut m_pwm;
 };
+}  // namespace ContServo

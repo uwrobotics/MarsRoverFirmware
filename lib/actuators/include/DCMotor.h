@@ -12,9 +12,6 @@ typedef struct {
 } Config;
 
 class DCMotor : public Actuator {
- protected:
-  static constexpr int MOTOR_DEFAULT_FREQUENCY_HZ = 20000;  // TODO: Need to test if 20kHz works
-
  public:
   /** Create a motor control interface
    *
@@ -42,6 +39,8 @@ class DCMotor : public Actuator {
   float getValue() const override;
 
  protected:
+  static constexpr int MOTOR_DEFAULT_FREQUENCY_HZ = 20000;  // TODO: Need to test if 20kHz works
+
   PwmOut m_pwm;
   DigitalOut m_dir;
   bool m_inverted;

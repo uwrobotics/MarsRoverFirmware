@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
+DCMotor::DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
     : m_pwm(pwm), m_dir(dir), m_inverted(inverted), m_limit(limit) {
   // Set initial condition of PWM
   m_pwm.period(1.0 / freqInHz);
@@ -15,14 +15,14 @@ DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz, float li
   m_limit = fmin(m_limit, 1.0);
 }
 
-DCMotor::DCMotor(const DCMotor::Config &config)
+DCMotor::DCMotor::DCMotor(const DCMotor::Config &config)
     : DCMotor(config.pwmPin, config.dirPin, config.inverted, config.freqInHz, config.limit) {}
 
-void DCMotor::setValue(float dutyCycle) {
+void DCMotor::DCMotor::setValue(float dutyCycle) {
   m_dir = ((dutyCycle > 0.0) != m_inverted);
   m_pwm = fmin(fabs(dutyCycle), m_limit);
 }
 
-float DCMotor::getValue() const {
+float DCMotor::DCMotor::getValue() const {
   return m_dir ? m_pwm.read() : -m_pwm.read();
 }

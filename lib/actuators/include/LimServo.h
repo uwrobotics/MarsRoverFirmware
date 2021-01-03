@@ -2,10 +2,21 @@
 
 class Servo;
 
+namespace LimServo {
+typedef struct {
+  PinName pwmPin;
+  float range;
+  std::chrono::duration<float> max_pulse;
+  std::chrono::duration<float> min_pulse;
+  std::chrono::duration<float> period;
+} Config;
+
 class LimServo : public Servo {
  public:
-  LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse_ms = DEFAULT_MAX,
-           std::chrono::duration<float> min_pulse_ms = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
+  LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse = DEFAULT_MAX,
+           std::chrono::duration<float> min_pulse = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
+
+  LimServo(const Config &config);
 
   /** Read the range of the servo
    *
@@ -25,13 +36,11 @@ class LimServo : public Servo {
    */
   float getValue() const override;
 
-  // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
-  void setPeriod(std::chrono::duration<float> period);
-
  protected:
   static constexpr int DEFAULT_RANGE = 180;
 
-  float m_range,  // MAXIMUM ROTATION RANGE (from -range to + range)
-      m_pos;      // POSITION of servo, can be negative
+  float m_range,  // MAXIMUM ROTATION RANGE in degrees (from -range to + range)
+      m_pos;      // POSITION of servo in degrees, can be negative
   PwmOut m_pwm;
 };
+}  // namespace LimServo

@@ -1,18 +1,21 @@
 #include "LimServo.h"
 
-LimServo::LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse,
-                   std::chrono::duration<float> min_pulse, std::chrono::duration<float> period)
+LimServo::LimServo::LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse,
+                             std::chrono::duration<float> min_pulse, std::chrono::duration<float> period)
     : m_pwm(pin), m_range(range), m_pos(0), m_max_pulse(max_pulse), m_min_pulse(min_pulse) {
   // Set initial condition of PWM
   m_pwm.period(period.count());
   m_pwm = 0.0;
 }
 
+LimServo::LimServo::LimServo(const LimServo::Config &config)
+    : LimServo(config.pwmPin, config.range, config.max_pulse, config.min_pulse, config.period) {}
+
 float LimServo::getRange(void) const {
   return m_range;
 }
 
-void LimServo::setValue(float position) {
+void LimServo::LimServo::setValue(float position) {
   int sign = (position >= 0) ? 1 : -1;
   m_pos    = (std::abs(position) < m_range) ? position : m_range * sign;
   // position = -1 * m_range -> pwm m_min_pulse_ms; position = +1 * m_range -> pwm m_max_pulse_ms
@@ -23,6 +26,6 @@ void LimServo::setValue(float position) {
   m_pwm.pulsewidth(((m_max_pulse - m_min_pulse) * position / (m_range * 2) + m_min_pulse).count());
 }
 
-float LimServo::getValue(void) const {
+float LimServo::LimServo::getValue(void) const {
   return m_pos;
 }
