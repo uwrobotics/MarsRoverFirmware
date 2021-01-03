@@ -1,19 +1,22 @@
 #pragma once
-// includes
-#include "BufferedSerial.h"
-#include "Thread.h"
-#include "mbed.h"
-#include "rtos.h"
 
-// constants
-#define urmAccount 1
-#define MAX_TRIES  40
-#define BUAD_RATE  19200
+#include "mbed.h"
+
+namespace sensor {
 
 class URM04Sensor {
+ protected:
+  // constants
+  static constexpr int urmAccount    = 1;
+  static constexpr int MAX_TRIES     = 10;
+  static constexpr int BAUD_RATE     = 19200;
+  static constexpr int START_ADDRESS = 0x11;
+  static constexpr int LOW           = 0;
+  static constexpr int HIGH          = 1;
+
  private:
   // trigger pin
-  DigitalOut _trigPin;
+  DigitalOut m_trigPin;
   // start address
   uint8_t startAddr;
   // command buffer
@@ -24,11 +27,13 @@ class URM04Sensor {
   int urmID[urmAccount];
   uint32_t urmData[urmAccount];
   // timer related members
-  uint64_t managerTimer = 20;
+  uint64_t managerTimer;
   Timer clock;
   // UART protocol pins
   PinName RX;
   PinName TX;
+  // successful read
+  bool read_success;
 
   // trigger the mesausrements from URM04
   void urmTrigger(int id);
@@ -39,7 +44,7 @@ class URM04Sensor {
 
   // analyzes the distance**
   void analyzeUrmData(uint8_t cmd[]);
-  // runs the sensor
+  // runs the sensor - starts giving commands to the sensor
   void runUrm04();
   // decodes URM04 data
   void decodeURM04();
@@ -49,6 +54,8 @@ class URM04Sensor {
   URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX);
   // destructor
   ~URM04Sensor();
-  void compute_distance();
+  bool read();
   void print_distance();
 };
+
+}  // namespace sensor

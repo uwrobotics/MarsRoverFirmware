@@ -75,4 +75,4 @@ test-pwmin:
 #  - science
 
 test-urm04:
-  -nucleo
+  - nucleo

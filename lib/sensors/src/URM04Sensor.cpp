@@ -1,15 +1,15 @@
 #include "URM04Sensor.h"
 
 // instantiate pin connected to the URM04 sensor
-URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX)
-    : _trigPin(trig_pin), startAddr(0x11), readingStep(0), RX(_RX), TX(_TX) {
+sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX)
+    : m_trigPin(trig_pin), startAddr(START_ADDRESS), readingStep(LOW), RX(_RX), TX(_TX), read_success(false) {
   // start timer
   clock.start();
   // get start time
   managerTimer = clock.read_ms();
 
   // write low to pin to start instructions
-  _trigPin.write(0);
+  m_trigPin.write(LOW);
 
   // Initialize urm04 command recieving address
   for (int i{0}; i < urmAccount; i++) {
@@ -18,7 +18,9 @@ URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX)
   }
 
   // initialise commands - set zero everywhere
-  for (int i{0}; i < 10; i++) cmdst[i] = 0;
+  for (int i{0}; i < 10; i++) {
+    cmdst[i] = 0;
+  }
 
   // initialize urm04 protocol
   cmdst[0] = 0x55;
@@ -28,15 +30,15 @@ URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX)
 
   // set up serial communication uart bufferserial with baud rate
   // serial communication - D1/TX , D0/RX,
-  BufferedSerial nucleo_board(TX, RX, BUAD_RATE);
+  BufferedSerial nucleo_board(TX, RX, BAUD_RATE);
 }
 // destructor
-URM04Sensor::~URM04Sensor() {
+sensor::URM04Sensor::~URM04Sensor() {
   // kill the timer
   clock.stop();
 }
 // trigger the measurements
-void URM04Sensor::urmTrigger(int id) {
+void sensor::URM04Sensor::urmTrigger(int id) {
   // fill the command buffer with trigger commands
   cmdst[2] = id;
   cmdst[3] = 0x00;
@@ -45,7 +47,7 @@ void URM04Sensor::urmTrigger(int id) {
   transmitCommands();
 }
 // reads the distance from URM04
-void URM04Sensor::urmReader(int id) {
+void sensor::URM04Sensor::urmReader(int id) {
   // fill command buffer with read commands
   cmdst[2] = id;
   cmdst[3] = 0x00;
@@ -54,21 +56,23 @@ void URM04Sensor::urmReader(int id) {
   transmitCommands();
 }
 // transmit commands
-void URM04Sensor::transmitCommands() {
+void sensor::URM04Sensor::transmitCommands() {
   cmdst[5] = cmdst[0] + cmdst[2] + cmdst[3] + cmdst[4];
   // delay for 1 second using thread  1000ms = 1sec
-  ThisThread::sleep_for(1000);
+  ThisThread::sleep_for(std::chrono::milliseconds(1000));
   // send command over serial connection with BufferedSerial write and put into cmdst
   nucleo_board.write(&cmdst[0], sizeof(cmdst));
   // delay for 2 seconds 2000ms = 2sec
-  ThisThread::sleep_for(2000);
+  ThisThread::sleep_for(std::chrono::milliseconds(2000));
 }
 
 // this function actually gets the data
-void URM04Sensor::analyzeUrmData(uint8_t cmd[]) {
+void sensor::URM04Sensor::analyzeUrmData(uint8_t cmd[]) {
   uint8_t checkSum = 0;
   // add each byte in the command array to create checksum
-  for (int i{0}; i < 7; i++) checkSum += cmd[i];
+  for (int i{0}; i < 7; i++) {
+    checkSum += cmd[i];
+  }
   // check is checksum is correct and that the commands are correct as well
   if (checkSum == cmd[7] && cmd[3] == 2 && cmd[4] == 2) {
     uint8_t id  = cmd[2] - startAddr;
@@ -76,12 +80,12 @@ void URM04Sensor::analyzeUrmData(uint8_t cmd[]) {
   }
   // else an error occured during transmission
   else if (cmd[3] == 2 && cmd[4] == 2) {
-    printf("CheckSum Error");
+    read_success = false;
   }
 }
 
 // decodes URM04 data
-void URM04Sensor::decodeURM04() {
+void sensor::URM04Sensor::decodeURM04() {
   // make sure serial is still running
   if (nucleo_board.readable()) {
     // timer
@@ -91,7 +95,7 @@ void URM04Sensor::decodeURM04() {
     // array to hold commands
     uint8_t cmdrd[10];
     // fill the array
-    for (int i{0}; i < 10; i++) cmdrd[i] = 0;
+    for (int i{0}; i < 10; i++) {cmdrd[i] = 0;}
     // start index & indices
     int indices{0};
     int start_index{0};
@@ -112,6 +116,8 @@ void URM04Sensor::decodeURM04() {
           flag = false;
           // flush buffer
           nucleo_board.sync();
+          // read failed
+          read_success = false;
           break;  // exit loop
         }
         // confirm the header address is correct
@@ -135,18 +141,19 @@ void URM04Sensor::decodeURM04() {
     }
     // since all the data has proven to be valid send the data to be analyzed
     if (valid) {
+      read_success = true;
       analyzeUrmData(cmdrd);
     }
   }
 }
 // run the urm04
-void URM04Sensor::runUrm04() {
+void sensor::URM04Sensor::runUrm04() {
   static uint64_t timer{0};
   static int num{0};
 
   if ((uint64_t)clock.read_ms() - timer > managerTimer) {
     // write high to trip pin to turn on RS485 Transmitting mode
-    _trigPin.write(1);
+    m_trigPin.write(1);
 
     // state machine to read measurements from the sensor
     switch (readingStep) {
@@ -159,7 +166,7 @@ void URM04Sensor::runUrm04() {
         managerTimer = 0;  // set interval for measurements after reading distance command
         break;
       case 2:
-        _trigPin.write(0);  // turn on reading mode for RS485
+        m_trigPin.write(LOW);  // turn on reading mode for RS485
         managerTimer = 10;
         break;
       default:
@@ -176,14 +183,15 @@ void URM04Sensor::runUrm04() {
   }
 }
 // this function runs the sensor
-void URM04Sensor::compute_distance() {
+bool sensor::URM04Sensor::read() {
   runUrm04();
   decodeURM04();
+  return read_success;
 }
 // this function prints the data from the sensor
-void URM04Sensor::print_distance() {
+void sensor::URM04Sensor::print_distance() {
   for (int i{0}; i < urmAccount; i++) {
-    printf("Distance: %i\n", urmData[i]);
+    printf("Distance: %u\n", urmData[i]);
   }
   ThisThread::sleep_for(std::chrono::milliseconds(100));
 }
