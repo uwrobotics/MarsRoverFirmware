@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2.3.3
+        uses: actions/checkout@v2.3.4
 
       - name: Set Build Matrix Output
         id: set-matrix
@@ -37,18 +37,18 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2.3.3
+        uses: actions/checkout@v2.3.4
         with:
           submodules: 'recursive'
 
       - name: Set Working Directory as Home
-        run: echo "::set-env name=HOME::$HOME"
+        run: echo "HOME=$HOME" >> $GITHUB_ENV
 
       - name: Update Path with Toolchain
-        run: echo "::add-path::${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin"
+        run: echo "${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin" >> $GITHUB_PATH
 
       - name: Load Cached Arm Toolchain
-        uses: actions/cache@v2.1.2
+        uses: actions/cache@v2.1.3
         id: toolchain-cache
         with:
           path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
@@ -68,7 +68,7 @@ jobs:
           arm-none-eabi-gcc --version
 
       - name: Run CMake (bash)
-        uses: lukka/run-cmake@v3.1
+        uses: lukka/run-cmake@v3.2
         env: ${{matrix.env}}
         with:
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'

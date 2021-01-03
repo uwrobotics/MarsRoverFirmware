@@ -10,6 +10,7 @@ target_link_libraries(arm.${TARGET}-board.elf
         DifferentialWristController
         EncoderRelative_Quadrature
         LimServo
+        LookupTable
         Motor
         uwrt-mars-rover-hw-bridge
         )
