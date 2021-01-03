@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Servo.h"
+class Servo;
 
 class ContServo : public Servo {
  public:
-  ContServo(PinName pin);
-  ContServo(PinName pin, float max_speed);
-  ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse,
-            std::chrono::duration<float> min_pulse);
+  ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse = DEFAULT_MAX,
+            std::chrono::duration<float> min_pulse = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
 
   /** Set the maximum speed of the servo
    *
@@ -26,7 +24,6 @@ class ContServo : public Servo {
    * @param speed The speed of the servo (can be negative)
    */
   void setValue(float speed) override;
-  ContServo& operator=(float speed);
 
   /** Read the current speed of the servo
    *
@@ -34,15 +31,11 @@ class ContServo : public Servo {
    */
   float getValue() const override;
 
-  // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
-  void setPeriod(std::chrono::duration<float> period) {
-    m_pwm.period(period.count());
-  };
+  // Override default period
+  void setPeriod(std::chrono::duration<float> period);
 
  protected:
-  float m_max_speed,  // MAXIMUM ROTATION SPEED in ANGLES PER SECOND (from -max_speed to + max_speed),  only valid for
-                      // CONTINUOUS_SERVO types
-      m_speed;        // ROTATING SPEED in ANGLES PER SECOND
-  PinName m_pin;      // PIN the servo PWM signal is attached to
+  float m_max_speed,  // MAXIMUM ROTATIONAL SPEED (from -max_speed to + max_speed)
+      m_speed;        // SPEED of servo, can be negative
   PwmOut m_pwm;
 };

@@ -1,19 +1,11 @@
 #pragma once
 
-#include "Servo.h"
+class Servo;
 
 class LimServo : public Servo {
  public:
-  LimServo(PinName pin);
-  LimServo(PinName pin, float range);
-  LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse_ms,
-           std::chrono::duration<float> min_pulse_ms);
-
-  /** Set the range of the servo
-   *
-   * @param range The range of the servo in degrees
-   */
-  void setRange(float range);
+  LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse_ms = DEFAULT_MAX,
+           std::chrono::duration<float> min_pulse_ms = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
 
   /** Read the range of the servo
    *
@@ -23,10 +15,9 @@ class LimServo : public Servo {
 
   /** Set the position of the servo
    *
-   * @param angle The position of the servo in degrees
+   * @param position The position of the servo in degrees
    */
   void setValue(float position) override;
-  LimServo& operator=(float position);
 
   /** Read the current position of the servo
    *
@@ -35,15 +26,12 @@ class LimServo : public Servo {
   float getValue() const override;
 
   // Override default period (ONLY USE FOR SPECIFIC FREQ REQUIREMENT)
-  void setPeriod(std::chrono::duration<float> period) {
-    m_pwm.period(period.count());
-  };
+  void setPeriod(std::chrono::duration<float> period);
 
  protected:
-  static constexpr int DEFAULT_RANGE = 180;  // DEFAULT RANGE for LIMITED Servos
+  static constexpr int DEFAULT_RANGE = 180;
 
-  float m_range,  // RANGE OF MOTION (from -range to + range), only valid for LIMIT_SERVO types
+  float m_range,  // MAXIMUM ROTATION RANGE (from -range to + range)
       m_pos;      // POSITION of servo, can be negative
-  PinName m_pin;  // PIN the servo PWM signal is attached to
   PwmOut m_pwm;
 };

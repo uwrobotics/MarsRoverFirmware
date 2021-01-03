@@ -8,7 +8,7 @@
  *      Actuator Type       Value
  *      ------------------------------
  *      DC Motor            Speed
- *      Brushless Motor     ???
+ *      Brushless Motor     Speed
  *      Limit Servo         Position
  *      Continuous Servo    Speed
  */
@@ -17,4 +17,5 @@ class Actuator {
  public:
   virtual void setValue(float value) = 0;
   virtual float getValue() const     = 0;
+  virtual ~Actuator() {}
 };
