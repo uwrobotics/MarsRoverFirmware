@@ -10,8 +10,8 @@ gamepad:
 gimbtonomy:
   - gimbtonomy
 
-safety:
-  - safety
+pdb:
+  - pdb
 
 science:
   - science
@@ -31,7 +31,6 @@ test-blinky:
   - arm
   - gamepad
   - gimbtonomy
-  - safety
   - science
 
 test-blockingneo:
@@ -42,7 +41,6 @@ test-can:
   - nucleo
   - arm
   - gimbtonomy
-  - safety
 #  - science
 
 test-enc-abs-pwm:
@@ -50,6 +48,9 @@ test-enc-abs-pwm:
   - arm
 #  - gimbtonomy
 #  - science
+
+test-lookup-table:
+  - nucleo
 
 test-moisture:
   #  - nucleo
