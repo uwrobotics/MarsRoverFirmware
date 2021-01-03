@@ -25,6 +25,6 @@ float TutorialServo::getMaxPulseWidthInMs() const {
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
   if (degrees >= 0 && degrees <= m_servoRangeInDegrees) {
-    m_servoPwmOut.pulsewidth(m_minPulsewidthInMs * (1 + degrees / m_servoRangeInDegrees));
+    m_servoPwmOut.pulsewidth_ms((degrees/m_servoRangeInDegrees) * (m_maxPulsewidthInMs - m_minPulsewidthInMs) + m_minPulsewidthInMs);
   }
 }

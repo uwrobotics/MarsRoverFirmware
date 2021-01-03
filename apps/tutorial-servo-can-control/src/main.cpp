@@ -8,10 +8,10 @@
 #include "mbed.h"
 
 // Declare global variables
-CAN can(CAN1_RX, CAN1_TX);
+CANBus can(CAN1_RX, CAN1_TX);
 CANMsg msg;
 TutorialServo servo(PA_1);
-unit8_t convertedMessage = 0;
+uint8_t convertedMessage = 0;
 
 // main() runs in its own thread in the OS
 int main() {
