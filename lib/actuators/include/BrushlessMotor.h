@@ -2,6 +2,7 @@
 
 #include "Actuator.h"
 
+// TODO: this class is currently unimplemented
 namespace BrushlessMotor {
 typedef struct {
   PinName pwmPin;
@@ -48,7 +49,7 @@ class BrushlessMotor : public Actuator {
   static constexpr std::chrono::duration<float> DEFAULT_PERIOD = 1.0s / PWM_FREQ;  // DEFAULT PERIOD LENGTH
 
   PwmOut m_pwm;
-  float m_max_speed,  // MAXIMUM ROTATIONAL SPEED in degrees per second (from -max_speed to + max_speed)
-      m_speed;        // SPEED of motor in degrees per second, can be negative
+  float m_abs_max_speed,  // deg/sec (from -max_speed to + max_speed)
+      m_speed;            // deg/sec (can be negative)
 };
 }  // namespace BrushlessMotor

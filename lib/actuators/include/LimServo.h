@@ -40,7 +40,7 @@ class LimServo : public Servo {
   static constexpr int DEFAULT_RANGE = 180;
 
   PwmOut m_pwm;
-  float m_range,  // MAXIMUM ROTATION RANGE in degrees (from -range to + range)
-      m_pos;      // POSITION of servo in degrees, can be negative
+  float m_range,  // degrees (from -range to + range)
+      m_pos;      // degrees (can be negative)
 };
 }  // namespace LimServo

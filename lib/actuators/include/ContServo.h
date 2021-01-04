@@ -38,7 +38,7 @@ class ContServo : public Servo {
 
  protected:
   PwmOut m_pwm;
-  float m_max_speed,  // MAXIMUM ROTATIONAL SPEED in degrees per second (from -max_speed to + max_speed)
-      m_speed;        // SPEED of servo in degrees per second, can be negative
+  float m_abs_max_speed,  // deg/sec (from -max_speed to + max_speed)
+      m_speed;            // deg/sec (can be negative)
 };
 }  // namespace ContServo

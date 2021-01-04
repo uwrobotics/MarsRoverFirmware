@@ -3,16 +3,13 @@
 #include <cmath>
 
 DCMotor::DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
-    : m_pwm(pwm), m_dir(dir), m_inverted(inverted), m_limit(limit) {
+    : m_pwm(pwm), m_dir(dir), m_inverted(inverted), m_limit(fmin(limit, 1.0)) {
   // Set initial condition of PWM
   m_pwm.period(1.0 / freqInHz);
   m_pwm = 0.0;
 
   // Initial condition of output enables
   m_dir = 0;
-
-  // Set max limit to 1.0
-  m_limit = fmin(m_limit, 1.0);
 }
 
 DCMotor::DCMotor::DCMotor(const Config &config)
