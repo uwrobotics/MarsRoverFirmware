@@ -2,7 +2,7 @@
 
 ContServo::ContServo::ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse,
                                 std::chrono::duration<float> min_pulse, std::chrono::duration<float> period)
-    : m_pwm(pin), m_abs_max_speed(max_speed), m_speed(0) {
+    : m_pwm(pin), m_abs_max_speed(std::abs(max_speed)), m_speed(0) {
   // Set initial condition of PWM
   m_pwm.period(period.count());
   m_pwm = 0.0;
