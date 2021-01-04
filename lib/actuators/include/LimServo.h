@@ -37,10 +37,10 @@ class LimServo : public Servo {
   float getValue() const override;
 
  protected:
-  static constexpr int DEFAULT_RANGE = 180;
+  static constexpr int DEFAULT_RANGE = 180; // degrees
 
   PwmOut m_pwm;
-  float m_range,  // degrees (from -range to + range)
-      m_pos;      // degrees (can be negative)
+  float m_abs_range,  // degrees
+      m_pos;          // degrees (from -m_abs_range to +m_abs_range)
 };
 }  // namespace LimServo

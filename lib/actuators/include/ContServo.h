@@ -38,7 +38,7 @@ class ContServo : public Servo {
 
  protected:
   PwmOut m_pwm;
-  float m_abs_max_speed,  // deg/sec (from -max_speed to + max_speed)
-      m_speed;            // deg/sec (can be negative)
+  float m_abs_max_speed,  // deg/sec
+      m_speed;            // deg/sec (from -m_abs_max_speed to +m_abs_max_speed)
 };
 }  // namespace ContServo
