@@ -22,7 +22,7 @@ public:
 	float getMaxPulseWidthInMs( ) const;
 	
 private:
-	PwmOut m_servoPwmOut;
+	PwmOut m_servoPwmOut; // default period is 20ms, same as a typical servo
 	const float m_servoRangeInDegrees;
 	const float m_minPulsewidthInMs;
 	const float m_maxPulsewidthInMs;

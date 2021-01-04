@@ -10,7 +10,7 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
 	float validated_angle = max(0.0, min(servoRangeInDegrees, degrees));
-	m_servoPwmOut = minPulsewidthInMs + (validated_angle / servoRangeInDegrees) * maxPulsewidthInMs;
+	m_servoPwmOut.pulsewidth_ms(minPulsewidthInMs + (validated_angle / servoRangeInDegrees) * (maxPulsewidthInMs - minPulsewidthInMs);
 }
 
 float TutorialServo::getServoRangeInDegrees() const {
