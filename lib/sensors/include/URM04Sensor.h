@@ -11,6 +11,7 @@ class URM04Sensor {
   static constexpr int START_ADDRESS = 0x11;
   static constexpr int LOW           = 0;
   static constexpr int HIGH          = 1;
+  static constexpr float MAX_FLOAT   = 1e+37;
 
  private:
   // trigger pin
@@ -35,6 +36,8 @@ class URM04Sensor {
 
   // Read Distance in CENTIMETER returns true if successful read
   // pass by reference a variable to hold the distance
+  // sensors range is 4cm - 500cm
+  // will give MAX_FLOAT value if out of range
   bool read_distance(float& distance);
 
   // return true if address has been changed successfully

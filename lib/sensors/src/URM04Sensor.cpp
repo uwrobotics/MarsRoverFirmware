@@ -60,7 +60,7 @@ void URM04Sensor::URM04Sensor::trigger_sensor(float& distance) {
   memset(&cmdst[0], 0, sizeof(cmdst));
 }
 
-// pass by reference a variable to hold the distance value
+// pass by reference a variable to hold the distance value - will give MAX_FLOAT if out of range
 bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
   /****************** TRIGGER SENSOR BEFORE READING DISTANCE ********************/
   trigger_sensor(distance);
@@ -129,6 +129,11 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
       distance = (float)(cmdst[5] << 8) + (float)cmdst[6];
       // --------------------- or --------------------------
       // distance = (float)(cmdst[5]*256) + (float)cmdst[6];
+
+      // check if distance is out of range - if so return maximum float value
+      if ((int)distance % (int)cmdst[5] == (int)cmdst[6]) {
+        distance = MAX_FLOAT;
+      }
       return true;
     }
   }
