@@ -1,8 +1,8 @@
 #include "URM04Sensor.h"
 
 // instantiate pin connected to the URM04 URM04Sensor
-URM04Sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX)
-    : m_trigPin(trig_pin), startAddr(START_ADDRESS), RX(_RX), TX(_TX), serial(TX, RX, BAUD_RATE) {
+URM04Sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX, uint8_t default_address)
+    : m_trigPin(trig_pin), startAddr(default_address), RX(_RX), TX(_TX), serial(TX, RX, BAUD_RATE) {
   // write low to pin to start instructions
   m_trigPin.write(LOW);
 
@@ -24,7 +24,7 @@ void URM04Sensor::URM04Sensor::trigger_sensor(float& distance) {
   // check sum represents the final bit in command buffer - made by adding all previous bits in command buffer
   uint8_t checkSum;
   // buffer header
-  cmdst[0] = 0x055;
+  cmdst[0] = 0x55;
   cmdst[1] = 0xAA;
   // device address
   cmdst[2] = startAddr;

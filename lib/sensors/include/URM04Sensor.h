@@ -28,7 +28,9 @@ class URM04Sensor {
 
  public:
   // constructor
-  URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX);
+  // allows for default address of device to be changed within constructor
+  // @param default_address is a fixed parameter that is already set to the default address
+  URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX, uint8_t default_address = START_ADDRESS);
 
   // Read Distance in CENTIMETER returns true if successful read
   // pass by reference a variable to hold the distance
