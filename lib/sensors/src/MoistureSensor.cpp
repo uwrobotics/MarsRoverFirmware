@@ -41,9 +41,9 @@ bool MoistureSensor::getStatus() {
 } 
 
 //read moisture reading of device
-float MoistureSensor::read() {
-  if (!(this->getSensorStatus())) {  // checks if device is initialized, returns 65534 if there is an issue
-    return 65534;
+bool MoistureSensor::read(float &sensorReading) {
+  if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
+    return false;
   }
 
   char cmd[2];
@@ -52,7 +52,7 @@ float MoistureSensor::read() {
 
   char buf[2];
 
-  float ret = 65535;
+  sensorReading = 65535;
 
   uint8_t counter = 10;  // initialize counter to break out of loop if reading isn't working (prevent infinite looping)
 
@@ -62,19 +62,19 @@ float MoistureSensor::read() {
     ThisThread::sleep_for(1s);
     i2c_.read(Sensor_I2C_Address, buf, 2);  // read moisture
 
-    ret = ((uint16_t)buf[0] << 8 | buf[1]);  // concatenate bytes together
+    sensorReading = ((uint16_t)buf[0] << 8 | buf[1]);  // concatenate bytes together
 
     counter--;
-  } while (ret == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10 times
+  } while (sensorReading == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10 times
                                            // (breaks out regardless of if read works or not)
 
-  return ret;
+  return true;
 }
 
 //read temperature of device
-float MoistureSensor::alternateRead() {
-  if (!(this->getSensorStatus())) {  // checks if device is initialized, returns -273.0 if there is an issue
-    return -273.0;
+bool MoistureSensor::alternateRead(float &sensorReading) {
+  if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
+    return false;
   }
 
   char cmd[2];
@@ -87,8 +87,9 @@ float MoistureSensor::alternateRead() {
   ThisThread::sleep_for(1s);
   i2c_.read(Sensor_I2C_Address, buf, 4);  // read temp
 
-  int32_t ret = ((uint32_t)buf[0] << 24) | ((uint32_t)buf[1] << 16) |  // concatenate bytes together
+  sensorReading = ((uint32_t)buf[0] << 24) | ((uint32_t)buf[1] << 16) |  // concatenate bytes together
                 ((uint32_t)buf[2] << 8) | (uint32_t)buf[3];
+  sensorReading = sensorReading * (1.0 / (1UL << 16));
 
-  return (1.0 / (1UL << 16)) * ret;
+  return true;
 }

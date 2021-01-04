@@ -9,10 +9,10 @@ class Sensor{
 	virtual ~Sensor(){ };
 
 	//main read function, must be implemented
-	virtual float read() = 0;
+	virtual bool read(float &sensorReading) = 0;
 	
 	//some sensors may have multiple read values, optionally implemented
-	virtual float alternateRead();
+	virtual bool alternateRead(float &sensorReading);
 
 	//function to check on the sensor status
 	virtual bool getStatus(); 
