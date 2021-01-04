@@ -33,6 +33,10 @@ class URM04Sensor {
   // Read Distance in CENTIMETER returns true if successful read
   // pass by reference a variable to hold the distance
   bool read_distance(float& distance);
+
+  // return true if address has been changed successfully
+  // takes in a address as as paramater
+  bool set_address(uint8_t _address);
 };
 
 }  // namespace URM04Sensor

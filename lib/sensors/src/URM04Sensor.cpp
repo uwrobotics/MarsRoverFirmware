@@ -128,4 +128,71 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
       return true;
     }
   }
+  // flush serial
+  serial.sync();
+}
+
+bool URM04Sensor::URM04Sensor::set_address(uint8_t _address) {
+  /************ INSTANTIATE COMMANDS TO BE SENT OVER SERIAL************/
+  // reset the command array with all zeros
+  memset(&cmdst[0], 0, sizeof(cmdst));
+  // check sum represents the final bit in command buffer - made by adding all previous bits in command buffer
+  uint8_t checkSum;
+  // buffer header
+  cmdst[0] = 0x55;
+  cmdst[1] = 0xAA;
+  // device address
+  cmdst[2] = startAddr;
+  // command length
+  cmdst[3] = 0x01;
+  // the command itself
+  cmdst[4] = 0x55;
+  // set new Address
+  cmdst[5] = _address;
+  // compute checksum bit
+  checkSum = cmdst[0] + cmdst[1] + cmdst[2] + cmdst[3] + cmdst[4] + cmdst[5];
+  // instantiate the last element in the command buffer with checksum value
+  cmdst[6] = checkSum;
+
+  /************** SEND COMMANDS OVER SERIAL***********/
+  int w_num_bytes;
+  // send command over serial - write
+  w_num_bytes = serial.write(&cmdst[0], sizeof(cmdst));
+  // check if command was successfully written to the serial
+  if (w_num_bytes < 0 || w_num_bytes != 7) {
+    return false;
+  }
+  // flush the serial
+  serial.sync();
+  // clean buffer
+  memset(&cmdst[0], 0, sizeof(cmdst));
+
+  /************* PARSE THROUGH DATA RECIEVED***********/
+  int r_num_bytes;
+  // read return value from serial
+  r_num_bytes = serial.read(&cmdst[0], sizeof(cmdst));
+  // check if read is successful
+  if (r_num_bytes < 0 || r_num_bytes != 7) {
+    return false;
+  }
+  // check the checksum
+  checkSum = cmdst[0] + cmdst[1] + cmdst[2] + cmdst[3] + cmdst[4] + cmdst[5];
+  // check if the checksum is incorrect
+  if (checkSum != cmdst[6]) {
+    return false;
+  } else {
+    // check if the command went through successfully by checking if the
+    // 6th element of the return buffer array == 0x01
+    if (cmdst[5] == 0x01) {
+      // new address is set
+      startAddr = _address;
+
+      // clean up
+      serial.sync();
+      memset(&cmdst[0], 0, sizeof(cmdst));
+
+      return true;
+    }
+    return false;
+  }
 }
