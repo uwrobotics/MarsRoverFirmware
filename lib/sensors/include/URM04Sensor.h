@@ -23,20 +23,16 @@ class URM04Sensor {
   PinName TX;
   // serial
   BufferedSerial serial;
-  // variable to check if success_read
-  bool success;
-  // sensor distance
-  float m_distance;
+  // Trigger Sensor
+  void trigger_sensor(float& distance);
 
  public:
   // constructor
   URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX);
 
-  // Trigger Sensor
-  void trigger_sensor();
-
-  // Read Distance
-  float read_distance();
+  // Read Distance in CENTIMETER returns true if successful read
+  // pass by reference a variable to hold the distance
+  bool read_distance(float& distance);
 };
 
 }  // namespace URM04Sensor

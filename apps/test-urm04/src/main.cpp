@@ -4,10 +4,12 @@ int main() {
   // D1 - TX
   // D0 - RX
   URM04Sensor::URM04Sensor sensor(D2, D0, D1);
+  float get_distance;
   while (1) {
-    sensor.trigger_sensor();
-    sensor.read_distance();
-    ThisThread::sleep_for(std::chrono::milliseconds(10));
+    sensor.read_distance(get_distance);
+    // wait 10 milliseconds
+    ThisThread::sleep_for(10ms);
+    printf("Distance: %f cm\n", get_distance);
   }
 
   return 0;

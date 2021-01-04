@@ -18,9 +18,8 @@ URM04Sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX
   memset(&cmdst[0], 0, sizeof(cmdst));
 }
 
-void URM04Sensor::URM04Sensor::trigger_sensor() {
-  /************************************ INSTANTIATE COMMANDS TO BE SENT OVER SERIAL
-   * *****************************************/
+void URM04Sensor::URM04Sensor::trigger_sensor(float& distance) {
+  /************ INSTANTIATE COMMANDS TO BE SENT OVER SERIAL*********/
 
   // check sum represents the final bit in command buffer - made by adding all previous bits in command buffer
   uint8_t checkSum;
@@ -45,20 +44,28 @@ void URM04Sensor::URM04Sensor::trigger_sensor() {
 
   // else if numb_btyes < 0 serial failed or if number of bytes written != 6 (because 6 bytes sent over serial)
   if (num_bytes < 0 || num_bytes != 6) {
-    success = false;
+    // error occured in trigger step
+    distance = -1;
+  } else {
+    // no error occured in trigger step
+    distance = 0;
   }
 
   // flush the buffer from serial
   serial.sync();
 
   // wait for at least 30 ms after calling trigger function
-  ThisThread::sleep_for(std::chrono::milliseconds(35));
+  ThisThread::sleep_for(35ms);
 
   // reset command buffer - fill whole array with zeros
   memset(&cmdst[0], 0, sizeof(cmdst));
 }
 
-float URM04Sensor::URM04Sensor::read_distance() {
+// pass by reference a variable to hold the distance value
+bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
+  /****************** TRIGGER SENSOR BEFORE READING DISTANCE ********************/
+  trigger_sensor(distance);
+
   /************ INSTANTIATE COMMANDS TO BE SENT OVER SERIAL************/
   // check sum represents the final bit in command buffer - made by adding all previous bits in command buffer
   uint8_t checkSum;
@@ -83,9 +90,9 @@ float URM04Sensor::URM04Sensor::read_distance() {
 
   // else if numb_btyes < 0 serial failed or if number of bytes read != 6 (because 6 bytes sent over serial)
   if (w_num_bytes < 0 || w_num_bytes != 6) {
-    success = false;
-    // return -1 indicating read command has failed
-    return -1;
+    // return false indicating read command has failed
+    distance = -1;
+    return false;
   }
 
   // flush buffer from serial
@@ -100,8 +107,8 @@ float URM04Sensor::URM04Sensor::read_distance() {
 
   // else if numb_btyes < 0 serial failed or if number of bytes read != 8 (because 8 bytes sent over serial)
   if (r_num_bytes < 0 || r_num_bytes != 8) {
-    success = false;
-    return -1;
+    distance = -1;
+    return false;
   }
   /******** PARSE THROUGH THE DATA READ FROM SERIAL*********/
   else {
@@ -110,15 +117,15 @@ float URM04Sensor::URM04Sensor::read_distance() {
 
     // check if the checksum is incorrect
     if (checkSum != cmdst[7]) {
-      success = false;
-      // return -1 if checksum failed
-      return -1;
+      // return false if checksum failed
+      distance = -1;
+      return false;
     } else {
       // get distance from sensor
-      m_distance = (float)(cmdst[5] << 8) + (float)cmdst[6];
+      distance = (float)(cmdst[5] << 8) + (float)cmdst[6];
       // --------------------- or --------------------------
-      // m_distance = (float)(cmdst[5]*256) + (float)cmdst[6];
-      return m_distance;
+      // distance = (float)(cmdst[5]*256) + (float)cmdst[6];
+      return true;
     }
   }
 }
