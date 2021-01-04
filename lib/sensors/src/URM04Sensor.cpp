@@ -3,9 +3,6 @@
 // instantiate pin connected to the URM04 URM04Sensor
 URM04Sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX, uint8_t default_address)
     : m_trigPin(trig_pin), startAddr(default_address), RX(_RX), TX(_TX), serial(TX, RX, BAUD_RATE) {
-  // write low to pin to start instructions
-  m_trigPin.write(LOW);
-
   // instantiate command buffer with all zeros
 
   /***
@@ -14,11 +11,13 @@ URM04Sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX
    * }
    *
    ***/
-
   memset(&cmdst[0], 0, sizeof(cmdst));
 }
 
 void URM04Sensor::URM04Sensor::trigger_sensor(float& distance) {
+  // turn on transmitting mode for RS485
+  m_trigPin.write(HIGH);
+  ThisThread::sleep_for(1ms);
   /************ INSTANTIATE COMMANDS TO BE SENT OVER SERIAL*********/
 
   // check sum represents the final bit in command buffer - made by adding all previous bits in command buffer
@@ -101,6 +100,11 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
   // reset command buffer - fill whole array with zeros
   memset(&cmdst[0], 0, sizeof(cmdst));
   /******* READ RETURN VALUE FROM SERIAL**************/
+
+  // turn on reading mode for RS485
+  m_trigPin.write(LOW);
+  ThisThread::sleep_for(1ms);
+
   int r_num_bytes;
   // returns the number of bytes if successful read
   r_num_bytes = serial.read(&cmdst[0], sizeof(cmdst));
@@ -133,6 +137,10 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
 }
 
 bool URM04Sensor::URM04Sensor::set_address(uint8_t _address) {
+  // turn on RS485 transmit mode
+  m_trigPin.write(HIGH);
+  ThisThread::sleep_for(1ms);
+
   /************ INSTANTIATE COMMANDS TO BE SENT OVER SERIAL************/
   // reset the command array with all zeros
   memset(&cmdst[0], 0, sizeof(cmdst));
@@ -168,6 +176,11 @@ bool URM04Sensor::URM04Sensor::set_address(uint8_t _address) {
   memset(&cmdst[0], 0, sizeof(cmdst));
 
   /************* PARSE THROUGH DATA RECIEVED***********/
+
+  // turn on RS485 reading mode
+  m_trigPin.write(LOW);
+  ThisThread::sleep_for(1ms);
+
   int r_num_bytes;
   // read return value from serial
   r_num_bytes = serial.read(&cmdst[0], sizeof(cmdst));

@@ -10,6 +10,7 @@ class URM04Sensor {
   static constexpr int BAUD_RATE     = 19200;
   static constexpr int START_ADDRESS = 0x11;
   static constexpr int LOW           = 0;
+  static constexpr int HIGH          = 1;
 
  private:
   // trigger pin
