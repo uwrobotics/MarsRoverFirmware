@@ -32,8 +32,6 @@ typedef struct Config {
 } Config;
 class PID {
  public:
-  PID(float proportionalGain, float intregralGain, float derivativeGain, float lowerBound, float upperBound,
-      float deadzone, bool antiKickback = true);
   PID(const Config &config);
 
   void updateProportionalGain(float p);
@@ -47,7 +45,7 @@ class PID {
   float reportDeadzone() const;
 
   void reset();
-  float compute(float setPoint, float processVariable);  // takes ~17us to run
+  float compute(float setPoint, float processVariable);  // takes ~15us to run
 
  private:
   mutable Mutex m_mutex;
@@ -59,8 +57,7 @@ class PID {
   float m_pastError{0}, m_pastPV{0};
   const bool m_antiKickback;
   float computePPath(float error);
-  float computeIPath(float error, int64_t dt);
-  float computeDPathOnError(float error, int64_t dt);
-  float computeDPathOnPV(float PV, int64_t dt);
+  float computeDPathOnError(float error, float dt);
+  float computeDPathOnPV(float PV, float dt);
 };
 }  // namespace PID

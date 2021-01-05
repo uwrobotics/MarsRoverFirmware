@@ -3,15 +3,16 @@
  * NOTE: This test-app is purely computational,
  * no motors or encoders are required
  */
-#include <inttypes.h>
-
 #include <numeric>
+
+#include <limits>
 
 #include "PID.h"
 #include "test_data.h"
 
-constexpr uint8_t KP = 2, KI = 103, KD = 1;
-constexpr int32_t min_rpm = INT32_MIN, max_rpm = INT32_MAX;  // no saturation
+constexpr float KP = 2, KI = 103, KD = 1;
+constexpr float min_rpm   = std::numeric_limits<float>::min(),
+                max_rpm   = std::numeric_limits<float>::max();  // no saturation
 constexpr float deadzone  = 0;
 constexpr auto pid_period = 1ms;
 
@@ -20,13 +21,14 @@ constexpr auto expected_avg_compute_time = 17us;
 
 int main() {
   printf("##################### PID TEST APP STARTED #####################\r\n");
-  PID::PID controller(KP, KI, KD, min_rpm, max_rpm, deadzone, false);
+  PID::Config config = {KP, KI, KD, min_rpm, max_rpm, deadzone, false};
+  PID::PID controller(config);
   Timer timer;
   auto total_compute_time = 0us;
   float total_error       = 0;
-  for (uint64_t i = 0; i < control.size(); i++) {
+  for (std::size_t i = 0; i < control.size(); i++) {
     if (i % 1000 == 0) {
-      printf("Completed %" PRIu64 "/50001 iterations\r\n", i);
+      printf("Completed %zu /50001 iterations\r\n", i);
     }
     timer.reset();
     timer.start();
@@ -41,7 +43,7 @@ int main() {
   auto average_compute_time = total_compute_time / control.size();
   printf("Average difference between Matlab control signal and our control signal: %.3f\r\n", average_error);
   printf("Average time for a single call to the compute function: %llu us\r\n", average_compute_time.count());
-  if (std::abs(average_error - expected_avg_error) > 0.001f) {
+  if (average_error - expected_avg_error > 0.001f) {
     printf("WARNING: Changes made to PID library have increased average error\r\n");
   }
   if (average_compute_time > expected_avg_compute_time) {
