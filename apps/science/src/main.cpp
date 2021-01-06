@@ -118,7 +118,7 @@ void txCANProcessor() {
 
     // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
     txMsg.setID(HWBRIDGE::CANID::REPORT_MOISTURE_DATA);
-    txMsg.setPayload((int)moistureSensor.Read_Moisture());
+    txMsg.setPayload(static_cast<int>(moistureSensor.Read_Moisture()));
     can.write(txMsg);
     ThisThread::sleep_for(txPeriod);
 
