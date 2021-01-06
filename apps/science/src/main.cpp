@@ -57,7 +57,8 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_GENEVA_INDEX:
       return indexerActuator.setMotionData(motionData);
-    case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:
+    case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:  // not sure what this case does will contact younes soon to discuss
+      return elevatorActuator.setMotionData(motionData);  // with him (perhaps this is elevatorActuator??)
     case HWBRIDGE::CANID::SET_COVER_ANGLE:
       return coverServo.setPosition(motionData);
     case HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT:
