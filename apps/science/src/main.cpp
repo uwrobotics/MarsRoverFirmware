@@ -49,9 +49,6 @@ DigitalOut ledB(LED_B);
 // Declaring can object
 CAN can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
-// k interval
-const int k_interval_ms = 500;
-
 // static objects
 static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
