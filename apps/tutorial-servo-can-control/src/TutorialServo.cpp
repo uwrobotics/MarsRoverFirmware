@@ -28,8 +28,8 @@ void TutorialServo::setPulsewidthRangeInMs(float minPulsewidthMs, float maxPulse
 }
 
 void TutorialServo::setPositionInDegrees(float degrees) {
-    if(degrees >= 0 && degrees <= degrees){
-        m_servoPwmOut.pulsewidth((degrees/degrees) * (m_maxPulsewidthInMs - m_minPulsewidthInMs) + m_minPulsewidthInMs);
+    if(degrees >= 0 && degrees <= m_servoRangeInDegrees){
+        m_servoPwmOut.pulsewidth_ms((degrees/m_servoRangeInDegrees) * (m_maxPulsewidthInMs - m_minPulsewidthInMs) + m_minPulsewidthInMs);
     }
 }
 
