@@ -29,6 +29,7 @@ typedef struct Config {
   float lowerBound, upperBound;
   float deadzone;
   bool antiKickback = true;
+  bool antiWindup = true;
 } Config;
 class PID {
  public:
@@ -55,7 +56,7 @@ class PID {
   float m_deadzone;
   float m_IAccumulator{0};
   float m_pastError{0}, m_pastPV{0};
-  const bool m_antiKickback;
+  const bool m_antiKickback, m_antiWindup;
   float computePPath(float error);
   float computeDPathOnError(float error, float dt);
   float computeDPathOnPV(float PV, float dt);

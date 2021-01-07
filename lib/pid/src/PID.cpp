@@ -1,5 +1,6 @@
 #include "PID.h"
 
+#include <algorithm>
 #include <mutex>
 
 using namespace PID;
@@ -11,7 +12,8 @@ PID::PID::PID(const Config &config)
       m_lowerBound(config.lowerBound),
       m_upperBound(config.upperBound),
       m_deadzone(config.deadzone),
-      m_antiKickback(config.antiKickback) {}
+      m_antiKickback(config.antiKickback),
+      m_antiWindup(config.antiWindup) {}
 
 void PID::PID::updateProportionalGain(float p) {
   std::scoped_lock<Mutex> lock(m_mutex);
@@ -98,12 +100,17 @@ float PID::PID::compute(float setPoint, float processVariable) {
   m_IAccumulator += error * dt * m_IGain;
   paths += m_IAccumulator;
   paths += m_antiKickback ? computeDPathOnPV(processVariable, dt) : computeDPathOnError(error, dt);
-  if (paths > m_upperBound) {
-    m_IAccumulator -= paths - m_upperBound;
-    paths = m_upperBound;
-  } else if (paths < m_lowerBound) {
-    m_IAccumulator += m_lowerBound - paths;
-    paths = m_lowerBound;
+
+  if (m_antiWindup) {
+    if (paths > m_upperBound) {
+      m_IAccumulator -= paths - m_upperBound;
+      paths = m_upperBound;
+    } else if (paths < m_lowerBound) {
+      m_IAccumulator += m_lowerBound - paths;
+      paths = m_lowerBound;
+    }
+  } else {
+    paths = std::clamp(paths, m_lowerBound, m_upperBound);
   }
 
   m_pastError = error;
