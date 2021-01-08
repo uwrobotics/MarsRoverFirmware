@@ -111,7 +111,7 @@ float PID::PID::compute(float setPoint, float processVariable, float ff) {
       paths = m_lowerBound;
     }
   } else {
-    paths = std::clamp(paths, m_lowerBound, m_upperBound); // clamp without affecting accumulator
+    paths = std::clamp(paths, m_lowerBound, m_upperBound);  // clamp without affecting accumulator
   }
 
   m_pastError = error;

@@ -29,7 +29,7 @@ typedef struct Config {
   float lowerBound, upperBound;
   float deadzone;
   bool antiKickback = true;
-  bool antiWindup = true;
+  bool antiWindup   = true;
 } Config;
 class PID {
  public:
