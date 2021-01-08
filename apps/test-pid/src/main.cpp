@@ -16,7 +16,7 @@ constexpr float min_rpm   = std::numeric_limits<float>::min(),
 constexpr float deadzone  = 0;
 constexpr auto pid_period = 1ms;
 
-constexpr float expected_avg_error       = 3.888f;
+constexpr float expected_avg_error       = 36.897;
 constexpr auto expected_avg_compute_time = 15us;
 
 int main() {

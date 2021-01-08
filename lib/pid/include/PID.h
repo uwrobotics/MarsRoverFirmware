@@ -46,7 +46,7 @@ class PID {
   float reportDeadzone() const;
 
   void reset();
-  float compute(float setPoint, float processVariable);  // takes ~15us to run
+  float compute(float setPoint, float processVariable, float ff = 0);  // takes ~15us to run
 
  private:
   mutable Mutex m_mutex;

@@ -87,7 +87,7 @@ float PID::PID::computeDPathOnPV(float processVariable, float dt) {
   return -derivativePath;  // since d_error/dt = -d_pv/dt
 }
 
-float PID::PID::compute(float setPoint, float processVariable) {
+float PID::PID::compute(float setPoint, float processVariable, float ff) {
   std::scoped_lock<Mutex> lock(m_mutex);
   float error = setPoint - processVariable;
   if (std::abs(error) < m_deadzone) {
@@ -96,7 +96,8 @@ float PID::PID::compute(float setPoint, float processVariable) {
 
   m_timer.stop();
   float dt    = chrono::duration_cast<chrono::duration<float>>(m_timer.elapsed_time()).count();  // seconds
-  float paths = computePPath(error);
+  float paths = ff;
+  paths += computePPath(error);
   m_IAccumulator += error * dt * m_IGain;
   paths += m_IAccumulator;
   paths += m_antiKickback ? computeDPathOnPV(processVariable, dt) : computeDPathOnError(error, dt);
@@ -110,7 +111,7 @@ float PID::PID::compute(float setPoint, float processVariable) {
       paths = m_lowerBound;
     }
   } else {
-    paths = std::clamp(paths, m_lowerBound, m_upperBound);
+    paths = std::clamp(paths, m_lowerBound, m_upperBound); // clamp without affecting accumulator
   }
 
   m_pastError = error;
