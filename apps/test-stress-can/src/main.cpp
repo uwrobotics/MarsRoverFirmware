@@ -40,3 +40,30 @@ int main() {
   while (true)
     ;
 }
+
+void implementInterruptMethod() {
+  Thread rxCANProcessorThread(osPriorityRealtime);
+  rxCANProcessorThread.start(callback(&queue, &EventQueue::dispatch_forever));
+
+  // wrap calls in queue.event to automatically defer to the queue's thread
+  can.attach(&CANMsgIRQHandler, CANBus::RxIrq);
+
+  while (true)
+    ;
+}
+
+void implementTraditionalMethod() {
+  if (can.read(msg)) {
+    static uint16_t received = 0;
+
+    // Print data received from the CAN msg
+    printf("  Data    =");
+    for (int i = 0; i < msg.len; i++) printf(" 0x%.2X", msg.data[i]);
+    printf("\r\n");
+
+    received++;
+  }
+
+  while (true)
+    ;
+}

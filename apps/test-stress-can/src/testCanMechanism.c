@@ -39,6 +39,11 @@ int main(void) {
     return -2;
   }
 
+  for (int count = 0; count < 1000; count++)
+  {
+
+  }
+
   frame.can_id  = 0x123;
   frame.can_dlc = 2;
   frame.data[0] = 0x11;
@@ -49,4 +54,4 @@ int main(void) {
   printf("Wrote %d bytes\n", nbytes);
 
   return 0;
-}
+} 
