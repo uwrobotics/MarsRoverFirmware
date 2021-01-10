@@ -5,16 +5,10 @@ URM04Sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX
     : m_trigPin(trig_pin), startAddr(default_address), RX(_RX), TX(_TX), serial(TX, RX, BAUD_RATE) {
   // instantiate command buffer with all zeros
 
-  /***
-   * for(int i{0}; i<10; i++){
-   *   cmdst[i] = 0;
-   * }
-   *
-   ***/
   memset(&cmdst[0], 0, sizeof(cmdst));
 }
 
-void URM04Sensor::URM04Sensor::trigger_sensor(float& distance) {
+bool URM04Sensor::URM04Sensor::trigger_sensor() {
   // turn on transmitting mode for RS485
   m_trigPin.write(HIGH);
   ThisThread::sleep_for(1ms);
@@ -39,31 +33,32 @@ void URM04Sensor::URM04Sensor::trigger_sensor(float& distance) {
   /******** SEND COMMANDS OVER SERIAL *********************/
   int num_bytes;
   // returns the number of bytes if successful write
-  num_bytes = serial.write(&cmdst[0], sizeof(cmdst));
+  num_bytes = serial.write(&cmdst[0], 6);
 
   // else if numb_btyes < 0 serial failed or if number of bytes written != 6 (because 6 bytes sent over serial)
   if (num_bytes < 0 || num_bytes != 6) {
     // error occured in trigger step
-    distance = -1;
+    return false;
   } else {
     // no error occured in trigger step
-    distance = 0;
+    // flush the buffer from serial
+    serial.sync();
+    // wait for at least 30 ms after calling trigger function
+    ThisThread::sleep_for(35ms);
+    // reset command buffer - fill whole array with zeros
+    memset(&cmdst[0], 0, sizeof(cmdst));
+    return true;
   }
-
-  // flush the buffer from serial
-  serial.sync();
-
-  // wait for at least 30 ms after calling trigger function
-  ThisThread::sleep_for(35ms);
-
-  // reset command buffer - fill whole array with zeros
-  memset(&cmdst[0], 0, sizeof(cmdst));
 }
 
 // pass by reference a variable to hold the distance value - will give MAX_FLOAT if out of range
 bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
   /****************** TRIGGER SENSOR BEFORE READING DISTANCE ********************/
-  trigger_sensor(distance);
+  // if trigger fails set distance to -1 and retuen false
+  if (trigger_sensor() == false) {
+    distance = -1;
+    return false;
+  }
 
   /************ INSTANTIATE COMMANDS TO BE SENT OVER SERIAL************/
   // check sum represents the final bit in command buffer - made by adding all previous bits in command buffer
@@ -85,7 +80,7 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
   /************** SEND COMMANDS OVER SERIAL***********/
   int w_num_bytes;
   // returns the number of bytes if successful read
-  w_num_bytes = serial.write(&cmdst[0], sizeof(cmdst));
+  w_num_bytes = serial.write(&cmdst[0], 6);
 
   // else if numb_btyes < 0 serial failed or if number of bytes read != 6 (because 6 bytes sent over serial)
   if (w_num_bytes < 0 || w_num_bytes != 6) {
@@ -107,7 +102,7 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
 
   int r_num_bytes;
   // returns the number of bytes if successful read
-  r_num_bytes = serial.read(&cmdst[0], sizeof(cmdst));
+  r_num_bytes = serial.read(&cmdst[0], 8);
 
   // else if numb_btyes < 0 serial failed or if number of bytes read != 8 (because 8 bytes sent over serial)
   if (r_num_bytes < 0 || r_num_bytes != 8) {
@@ -131,7 +126,7 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
       // distance = (float)(cmdst[5]*256) + (float)cmdst[6];
 
       // check if distance is out of range - if so return maximum float value
-      if ((int)distance % (int)cmdst[5] == (int)cmdst[6]) {
+      if (cmdst[5] == 0xFF && cmdst[6] == 0xFF) {
         distance = MAX_FLOAT;
       }
       return true;
@@ -155,7 +150,7 @@ bool URM04Sensor::URM04Sensor::set_address(uint8_t _address) {
   cmdst[0] = 0x55;
   cmdst[1] = 0xAA;
   // device address
-  cmdst[2] = startAddr;
+  cmdst[2] = 0xAB;
   // command length
   cmdst[3] = 0x01;
   // the command itself
@@ -170,7 +165,7 @@ bool URM04Sensor::URM04Sensor::set_address(uint8_t _address) {
   /************** SEND COMMANDS OVER SERIAL***********/
   int w_num_bytes;
   // send command over serial - write
-  w_num_bytes = serial.write(&cmdst[0], sizeof(cmdst));
+  w_num_bytes = serial.write(&cmdst[0], 7);
   // check if command was successfully written to the serial
   if (w_num_bytes < 0 || w_num_bytes != 7) {
     return false;
@@ -188,7 +183,7 @@ bool URM04Sensor::URM04Sensor::set_address(uint8_t _address) {
 
   int r_num_bytes;
   // read return value from serial
-  r_num_bytes = serial.read(&cmdst[0], sizeof(cmdst));
+  r_num_bytes = serial.read(&cmdst[0], 7);
   // check if read is successful
   if (r_num_bytes < 0 || r_num_bytes != 7) {
     return false;

@@ -26,7 +26,7 @@ class URM04Sensor {
   // serial
   BufferedSerial serial;
   // Trigger Sensor
-  void trigger_sensor(float& distance);
+  bool trigger_sensor();
 
  public:
   // constructor
