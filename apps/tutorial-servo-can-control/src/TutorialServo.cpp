@@ -5,19 +5,17 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
     : m_servoPwmOut(servoPin),
       m_servoRangeInDegrees(servoRangeInDegrees),
       m_minPulsewidthInMs(minPulsewidthInMs),
-      m_maxPulsewidthInMs(maxPulsewidthInMs) {}
+      m_maxPulsewidthInMs(maxPulsewidthInMs) {
+  m_servoPwmOut.period_ms(20);
+}
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
   // assumption negitive degrees is just ignored
   float n_degree = degrees;
-  if (degrees < 0) {
-    n_degree = 0;
-  }
-  if (n_degree > m_servoRangeInDegrees) {
-    n_degree = m_servoRangeInDegrees;
-  }
-  m_servoPwmOut.pulsewidth((m_minPulsewidthInMs) +
-                           (m_maxPulsewidthInMs - m_minPulsewidthInMs) * (n_degree / m_servoRangeInDegrees));
+  std::clamp(degrees, (float)0, m_servoRangeInDegrees);
+  m_servoPwmOut.pulsewidth(
+      ((m_minPulsewidthInMs) + (m_maxPulsewidthInMs - m_minPulsewidthInMs) * (n_degree / m_servoRangeInDegrees)) /
+      1000);
 }
 
 float TutorialServo::getServoRangeInDegrees() const {

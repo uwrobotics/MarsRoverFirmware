@@ -12,6 +12,6 @@ int main() {
   servoPwmOut.period_ms(20);
   while (true) {
     float potVoltage = potVoltageIn.read();
-    servoPwmOut.pulsewidth(1 + potVoltage / 3.3);
+    servoPwmOut.pulsewidth((1 + potVoltage / 3.3) / 1000);
   }
 }

@@ -6,6 +6,7 @@ target_link_libraries(tutorial-servo-can-control.${TARGET}-board.elf
         CANBus
         LookupTable
         uwrt-mars-rover-hw-bridge
+        bits/stdc++.h
         )
 
 target_set_firmware_properties(tutorial-servo-can-control.${TARGET}-board.elf)
