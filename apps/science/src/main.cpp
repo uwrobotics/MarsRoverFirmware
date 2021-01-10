@@ -82,9 +82,7 @@ void rxCANProcessor() {
   CANMsg rxMsg;
   while (true) {
     if (can.read(rxMsg)) {
-      if (canHandleMap.size() > 0) {
-        canHandleMap[rxMsg.getID()](rxMsg);
-      }
+      canHandleMap.at(rxMsg.getID()(rxMsg));
     }
   }
 }
