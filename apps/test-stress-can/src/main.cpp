@@ -2,6 +2,9 @@
 #include "CANMsg.h"
 #include "mbed.h"
 
+void implementTraditionalMethod();
+void implementInterruptMethod();
+
 CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
 // create an event queue
@@ -35,7 +38,6 @@ void CANMsgIRQHandler() {
 }
 
 int main() {
-
   implementTraditionalMethod();
   implementInterruptMethod();
 }
