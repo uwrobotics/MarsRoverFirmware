@@ -1,0 +1,15 @@
+add_library(Encoder INTERFACE)
+target_include_directories(Encoder INTERFACE include)
+
+add_library(EncoderAbsolute_PWM STATIC)
+target_sources(EncoderAbsolute_PWM PRIVATE src/EncoderAbsolute_PWM.cpp)
+target_include_directories(EncoderAbsolute_PWM PUBLIC include)
+target_link_libraries(EncoderAbsolute_PWM PRIVATE PwmIn)
+target_set_mbed_dependency(EncoderAbsolute_PWM)
+
+add_library(EncoderRelative_Quadrature STATIC)
+target_sources(EncoderRelative_Quadrature PRIVATE src/EncoderRelative_Quadrature.cpp)
+target_include_directories(EncoderRelative_Quadrature PUBLIC include)
+target_link_libraries(EncoderRelative_Quadrature PRIVATE QEI)
+target_set_mbed_dependency(EncoderRelative_Quadrature)
+
