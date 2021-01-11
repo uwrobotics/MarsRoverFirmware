@@ -58,7 +58,6 @@ class PID {
   float m_pastError{0}, m_pastPV{0};
   const bool m_antiKickback, m_antiWindup;
   float computePPath(float error);
-  float computeDPathOnError(float error, float dt);
-  float computeDPathOnPV(float PV, float dt);
+  float computeDPath(float deltaNumerator, float dt);
 };
 }  // namespace PID

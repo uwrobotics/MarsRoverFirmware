@@ -69,22 +69,13 @@ float PID::PID::computePPath(float error) {
   return error * m_PGain;
 }
 
-float PID::PID::computeDPathOnError(float error, float dt) {
+float PID::PID::computeDPath(float deltaNumerator, float dt) {
   // no mutex lock needed since inside compute() only
   float derivativePath = 0;
   if (dt != 0) {
-    derivativePath = m_DGain * (error - m_pastError) / dt;  // todo this keeps dividing by a small number
+    derivativePath = m_DGain * deltaNumerator / dt;
   }
   return derivativePath;
-}
-
-float PID::PID::computeDPathOnPV(float processVariable, float dt) {
-  // no mutex lock needed since inside compute() only
-  float derivativePath = 0;
-  if (dt != 0) {
-    derivativePath = m_DGain * (processVariable - m_pastPV) / dt;
-  }
-  return -derivativePath;  // since d_error/dt = -d_pv/dt
 }
 
 float PID::PID::compute(float setPoint, float processVariable, float ff) {
@@ -100,7 +91,7 @@ float PID::PID::compute(float setPoint, float processVariable, float ff) {
   paths += computePPath(error);
   m_IAccumulator += error * dt * m_IGain;
   paths += m_IAccumulator;
-  paths += m_antiKickback ? computeDPathOnPV(processVariable, dt) : computeDPathOnError(error, dt);
+  paths += computeDPath(m_antiKickback ? processVariable - m_pastPV : error - m_pastError, dt);
 
   if (m_antiWindup) {
     if (paths > m_upperBound) {
