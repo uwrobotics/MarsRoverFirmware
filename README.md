@@ -203,7 +203,7 @@ sudo ./llvm.sh <version number>
 ```
 
 For VS Code you will need to specify the path to the clang-format executable. To do this:
-1. In shell script copy the output of the following command " which clang-format-11 "
+1. In shell script copy the output of the following command: ` which clang-format-11`
 2. Open the User Settings in JSON format
 3. Add the two following settings to the file
 "editor.formatOnSave": true,
