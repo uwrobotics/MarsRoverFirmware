@@ -28,8 +28,7 @@
  *******************************************************************************
  */
 
-#ifndef MBED_PINNAMES_H
-#define MBED_PINNAMES_H
+#pragma once
 
 #include "PinNamesTypes.h"
 #include "cmsis.h"
@@ -41,8 +40,7 @@ extern "C" {
 typedef enum { ALT0 = 0x100, ALT1 = 0x200, ALT2 = 0x300, ALT3 = 0x400 } ALTx;
 
 typedef enum {
-  PA_0 = 0x00,
-
+  PA_0       = 0x00,
   PA_0_ALT0  = PA_0 | ALT0,
   PA_0_ALT1  = PA_0 | ALT1,
   PA_1       = 0x01,
