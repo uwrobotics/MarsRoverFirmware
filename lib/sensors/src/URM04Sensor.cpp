@@ -2,12 +2,8 @@
 
 // instantiate pin connected to the URM04 URM04Sensor
 URM04Sensor::URM04Sensor::URM04Sensor(PinName trig_pin, PinName _RX, PinName _TX, uint8_t default_address)
-<<<<<<< HEAD
-    : m_trigPin(trig_pin), m_startAddr(default_address), m_serial(_TX, _RX, BAUD_RATE) {}
-=======
     : m_trigPin(trig_pin), m_startAddr(default_address), m_serial(_TX, _RX, BAUD_RATE) {
 }
->>>>>>> 99c8d4d8c3fb33325f30309d6780600195d6090c
 
 bool URM04Sensor::URM04Sensor::trigger_sensor() {
   // turn on transmitting mode for RS485
@@ -105,10 +101,7 @@ bool URM04Sensor::URM04Sensor::read_distance(float& distance) {
   }
   /******** PARSE THROUGH THE DATA READ FROM SERIAL*********/
   else {
-<<<<<<< HEAD
-=======
 
->>>>>>> 99c8d4d8c3fb33325f30309d6780600195d6090c
     // check if the checksum is incorrect
     if (m_cmdst[7] != m_cmdst[0] + m_cmdst[1] + m_cmdst[2] + m_cmdst[3] + m_cmdst[4] + m_cmdst[5] + m_cmdst[6]) {
       // return false if checksum failed
