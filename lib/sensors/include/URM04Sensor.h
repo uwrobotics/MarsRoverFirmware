@@ -11,20 +11,17 @@ class URM04Sensor {
   static constexpr int START_ADDRESS = 0x11;
   static constexpr int LOW           = 0;
   static constexpr int HIGH          = 1;
-  static constexpr float MAX_FLOAT   = 1e+37;
+  static constexpr float MAX_FLOAT   = std::numeric_limits<float>::max();
 
  private:
   // trigger pin
   DigitalOut m_trigPin;
   // start address
-  uint8_t startAddr;
+  uint8_t m_startAddr;
   // command buffer
-  uint8_t cmdst[10];
-  // UART protocol pins
-  PinName RX;
-  PinName TX;
+  uint8_t m_cmdst[8];
   // serial
-  BufferedSerial serial;
+  BufferedSerial m_serial;
   // Trigger Sensor
   bool trigger_sensor();
 
@@ -41,7 +38,7 @@ class URM04Sensor {
   bool read_distance(float& distance);
 
   // return true if address has been changed successfully
-  // takes in a address as as paramater
+  // takes in the new address to set to as paramater
   bool set_address(uint8_t _address);
 };
 
