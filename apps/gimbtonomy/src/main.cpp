@@ -6,12 +6,12 @@
 #include "ActuatorController.h"
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "ContServo.h"
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
 #include "GimbtonomyConfig.h"
 #include "LimServo.h"
 #include "Neopixel_Blocking.h"
-#include "ServoMotor.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
@@ -26,8 +26,7 @@
 • Pitch: HS-422 (https://www.robotshop.com/en/hitec-hs-422-servo-motor.html)
 • Roll: SG90 (https://datasheetspdf.com/pdf/791970/TowerPro/SG90/1)
 */
-ServoMotor panServoMotor(SRVO_PWM_CR, false, 2.1ms, 0.9ms,
-                         38);  // 38 RPM (228 deg/sec) at 4.8V, max->2100us PW, min->900us PW.
+ContServo panServoMotor(SRVO_PWM_CR, 38, 2.1ms, 0.9ms);  // 38 RPM (228 deg/sec) at 4.8V, max->2100us PW, min->900us PW.
 LimServo pitchServo(SRVO_PWM_HS, 180, 2.1ms, 0.9ms);
 /* @TODO: electrical hasn't choose a pin for this servo yet, I'm just using a random free pin for this for now*/
 LimServo rollServo(SRVO_PWM_SG, 180, 2ms, 1ms);
@@ -36,7 +35,9 @@ LimServo rollServo(SRVO_PWM_SG, 180, 2ms, 1ms);
 EncoderAbsolute_PWM panEncoder(GimbtonomyConfig::panEncoderConfig);
 
 // Actuators
-ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor, panEncoder);
+ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor,
+                                    panEncoder);  // TODO: ActuatorController class needs to be updated to accept an
+                                                  // Actuator object instead of a Motor object
 
 // CAN Object
 CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
@@ -96,7 +97,7 @@ void rxCANProcessor() {
 
         case HWBRIDGE::CANID::GIMBAL_PAN_SPEED:
           rxMsg.getPayload(pan_speed);
-          panServoMotor.servoSetSpeed(pan_speed);
+          panServoMotor.setValue(pan_speed);
           break;
 
         case HWBRIDGE::CANID::GIMBAL_PAN_MODE:
