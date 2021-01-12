@@ -15,11 +15,6 @@ constexpr int Sensor_Status_Reset      = 0x7F;
 
 MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl) {}
 
-/*
-** NOTE FROM YEHIA, I AM UNSURE FOR THE TIMING FUNCTIONS IN THIS CODE PREVIOUS CODE DIDNT HAVE ANY
-UNITS FOR THE SLEEP FUNCTIONS AND SO I GUESSED EVERYTHING IN MS**
-*/
-
 bool MoistureSensor::Is_Initialized() {
   return (this->Read_HW_ID() == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
 }
