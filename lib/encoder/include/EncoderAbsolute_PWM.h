@@ -7,15 +7,15 @@
 #include "Encoder.h"
 #include "PwmIn.h"
 
-namespace EncoderAbsolute_PWM {
+namespace Encoder{
 typedef struct Config {
   PinName pwm;
   float degreesPerUnit, zeroOffsetDegrees;
 } Config;
-class EncoderAbsolute_PWM : public Encoder {
+class Absolute_PWM : public Encoder {
  public:
-  EncoderAbsolute_PWM(const Config &config);
-  ~EncoderAbsolute_PWM();
+  Absolute_PWM(const Config &config);
+  ~Absolute_PWM();
 
   bool getAngle_Degrees(float &theta) override;
   bool getVelocity_DegreesPerSec(float &thetaDot) override;
@@ -27,4 +27,4 @@ class EncoderAbsolute_PWM : public Encoder {
   float m_degreesPerUnit;
   float m_zeroOffsetDegrees;
 };
-}  // namespace EncoderAbsolute_PWM
+}  // namespace Encoder
