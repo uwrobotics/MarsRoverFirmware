@@ -53,7 +53,7 @@ test-lookup-table:
   - nucleo
 
 test-moisture:
-  - nucleo
+#  - nucleo
   - science
 
 test-pid:
