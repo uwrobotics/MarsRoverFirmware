@@ -60,7 +60,7 @@ uint16_t MoistureSensor::Read_Moisture() {
   do {
     ThisThread::sleep_for(1ms);
     i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading moisture
-    ThisThread::sleep_for(1000ms);
+    ThisThread::sleep_for(1s);
     i2c_.read(Sensor_I2C_Address, buf, 2);  // read moisture
 
     ret = ((uint16_t)buf[0] << 8 | buf[1]);  // concatenate bytes together
@@ -84,7 +84,7 @@ float MoistureSensor::Read_Temperature() {
   char buf[4];
 
   i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading temperature
-  ThisThread::sleep_for(1000ms);
+  ThisThread::sleep_for(1s);
   i2c_.read(Sensor_I2C_Address, buf, 4);  // read temp
 
   int32_t ret = ((uint32_t)buf[0] << 24) | ((uint32_t)buf[1] << 16) |  // concatenate bytes together
