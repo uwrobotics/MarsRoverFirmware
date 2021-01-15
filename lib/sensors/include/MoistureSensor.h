@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Sensor.h"
-#include "mbed.h"
 
 namespace MoistureSensor {
-class MoistureSensor : public Sensor {
-  typedef struct Config {
+  typedef struct {
     PinName sda, scl;
   } Config;
 
+
+class MoistureSensor : public Sensor::Sensor {
  public:
+  MoistureSensor(PinName sda, PinName scl);
+
   MoistureSensor(const Config &config);
   ~MoistureSensor();
 

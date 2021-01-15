@@ -13,17 +13,19 @@ constexpr int Sensor_Moisture_Function = 0x10;  // Function address registers fo
 constexpr int Sensor_Temp_Function     = 0x04;
 constexpr int Sensor_Status_Reset      = 0x7F;
 
-MoistureSensor::MoistureSensor::MoistureSensor(const MoistureSensor::Config &config) : m_i2c(config.sda, config.scl) {}
+MoistureSensor::MoistureSensor::MoistureSensor(const Config &config) : m_i2c(config.sda, config.scl) {}
 
 MoistureSensor::MoistureSensor::~MoistureSensor() {}
 
-void MoistureSensor::MoistureSensor::reset() {
+bool MoistureSensor::MoistureSensor::reset() {
   char cmd[3];
   cmd[0] = Sensor_Status_Base;  // initialize registers for clearing sensor memory
   cmd[1] = Sensor_Status_Reset;
   cmd[2] = 0xFF;
 
   m_i2c.write(Sensor_I2C_Address, cmd, 3);  // set all registers on sensor to default values
+
+  return true;
 }
 
 bool MoistureSensor::MoistureSensor::getStatus() {

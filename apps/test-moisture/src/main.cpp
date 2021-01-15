@@ -1,4 +1,5 @@
 #include "MoistureSensor.h"
+#include "MoistureSensorConfig.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
@@ -10,7 +11,7 @@ int main() {
   float moisture = 0;  // initialize default variables
   float temperature = 0;
 
-  MoistureSensor sensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
+  MoistureSensor::MoistureSensor sensor = MoistureSensor::MoistureSensor(MoistureSensorConfig::moistureSensorConfig);
 
   while (1) {
     sensor.reset();  // reset all registers on sensor to default values
