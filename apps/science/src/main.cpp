@@ -40,11 +40,8 @@ ActuatorController indexerActuator(ScienceConfig::indexerActuatorConfig, indexer
 // I2C
 MoistureSensor moistureSensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
-// LEDs
+// LED used for debugging
 DigitalOut led1(LED1);
-DigitalOut ledR(LED_R);
-DigitalOut ledG(LED_G);
-DigitalOut ledB(LED_B);
 
 // Declaring CANBus object
 CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
