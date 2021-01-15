@@ -1,5 +1,6 @@
 #include "ActuatorController.h"
 #include "CANBuffer.h"
+#include "CANBus.h"
 #include "CANMsg.h"
 #include "Encoder.h"
 #include "EncoderAbsolute_PWM.h"
