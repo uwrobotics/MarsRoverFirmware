@@ -46,8 +46,8 @@ DigitalOut ledR(LED_R);
 DigitalOut ledG(LED_G);
 DigitalOut ledB(LED_B);
 
-// Declaring can object
-CAN can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+// Declaring CANBus object
+CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
 // static objects
 static mbed_error_status_t setMotionData(CANMsg &msg) {
