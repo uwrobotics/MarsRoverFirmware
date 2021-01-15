@@ -87,34 +87,42 @@ void rxCANProcessor() {
 
 // Send outgoing CAN messages
 void txCANProcessor() {
-  constexpr std::chrono::milliseconds txPeriod = 500ms;
+  constexpr std::chrono::milliseconds txPeriod     = 500ms;
+  constexpr std::chrono::milliseconds txInterdelay = 2ms;
   CANMsg txMsg;
 
   while (true) {
     txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_INDEX);
     txMsg.setPayload(indexerActuator.getAngle_Degrees());
     can.write(txMsg);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_SCOOPER_ANGLE);
     txMsg.setPayload(elevatorActuator.getAngle_Degrees());
     can.write(txMsg);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_COVER_ANGLE);
     txMsg.setPayload(coverServo.read());
     can.write(txMsg);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_ELEVATOR_HEIGHT);
     txMsg.setPayload(diggerServo.read());
     can.write(txMsg);
+    ThisThread::sleep_for(txInterdelay);
 
     // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
     txMsg.setID(HWBRIDGE::CANID::REPORT_MOISTURE_DATA);
     txMsg.setPayload(static_cast<int>(moistureSensor.Read_Moisture()));
     can.write(txMsg);
+    ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_TEMPERATURE_DATA);
     txMsg.setPayload(moistureSensor.Read_Temperature());
     can.write(txMsg);
+    ThisThread::sleep_for(txInterdelay);
+
     ThisThread::sleep_for(txPeriod);
   }
 }
