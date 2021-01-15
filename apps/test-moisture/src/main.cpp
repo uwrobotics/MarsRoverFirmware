@@ -11,7 +11,7 @@ int main() {
   float temperature = 0.0;
   uint8_t HW_ID     = 0;
 
-  MoistureSensor sensor = MoistureSensor(I2C_SDA, I2C_SCL);
+  MoistureSensor sensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
   while (1) {
     sensor.Reset_Sensor();  // reset all registers on sensor to default values
