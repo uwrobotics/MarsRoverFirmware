@@ -35,8 +35,8 @@ uint8_t MoistureSensor::Read_HW_ID() {
 
   char check[1];
 
-  i2c_.write(Sensor_I2C_Address, cmd, 2);   // initialize registers for checking device ID
-  ThisThread::sleep_for(125ms);             // i dont actually know how long to sleep for (prev value was 125 w no unit)
+  i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for checking device ID
+  ThisThread::sleep_for(125ms);
   i2c_.read(Sensor_I2C_Address, check, 1);  // read device ID
 
   return check[0];
