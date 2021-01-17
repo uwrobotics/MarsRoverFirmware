@@ -9,11 +9,13 @@
 
 namespace Encoder{
 typedef struct Config {
-  PinName pwm;
+  PinName pwmIn;
   float degreesPerUnit, zeroOffsetDegrees;
 } Config;
 class Absolute_PWM : public Encoder {
  public:
+  Absolute_PWM(PwmIn pwmIn, float degreesPerUnit, float zeroOffsetDegrees);
+
   Absolute_PWM(const Config &config);
   ~Absolute_PWM();
 

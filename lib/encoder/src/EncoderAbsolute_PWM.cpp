@@ -1,10 +1,9 @@
 #include "EncoderAbsolute_PWM.h"
 
+Encoder::Absolute_PWM::Absolute_PWM(PwmIn pwmIn, float degreesPerUnit, float zeroOffsetDegrees) : m_pwmIn(pwmIn), m_degreesPerUnit(degreesPerUnit), m_zeroOffsetDegrees(zeroOffsetDegrees) {}
+
 Encoder::Absolute_PWM::Absolute_PWM(const Config &config)
-    : Encoder(encoderConfig),
-      m_pwmIn(encoderConfig.pin_PWM),
-      m_degreesPerUnit(encoderConfig.degreesPerUnit),
-      m_zeroOffsetDegrees(encoderConfig.zeroOffset_Degrees) {}
+    : Absolute_PWM(config.pwmIn, config.degreesPerUnit, config.zeroOffsetDegrees) {}
 
 Encoder::Absolute_PWM::~Absolute_PWM() {}
 
@@ -18,7 +17,7 @@ bool Encoder::Absolute_PWM::getVelocity_DegreesPerSec(float &thetaDot) {
   return true;
 }
 
-mbed_error_status_t Encoder::Absolute_PWM::reset() {
+bool Encoder::Absolute_PWM::reset() {
   m_zeroOffsetDegrees = m_pwmIn.avgDutyCycle() * m_degreesPerUnit;
-  return MBED_SUCCESS;
+  return true;
 }
