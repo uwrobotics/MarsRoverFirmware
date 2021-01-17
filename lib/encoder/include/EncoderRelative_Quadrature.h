@@ -4,12 +4,15 @@
 #include "QEI.h"
 
 namespace Encoder {
-class Relative_Quadrature : public Encoder {
-  typedef struct Config {
+  typedef struct {
     PinName qei;
-    float degreesPerUnit, zeroOffset;
+    float degreesPerUnit, zeroOffsetDegrees;
+    PinName pin_ChannelA, pin_ChannelB, pin_Index;
+    t_quadratureEncodingType quadratureEncodingType;
   } Config;
 
+
+class Relative_Quadrature : public Encoder {
  public:
   Relative_Quadrature(const Config &config);
   ~Relative_Quadrature();
