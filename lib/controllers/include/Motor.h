@@ -1,8 +1,7 @@
 #pragma once
 
-#ifndef MOTOR_DEFAULT_FREQUENCY_HZ
-#define MOTOR_DEFAULT_FREQUENCY_HZ 244  // 10 kHz
-#endif
+#include <cstdint>
+constexpr uint8_t MOTOR_DEFAULT_FREQUENCY_HZ = 244;
 
 #include "mbed.h"
 
