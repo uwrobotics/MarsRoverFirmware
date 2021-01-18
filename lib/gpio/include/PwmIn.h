@@ -22,11 +22,10 @@ class PwmIn {
    */
   PwmIn(PinName pwmSense, int numSamplesToAverage = PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE);
 
-  /** the default copy construcor is ill formed since it uses Interrupt In 
-    * which is a mbed NonCopyable type
-    */
-  PwmIn(PwmIn&) =
-      delete;
+  /** the default copy construcor is ill formed since it uses Interrupt In
+   * which is a mbed NonCopyable type
+   */
+  PwmIn(PwmIn&) = delete;
 
   ~PwmIn();
 

@@ -3,10 +3,9 @@
 #include "Sensor.h"
 
 namespace MoistureSensor {
-  typedef struct {
-    PinName sda, scl;
-  } Config;
-
+typedef struct {
+  PinName sda, scl;
+} Config;
 
 class MoistureSensor : public Sensor::Sensor {
  public:

@@ -1,9 +1,7 @@
 #include "EncoderRelative_Quadrature.h"
 
 Encoder::Relative_Quadrature::Relative_Quadrature(const Config &config)
-    :
-      m_QEI(config.pin_ChannelA, config.pin_ChannelB, config.pin_Index,
-            config.quadratureEncodingType),
+    : m_QEI(config.pin_ChannelA, config.pin_ChannelB, config.pin_Index, config.quadratureEncodingType),
       m_degreesPerUnit(config.degreesPerUnit),
       m_zeroOffsetDegrees(config.zeroOffsetDegrees) {}
 

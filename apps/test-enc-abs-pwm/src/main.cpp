@@ -1,9 +1,7 @@
 #include "EncoderAbsolute_PWM.h"
 #include "mbed.h"
 
-Encoder::Config config = {
-    .pwmIn = ENC_PWM_TRNTBL,
-    .degreesPerUnit = 360.0};
+Encoder::Config config = {.pwmIn = ENC_PWM_TRNTBL, .degreesPerUnit = 360.0};
 
 Encoder::Absolute_PWM encoder(config);
 

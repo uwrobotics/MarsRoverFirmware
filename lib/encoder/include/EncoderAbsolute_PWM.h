@@ -7,7 +7,7 @@
 #include "Encoder.h"
 #include "PwmIn.h"
 
-namespace Encoder{
+namespace Encoder {
 typedef struct Config {
   PinName pwmIn;
   float degreesPerUnit, zeroOffsetDegrees;
