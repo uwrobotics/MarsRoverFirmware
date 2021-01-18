@@ -1,9 +1,7 @@
 #include "EncoderAbsolute_PWM.h"
 
-Encoder::Absolute_PWM::Absolute_PWM(PwmIn pwmIn, float degreesPerUnit, float zeroOffsetDegrees) : m_pwmIn(pwmIn), m_degreesPerUnit(degreesPerUnit), m_zeroOffsetDegrees(zeroOffsetDegrees) {}
-
 Encoder::Absolute_PWM::Absolute_PWM(const Config &config)
-    : Absolute_PWM(config.pwmIn, config.degreesPerUnit, config.zeroOffsetDegrees) {}
+    : m_pwmIn(config.pwmIn), m_degreesPerUnit(config.degreesPerUnit), m_zeroOffsetDegrees(config.zeroOffsetDegrees) {}
 
 Encoder::Absolute_PWM::~Absolute_PWM() {}
 

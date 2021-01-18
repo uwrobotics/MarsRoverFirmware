@@ -14,8 +14,6 @@ typedef struct Config {
 } Config;
 class Absolute_PWM : public Encoder {
  public:
-  Absolute_PWM(PwmIn pwmIn, float degreesPerUnit, float zeroOffsetDegrees);
-
   Absolute_PWM(const Config &config);
   ~Absolute_PWM();
 
