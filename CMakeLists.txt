@@ -126,6 +126,7 @@ add_compile_options(${PROCESSOR_FLAGS} ${COMPILE_FLAGS})
 include(mbed-os.cmake)
 
 # Include library CMakeLists
+add_subdirectory(lib/actuators)
 add_subdirectory(lib/can)
 add_subdirectory(lib/gamepad)
 add_subdirectory(lib/controllers)
@@ -136,6 +137,7 @@ add_subdirectory(lib/sensors)
 add_subdirectory(lib/encoder)
 add_subdirectory(lib/gpio)
 add_subdirectory(lib/servo)
+
 
 if (NOT DEFINED APP)
     message(FATAL_ERROR "APP variable not set in CACHE. Please invoke CMake with \"-DAPP=<app-name>\"")

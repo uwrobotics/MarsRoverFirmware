@@ -1,110 +1,57 @@
+/**
+ * This app tests the functionality of our PID library using the values stored in test_data.h
+ * NOTE: This test-app is purely computational,
+ * no motors or encoders are required
+ * The signal output is plotted in the test-pid folder.
+ */
+#include <numeric>
+
+#include <limits>
+
 #include "PID.h"
-#include "mbed.h"
+#include "test_data.h"
 
-// Defines
-#define MIN_RPM              0  // change min/max RPMs based on motor used
-#define MAX_RPM              300
-#define COUNTS_PER_REV       1200   // motor property
-#define TIMER_INTERRUPT_FREQ 250ms  // frequency of timer interrupt for input calculation
-#define GOAL_RPM             100.0
-#define K_UPDATE_PERIOD      150ms
+constexpr float KP = 2, KI = 103, KD = 1;
+constexpr float min_rpm   = -std::numeric_limits<float>::max(),
+                max_rpm   = std::numeric_limits<float>::max();  // no saturation
+constexpr float deadzone  = 0;
+constexpr auto pid_period = 1ms;
+constexpr bool anti_kickback = false, anti_windup = false;
 
-// motor direction pin and pwm out pin, modify as needed
-DigitalOut MOTOR_DIR(D8);
-PwmOut MOTOR_PWM_OUT(D9);
-
-// interrupt in to count encoder rises/falls
-InterruptIn encoderCh1(D2);
-InterruptIn encoderCh2(D3);
-
-PID rpmPIDController(0.010268, 0.0260, 0, K_UPDATE_PERIOD);
-Timer timer;
-
-// Variables
-uint64_t pulseCount    = 0;
-uint64_t oldPulseCount = 0;
-float motorRPM         = 0.0;
-float motorPWMDuty     = 0.0;
-Ticker interruptTimer;
-
-// PID AutoTune config struct for specific DC motor, change depending on actuator
-PID::t_AutoTuneConfig autoTuneConfig = {
-    .nLookBack = 40, .sampleTime = 250ms, .outputStart = 0.4, .oStep = 0.25, .noiseBand = 0.01, .setpoint = 120};
-
-// Setup velocity PID controller
-void initializePidController(void) {
-  rpmPIDController.setInputLimits(MIN_RPM, MAX_RPM);
-  rpmPIDController.setOutputLimits(0.0, 1.0);
-  rpmPIDController.setBias(0.0);
-  rpmPIDController.setMode(PID_AUTO_MODE);
-  rpmPIDController.setupAutoTune(&MOTOR_PWM_OUT, &motorRPM, 0);
-}
-
-// every time a pulse is received from the encoder channels, increase the pulse count
-void countPulses() {
-  pulseCount++;
-}
-
-// every timer interrupt, recompute the rpm
-void computeInput() {
-  motorRPM = (pulseCount - oldPulseCount) /
-             std::chrono::duration_cast<std::chrono::duration<float, std::ratio<60>>>(TIMER_INTERRUPT_FREQ).count() /
-             COUNTS_PER_REV;
-  oldPulseCount = pulseCount;
-}
+constexpr float expected_avg_error       = 1.6801f;
+constexpr auto expected_avg_compute_time = 15us;
 
 int main() {
-  encoderCh1.rise(&countPulses);  // attach the address of the pulse count function to the rising edge
-  encoderCh1.fall(&countPulses);
-  encoderCh2.rise(&countPulses);
-  encoderCh2.fall(&countPulses);
-
-  printf("PID Test - Start \r\n");
-
-  // Initialization
-  std::chrono::duration<float> interval = 0.1s;
-  initializePidController();
-  rpmPIDController.setSetPoint(GOAL_RPM);                      // Set RPM set point
-  MOTOR_DIR = 1;                                               // set default direction
-  interruptTimer.attach(&computeInput, TIMER_INTERRUPT_FREQ);  // attach function to timer interrupt
-  timer.start();
-
-  // uncomment below line and comment line after for debug output
-  // rpmPIDController.autoTune(&pc, true, &autoTuneConfig);
-  rpmPIDController.autoTune(true, &autoTuneConfig);
-
-  printf("Autotune Params obtained: Kc: %f \t    TauI: %f \t    TauD: %f \r\n", rpmPIDController.getATunePParam(),
-         rpmPIDController.getATuneIParam(), rpmPIDController.getATuneDParam());
-  rpmPIDController.setAutoTuneParams();
-  interruptTimer.detach();
-
-  ThisThread::sleep_for(5s);
-
-  Timer eval;
-  eval.start();
-
-  while (1) {
-    motorRPM = (pulseCount - oldPulseCount) *
-               std::chrono::duration_cast<std::chrono::duration<float, std::ratio<60>>>(interval).count() /
-               COUNTS_PER_REV;
-    oldPulseCount = pulseCount;
-
-    // Update the PID controller
-    rpmPIDController.setInterval(interval);
-    rpmPIDController.setProcessValue(motorRPM);
-    motorPWMDuty  = rpmPIDController.compute();
-    MOTOR_PWM_OUT = motorPWMDuty;
-
-    printf("Motor RPM: %f, \t Goal RPM: %f, \t PWM Output: %f\r\n", motorRPM, GOAL_RPM, motorPWMDuty);
-    if (abs(motorRPM - GOAL_RPM) < 1.0) {
-      printf("Time taken to reach goal RPM: %f seconds \r\n",
-             std::chrono::duration_cast<std::chrono::duration<float>>(eval.elapsed_time()).count());
-      MOTOR_DIR = 0;
-      return 0;
+  printf("##################### PID TEST APP STARTED #####################\r\n");
+  PID::Config config = {KP, KI, KD, min_rpm, max_rpm, deadzone, anti_kickback, anti_windup};
+  PID::PID controller(config);
+  Timer timer;
+  auto total_compute_time = 0us;
+  float total_error       = 0;
+  for (std::size_t i = 0; i < control.size(); i++) {
+    if (i % 1000 == 0) {
+      printf("Completed %zu /50001 iterations\r\n", i);
     }
-
-    ThisThread::sleep_for(K_UPDATE_PERIOD);
-    interval = std::chrono::duration_cast<std::chrono::duration<float>>(timer.elapsed_time());
     timer.reset();
+    timer.start();
+    float out = controller.compute(setpoint.at(i), feedback.at(i));
+    timer.stop();
+    total_error += std::abs(control.at(i) - out);
+    total_compute_time += timer.elapsed_time();
+    MBED_ASSERT(pid_period > timer.elapsed_time());
+    wait_us((pid_period - timer.elapsed_time()).count());  // account for compute time
   }
+  printf("TEST RESULTS\r\n");
+  float average_error       = total_error / control.size();
+  auto average_compute_time = total_compute_time / control.size();
+  printf("Average difference between Matlab control signal and our control signal: %.5f\r\n", average_error);
+  printf("Average time for a single call to the compute function: %llu us\r\n", average_compute_time.count());
+  if (average_error > expected_avg_error) {
+    printf("WARNING: Changes made to PID library have increased average error\r\n");
+  }
+  if (average_compute_time > expected_avg_compute_time) {
+    printf("WARNING: Changes made to PID library have increased execution time of compute function\r\n");
+  }
+  while (true)
+    ;
 }

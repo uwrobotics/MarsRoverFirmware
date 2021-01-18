@@ -250,3 +250,4 @@ class QEI {
   float movingAvgSmoothingParam_;  // 0.1: minimal smoothing, 0.9: strong smoothing
 };
 }
+

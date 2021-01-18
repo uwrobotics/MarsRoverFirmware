@@ -11,10 +11,8 @@ ActuatorController::ActuatorController(t_actuatorConfig actuatorConfig, Motor &m
       r_encoder(encoder),
       r_limSwitchMin(limSwitchMin),
       r_limSwitchMax(limSwitchMax),
-      m_velocityPIDController(actuatorConfig.velocityPID.P, actuatorConfig.velocityPID.I, actuatorConfig.velocityPID.D,
-                              0.0s),
-      m_positionPIDController(actuatorConfig.positionPID.P, actuatorConfig.positionPID.I, actuatorConfig.positionPID.D,
-                              0.0s) {
+      m_velocityPIDController(actuatorConfig.velocityPID),
+      m_positionPIDController(actuatorConfig.positionPID) {
   m_limSwitchMin_Connected = (r_limSwitchMin != NULL_DIGITAL_IN && r_limSwitchMin.is_connected());
   m_limSwitchMax_Connected = (r_limSwitchMax != NULL_DIGITAL_IN && r_limSwitchMax.is_connected());
 
