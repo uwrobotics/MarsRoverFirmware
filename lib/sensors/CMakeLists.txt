@@ -27,3 +27,8 @@ add_library(QEI STATIC)
 target_sources(QEI PRIVATE src/QEI.cpp)
 target_include_directories(QEI PUBLIC include)
 target_set_mbed_dependency(QEI)
+
+add_library(URM04Sensor STATIC)
+target_sources(URM04Sensor PRIVATE src/URM04Sensor.cpp)
+target_include_directories(URM04Sensor PUBLIC include)
+target_set_mbed_dependency(URM04Sensor)
