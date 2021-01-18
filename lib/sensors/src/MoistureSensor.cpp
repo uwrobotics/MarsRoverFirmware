@@ -53,9 +53,7 @@ bool MoistureSensor::MoistureSensor::read(float &sensorReading) {
   cmd[1] = Sensor_Moisture_Function;
 
   char buf[2];
-
-  sensorReading = 65535;
-
+  float i2c_read_val = 0;
   uint8_t counter = 2;  // initialize counter to break out of loop if reading isn't working (prevent infinite looping)
 
   do {
@@ -64,16 +62,19 @@ bool MoistureSensor::MoistureSensor::read(float &sensorReading) {
     ThisThread::sleep_for(1s);
     m_i2c.read(Sensor_I2C_Address, buf, 2);  // read moisture
 
-    sensorReading = (static_cast<uint16_t>(buf[0]) << 8 | buf[1]);  // concatenate bytes together
+    i2c_read_val = (static_cast<uint16_t>(buf[0]) << 8 | buf[1]);  // concatenate bytes together
 
     counter--;
-  } while (sensorReading == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10 times
+  } while (i2c_read_val == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10 times
                                            // (breaks out regardless of if read works or not)
 
-  if(sensorReading == 65535)
+  if(i2c_read_val == 65535 && counter == 0)
   {
   	return false;
   }
+
+  //if succeeded set sensorReading to i2c_read_val
+  sensorReading = i2c_read_val;
   return true;
 }
 
