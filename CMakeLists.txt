@@ -136,7 +136,6 @@ add_subdirectory(lib/pid)
 add_subdirectory(lib/sensors)
 add_subdirectory(lib/encoder)
 add_subdirectory(lib/gpio)
-add_subdirectory(lib/servo)
 
 
 if (NOT DEFINED APP)
