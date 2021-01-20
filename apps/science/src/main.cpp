@@ -77,6 +77,7 @@ Thread txCANProcessorThread;
 
 // recieving CAN messages
 void rxCANProcessor() {
+  //    TO DO:  Replace this logic with new CAN logic coming from issue #23
   CANMsg rxMsg;
   while (true) {
     if (can.read(rxMsg)) {
