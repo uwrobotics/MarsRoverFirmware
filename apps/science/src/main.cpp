@@ -67,9 +67,9 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
 }
 
 static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_INDEX, setMotionData},
-                                                {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},
-                                                {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
-                                                {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData}};
+                                                 {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},
+                                                 {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
+                                                 {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData}};
 
 // CAN Threads
 Thread rxCANProcessorThread;
@@ -80,7 +80,7 @@ void rxCANProcessor() {
   CANMsg rxMsg;
   while (true) {
     if (can.read(rxMsg)) {
-      canHandleMap.at(rxMsg.getID())(rxMsg);
+      canHandlerMap.at(rxMsg.getID())(rxMsg);
     }
   }
 }
