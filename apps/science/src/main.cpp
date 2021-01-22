@@ -50,7 +50,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   msg.getPayload(motionData);
 
   switch (msg.getID()) {
-    case HWBRIDGE::CANID::SET_GENEVA_INDEX:
+    case HWBRIDGE::CANID::SET_GENEVA_ANGLE:
       return indexerActuator.setAngle_Degrees(motionData);
     case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:
       return elevatorActuator.setMotionData(motionData);
@@ -63,7 +63,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   }
 }
 
-static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_INDEX, setMotionData},
+static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_ANGLE, setMotionData},
                                                  {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},
                                                  {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
                                                  {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData}};
@@ -90,7 +90,7 @@ void txCANProcessor() {
   CANMsg txMsg;
 
   while (true) {
-    txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_INDEX);
+    txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_ANGLE);
     txMsg.setPayload(indexerActuator.getAngle_Degrees());
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
