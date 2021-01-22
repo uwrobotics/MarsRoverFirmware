@@ -31,9 +31,9 @@ public:
 private:
 
    PwmOut m_servoPwmOut;
-   float  m_servoRangeInDegrees;
-   float  m_minPulsewidthInMs;
-   float  m_maxPulsewidthInMs;
+   const float  m_servoRangeInDegrees;
+   const float  m_minPulsewidthInMs;
+   const float  m_maxPulsewidthInMs;
    
 };
 

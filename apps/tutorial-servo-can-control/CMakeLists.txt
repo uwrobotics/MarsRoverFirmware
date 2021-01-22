@@ -6,6 +6,9 @@ add_executable(tutorial-servo-can-control.${TARGET}-board.elf)
 target_sources (TutorialServo PRIVATE src/TutorialServo.cpp)
 target_include_directories (TutorialServo PUBLIC include)
 target_set_mbed_dependency (TutorialServo)
-target_link_libraries (tutorial-servo-can-control. ${TARGET} -board.elfPRIVATE
+target_link_libraries(tutorial-servo-can-control.${TARGET}-board.elf
+PRIVATE
 TutorialServo
+CANMsg
+uwrt-mars-rover-hw-bridge
 )

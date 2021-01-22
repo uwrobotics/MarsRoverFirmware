@@ -19,9 +19,10 @@ CANMessage msg;
 
 
 int main() {    
+    float num = 0;
     while(true) {
         if(can.read(msg)){
-          servo.setPositionInDegrees(msg.data[0]);
+          servo.setPositionInDegrees(msg.getpayload(num));
         }
     }
 }
