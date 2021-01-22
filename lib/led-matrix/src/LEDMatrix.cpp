@@ -3,7 +3,7 @@
 #include "LEDMatrix.h"
 
 // Constructor: An LED Matrix is defined by the pins it is connected to.
-LEDMatrix ::LEDMatrix(PinName R, PinName G, PinName B) : _RChannel(R), _GChannel(G), _BChannel(B) {}
+LEDMatrix ::LEDMatrix(PinName R, PinName G, PinName B) : m_RChannel(R), m_GChannel(G), m_BChannel(B) {}
 
 // Take in values from 0 to 255 for each pin and map them to a PWM signal.
 void LEDMatrix ::setColor(uint8_t R, uint8_t G, uint8_t B) {
