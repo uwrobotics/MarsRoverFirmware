@@ -5,58 +5,62 @@
 // Constructor: An LED Matrix is defined by the pins it is connected to.
 LEDMatrix ::LEDMatrix(PinName R, PinName G, PinName B) : _RChannel(R), _GChannel(G), _BChannel(B) {}
 
-// Take in values from 0 to 255 for each color stream and maps them to a PWM signal.
-LEDMatrix ::void setColorRGB(uint8_t R, uint8_t G, uint8_t B) {
-  _RChannel.pulsewidth((1.0 / 255.0) * R);
-  _GChannel.pulsewidth((1.0 / 255.0) * G);
-  _BChannel.pulsewidth((1.0 / 255.0) * B);
+// Take in values from 0 to 255 for each pin and map them to a PWM signal.
+void LEDMatrix ::setColor(uint8_t R, uint8_t G, uint8_t B) {
+  m_RChannel.pulsewidth(R / 255.0);
+  m_GChannel.pulsewidth(G / 255.0);
+  m_BChannel.pulsewidth(B / 255.0);
 }
 
 // Just for convenience. Call setColorRGB().
-LEDMatrix ::void setColor(color c) {
+void LEDMatrix ::setColor(HWBRIDGE::LEDMATRIX::color c) {
   switch (c) {
-    case color::RED:
+    case HWBRIDGE::LEDMATRIX::color::RED:
       setColorRGB(255, 0, 0);
       break;
-    case color::GREEN:
+    case HWBRIDGE::LEDMATRIX::color::GREEN:
       setColorRGB(0, 255, 0);
       break;
-    case color::BLUE:
+    case HWBRIDGE::LEDMATRIX::color::BLUE:
       setColorRGB(0, 0, 255);
       break;
   }
 }
 
-// Set the specified color, wait, turn off all LEDs, wait, and repeat until another function is called by the main.cpp.
-LEDMatrix ::void setFlashingColorRGB(uint8_t R, uint8_t G, uint8_t B, uint8_t frequency_hz) {
-  float flash_num  = frequency_hz * HW_BRIDGE::LEDMATRIX::NUM_FLASHES;  // Flash for 10sec
-  float timeout_ms = (1.0 / frequency_hz) * 1000;
+// Set the specified color, wait, turn off all LEDs, wait
+// Repeat until another function is called by main.cpp.
+// NEED THREAD
+void LEDMatrix ::setFlashingColor(uint8_t R, uint8_t G, uint8_t B, float period_sec) {
+  // float flash_num     = frequency_hz * HWBRIDGE::LEDMATRIX::NUM_FLASHES;  // Flash for 10sec
+  // uint16_t timeout_ms = (1.0 / frequency_hz) * 1000;
+  // How long should each flash last?
 
-  for (uint8_t i = 0; i < flash_num; i++) {
-    setColour(R, G, B);
-    std::ThisThread::sleep_for(
-        std::chrono::milliseconds(timeout_ms / 2));  // Div by 2 cuz theres 2 timeouts in each loop
+  constexpr std::chrono::milliseconds period_delay = period_sec * 1000;
+
+  while (true) {
+    setColorRGB(R, G, B);
+    ThisThread::sleep_for(period_delay);
     clear();
-    std::ThisThread::sleep_for(std::chrono::milliseconds(timeout_ms / 2));
+    ThisThread::sleep_for(period_delay);
   }
 }
 
 // Just for convenience. Call setFlashingColorRBG().
-LEDMatrix ::void setFlashingColor(color c, uint8_t frequency_hz) {
+void LEDMatrix ::setFlashingColor(HWBRIDGE::LEDMATRIX::color c, float period_sec) {
   switch (c) {
-    case color::RED:
-      setFlashingColorRGB(255, 0, 0, frequency_hz);
+    case HWBRIDGE::LEDMATRIX::color::RED:
+      setFlashingColorRGB(255, 0, 0, period_sec);
       break;
-    case color::GREEN:
-      setFlashingColorRGB(0, 255, 0, frequency_hz);
+    case HWBRIDGE::LEDMATRIX::color::GREEN:
+      setFlashingColorRGB(0, 255, 0, period_sec);
       break;
-    case color::BLUE:
-      setFlashingColorRGB(0, 0, 255, frequency_hz);
+    case HWBRIDGE::LEDMATRIX::color::BLUE:
+      setFlashingColorRGB(0, 0, 255, period_sec);
       break;
   }
 }
 
 // Turn off all the LEDs. Call setColor(0,0,0).
-LEDMatrix ::void clear() {
-  setColour(0, 0, 0);
+void LEDMatrix ::clear() {
+  setColorRGB(0, 0, 0);
 }

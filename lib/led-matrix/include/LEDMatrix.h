@@ -1,34 +1,30 @@
 /* LED Matrix Header */
 #pragma once
-#include <CANMsg.h>
-#include <mbed.h>
+#include "hw_bridge.h"
 class LEDMatrix {
  public:
   // Constructor: An LED Matrix is defined by the pins it is connected to.
   LEDMatrix(PinName R, PinName G, PinName B);
 
-  // Take in values from 0 to 255 for each color stream and maps them to a PWM signal.
-  void setColorRGB(uint8_t R, uint8_t G, uint8_t B);
+  // Take in values from 0 to 255 for each pin and map them to a PWM signal.
+  void setColor(uint8_t R, uint8_t G, uint8_t B);
 
   // Just for convenience. Call setColorRGB().
-  void setColor(color c);
+  void setColor(HWBRIDGE::LEDMATRIX::color c);
 
-  // Set the specified color, wait, turn off all LEDs, wait, and repeat until another function is called by the
-  // main.cpp.
-  void setFlashingColorRGB(uint8_t R, uint8_t G, uint8_t B, uint8_t frequency_hz);
+  // Set the specified color, wait, turn off all LEDs, wait
+  // Repeat until another function is called by main.cpp.
+  void setFlashingColor(uint8_t R, uint8_t G, uint8_t B, float period_sec);
 
   // Just for convenience. Call setFlashingColorRGB().
-  void setFlashingColor(color c, uint8_t frequency_hz);
+  void setFlashingColor(HWBRIDGE::LEDMATRIX::color c, float period_sec);
 
-  // This function should turn off all the LEDs. This should just call setColor(0,0,0) - zero pulsewidth
+  // Turn off all the LEDs. Call setColor(0,0,0).
   void clear();
-  // This is just for convenience
-
-  enum class color { RED, GREEN, BLUE };
 
  private:
-  PwmOut _RChannel;
-  PwmOut _GChannel;
-  PwmOut _BChannel;
+  PwmOut m_RChannel;
+  PwmOut m_GChannel;
+  PwmOut m_BChannel;
   // any other functions
 };

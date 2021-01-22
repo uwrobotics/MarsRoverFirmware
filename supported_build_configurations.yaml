@@ -51,6 +51,9 @@ test-enc-abs-pwm:
 #  - gimbtonomy
 #  - science
 
+test-led-matrix:
+  - nucleo
+
 test-moisture:
   #  - nucleo
   - science
