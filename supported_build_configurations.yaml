@@ -17,6 +17,9 @@ science:
   - science
 
 # Test Apps
+test-aeat-6012:
+  - nucleo
+
 test-aeat-8800:
   - nucleo
 
