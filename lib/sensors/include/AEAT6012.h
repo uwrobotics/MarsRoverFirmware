@@ -10,7 +10,7 @@
  */
 
 namespace AEAT6012 {
-typedef void (*callback_ptr)(int);
+typedef void (*callback_ptr)(void);
 
 typedef struct {
   PinName cs;
@@ -36,17 +36,22 @@ class AEAT6012 {
   // Returns stored absolute position in degrees (without invoking an encoder read)
   float get_position(void);
 
+  // Returns stored raw encoder reading (without invoking an encoder read) (TODO: for testing, remove later)
+  uint16_t get_position_raw(void);
+
  private:
   // TODO: need to test this frequency
   static constexpr uint32_t DEFAULT_FREQUENCY_HZ = 1000000;  // Max frequency given by datasheet
   const char dummy_buffer[2]                     = {0x00, 0x00};
   char read_buffer[2]                            = {0x00, 0x00};
 
-  float m_position_deg;  // Encoder position in degrees
+  float m_position_deg;     // Encoder position in degrees
+  uint16_t m_position_raw;  // Raw encoder reading (TODO: for testing, remove later)
   DigitalOut m_cs;
   SPI m_spi;
-  callback_ptr
-      m_callback;  // User callback function to be invoked when an encoder read is complete (only for async reads)
+
+  // User callback function to be invoked when an encoder read is complete (only for async reads)
+  callback_ptr m_callback;
 
   // Clean-up helper callback function for asynchronous read
   void priv_callback(int event);
