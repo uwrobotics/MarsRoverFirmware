@@ -31,7 +31,7 @@ float AEAT6012::AEAT6012::read_position(void) {
   uint16_t raw_data = (static_cast<uint16_t>(read_buffer[1]) >> 3) | (static_cast<uint16_t>(read_buffer[0]) << 5);
 
   // Specced delay >500ns after CS deassertion
-  ThisThread::sleep_for(1ms);
+  ThisThread::sleep_for(1ms);  // TODO: might not need this
 
   // Update posiiton data
   m_position_raw = raw_data;
@@ -63,9 +63,6 @@ void AEAT6012::AEAT6012::priv_callback(int event) {
   // MAX 7F(MSB) FC(LSB) , MIN 0004
 
   uint16_t raw_data = (static_cast<uint16_t>(read_buffer[1]) >> 3) | (static_cast<uint16_t>(read_buffer[0]) << 5);
-
-  // Specced delay >500ns after CS deassertion
-  // ThisThread::sleep_for(1ms);  // TODO: can't call this inside isr
 
   // Update position data
   m_position_raw = raw_data;

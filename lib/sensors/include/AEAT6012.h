@@ -3,10 +3,6 @@
 /*
  * Broadcom's AEAT-6012 is an absolute magnetic encoder with 12 bit resolution and SPI interface
  * Datasheet: https://docs.broadcom.com/doc/AV02-0188EN
- *
- * TODO:
- * - Make driver async (need to configure DMAUsage?)
- * - Incorporate under Encoder base class
  */
 
 namespace AEAT6012 {
@@ -30,6 +26,7 @@ class AEAT6012 {
   float read_position(void);
 
   // Asynchronous API for reading encoder position
+  // Invokes user callback once read transaction is complete
   // Returns true if SPI read successfully started, false if SPI peripheral is busy
   bool read_position_async(void);
 

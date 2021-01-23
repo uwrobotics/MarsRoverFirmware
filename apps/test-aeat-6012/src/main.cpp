@@ -11,7 +11,6 @@ void test_blocking(void);
 void test_async(void);
 
 Timer timer;
-Thread read_encoder_thread;
 volatile bool encoder_position_updated = false;
 
 AEAT6012::AEAT6012 encoder(SPI_CS, SPI_MISO, SPI_SCK, callback);
@@ -45,8 +44,6 @@ void test_blocking(void) {
 
     timer.stop();
 
-    encoder_position_updated = false;
-
     printf("Encoder reading: %.3f degrees\r\n", encoder.get_position());
     printf("Encoder reading raw: %d\r\n", encoder.get_position_raw());
 
@@ -64,7 +61,8 @@ void test_async(void) {
     timer.reset();
     timer.start();
 
-    encoder.read_position_async();
+    while (!encoder.read_position_async()) {
+    }
 
     while (!encoder_position_updated) {
     }
