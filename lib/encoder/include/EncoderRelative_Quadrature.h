@@ -2,23 +2,28 @@
 
 #include "Encoder.h"
 #include "QEI.h"
-#include "mbed.h"
 
-class EncoderRelative_Quadrature : public Encoder {
+namespace Encoder {
+typedef struct {
+  PinName qei;
+  float degreesPerUnit, zeroOffsetDegrees;
+  PinName pin_ChannelA, pin_ChannelB, pin_Index;
+  t_quadratureEncodingType quadratureEncodingType;
+} Config;
+
+class Relative_Quadrature : public Encoder {
  public:
-  EncoderRelative_Quadrature(t_encoderConfig config);
-  ~EncoderRelative_Quadrature();
+  Relative_Quadrature(const Config &config);
+  ~Relative_Quadrature();
 
-  // Must be implemented
-  t_encoderType getType();
-  float getAngle_Degrees();
-  float getVelocity_DegreesPerSec();
+  bool getAngle_Degrees(float &theta) override;
+  bool getVelocity_DegreesPerSec(float &thetaDot) override;
 
-  mbed_error_status_t reset();
+  bool reset() override;
 
  private:
   QEI m_QEI;
-
   float m_degreesPerUnit;
-  float m_zeroOffset_Degrees;
+  float m_zeroOffsetDegrees;
 };
+}  // namespace Encoder

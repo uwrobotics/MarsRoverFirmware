@@ -6,23 +6,25 @@
 
 #include "Encoder.h"
 #include "PwmIn.h"
-#include "mbed.h"
 
-class EncoderAbsolute_PWM : public Encoder {
+namespace Encoder {
+typedef struct Config {
+  PinName pwmIn;
+  float degreesPerUnit, zeroOffsetDegrees;
+} Config;
+class Absolute_PWM : public Encoder {
  public:
-  EncoderAbsolute_PWM(t_encoderConfig config);
-  ~EncoderAbsolute_PWM();
+  Absolute_PWM(const Config &config);
+  ~Absolute_PWM();
 
-  // Must be implemented
-  t_encoderType getType();
-  float getAngle_Degrees();
-  float getVelocity_DegreesPerSec();
+  bool getAngle_Degrees(float &theta) override;
+  bool getVelocity_DegreesPerSec(float &thetaDot) override;
 
-  mbed_error_status_t reset();
+  bool reset() override;
 
  private:
   PwmIn m_pwmIn;
-
   float m_degreesPerUnit;
-  float m_zeroOffset_Degrees;
+  float m_zeroOffsetDegrees;
 };
+}  // namespace Encoder

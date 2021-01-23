@@ -1,13 +1,9 @@
 #include "EncoderAbsolute_PWM.h"
 #include "mbed.h"
 
-Encoder::t_encoderConfig config = {
-    // PWM encoder pins
-    .pin_PWM = ENC_PWM_TRNTBL,
+Encoder::Config config = {.pwmIn = ENC_PWM_TRNTBL, .degreesPerUnit = 360.0};
 
-    .degreesPerUnit = 360.0};
-
-EncoderAbsolute_PWM encoder(config);
+Encoder::Absolute_PWM encoder(config);
 
 // Wire the output PWM signal to the PWM input
 // or connect external PWM input to pwmIn pin
@@ -54,7 +50,10 @@ int main() {
 
     if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
-      printf("Angle: %f, Angular Velocity :%f\r\n", encoder.getAngle_Degrees(), encoder.getVelocity_DegreesPerSec());
+      float angle, velocity;
+      encoder.getAngle_Degrees(angle);
+      encoder.getVelocity_DegreesPerSec(velocity);
+      printf("Angle: %f, Angular Velocity :%f\r\n", angle, velocity);
     }
   }
 }
