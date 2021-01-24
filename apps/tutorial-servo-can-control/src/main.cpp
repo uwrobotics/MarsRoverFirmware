@@ -4,8 +4,8 @@
  */
 #include "CANBus.h"
 #include "CANMsg.h"
-#include "mbed.h"
 #include "TutorialServo.h"
+#include "mbed.h"
 
 // Blinking rate in milliseconds
 // #define BLINKING_RATE 500ms
@@ -19,10 +19,10 @@ CANMessage msg;
 
 
 int main() {    
-    float num = 0;
-    while(true) {
-        if(can.read(msg)){
-          servo.setPositionInDegrees(msg.getpayload(num));
-        }
+  float num = 0;
+  while(true) {
+    if(can.read(msg)){
+        servo.setPositionInDegrees(msg.getpayload(num));
     }
+  }
 }
