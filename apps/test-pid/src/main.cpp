@@ -2,12 +2,12 @@
 #include "mbed.h"
 
 // Defines
-#define MIN_RPM              0  // change min/max RPMs based on motor used
-#define MAX_RPM              300
-#define COUNTS_PER_REV       1200   // motor property
-#define TIMER_INTERRUPT_FREQ 250ms  // frequency of timer interrupt for input calculation
-#define GOAL_RPM             100.0
-#define K_UPDATE_PERIOD      150ms
+constexpr uint8_t MIN_RPM           = 0;  // change min/max RPMs based on motor used
+constexpr uint16_t MAX_RPM          = 300;
+constexpr int COUNTS_PER_REV        = 1200;   // motor property
+constexpr auto TIMER_INTERRUPT_FREQ = 250ms;  // frequency of timer interrupt for input calculation
+constexpr float GOAL_RPM            = 100.0;
+constexpr auto K_UPDATE_PERIOD      = 150ms;
 
 // motor direction pin and pwm out pin, modify as needed
 DigitalOut MOTOR_DIR(D8);
