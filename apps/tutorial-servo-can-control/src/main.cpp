@@ -17,12 +17,11 @@ CAN can(CAN1_RX, CAN1_TX);
 TutorialServo servo(PA_1);
 CANMessage msg;
 
-
 int main() {    
   float num = 0;
-  while(true) {
-    if(can.read(msg)){
-        servo.setPositionInDegrees(msg.getpayload(num));
+  while (true) {
+    if (can.read(msg)){
+      servo.setPositionInDegrees(msg.getpayload(num));
     }
   }
 }
