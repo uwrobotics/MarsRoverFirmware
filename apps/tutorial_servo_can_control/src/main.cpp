@@ -13,8 +13,9 @@ int main() {
   CANMsg rxMsg;
   TutorialServo servo(servoPwmOut);
   while (true) {
-    can1.read(rxMsg)
-    servo.setPositionInDegrees(rxMsg)
+    float degrees;
+    rxMsg.getPayload(degrees);
+    servo.setPositionInDegrees(degrees);
     ThisThread::sleep_for(2ms);
   }
 }

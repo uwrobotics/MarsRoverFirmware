@@ -9,8 +9,9 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0
     m_maxPulsewidthInMs(maxPulsewidthInMs){};
 
 void TutorialServo::setPositionInDegrees(float degrees){
-    float new_pulse_width = degrees/m_servoRangeInDegrees*m_servoRangeInDegrees + m_minPulsewidthInMs;
-    m_servoPwmOut.pulsewidth = new_pulse_width;
+    float PulsewidthRangeInMs = m_maxPulsewidthInMs - m_minPulsewidthInMs;
+    float new_pulse_width = (degrees/m_servoRangeInDegrees)*PulsewidthRangeInMs + m_minPulsewidthInMs;
+    pulsewidth(new_pulse_width);
 }
 
 float getServoRangeInDegrees( ) const{
