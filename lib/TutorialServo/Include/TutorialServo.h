@@ -23,9 +23,11 @@ float getMinPulseWidthInMs( ) const ;
 
 // Get the max pulse width in ms (ex: 2ms)
 float getMaxPulseWidthInMs( ) const ;
+
 private :
-PwmOut m_servoPwmOut ;
-const float m_servoRangeInDegrees ;
+PwmOut m_servoPwmOut;
+const float m_servoRangeInDegrees;
 const float m_minPulsewidthInMs;
 const float m_maxPulsewidthInMs;
 } ;
+#endif

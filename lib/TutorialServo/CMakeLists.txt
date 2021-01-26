@@ -1,4 +1,4 @@
-add_library (TutorialServo STATIC)
-target_sources (TutorialServo PRIVATE src/TutorialServo.cpp)
-target_include_directories (TutorialServo PUBLIC include)
-target_set_mbed_dependency (TutorialServo)
+add_library(TutorialServo STATIC)
+target_sources(TutorialServo PRIVATE src/TutorialServo.cpp)
+target_include_directories(TutorialServo PUBLIC include)
+target_set_mbed_dependency(TutorialServo)

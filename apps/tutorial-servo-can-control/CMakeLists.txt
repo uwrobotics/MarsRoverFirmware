@@ -1,4 +1,19 @@
 add_executable(tutorial-servo-can-control.${TARGET}-board.elf)
 target_sources(tutorial-servo-can-control.${TARGET}-board.elf PRIVATE
 src/main.cpp)
+target_link_libraries(tutorial-servo-can-control.${TARGET}-board.elf
+        PUBLIC
+        PID
+        PRIVATE
+        ClawController
+        CANBuffer
+        CANBus
+        DifferentialWristController
+        EncoderRelative_Quadrature
+        LimServo
+        LookupTable
+        Motor
+        uwrt-mars-rover-hw-bridge
+	TutorialServo
+        )
 target_set_firmware_properties(tutorial-servo-can-control.${TARGET}-board.elf)
