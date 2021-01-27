@@ -11,13 +11,13 @@
 CANBus can(CAN1_RX, CAN1_TX);
 CANMsg msg;
 TutorialServo servo(PA_1);
-uint8_t convertedMessage = 0;
+float convertedMessage = 0;
 
 // main() runs in its own thread in the OS
 int main() {
   while (true) {
     if (can.read(msg)) {
-      msg >> convertedMessage;
+      msg.getPayload(convertedMessage);
       servo.setPositionInDegrees(convertedMessage);
     }
   }

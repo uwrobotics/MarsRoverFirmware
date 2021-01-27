@@ -2,14 +2,12 @@
 
 #include <cstdlib>
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1,
-                             float maxPulsewidthInMs = 2) {
-  m_servoRangeInDegrees = servoRangeInDegrees;
-  m_minPulsewidthInMs   = minPulsewidthInMs;
-  m_maxPulsewidthInMs   = maxPulsewidthInMs;
-  m_servoPwmOut(servoPin);
-  m_servoPwmOut.period(0.020);
-}
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs,
+                             float maxPulsewidthInMs): 
+                             m_servoRangeInDegrees(servoRangeInDegrees), 
+                             m_minPulsewidthInMs(minPulsewidthInMs),
+                             m_maxPulsewidthInMs(maxPulsewidthInMs),
+                             m_servoPwmOut(servoPin)  {m_servoPwmOut.period(0.020);}
 
 float TutorialServo::getServoRangeInDegrees() const {
   return m_servoRangeInDegrees;
