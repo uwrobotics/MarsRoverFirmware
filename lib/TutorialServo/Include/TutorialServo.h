@@ -1,7 +1,6 @@
 #ifndef TUTORIAL_SERVO_H
 #define TUTORIAL_SERVO_H
 
-#pragma once
 #include "mbed.h"
 class TutorialServo {
 public :

@@ -15,7 +15,7 @@ void TutorialServo::setPositionInDegrees(float degrees){
 }
 
 float TutorialServo::getServoRangeInDegrees( ) const{
-    return m_servoRangeInDegrees;l
+    return m_servoRangeInDegrees;
 }
 float TutorialServo::getMinPulseWidthInMs( ) const{
     return m_minPulsewidthInMs;
