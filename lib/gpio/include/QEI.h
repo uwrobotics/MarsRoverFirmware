@@ -143,9 +143,13 @@
 /**
  * Quadrature Encoder Interface.
  */
+ namespace Encoder {
+	 typedef enum encoderType {relative, absolute } t_encoderType;
+	 typedef enum quadratureEncodingType {x2_encoding, x4_encoding } t_quadratureEncodingType;
+
 class QEI {
  public:
-  typedef Encoder::t_quadratureEncodingType Encoding;
+  typedef t_quadratureEncodingType Encoding;
 
   /**
    * Constructor.
@@ -245,3 +249,4 @@ class QEI {
 
   float movingAvgSmoothingParam_;  // 0.1: minimal smoothing, 0.9: strong smoothing
 };
+}

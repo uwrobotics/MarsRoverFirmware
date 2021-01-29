@@ -128,7 +128,7 @@
  */
 #include "QEI.h"
 
-QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, float movingAvgSmoothingParam)
+Encoder::QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, float movingAvgSmoothingParam)
     : channelA_(channelA), channelB_(channelB), index_(index), movingAvgSmoothingParam_(movingAvgSmoothingParam) {
   pulses_      = 0;
   revolutions_ = 0;
@@ -161,24 +161,24 @@ QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, f
   timer_.start();
 }
 
-void QEI::reset(void) {
+void Encoder::QEI::reset(void) {
   pulses_      = 0;
   revolutions_ = 0;
 }
 
-int QEI::getCurrentState(void) {
+int Encoder::QEI::getCurrentState(void) {
   return currState_;
 }
 
-int QEI::getPulses(void) {
+int Encoder::QEI::getPulses(void) {
   return pulses_;
 }
 
-float QEI::getPulseVelocity_PulsesPerSec(void) {
+float Encoder::QEI::getPulseVelocity_PulsesPerSec(void) {
   return movingAvgVelocity_PulsesPerSec_;
 }
 
-int QEI::getRevolutions(void) {
+int Encoder::QEI::getRevolutions(void) {
   return revolutions_;
 }
 
@@ -226,7 +226,7 @@ int QEI::getRevolutions(void) {
 // We might enter an invalid state for a number of reasons which are hard to
 // predict - if this is the case, it is generally safe to ignore it, update
 // the state and carry on, with the error correcting itself shortly after.
-void QEI::encode(void) {
+void Encoder::QEI::encode(void) {
   int change = 0;
   int chanA  = channelA_.read();
   int chanB  = channelB_.read();
@@ -275,6 +275,6 @@ void QEI::encode(void) {
       (1 - movingAvgSmoothingParam_) * pulseVelocity + movingAvgSmoothingParam_ * movingAvgVelocity_PulsesPerSec_;
 }
 
-void QEI::index(void) {
+void Encoder::QEI::index(void) {
   revolutions_++;
 }

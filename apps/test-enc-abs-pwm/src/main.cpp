@@ -7,7 +7,7 @@ Encoder::t_encoderConfig config = {
 
     .degreesPerUnit = 360.0};
 
-EncoderAbsolute_PWM encoder(config);
+Encoder::Absolute_PWM encoder(config);
 
 // Wire the output PWM signal to the PWM input
 // or connect external PWM input to pwmIn pin

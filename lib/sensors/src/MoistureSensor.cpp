@@ -13,35 +13,39 @@ constexpr int Sensor_Moisture_Function = 0x10;  // Function address registers fo
 constexpr int Sensor_Temp_Function     = 0x04;
 constexpr int Sensor_Status_Reset      = 0x7F;
 
-MoistureSensor::MoistureSensor(PinName sda, PinName scl) : i2c_(sda, scl) {}
+MoistureSensor::MoistureSensor::MoistureSensor(const Config &config) : m_i2c(config.sda, config.scl) {}
 
-void MoistureSensor::resetSensor() {
+MoistureSensor::MoistureSensor::~MoistureSensor() {} // YOUNES TODO JUST SAY DEFAULT
+
+bool MoistureSensor::MoistureSensor::reset() {
   char cmd[3];
   cmd[0] = Sensor_Status_Base;  // initialize registers for clearing sensor memory
   cmd[1] = Sensor_Status_Reset;
   cmd[2] = 0xFF;
 
-  i2c_.write(Sensor_I2C_Address, cmd, 3);  // set all registers on sensor to default values
+  m_i2c.write(Sensor_I2C_Address, cmd, 3);  // set all registers on sensor to default values
+
+  return true;
 }
 
-bool MoistureSensor::getSensorStatus() {
+bool MoistureSensor::MoistureSensor::getStatus() {
   char cmd[2];
   cmd[0] = Sensor_Status_Base;
   cmd[1] = Sensor_Status_HW_ID;
 
   char check[1];
 
-  i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for checking device ID
+  m_i2c.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for checking device ID
   ThisThread::sleep_for(125ms);
-  i2c_.read(Sensor_I2C_Address, check, 1);  // read device ID
+  m_i2c.read(Sensor_I2C_Address, check, 1);  // read device ID
 
    return (check[0] == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
 } 
 
 //read moisture reading of device
-uint16_t MoistureSensor::primaryRead() {
-  if (!(this->getSensorStatus())) {  // checks if device is initialized, returns 65534 if there is an issue
-    return 65534;
+bool MoistureSensor::MoistureSensor::read(float &sensorReading) {
+  if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
+    return false;
   }
 
   char cmd[2];
@@ -50,29 +54,33 @@ uint16_t MoistureSensor::primaryRead() {
 
   char buf[2];
 
-  uint16_t ret = 65535;
+  sensorReading = 65535;
 
-  uint8_t counter = 10;  // initialize counter to break out of loop if reading isn't working (prevent infinite looping)
+  uint8_t counter = 2;  // initialize counter to break out of loop if reading isn't working (prevent infinite looping)
 
   do {
     ThisThread::sleep_for(1ms);
-    i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading moisture
+    m_i2c.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading moisture
     ThisThread::sleep_for(1s);
-    i2c_.read(Sensor_I2C_Address, buf, 2);  // read moisture
+    m_i2c.read(Sensor_I2C_Address, buf, 2);  // read moisture
 
-    ret = ((uint16_t)buf[0] << 8 | buf[1]);  // concatenate bytes together
+    sensorReading = (static_cast<uint16_t>(buf[0]) << 8 | buf[1]);  // concatenate bytes together
 
     counter--;
-  } while (ret == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10 times
+  } while (sensorReading == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10 times
                                            // (breaks out regardless of if read works or not)
 
-  return ret;
+  if(sensorReading == 65535)
+  {
+  	return false;
+  }
+  return true;
 }
 
 //read temperature of device
-float MoistureSensor::alternateRead() {
-  if (!(this->getSensorStatus())) {  // checks if device is initialized, returns -273.0 if there is an issue
-    return -273.0;
+bool MoistureSensor::MoistureSensor::alternateRead(float &sensorReading) {
+  if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
+    return false;
   }
 
   char cmd[2];
@@ -81,12 +89,13 @@ float MoistureSensor::alternateRead() {
 
   char buf[4];
 
-  i2c_.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading temperature
+  m_i2c.write(Sensor_I2C_Address, cmd, 2);  // initialize registers for reading temperature
   ThisThread::sleep_for(1s);
-  i2c_.read(Sensor_I2C_Address, buf, 4);  // read temp
+  m_i2c.read(Sensor_I2C_Address, buf, 4);  // read temp
 
-  int32_t ret = ((uint32_t)buf[0] << 24) | ((uint32_t)buf[1] << 16) |  // concatenate bytes together
-                ((uint32_t)buf[2] << 8) | (uint32_t)buf[3];
+  sensorReading = (static_cast<uint32_t>(buf[0]) << 24) | (static_cast<uint32_t>(buf[1]) << 16) |  // concatenate bytes together
+                (static_cast<uint32_t>(buf[2]) << 8) | static_cast<uint32_t>(buf[3]);
+  sensorReading = sensorReading * (1.0 / (1UL << 16));
 
-  return (1.0 / (1UL << 16)) * ret;
+  return true;
 }
