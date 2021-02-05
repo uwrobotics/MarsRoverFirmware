@@ -50,6 +50,9 @@ test-enc-abs-pwm:
 #  - gimbtonomy
 #  - science
 
+test-logger:
+  - pdb
+
 test-lookup-table:
   - nucleo
 
@@ -76,6 +79,3 @@ test-pwmin:
 #  - gamepad
 #  - gimbtonomy
 #  - science
-
-test-swo:
-  - pdb

@@ -144,16 +144,19 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
+  // Not connected
+  NC = (int)0xFFFFFFFF,
+
 // STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = (int)0xFFFFFFFF,
+  STDIO_UART_TX = NC,
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = (int)0xFFFFFFFF,
+  STDIO_UART_RX = NC,
 #endif
 
   /**** UI ****/
@@ -211,9 +214,6 @@ typedef enum {
   SYS_WKUP0 = PA_0,
   SYS_WKUP1 = PC_13,
   // no WKUP1
-
-  // Not connected
-  NC = (int)0xFFFFFFFF
 } PinName;
 
 #ifdef __cplusplus
