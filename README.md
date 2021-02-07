@@ -117,7 +117,7 @@ This repository contains:
 
 5. Deploy onto board (see below for how to connect to a rover control board)
 
-    **Note:** The following instructions only apply to Nucleo and Rev 1 boards. For Rev 2 boards and beyond, see [Using the ST-Link to Program Rover Boards (Rev 2 +)](#Using%20the%20ST-Link%20to%20Program%20Rover%20Boards%20(Rev%202%20+))
+    **Note:** The following instructions only apply to Nucleo and Rev 1 boards. For Rev 2 boards and beyond, see [Using the ST-Link to Program Rover Boards (Rev 2 +)](#using-the-st-link-to-program-rover-boards-rev-2-)
 
     Find the application .bin file, located in the build-<TARGET>-board/apps/<APP> directory.
 
@@ -145,17 +145,12 @@ This repository contains:
 
 Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link. A 20-pin to 10-pin adapter is needed to hook the ST-Link 20-pin header to the rover board 10-pin header.
 
-![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/STLink.jpg)
+![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLink.jpg)
 
 ### ST-Link Software Installation
 
-#### Linux
-1. Install the necessary tools: 
-    ```
-    sudo apt-get install git make cmake libusb-1.0.0-dev
-    sudo apt-get install gcc build-essential
-    ```
-2. Download and build the ST-Link utilities:
+### Ubuntu
+1.  Download and build the ST-Link utilities:
     ```
     git clone https://github.com/stlink-org/stlink
     cd stlink
@@ -163,7 +158,7 @@ Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link.
     make
     ```
 
-3. Copy the built binaries into their place:
+2. Copy the built binaries into their place:
     ```
     cd bin
     sudo cp st-* /usr/local/bin
@@ -171,7 +166,7 @@ Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link.
     sudo cp *.so* /lib32
     ```
 
-4. Copy the udev rules to their place (this lets you run the st-link commands without using `sudo`):
+3. Copy the udev rules to their place (this lets you run the st-link commands without using `sudo`):
     ```
     cd ../config/udev/rules.d
     sudo cp 49-stlinkv* /etc/udev/rules.d/
@@ -181,9 +176,9 @@ Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link.
 
 1. Download [st-link utility](http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-programmers/stsw-link004.html)
 
-## Steps to Flashing a Rover Board
+### Steps to Flashing a Rover Board
 
-### Linux
+#### Ubuntu
 
 1. Cd into the folder containing the binary of the program to flash (eg. `MarsRover2020-firmware/build-<target name>/apps/<app name>`)
 2. Ensure that the ST-Link is connected to your computer and to the rover board.
@@ -196,21 +191,21 @@ Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link.
 - Alternatively, instead of doing srun `st-flash --reset write <app name>.bin 0x8000000` to flash the board and trigger a reset both before and after flashing
 - See [github.com/stlink-org/stlink](https://github.com/stlink-org/stlink) for further documentation
 
-### Windows
+#### Windows
 
 1. Connect the ST-Link to the rover board and to your computer
 2. Open ST-Link Utility
 3. Click "Connect to the target"
 
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/STLinkUtility1.png)
+    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility1.png)
 
 4. Click "Open file" and select the `.bin` file of the program to flash
 
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/STLinkUtility2.png)
+    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility2.png)
 
 5. Click "Program & verify"
 
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/STLinkUtility3.png)
+    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility3.png)
 
 6. Click "Start"
 
@@ -232,7 +227,7 @@ The ST-LINK debugger can then be connected via header CN4 (pins 1-5 with 1 neare
 | 6 (SWO)               | Not Connected                     |
 +-----------------------+-----------------------------------+
 ```
-![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/NucleoSWDLabels.png)
+![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/NucleoSWDLabels.png)
 
 After deploying the binary to the board, the Nucleo's `LD1` LED will flash red and green. Programming is complete when the LED stays green, so don't powercycle the board before this.
 
@@ -242,7 +237,7 @@ The 10-pin Serial Wire Debug (SWD) programming interface does not come with UART
 
 See `apps/test-logger` for an example of using the SWO-supported logger utility.
 
-### Linux
+### Ubuntu
 
 **TODO**
 
@@ -251,11 +246,11 @@ See `apps/test-logger` for an example of using the SWO-supported logger utility.
 1. Ensure that the rover board is running and that the ST-Link is connected
 2. In the ST-Link Utility software, click "Print via SWO viewer"
 
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/STLinkUtility4.png)
+    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility4.png)
 
 3. Set the system clock rate to 180000000Hz and set the stimulus port to 0
 
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/STLinkUtility5.png)
+    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility5.png)
 
 4. Click "Start". The SWO print statements should appear in the Serial Wire Viewer console.
 
