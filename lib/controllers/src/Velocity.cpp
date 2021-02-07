@@ -1,27 +1,14 @@
-#include "Position.h"
+#include "Velocity.h"
 
 using namespace Controller;
 
-void Velocity::update() {
-  if (!m_ignoreRPMChecks.load()) {
-    if (std::abs(m_encoder->getAngularVelocityDegPerSec()) > m_maxDegPerSec) {
-      stop();
+bool Velocity::update() {
+  if (shouldUpdate()) {
+    float speed = 0;
+    if (m_encoder->getAngularVelocityDegPerSec(speed)) {
+      m_actuator->setValue(m_pid->compute(m_sp.load(), speed));
+      return true;
     }
   }
-  if (!m_ignoreCurrentChecks.load()) {
-    if (std::abs(m_encoder->read()) > m_maxDegPerSec) {
-      stop();
-    }
-  }
-  if (m_upperLimit) {
-    if (m_upperLimit.value()->read() && m_sp.load() > 0) {
-      return;
-    }
-  }
-  if (m_lowerLimit) {
-    if (m_lowerLimit.value()->read() && m_sp.load() < 0) {
-      return;
-    }
-  }
-  m_actuator->setValue(pid->compute(m_sp.load(), m_encoder->getAngularVelocityDegPerSec()));
+  return false;
 }

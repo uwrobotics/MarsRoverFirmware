@@ -19,7 +19,7 @@ class ActuatorController {
   virtual void reinstateDegPerSecChecks() final;
 
   /* functions to be overriden by children */
-  virtual void update() = 0;
+  virtual bool update() = 0;
   virtual void stop()   = 0;
   virtual void reset()  = 0;
   virtual bool reportAngleDeg(float &angle) = 0;

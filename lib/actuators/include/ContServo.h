@@ -29,12 +29,6 @@ class ContServo : public Servo {
    */
   void setValue(float speed) override;
 
-  /** Read the current speed of the servo
-   *
-   * @return Current speed of servo
-   */
-  float getValue() const override;
-
  protected:
   PwmOut m_pwm;
   float m_abs_max_speed,  // deg/sec

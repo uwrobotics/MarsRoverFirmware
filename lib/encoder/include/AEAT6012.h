@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Encoder.h"
+#include <mutex>
 
 namespace Encoder {
 class AEAT6012 : public Encoder {
@@ -19,6 +20,6 @@ class AEAT6012 : public Encoder {
 
   Mutex m_mutex;
 
-  float offsetDeg;
+  float m_offsetDeg;
 };
 }  // namespace Encoder

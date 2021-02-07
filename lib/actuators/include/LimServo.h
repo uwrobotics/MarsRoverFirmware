@@ -29,12 +29,6 @@ class LimServo : public Servo {
    */
   void setValue(float position) override;
 
-  /** Read the current position of the servo
-   *
-   * @return Current position of servo in degrees
-   */
-  float getValue() const override;
-
  protected:
   static constexpr int DEFAULT_RANGE = 180;  // degrees
 

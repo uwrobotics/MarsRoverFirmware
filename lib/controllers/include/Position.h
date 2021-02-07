@@ -8,6 +8,6 @@ class Position final : public BasicControl {
  public:
   using BasicControl::BasicControl;
 
-  void update() override;
+  bool update() override;
 };
 }  // namespace Controller

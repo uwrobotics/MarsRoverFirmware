@@ -1,5 +1,7 @@
 #include "PwmIn.h"
 
+using namespace GPIO;
+
 PwmIn::PwmIn(PinName pwmSense, int numSamplesToAverage)
     : m_pwmSense(pwmSense), m_numSamplesToAverage(numSamplesToAverage) {
   m_pwmSense.rise(callback(this, &PwmIn::rise));

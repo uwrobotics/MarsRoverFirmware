@@ -27,7 +27,3 @@ void ContServo::ContServo::setValue(float speed) {
   speed += m_abs_max_speed;
   m_pwm.pulsewidth(((m_max_pulse - m_min_pulse) * speed / (m_abs_max_speed * 2) + m_min_pulse).count());
 }
-
-float ContServo::ContServo::getValue(void) const {
-  return m_speed;
-}

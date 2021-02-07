@@ -16,12 +16,14 @@ class OpenLoop final : public ActuatorController {
 
   void stop() override;
   void reset() override;
-  void update() override;
+  bool update() override;
 
   bool reportAngleDeg(float &angle) override;
   bool reportAngularVelocityDegPerSec(float &speed) override;
 
   std::optional<PID::PID *> getPID() override;
+
+  bool shouldUpdate();
 
  private:
   Actuator::Actuator *m_actuator;

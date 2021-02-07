@@ -2,14 +2,25 @@ add_executable(arm.${TARGET}-board.elf)
 target_sources(arm.${TARGET}-board.elf PRIVATE src/main.cpp)
 target_link_libraries(arm.${TARGET}-board.elf
         PRIVATE
+#Control
+        OpenLoopController
+        PositionController
+        VelocityController
+        CurrentController
         ActuatorControllerManager
-        ActuatorController
-        Actuator
-        Encoder
-        CurrentSensor
-        PID
+#Motors
+        LimServo
+        DCMotor
+#Encoders
+        EncoderAEAT6012
+        EncoderMAE3
+        EncoderPololu37D
+#CAN
         CANBus
         CANMsg
+#Sensor
+        CurrentSensor
+#Other
         uwrt-mars-rover-hw-bridge
         Config
         )

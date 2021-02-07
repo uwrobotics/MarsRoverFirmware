@@ -128,7 +128,9 @@
  */
 #include "QEI.h"
 
-Encoder::QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, float movingAvgSmoothingParam)
+using namespace GPIO;
+
+QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding, float movingAvgSmoothingParam)
     : channelA_(channelA), channelB_(channelB), index_(index), movingAvgSmoothingParam_(movingAvgSmoothingParam) {
   pulses_      = 0;
   revolutions_ = 0;
@@ -149,7 +151,7 @@ Encoder::QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding en
   channelA_.fall(callback(this, &QEI::encode));
 
   // If we're using X4 encoding, then attach interrupts to channel B too.
-  if (encoding == Encoding::x4_encoding) {
+  if (encoding == Encoding::X4_ENCODING) {
     channelB_.rise(callback(this, &QEI::encode));
     channelB_.fall(callback(this, &QEI::encode));
   }
@@ -161,24 +163,24 @@ Encoder::QEI::QEI(PinName channelA, PinName channelB, PinName index, Encoding en
   timer_.start();
 }
 
-void Encoder::QEI::reset(void) {
+void QEI::reset(void) {
   pulses_      = 0;
   revolutions_ = 0;
 }
 
-int Encoder::QEI::getCurrentState(void) {
+int QEI::getCurrentState(void) {
   return currState_;
 }
 
-int Encoder::QEI::getPulses(void) {
+int QEI::getPulses(void) {
   return pulses_;
 }
 
-float Encoder::QEI::getPulseVelocity_PulsesPerSec(void) {
+float QEI::getPulseVelocity_PulsesPerSec(void) {
   return movingAvgVelocity_PulsesPerSec_;
 }
 
-int Encoder::QEI::getRevolutions(void) {
+int QEI::getRevolutions(void) {
   return revolutions_;
 }
 
@@ -226,7 +228,7 @@ int Encoder::QEI::getRevolutions(void) {
 // We might enter an invalid state for a number of reasons which are hard to
 // predict - if this is the case, it is generally safe to ignore it, update
 // the state and carry on, with the error correcting itself shortly after.
-void Encoder::QEI::encode(void) {
+void QEI::encode(void) {
   int change = 0;
   int chanA  = channelA_.read();
   int chanB  = channelB_.read();
@@ -238,7 +240,7 @@ void Encoder::QEI::encode(void) {
   // 2-bit state.
   currState_ = (chanA << 1) | (chanB);
 
-  if (encoding_ == Encoding::x2_encoding) {
+  if (encoding_ == Encoding::X2_ENCODING) {
     // 11->00->11->00 is counter clockwise rotation or "forward".
     if ((prevState_ == 0x3 && currState_ == 0x0) || (prevState_ == 0x0 && currState_ == 0x3)) {
       pulses_++;
@@ -249,7 +251,7 @@ void Encoder::QEI::encode(void) {
       pulses_--;
     }
 
-  } else if (encoding_ == Encoding::x4_encoding) {
+  } else if (encoding_ == Encoding::X4_ENCODING) {
     // Entered a new valid state.
     if (((currState_ ^ prevState_) != INVALID) && (currState_ != prevState_)) {
       // 2 bit state. Right hand bit of prev XOR left hand bit of current
@@ -275,6 +277,6 @@ void Encoder::QEI::encode(void) {
       (1 - movingAvgSmoothingParam_) * pulseVelocity + movingAvgSmoothingParam_ * movingAvgVelocity_PulsesPerSec_;
 }
 
-void Encoder::QEI::index(void) {
+void QEI::index(void) {
   revolutions_++;
 }

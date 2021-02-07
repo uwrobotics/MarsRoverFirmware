@@ -36,6 +36,8 @@ class BasicControl : public ActuatorController {
 
   const float m_maxDegPerSec, m_maxCurrent;
 
-  std::optional<DigitalIn *> m_upperLimit, m_lowerLimit;
+  std::optional<DigitalIn *> m_lowerLimit, m_upperLimit;
+
+  virtual bool shouldUpdate() final;
 };
 }  // namespace Controller

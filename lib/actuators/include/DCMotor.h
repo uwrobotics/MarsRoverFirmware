@@ -31,12 +31,6 @@ class DCMotor : public Actuator {
    */
   void setValue(float dutyCycle) override;
 
-  /** Read the current speed of the motor
-   *
-   * @return Current speed of motor
-   */
-  float getValue() const override;
-
  protected:
   static constexpr int MOTOR_DEFAULT_FREQUENCY_HZ = 20000;  // TODO: Need to test if 20kHz works
 

@@ -1,6 +1,6 @@
-#include "mutex.h"
-
 #include "Pololu37D.h"
+
+#include <mutex>
 
 using namespace Encoder;
 
@@ -10,15 +10,18 @@ Pololu37D::Pololu37D(const Config &config)
 
 bool Pololu37D::getAngleDeg(float &angle) {
   std::scoped_lock<Mutex> lock(m_mutex);
-  return (m_QEI.getPulses() * m_degreesPerCount) - m_zeroOffsetDeg;
+  angle = (m_QEI.getPulses() * m_degreesPerCount) - m_zeroOffsetDeg;
+  return true;
 }
 
 bool Pololu37D::getAngularVelocityDegPerSec(float &speed) {
   std::scoped_lock<Mutex> lock(m_mutex);
-  return m_QEI.getPulseVelocity_PulsesPerSec() * m_degreesPerCount;
+  speed = m_QEI.getPulseVelocity_PulsesPerSec() * m_degreesPerCount;
+  return true;
 }
 
 bool Pololu37D::reset() {
   std::scoped_lock<Mutex> lock(m_mutex);
   m_QEI.reset();
+  return true;
 }

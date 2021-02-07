@@ -10,14 +10,15 @@ class MAE3 final : public Encoder {
     PinName pwm;
     float offsetDeg;
   } Config;
+
   MAE3(const Config &config);
   MAE3(MAE3 &)  = delete;
   MAE3(MAE3 &&) = delete;
   ~MAE3()       = default;
 
-  float getAngleDeg() override;
-  float getAngularVelocityDegPerSec() override;
-  void reset() override;
+  bool getAngleDeg(float &angle) override;
+  bool getAngularVelocityDegPerSec(float &speed) override;
+  bool reset() override;
 
  private:
   GPIO::PwmIn m_pwmIn;
