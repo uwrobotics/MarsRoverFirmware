@@ -142,8 +142,7 @@ This repository contains:
 - To clean compiled MBED SDK files, run `make clean-mbed`
 
 ## Using the ST-Link to Program Rover Boards (Rev 2 +)
-
-Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link. A 20-pin to 10-pin adapter is needed to hook the ST-Link 20-pin header to the rover board 10-pin header.
+Rev 2 PCBs come with ARM 10-pin SWD headers and can be programmed via ST-Link. A 20-pin to 10-pin adapter is needed to hook the ST-Link 20-pin header to the rover board 10-pin header.
 
 ### ST-Link Software Installation
 
@@ -179,14 +178,17 @@ Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link.
 #### Ubuntu
 
 1. Cd into the folder containing the binary of the program to flash (eg. `MarsRover2020-firmware/build-<target name>/apps/<app name>`)
+
 2. Ensure that the ST-Link is connected to your computer and to the rover board.
     - **Tip:** You can run `st-info --probe` to check if the ST-Link connection is detected
+
 3. Flash the program binary: `st-flash write <app name>.bin 0x8000000` (may need to run this command twice to get a successful flash)
     - If the flashing was successful, you should see a blinking LED pattern on the board and the following message: `Flash written and verified! jolly good!`
+
 4. Reset the board: `st-flash reset`
     - This is required to run the program that was flashed
 
-- Alternatively, instead of doing srun `st-flash --reset write <app name>.bin 0x8000000` to flash the board and trigger a reset both before and after flashing
+- Alternatively, instead of performing steps 3-4, run `st-flash --reset write <app name>.bin 0x8000000` to flash the board and trigger a reset both before and after flashing
 - See [github.com/stlink-org/stlink](https://github.com/stlink-org/stlink) for further documentation
 
 #### Windows
