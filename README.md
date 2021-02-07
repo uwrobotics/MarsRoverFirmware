@@ -145,8 +145,6 @@ This repository contains:
 
 Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link. A 20-pin to 10-pin adapter is needed to hook the ST-Link 20-pin header to the rover board 10-pin header.
 
-![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLink.jpg)
-
 ### ST-Link Software Installation
 
 ### Ubuntu
@@ -196,17 +194,8 @@ Rev 2 PCBs come with an ARM 10-pin SWD header and can be programmed via ST-Link.
 1. Connect the ST-Link to the rover board and to your computer
 2. Open ST-Link Utility
 3. Click "Connect to the target"
-
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility1.png)
-
 4. Click "Open file" and select the `.bin` file of the program to flash
-
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility2.png)
-
-5. Click "Program & verify"
-
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility3.png)
-
+5. Click "Program & verify:
 6. Click "Start"
 
 ## Using the Nucleo Dev Board to Program the Rover Boards (Rev 1)
@@ -245,13 +234,7 @@ See `apps/test-logger` for an example of using the SWO-supported logger utility.
 
 1. Ensure that the rover board is running and that the ST-Link is connected
 2. In the ST-Link Utility software, click "Print via SWO viewer"
-
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility4.png)
-
 3. Set the system clock rate to 180000000Hz and set the stimulus port to 0
-
-    ![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/STLinkUtility5.png)
-
 4. Click "Start". The SWO print statements should appear in the Serial Wire Viewer console.
 
 ## Serial Communication (Rev 1)
