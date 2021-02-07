@@ -8,7 +8,7 @@
 #include "CANMsg.h"
 #include "ContServo.h"
 #include "Encoder.h"
-#include "EncoderAbsolute_PWM.h"
+#include "MAE3.h"
 #include "GimbtonomyConfig.h"
 #include "LimServo.h"
 #include "Neopixel_Blocking.h"
@@ -32,7 +32,7 @@ LimServo pitchServo(SRVO_PWM_HS, 180, 2.1ms, 0.9ms);
 LimServo rollServo(SRVO_PWM_SG, 180, 2ms, 1ms);
 
 // Absolute encoder
-EncoderAbsolute_PWM panEncoder(GimbtonomyConfig::panEncoderConfig);
+MAE3 panEncoder(GimbtonomyConfig::panEncoderConfig);
 
 // Actuators
 ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor,

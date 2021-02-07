@@ -1,5 +1,5 @@
-#include "MoistureSensor.h"
-#include "MoistureSensorConfig.h"
+#include "AdafruitSTEMMA.h"
+#include "AdafruitSTEMMAConfig.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
@@ -11,7 +11,7 @@ int main() {
   float moisture = 0;  // initialize default variables
   float temperature = 0;
 
-  MoistureSensor::MoistureSensor sensor = MoistureSensor::MoistureSensor(MoistureSensorConfig::moistureSensorConfig);
+  AdafruitSTEMMA::AdafruitSTEMMA sensor = AdafruitSTEMMA::AdafruitSTEMMA(AdafruitSTEMMAConfig::AdafruitSTEMMAConfig);
 
   while (1) {
     sensor.reset();  // reset all registers on sensor to default values

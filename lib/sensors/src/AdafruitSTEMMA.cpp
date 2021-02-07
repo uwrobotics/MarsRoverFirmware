@@ -1,23 +1,12 @@
-#include "MoistureSensor.h"
+#include "AdafruitSTEMMA.h"
 
-constexpr int Sensor_I2C_Address =
-    0x36 << 1;  // MBED I2C uses 8 bit addressing, so addresses are left shifted by 1 (may need to be shifted by 2)
+using namespace Sensor;
 
-constexpr int Sensor_Status_Base   = 0x00;  // Base address registers for different modules
-constexpr int Sensor_Moisture_Base = 0x0F;
+AdafruitSTEMMA::AdafruitSTEMMA(PinName sda, PinName scl) : m_i2c(sda, scl) {}
 
-constexpr int Sensor_Status_HW_ID = 0x01;  // Function address register for the sensor's HW ID
-constexpr int Sensor_HW_ID_Code   = 0x55;  // Expected value for sensor HW ID
+AdafruitSTEMMA::AdafruitSTEMMA(const Config &config) : m_i2c(config.sda, config.scl) {}
 
-constexpr int Sensor_Moisture_Function = 0x10;  // Function address registers for various modules
-constexpr int Sensor_Temp_Function     = 0x04;
-constexpr int Sensor_Status_Reset      = 0x7F;
-
-MoistureSensor::MoistureSensor::MoistureSensor(const Config &config) : m_i2c(config.sda, config.scl) {}
-
-MoistureSensor::MoistureSensor::~MoistureSensor() {} // YOUNES TODO JUST SAY DEFAULT
-
-bool MoistureSensor::MoistureSensor::reset() {
+bool AdafruitSTEMMA::AdafruitSTEMMA::reset() {
   char cmd[3];
   cmd[0] = Sensor_Status_Base;  // initialize registers for clearing sensor memory
   cmd[1] = Sensor_Status_Reset;
@@ -28,7 +17,7 @@ bool MoistureSensor::MoistureSensor::reset() {
   return true;
 }
 
-bool MoistureSensor::MoistureSensor::getStatus() {
+bool AdafruitSTEMMA::AdafruitSTEMMA::getStatus() const {
   char cmd[2];
   cmd[0] = Sensor_Status_Base;
   cmd[1] = Sensor_Status_HW_ID;
@@ -39,11 +28,11 @@ bool MoistureSensor::MoistureSensor::getStatus() {
   ThisThread::sleep_for(125ms);
   m_i2c.read(Sensor_I2C_Address, check, 1);  // read device ID
 
-   return (check[0] == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
-} 
+  return (check[0] == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
+}
 
-//read moisture reading of device
-bool MoistureSensor::MoistureSensor::read(float &sensorReading) {
+// read moisture reading of device
+bool AdafruitSTEMMA::AdafruitSTEMMA::read(float &sensorReading) {
   if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
     return false;
   }
@@ -67,18 +56,17 @@ bool MoistureSensor::MoistureSensor::read(float &sensorReading) {
     sensorReading = (static_cast<uint16_t>(buf[0]) << 8 | buf[1]);  // concatenate bytes together
 
     counter--;
-  } while (sensorReading == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10 times
-                                           // (breaks out regardless of if read works or not)
+  } while (sensorReading == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10
+                                                     // times (breaks out regardless of if read works or not)
 
-  if(sensorReading == 65535)
-  {
-  	return false;
+  if (sensorReading == 65535) {
+    return false;
   }
   return true;
 }
 
-//read temperature of device
-bool MoistureSensor::MoistureSensor::alternateRead(float &sensorReading) {
+// read temperature of device
+bool AdafruitSTEMMA::AdafruitSTEMMA::alternateRead(float &sensorReading) {
   if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
     return false;
   }
@@ -93,8 +81,9 @@ bool MoistureSensor::MoistureSensor::alternateRead(float &sensorReading) {
   ThisThread::sleep_for(1s);
   m_i2c.read(Sensor_I2C_Address, buf, 4);  // read temp
 
-  sensorReading = (static_cast<uint32_t>(buf[0]) << 24) | (static_cast<uint32_t>(buf[1]) << 16) |  // concatenate bytes together
-                (static_cast<uint32_t>(buf[2]) << 8) | static_cast<uint32_t>(buf[3]);
+  sensorReading = (static_cast<uint32_t>(buf[0]) << 24) |
+                  (static_cast<uint32_t>(buf[1]) << 16) |  // concatenate bytes together
+                  (static_cast<uint32_t>(buf[2]) << 8) | static_cast<uint32_t>(buf[3]);
   sensorReading = sensorReading * (1.0 / (1UL << 16));
 
   return true;

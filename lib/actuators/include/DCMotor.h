@@ -2,17 +2,16 @@
 
 #include "Actuator.h"
 
-namespace DCMotor {
-typedef struct {
-  PinName pwmPin;
-  PinName dirPin;
-  bool inverted;
-  int freqInHz;
-  float limit;
-} Config;
-
+namespace Actuator {
 class DCMotor : public Actuator {
  public:
+  typedef struct Config {
+    PinName pwmPin;
+    PinName dirPin;
+    bool inverted;
+    int freqInHz;
+    float limit;
+  } Config;
   /** Create a motor control interface
    *
    * @param pwm       A PwmOut pin, driving the H-bridge enable line to control the speed
@@ -46,4 +45,4 @@ class DCMotor : public Actuator {
   bool m_inverted;
   float m_limit;
 };
-}  // namespace DCMotor
+}  // namespace Actuator

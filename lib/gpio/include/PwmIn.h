@@ -1,11 +1,5 @@
 #pragma once
 
-#ifndef PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE
-#define PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE 12
-#endif
-
-#include "mbed.h"
-
 /** PwmIn class to read PWM inputs
  *
  * Uses InterruptIn to measure the changes on the input
@@ -13,6 +7,9 @@
  *
  * @note uses InterruptIn, so not available on p19/p20
  */
+
+namespace GPIO {
+
 class PwmIn {
  public:
   /** Create a PwmIn with a specified number of pulses to average
@@ -20,13 +17,12 @@ class PwmIn {
    * @param pwmSense           The pwm input pin (must support InterruptIn)
    * @param numSamplesToAverage The number of PWM measurements to sum before averaging
    */
-  PwmIn(PinName pwmSense, int numSamplesToAverage = PWM_IN_DEFAULT_NUM_SAMPLES_TO_AVERAGE);
+  PwmIn(PinName pwmSense, int numSamplesToAverage = DEFAULT_NUM_SAMPLES_TO_AVERAGE);
 
-  /** the default copy construcor is ill formed since it uses Interrupt In 
-    * which is a mbed NonCopyable type
-    */
-  PwmIn(PwmIn&) =
-      delete;
+  /** the default copy construcor is ill formed since it uses Interrupt In
+   * which is a mbed NonCopyable type
+   */
+  PwmIn(PwmIn&) = delete;
 
   ~PwmIn();
 
@@ -93,4 +89,8 @@ class PwmIn {
   std::chrono::duration<float> movingAvg(std::chrono::duration<float>* p_samples,
                                          std::chrono::duration<float>* p_sampleSum,
                                          std::chrono::duration<float> newSample, int newIndex);
+
+  static constexpr uint8_t DEFAULT_NUM_SAMPLES_TO_AVERAGE = 12;
 };
+
+}  // namespace GPIO

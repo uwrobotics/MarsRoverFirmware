@@ -1,18 +1,41 @@
+add_library(ActuatorControllerManager STATIC)
+target_sources(ActuatorControllerManager PRIVATE src/ActuatorControllerManager.cpp)
+target_include_directories(ActuatorControllerManager PUBLIC include)
+target_link_libraries(ActuatorControllerManager PRIVATE  PID Actuator Encoder ActuatorController LookupTable uwrt-mars-rover-hw-bridge)
+target_set_mbed_dependency(ActuatorControllerManager)
+
 add_library(ActuatorController STATIC)
 target_sources(ActuatorController PRIVATE src/ActuatorController.cpp)
 target_include_directories(ActuatorController PUBLIC include)
-target_link_libraries(ActuatorController
-        PUBLIC
-        PID
-        PRIVATE
-        EncoderAbsolute_PWM
-        Motor
-        )
+target_link_libraries(ActuatorController PRIVATE Actuator Encoder PID)
 target_set_mbed_dependency(ActuatorController)
 
-# add_library(Motor STATIC)
-# target_sources(Motor PRIVATE src/Motor.cpp)
-# target_include_directories(Motor PUBLIC include)
-# target_set_mbed_dependency(Motor)
+add_library(BasicController STATIC)
+target_sources(BasicController PRIVATE src/BasicControl.cpp)
+target_include_directories(BasicController PUBLIC include)
+target_link_libraries(BasicController PRIVATE PID ActuatorController)
+target_set_mbed_dependency(BasicController)
 
-# TODO: Need to update dependencies to align with new actuators library (cindyli-13)
+add_library(PositionController STATIC)
+target_sources(PositionController PRIVATE src/Position.cpp)
+target_include_directories(PositionController PUBLIC include)
+target_link_libraries(PositionController PRIVATE BasicController)
+target_set_mbed_dependency(PositionController)
+
+add_library(VelocityController STATIC)
+target_sources(VelocityController PRIVATE src/Velocity.cpp)
+target_include_directories(VelocityController PUBLIC include)
+target_link_libraries(VelocityController PRIVATE BasicController)
+target_set_mbed_dependency(VelocityController)
+
+add_library(CurrentController STATIC)
+target_sources(CurrentController PRIVATE src/Current.cpp)
+target_include_directories(CurrentController PUBLIC include)
+target_link_libraries(CurrentController PRIVATE BasicController)
+target_set_mbed_dependency(CurrentController)
+
+add_library(OpenLoopController STATIC)
+target_sources(OpenLoopController PRIVATE src/OpenLoop.cpp)
+target_include_directories(OpenLoopController PUBLIC include)
+target_link_libraries(OpenLoopController PRIVATE BasicController)
+target_set_mbed_dependency(OpenLoopController)

@@ -3,17 +3,16 @@
 #include "Actuator.h"
 
 // TODO: this class is currently unimplemented
-namespace BrushlessMotor {
-typedef struct {
-  PinName pwmPin;
-  float max_speed;
-  std::chrono::duration<float> max_pulse;
-  std::chrono::duration<float> min_pulse;
-  std::chrono::duration<float> period;
-} Config;
-
+namespace Actuator {
 class BrushlessMotor : public Actuator {
  public:
+  typedef struct Config {
+    PinName pwmPin;
+    float max_speed;
+    std::chrono::duration<float> max_pulse;
+    std::chrono::duration<float> min_pulse;
+    std::chrono::duration<float> period;
+  } Config;
   BrushlessMotor(PinName pin, float max_speed, std::chrono::duration<float> max_pulse = DEFAULT_MAX,
                  std::chrono::duration<float> min_pulse = DEFAULT_MIN,
                  std::chrono::duration<float> period    = DEFAULT_PERIOD);
@@ -52,4 +51,4 @@ class BrushlessMotor : public Actuator {
   float m_abs_max_speed,  // deg/sec
       m_speed;            // deg/sec (from -m_abs_max_speed to +m_abs_max_speed)
 };
-}  // namespace BrushlessMotor
+}  // namespace Actuator

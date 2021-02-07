@@ -8,7 +8,7 @@
 #include <optional>
 #include <unordered_map>
 
-namespace lookup_table {
+namespace LookupTable {
 namespace internal {
 struct UnusedDefaultValue {};
 }  // namespace internal
@@ -40,10 +40,10 @@ class LookupTable {
   template <typename InputIterator>
   LookupTable(InputIterator first, InputIterator last) : m_map(first, last) {}
   // copy constructor and assignment
-  LookupTable(const LookupTable &copy) = default;
+  LookupTable(const LookupTable &) = default;
   LookupTable &operator=(const LookupTable &) = default;
   // move constructor and assignment
-  LookupTable(LookupTable &&move) = default;
+  LookupTable(LookupTable &&) = default;
   LookupTable &operator=(LookupTable &&) = default;
   // initializer list constructor
   LookupTable(std::initializer_list<value_type> init, size_type bucket_count = 0, const Hash &hash = Hash(),
@@ -69,6 +69,10 @@ class LookupTable {
     return m_map.empty();
   }
 
+  const_iterator find(const Key &key) const {
+    return m_map.find(key);
+  }
+
   template <typename V = Value>
   typename std::enable_if<std::is_same<V, decltype(defaultValue)>::value, V>::type at(const Key &key) const {
     bool value_exists = m_map.find(key) != m_map.end();
@@ -91,4 +95,4 @@ class LookupTable {
     return at(key);
   }
 };
-}  // namespace lookup_table
+}  // namespace LookupTable

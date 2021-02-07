@@ -2,6 +2,7 @@
 
 #include "Actuator.h"
 
+namespace Actuator {
 class Servo : public Actuator {
  protected:
   static constexpr int PWM_FREQ     = 50;   // DEFAULT PWM FREQUENCY, should work for both length and positional control
@@ -12,3 +13,4 @@ class Servo : public Actuator {
   std::chrono::duration<float> m_max_pulse,  // PULSE LENGTH for MAX ANGLE/SPEED
       m_min_pulse;                           // PULSE LENGTH for MIN ANGLE/SPEED
 };
+}

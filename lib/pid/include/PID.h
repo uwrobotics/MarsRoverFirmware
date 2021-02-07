@@ -34,6 +34,9 @@ typedef struct Config {
 class PID {
  public:
   PID(const Config &config);
+  PID(PID &)  = delete;
+  PID(PID &&) = delete;
+  ~PID()      = default;
 
   void updateProportionalGain(float p);
   void updateIntegralGain(float i);
@@ -46,6 +49,7 @@ class PID {
   float reportDeadzone() const;
 
   void reset();
+
   float compute(float setPoint, float processVariable, float ff = 0);  // takes ~15us to run
 
  private:

@@ -2,17 +2,16 @@
 
 #include "Servo.h"
 
-namespace LimServo {
-typedef struct {
-  PinName pwmPin;
-  float range;
-  std::chrono::duration<float> max_pulse;
-  std::chrono::duration<float> min_pulse;
-  std::chrono::duration<float> period;
-} Config;
-
+namespace Actuator {
 class LimServo : public Servo {
  public:
+  typedef struct Config {
+    PinName pwmPin;
+    float range;
+    std::chrono::duration<float> max_pulse;
+    std::chrono::duration<float> min_pulse;
+    std::chrono::duration<float> period;
+  } Config;
   LimServo(PinName pin, float range, std::chrono::duration<float> max_pulse = DEFAULT_MAX,
            std::chrono::duration<float> min_pulse = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
 
@@ -37,10 +36,10 @@ class LimServo : public Servo {
   float getValue() const override;
 
  protected:
-  static constexpr int DEFAULT_RANGE = 180; // degrees
+  static constexpr int DEFAULT_RANGE = 180;  // degrees
 
   PwmOut m_pwm;
   float m_abs_range,  // degrees
       m_pos;          // degrees (from -m_abs_range to +m_abs_range)
 };
-}  // namespace LimServo
+}  // namespace Actuator

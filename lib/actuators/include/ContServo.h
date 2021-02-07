@@ -2,17 +2,16 @@
 
 #include "Servo.h"
 
-namespace ContServo {
-typedef struct {
-  PinName pwmPin;
-  float max_speed;
-  std::chrono::duration<float> max_pulse;
-  std::chrono::duration<float> min_pulse;
-  std::chrono::duration<float> period;
-} Config;
-
+namespace Actuator {
 class ContServo : public Servo {
  public:
+  typedef struct Config {
+    PinName pwmPin;
+    float max_speed;
+    std::chrono::duration<float> max_pulse;
+    std::chrono::duration<float> min_pulse;
+    std::chrono::duration<float> period;
+  } Config;
   ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse = DEFAULT_MAX,
             std::chrono::duration<float> min_pulse = DEFAULT_MIN, std::chrono::duration<float> period = DEFAULT_PERIOD);
 
@@ -41,4 +40,4 @@ class ContServo : public Servo {
   float m_abs_max_speed,  // deg/sec
       m_speed;            // deg/sec (from -m_abs_max_speed to +m_abs_max_speed)
 };
-}  // namespace ContServo
+}  // namespace Actuator

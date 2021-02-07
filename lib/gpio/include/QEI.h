@@ -126,30 +126,13 @@
 #pragma once
 
 /**
- * Includes
- */
-#include "Encoder.h"
-#include "mbed.h"
-
-/**
- * Defines
- */
-#define PREV_MASK 0x1  // Mask for the previous state in determining direction
-// of rotation.
-#define CURR_MASK 0x2  // Mask for the current state in determining direction
-// of rotation.
-#define INVALID 0x3  // XORing two states where both bits have changed.
-
-/**
  * Quadrature Encoder Interface.
  */
- namespace Encoder {
-	 typedef enum encoderType {relative, absolute } t_encoderType;
-	 typedef enum quadratureEncodingType {x2_encoding, x4_encoding } t_quadratureEncodingType;
+namespace GPIO {
 
 class QEI {
  public:
-  typedef t_quadratureEncodingType Encoding;
+  enum class Encoding { X2_ENCODING, X4_ENCODING };
 
   /**
    * Constructor.
@@ -174,7 +157,7 @@ class QEI {
    * @param movingAvgSmoothingParam Moving average smoothing parameter (0, 1) --> (0.1: minimal smoothing, 0.9: strong
    * smoothing)
    */
-  QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding = Encoding::x2_encoding,
+  QEI(PinName channelA, PinName channelB, PinName index, Encoding encoding = Encoding::X2_ENCODING,
       float movingAvgSmoothingParam = 0.2);
 
   /**
@@ -248,5 +231,10 @@ class QEI {
   volatile float movingAvgVelocity_PulsesPerSec_;
 
   float movingAvgSmoothingParam_;  // 0.1: minimal smoothing, 0.9: strong smoothing
+
+ protected:
+  static constexpr uint8_t PREV_MASK = 0x1;
+  static constexpr uint8_t CURR_MASK = 0x2;
+  static constexpr uint8_t INVALID   = 0x3;
 };
-}
+}  // namespace GPIO

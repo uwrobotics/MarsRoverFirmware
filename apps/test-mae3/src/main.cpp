@@ -1,4 +1,4 @@
-#include "EncoderAbsolute_PWM.h"
+#include "MAE3.h"
 #include "mbed.h"
 
 Encoder::t_encoderConfig config = {
