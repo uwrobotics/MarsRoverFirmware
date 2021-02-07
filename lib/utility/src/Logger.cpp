@@ -23,31 +23,31 @@ void Utility::Logger::printf(const char* format, ...) {
 }
 
 Utility::Logger& Utility::Logger::operator<<(long n) {
-  return operator<<((long long)n);
+  return operator<<(static_cast<long long>(n));
 }
 
 Utility::Logger& Utility::Logger::operator<<(unsigned long n) {
-  return operator<<((unsigned long long)n);
+  return operator<<(static_cast<unsigned long long>(n));
 }
 
 Utility::Logger& Utility::Logger::operator<<(bool n) {
-  return operator<<((long long)n);
+  return operator<<(static_cast<long long>(n));
 }
 
 Utility::Logger& Utility::Logger::operator<<(short n) {
-  return operator<<((long long)n);
+  return operator<<(static_cast<long long>(n));
 }
 
 Utility::Logger& Utility::Logger::operator<<(unsigned short n) {
-  return operator<<((unsigned long long)n);
+  return operator<<(static_cast<unsigned long long>(n));
 }
 
 Utility::Logger& Utility::Logger::operator<<(int n) {
-  return operator<<((long long)n);
+  return operator<<(static_cast<long long>(n));
 }
 
 Utility::Logger& Utility::Logger::operator<<(unsigned int n) {
-  return operator<<((unsigned long long)n);
+  return operator<<(static_cast<unsigned long long>(n));
 }
 
 Utility::Logger& Utility::Logger::operator<<(long long n) {
@@ -81,11 +81,11 @@ Utility::Logger& Utility::Logger::operator<<(unsigned long long n) {
 }
 
 Utility::Logger& Utility::Logger::operator<<(double f) {
-  return operator<<((long double)f);
+  return operator<<(static_cast<long double>(f));
 }
 
 Utility::Logger& Utility::Logger::operator<<(float f) {
-  return operator<<((long double)f);
+  return operator<<(static_cast<long double>(f));
 }
 
 Utility::Logger& Utility::Logger::operator<<(long double f) {
