@@ -1,8 +1,8 @@
 #include "Logger.h"
 
-#define SWO_Logging // TODO: need to configure this at the target level
+#define SWO_Logging  // TODO: need to configure this at the target level
 
-static char buffer[4096]; // Can increase max buffer length if needed
+static char buffer[4096];  // Can increase max buffer length if needed
 
 void Utility::Logger::printf(const char* format, ...) {
   va_list arg;
