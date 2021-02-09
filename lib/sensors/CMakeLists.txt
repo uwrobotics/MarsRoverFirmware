@@ -27,3 +27,8 @@ add_library(QEI STATIC)
 target_sources(QEI PRIVATE src/QEI.cpp)
 target_include_directories(QEI PUBLIC include)
 target_set_mbed_dependency(QEI)
+
+add_library(FSR STATIC)
+target_sources(FSR PRIVATE src/FSR.cpp)
+target_include_directories(FSR PUBLIC include)
+target_set_mbed_dependency(FSR)

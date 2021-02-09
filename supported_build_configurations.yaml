@@ -74,3 +74,6 @@ test-pwmin:
 #  - gamepad
 #  - gimbtonomy
 #  - science
+
+test-fsr:
+  - nucleo
