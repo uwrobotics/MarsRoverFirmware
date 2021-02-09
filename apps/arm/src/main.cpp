@@ -173,7 +173,7 @@ void txCANProcessor() {
     float angle = 0, speed = 0;
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION);
-    Turntable::manager.getActiveController()->reportAngleDeg(angle);  // younes todo figure out what to do if this fails
+    Turntable::manager.getActiveController()->reportAngleDeg(angle);  // TODO: Add error handling
     Turntable::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
     report = {angle, speed};
     txMsg.setPayload(report);
@@ -247,6 +247,6 @@ int main() {
     Wrist::rightManager.getActiveController()->update();
     Claw::manager.getActiveController()->update();
 
-    ThisThread::sleep_for(1ms);  // younes todo figure out how to run different joints at different rates
+    ThisThread::sleep_for(1ms);
   }
 }

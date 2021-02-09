@@ -1,12 +1,11 @@
 #include "PwmIn.h"
-#include "mbed.h"
 
 DigitalOut led(LED1);
 
 // Wire the output PWM signal to the PWM input
 // or connect external PWM input to pwmIn pin
 PwmOut pwmOut(PinName::MTR_PWM_TRNTBL);
-PwmIn pwmIn(PinName::ENC_PWM_TRNTBL, 50);
+GPIO::PwmIn pwmIn(PinName::ENC_PWM_TRNTBL, 50);
 
 Timer timer;
 Timer printTimer;

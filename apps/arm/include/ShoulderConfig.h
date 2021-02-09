@@ -25,14 +25,14 @@ static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
 constexpr uint8_t PA_O4maxCurrent = 6;
-constexpr uint8_t PA_O4maxRPM     = 0;  // younes todo figure out max rpm of shouder
+constexpr float PA_O4maxDegPerSec = std::numeric_limits<float>::infinity();
 
-// younes todo figure limit switches
-static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, PA_O4maxRPM, PA_O4maxRPM, NC, NC);
-static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, PA_O4maxRPM, PA_O4maxRPM, NC, NC);
-static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, PA_O4maxRPM, PA_O4maxRPM, NC,
-                               NC);  // younes todo figure out RPM of shuolder
-static Controller::OpenLoop open(&motor, &encoder, &currentSensor, PA_O4maxRPM, PA_O4maxRPM, NC, NC);
+static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, PA_O4maxDegPerSec, PA_O4maxDegPerSec, NC,
+                                NC);
+static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, PA_O4maxDegPerSec, PA_O4maxDegPerSec, NC,
+                                NC);
+static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, PA_O4maxDegPerSec, PA_O4maxDegPerSec, NC, NC);
+static Controller::OpenLoop open(&motor, &encoder, &currentSensor, PA_O4maxDegPerSec, PA_O4maxDegPerSec, NC, NC);
 
 static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
     {HWBRIDGE::CONTROL::Mode::Velocity, &vel},

@@ -1,4 +1,4 @@
-add_executable(test-enc-abs-pwm.${TARGET}-board.elf)
-target_sources(test-enc-abs-pwm.${TARGET}-board.elf PRIVATE src/main.cpp)
-target_link_libraries(test-enc-abs-pwm.${TARGET}-board.elf PRIVATE MAE3 PwmIn)
-target_set_firmware_properties(test-enc-abs-pwm.${TARGET}-board.elf)
+add_executable(test-mae3.${TARGET}-board.elf)
+target_sources(test-mae3.${TARGET}-board.elf PRIVATE src/main.cpp)
+target_link_libraries(test-mae3.${TARGET}-board.elf PRIVATE EncoderMAE3 PwmIn)
+target_set_firmware_properties(test-mae3.${TARGET}-board.elf)

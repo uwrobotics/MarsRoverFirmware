@@ -43,7 +43,7 @@ test-can:
   - gimbtonomy
 #  - science
 
-test-enc-abs-pwm:
+test-mae3:
   #  - nucleo
   - arm
 #  - gimbtonomy

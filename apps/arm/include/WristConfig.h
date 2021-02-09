@@ -23,9 +23,7 @@ static Encoder::Pololu37D rightEncoder({ENC_QUAD_WRST_RHS_A, ENC_QUAD_WRST_RHS_B
 static Actuator::DCMotor leftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 static Actuator::DCMotor rightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 
-/* static DigitalIn lowerLimit(LIM_TRNTBL_LHS), upperLimit(LIM_TRNTBL_RHS);
-static DigitalIn upperLimit(LIM_TRNTBL_LHS), upperLimit(LIM_TRNTBL_RHS);
-static DigitalIn centerLimit(LIM_TRNTBL_LHS), upperLimit(LIM_TRNTBL_RHS); younes todo figure out wrist limit switches */
+/* do not use wrist limit switches since joints are individually addressable */
 
 static Sensor::CurrentSensor leftCurrentSensor, rightCurrentSensor;
 
@@ -37,26 +35,26 @@ static PID::PID rightVelPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID rightPosPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID rightCurPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr uint8_t pololuMaxCurrent = 3;
-constexpr uint16_t pololuMaxRPM    = 1680;
+constexpr uint8_t pololuMaxCurrent    = 3;
+constexpr uint16_t pololumaxDegPerSec = 1680;
 
-static Controller::Velocity leftVel(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftVelPID, pololuMaxRPM,
+static Controller::Velocity leftVel(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftVelPID, pololumaxDegPerSec,
                                     pololuMaxCurrent, NC, NC);
-static Controller::Position leftPos(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftPosPID, pololuMaxRPM,
+static Controller::Position leftPos(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftPosPID, pololumaxDegPerSec,
                                     pololuMaxCurrent, NC, NC);
-static Controller::Current leftCur(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftCurPID, pololuMaxRPM,
+static Controller::Current leftCur(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftCurPID, pololumaxDegPerSec,
                                    pololuMaxCurrent, NC, NC);
-static Controller::OpenLoop leftOpen(&leftMotor, &leftEncoder, &leftCurrentSensor, pololuMaxRPM, pololuMaxCurrent, NC,
-                                     NC);
+static Controller::OpenLoop leftOpen(&leftMotor, &leftEncoder, &leftCurrentSensor, pololumaxDegPerSec, pololuMaxCurrent,
+                                     NC, NC);
 
-static Controller::Velocity rightVel(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightVelPID, pololuMaxRPM,
+static Controller::Velocity rightVel(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightVelPID, pololumaxDegPerSec,
                                      pololuMaxCurrent, NC, NC);
-static Controller::Position rightPos(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightPosPID, pololuMaxRPM,
+static Controller::Position rightPos(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightPosPID, pololumaxDegPerSec,
                                      pololuMaxCurrent, NC, NC);
-static Controller::Current rightCur(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightCurPID, pololuMaxRPM,
+static Controller::Current rightCur(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightCurPID, pololumaxDegPerSec,
                                     pololuMaxCurrent, NC, NC);
-static Controller::OpenLoop rightOpen(&rightMotor, &rightEncoder, &rightCurrentSensor, pololuMaxRPM, pololuMaxCurrent,
-                                      NC, NC);
+static Controller::OpenLoop rightOpen(&rightMotor, &rightEncoder, &rightCurrentSensor, pololumaxDegPerSec,
+                                      pololuMaxCurrent, NC, NC);
 
 static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> leftLut = {
     {HWBRIDGE::CONTROL::Mode::Velocity, &leftVel},

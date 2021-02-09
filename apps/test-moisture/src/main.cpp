@@ -1,7 +1,6 @@
 #include "AdafruitSTEMMA.h"
 #include "AdafruitSTEMMAConfig.h"
 #include "hw_bridge.h"
-#include "mbed.h"
 
 DigitalOut led1(LED1);
 
@@ -11,7 +10,7 @@ int main() {
   float moisture = 0;  // initialize default variables
   float temperature = 0;
 
-  AdafruitSTEMMA::AdafruitSTEMMA sensor = AdafruitSTEMMA::AdafruitSTEMMA(AdafruitSTEMMAConfig::AdafruitSTEMMAConfig);
+  Sensor::AdafruitSTEMMA sensor(I2C_SDA, I2C_SCL);
 
   while (1) {
     sensor.reset();  // reset all registers on sensor to default values

@@ -25,17 +25,17 @@ static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float pololuMaxCurrent = 3;
-constexpr float pololuMaxRPM     = 1680;
+constexpr float pololuMaxCurrent   = 3;
+constexpr float pololuMaxDegPerSec = 1680;
 
-// younes todo figure limit switches
-static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, pololuMaxRPM, pololuMaxCurrent,
+static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, pololuMaxDegPerSec, pololuMaxCurrent,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, pololuMaxRPM, pololuMaxCurrent,
+static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, pololuMaxDegPerSec, pololuMaxCurrent,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, pololuMaxRPM, pololuMaxCurrent, LIM_CLAW_OPEN,
-                               NC);
-static Controller::OpenLoop open(&motor, &encoder, &currentSensor, pololuMaxRPM, pololuMaxCurrent, LIM_CLAW_OPEN, NC);
+static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, pololuMaxDegPerSec, pololuMaxCurrent,
+                               LIM_CLAW_OPEN, NC);
+static Controller::OpenLoop open(&motor, &encoder, &currentSensor, pololuMaxDegPerSec, pololuMaxCurrent, LIM_CLAW_OPEN,
+                                 NC);
 
 static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
     {HWBRIDGE::CONTROL::Mode::Velocity, &vel},

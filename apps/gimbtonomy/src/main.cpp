@@ -22,20 +22,6 @@
 • Pitch: HS-422 (https://www.robotshop.com/en/hitec-hs-422-servo-motor.html)
 • Roll: SG90 (https://datasheetspdf.com/pdf/791970/TowerPro/SG90/1)
 */
-#if false
-Actuator::ContServo panServoMotor(SRVO_PWM_CR, 38, 2.1ms,
-                                  0.9ms);  // 38 RPM (228 deg/sec) at 4.8V, max->2100us PW, min->900us PW.
-Actuator::LimServo pitchServo(SRVO_PWM_HS, 180, 2.1ms, 0.9ms);
-/* @TODO: electrical hasn't choose a pin for this servo yet, I'm just using a random free pin for this for now*/
-Actuator::LimServo rollServo(SRVO_PWM_SG, 180, 2ms, 1ms);
-
-// Absolute encoder
-Encoder::MAE3 panEncoder(GimbtonomyConfig::panEncoderConfig);
-
-// Actuators
-Controller::ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor,
-                                                panEncoder);
-#endif
 // CAN Object
 CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;

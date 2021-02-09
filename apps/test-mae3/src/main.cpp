@@ -1,13 +1,6 @@
 #include "MAE3.h"
-#include "mbed.h"
 
-Encoder::t_encoderConfig config = {
-    // PWM encoder pins
-    .pin_PWM = ENC_PWM_TRNTBL,
-
-    .degreesPerUnit = 360.0};
-
-Encoder::Absolute_PWM encoder(config);
+Encoder::MAE3 encoder({ENC_PWM_TRNTBL, 0});
 
 // Wire the output PWM signal to the PWM input
 // or connect external PWM input to pwmIn pin
@@ -54,7 +47,11 @@ int main() {
 
     if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
-      printf("Angle: %f, Angular Velocity :%f\r\n", encoder.getAngle_Degrees(), encoder.getVelocity_DegreesPerSec());
+      float angle = 0, speed = 0;
+      MBED_ASSERT_WARN(encoder.getAngleDeg(angle));
+      MBED_ASSERT_WARN(encoder.getAngularVelocityDegPerSec(speed));
+
+      printf("Angle: %f, Angular Velocity :%f\r\n", angle, speed);
     }
   }
 }
