@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "ActuatorController.h"
 
 /* TODO: create test driver */
+DigitalOut led1(LED1);
 
 // main() runs in its own thread in the OS
 int main() {
