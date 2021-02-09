@@ -12,9 +12,9 @@ namespace Controller {
 
 class BasicControl : public ActuatorController {
  public:
-  BasicControl(Actuator::Actuator *actuator, Encoder::Encoder *encoder, Sensor::CurrentSensor *currentSensor,
-               PID::PID *pid, float maxDegPerSec, float maxCurrent, std::optional<DigitalIn *> lowerLimit,
-               std::optional<DigitalIn *> upperLimit);
+  BasicControl(Actuator::Actuator *actuator, Encoder::Encoder *encoder,
+               std::optional<Sensor::CurrentSensor *> currentSensor, PID::PID *pid, float maxDegPerSec,
+               float maxCurrent, PinName lowerLimit, PinName upperLimit);
   BasicControl(BasicControl &)  = delete;
   BasicControl(BasicControl &&) = delete;
   ~BasicControl()               = default;
@@ -30,13 +30,13 @@ class BasicControl : public ActuatorController {
  protected:
   Actuator::Actuator *m_actuator;
   Encoder::Encoder *m_encoder;
-  Sensor::CurrentSensor *m_currentSensor;
+  std::optional<Sensor::CurrentSensor *> m_currentSensor;
 
   PID::PID *m_pid;
 
   const float m_maxDegPerSec, m_maxCurrent;
 
-  std::optional<DigitalIn *> m_lowerLimit, m_upperLimit;
+  DigitalIn m_lowerLimit, m_upperLimit;
 
   virtual bool shouldUpdate() final;
 };

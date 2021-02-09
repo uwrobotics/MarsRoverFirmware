@@ -19,8 +19,6 @@ static Encoder::Pololu37D encoder({ENC_QUAD_CLAW_A, ENC_QUAD_CLAW_B, NC, 0, GPIO
 
 static Actuator::DCMotor motor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
 
-static DigitalIn lowerLimit(LIM_CLAW_OPEN);
-
 static Sensor::CurrentSensor currentSensor;
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
@@ -31,14 +29,13 @@ constexpr float pololuMaxCurrent = 3;
 constexpr float pololuMaxRPM     = 1680;
 
 // younes todo figure limit switches
-static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, pololuMaxRPM, pololuMaxCurrent, &lowerLimit,
-                                std::nullopt);
-static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, pololuMaxRPM, pololuMaxCurrent, &lowerLimit,
-                                std::nullopt);
-static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, pololuMaxRPM, pololuMaxCurrent, &lowerLimit,
-                               std::nullopt);
-static Controller::OpenLoop open(&motor, &encoder, &currentSensor, pololuMaxRPM, pololuMaxCurrent, &lowerLimit,
-                                 std::nullopt);
+static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, pololuMaxRPM, pololuMaxCurrent,
+                                LIM_CLAW_OPEN, NC);
+static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, pololuMaxRPM, pololuMaxCurrent,
+                                LIM_CLAW_OPEN, NC);
+static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, pololuMaxRPM, pololuMaxCurrent, LIM_CLAW_OPEN,
+                               NC);
+static Controller::OpenLoop open(&motor, &encoder, &currentSensor, pololuMaxRPM, pololuMaxCurrent, LIM_CLAW_OPEN, NC);
 
 static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
     {HWBRIDGE::CONTROL::Mode::Velocity, &vel},

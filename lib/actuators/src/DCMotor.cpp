@@ -3,6 +3,7 @@
 #include <cmath>
 
 using namespace Actuator;
+
 DCMotor::DCMotor(PinName pwm, PinName dir, bool inverted, int freqInHz, float limit)
     : m_pwm(pwm), m_dir(dir), m_inverted(inverted), m_limit(fmin(limit, 1.0)) {
   // Set initial condition of PWM

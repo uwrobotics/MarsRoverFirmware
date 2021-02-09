@@ -18,8 +18,6 @@ static Encoder::AEAT6012 encoder({ENC_PWM_ELBW, 0});
 
 static Actuator::DCMotor motor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
 
-static DigitalIn lowerLimit(LIM_TRNTBL_LHS), upperLimit(LIM_TRNTBL_RHS);
-
 static Sensor::CurrentSensor currentSensor;
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
@@ -30,14 +28,14 @@ constexpr uint8_t assunMaxCurrent = 0;  // younes todo figure out max rpm and ma
 constexpr uint16_t assunMaxRPM    = 0;
 
 // younes todo figure limit switches
-static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, assunMaxRPM, assunMaxCurrent, &lowerLimit,
-                                &upperLimit);
-static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, assunMaxRPM, assunMaxCurrent, &lowerLimit,
-                                &upperLimit);
-static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, assunMaxRPM, assunMaxCurrent, &lowerLimit,
-                               &upperLimit);
-static Controller::OpenLoop open(&motor, &encoder, &currentSensor, assunMaxRPM, assunMaxCurrent, &lowerLimit,
-                                 &upperLimit);
+static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, assunMaxRPM, assunMaxCurrent, LIM_TRNTBL_LHS,
+                                LIM_TRNTBL_RHS);
+static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, assunMaxRPM, assunMaxCurrent, LIM_TRNTBL_LHS,
+                                LIM_TRNTBL_RHS);
+static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, assunMaxRPM, assunMaxCurrent, LIM_TRNTBL_LHS,
+                               LIM_TRNTBL_RHS);
+static Controller::OpenLoop open(&motor, &encoder, &currentSensor, assunMaxRPM, assunMaxCurrent, LIM_TRNTBL_LHS,
+                                 LIM_TRNTBL_RHS);
 
 static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
     {HWBRIDGE::CONTROL::Mode::Velocity, &vel},

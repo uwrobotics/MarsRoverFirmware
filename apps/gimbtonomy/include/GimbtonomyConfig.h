@@ -2,7 +2,7 @@
 
 #include "ActuatorController.h"
 #include "Encoder.h"
-
+/*
 namespace GimbtonomyConfig {
 
 static Encoder::t_encoderConfig panEncoderConfig{
@@ -16,3 +16,4 @@ static ActuatorController::t_actuatorConfig panServoActuatorConfig = {
     .positionPID               = {.P = 1.0, .I = 0.0, .D = 0.0, .bias = 0.0, .deadZoneError = 0.1}};
 
 }  // namespace GimbtonomyConfig
+*/

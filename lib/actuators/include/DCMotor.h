@@ -3,7 +3,7 @@
 #include "Actuator.h"
 
 namespace Actuator {
-class DCMotor : public Actuator {
+class DCMotor final : public Actuator {
  public:
   typedef struct Config {
     PinName pwmPin;

@@ -41,22 +41,22 @@ constexpr uint8_t pololuMaxCurrent = 3;
 constexpr uint16_t pololuMaxRPM    = 1680;
 
 static Controller::Velocity leftVel(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftVelPID, pololuMaxRPM,
-                                    pololuMaxCurrent, std::nullopt, std::nullopt);
+                                    pololuMaxCurrent, NC, NC);
 static Controller::Position leftPos(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftPosPID, pololuMaxRPM,
-                                    pololuMaxCurrent, std::nullopt, std::nullopt);
+                                    pololuMaxCurrent, NC, NC);
 static Controller::Current leftCur(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftCurPID, pololuMaxRPM,
-                                   pololuMaxCurrent, std::nullopt, std::nullopt);
-static Controller::OpenLoop leftOpen(&leftMotor, &leftEncoder, &leftCurrentSensor, pololuMaxRPM, pololuMaxCurrent,
-                                     std::nullopt, std::nullopt);
+                                   pololuMaxCurrent, NC, NC);
+static Controller::OpenLoop leftOpen(&leftMotor, &leftEncoder, &leftCurrentSensor, pololuMaxRPM, pololuMaxCurrent, NC,
+                                     NC);
 
 static Controller::Velocity rightVel(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightVelPID, pololuMaxRPM,
-                                     pololuMaxCurrent, std::nullopt, std::nullopt);
+                                     pololuMaxCurrent, NC, NC);
 static Controller::Position rightPos(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightPosPID, pololuMaxRPM,
-                                     pololuMaxCurrent, std::nullopt, std::nullopt);
+                                     pololuMaxCurrent, NC, NC);
 static Controller::Current rightCur(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightCurPID, pololuMaxRPM,
-                                    pololuMaxCurrent, std::nullopt, std::nullopt);
+                                    pololuMaxCurrent, NC, NC);
 static Controller::OpenLoop rightOpen(&rightMotor, &rightEncoder, &rightCurrentSensor, pololuMaxRPM, pololuMaxCurrent,
-                                      std::nullopt, std::nullopt);
+                                      NC, NC);
 
 static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> leftLut = {
     {HWBRIDGE::CONTROL::Mode::Velocity, &leftVel},

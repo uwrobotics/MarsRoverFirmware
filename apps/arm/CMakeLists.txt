@@ -1,5 +1,6 @@
 add_executable(arm.${TARGET}-board.elf)
 target_sources(arm.${TARGET}-board.elf PRIVATE src/main.cpp)
+target_include_directories(arm.${TARGET}-board.elf PUBLIC include)
 target_link_libraries(arm.${TARGET}-board.elf
         PRIVATE
 #Control
@@ -21,10 +22,5 @@ target_link_libraries(arm.${TARGET}-board.elf
 #Sensor
         CurrentSensor
 #Other
-        uwrt-mars-rover-hw-bridge
-        Config
-        )
+        uwrt-mars-rover-hw-bridge)
 target_set_firmware_properties(arm.${TARGET}-board.elf)
-
-add_library(Config INTERFACE)
-target_include_directories(Config INTERFACE include ActuatorControllerManager)

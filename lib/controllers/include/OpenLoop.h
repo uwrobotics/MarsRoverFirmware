@@ -10,9 +10,9 @@
 namespace Controller {
 class OpenLoop final : public ActuatorController {
  public:
-  OpenLoop(Actuator::Actuator *actuator, Encoder::Encoder *encoder, Sensor::CurrentSensor *currentSensor,
-           float maxDegPerSec, float maxCurrent, std::optional<DigitalIn *> lowerLimit,
-           std::optional<DigitalIn *> upperLimit);
+  OpenLoop(Actuator::Actuator *actuator, Encoder::Encoder *encoder, std::optional<Sensor::CurrentSensor *> currentSensor,
+           float maxDegPerSec, float maxCurrent, PinName lowerLimit,
+           PinName upperLimit);
 
   void stop() override;
   void reset() override;
@@ -28,8 +28,8 @@ class OpenLoop final : public ActuatorController {
  private:
   Actuator::Actuator *m_actuator;
   Encoder::Encoder *m_encoder;
-  Sensor::CurrentSensor *m_currentSensor;
+  std::optional<Sensor::CurrentSensor *> m_currentSensor;
   const float m_maxDegPerSec, m_maxCurrent;
-  std::optional<DigitalIn *> m_lowerLimit, m_upperLimit;
+  DigitalIn m_lowerLimit, m_upperLimit;
 };
 }  // namespace Controller

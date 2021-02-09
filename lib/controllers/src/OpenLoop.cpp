@@ -2,9 +2,9 @@
 
 using namespace Controller;
 
-OpenLoop::OpenLoop(Actuator::Actuator *actuator, Encoder::Encoder *encoder, Sensor::CurrentSensor *currentSensor,
-                   float maxDegPerSec, float maxCurrent, std::optional<DigitalIn *> lowerLimit,
-                   std::optional<DigitalIn *> upperLimit)
+OpenLoop::OpenLoop(Actuator::Actuator *actuator, Encoder::Encoder *encoder,
+                   std::optional<Sensor::CurrentSensor *> currentSensor, float maxDegPerSec, float maxCurrent,
+                   PinName lowerLimit, PinName upperLimit)
     : m_actuator(actuator),
       m_encoder(encoder),
       m_currentSensor(currentSensor),
@@ -21,7 +21,9 @@ void OpenLoop::stop() {
 void OpenLoop::reset() {
   stop();
   m_encoder->reset();
-  m_currentSensor->reset();
+  if (m_currentSensor) {
+    m_currentSensor.value()->reset();
+  }
 }
 
 bool OpenLoop::reportAngleDeg(float &angle) {
@@ -49,22 +51,24 @@ bool OpenLoop::shouldUpdate() {
 
   if (!m_ignoreCurrentChecks.load()) {
     float current = 0;
-    if (!m_currentSensor->read(current)) {
-      return false;
-    }
-    if (std::abs(current) > m_maxCurrent) {
-      stop();
+    if (m_currentSensor) {
+      if (!m_currentSensor.value()->read(current)) {
+        return false;
+      }
+      if (std::abs(current) > m_maxCurrent) {
+        stop();
+      }
     }
   }
 
   if (m_upperLimit) {
-    if (m_upperLimit.value()->read() && m_sp.load() > 0) {
+    if (m_upperLimit.read() && m_sp.load() > 0) {
       return false;
     }
   }
 
   if (m_lowerLimit) {
-    if (m_lowerLimit.value()->read() && m_sp.load() < 0) {
+    if (m_lowerLimit.read() && m_sp.load() < 0) {
       return false;
     }
   }
