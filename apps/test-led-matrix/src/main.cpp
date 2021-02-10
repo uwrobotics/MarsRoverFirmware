@@ -1,20 +1,20 @@
 #include "LEDMatrix.h"
 #include "hw_bridge.h"
 
-Thread *setFlashingColorThread;
-Semaphore requestEndFlash;
-LEDMatrix blinky(PA_0, PA_1, PB_0, setFlashingColorThread, requestEndFlash);
+//Thread setFlashingColorThread;
+//Semaphore requestEndFlash;
 
 int main() {
   printf("####### STARTED ########\r\n");
-  
-  while(true)
-  {
-    blinky.flashForever(HWBRIDGE::LEDMATRIX::color::RED, 2.0);
+
+  LEDMatrix blinky(PA_0, PA_1, PB_0);
+
+  while (true) {
+    blinky.flashColor(HWBRIDGE::LEDMATRIX::color::RED);
     ThisThread::sleep_for(5s);
     blinky.setColor(HWBRIDGE::LEDMATRIX::color::RED);
     ThisThread::sleep_for(5s);
-    blinky.flashForever(HWBRIDGE::LEDMATRIX::color::BLUE, 2.0);
+    blinky.flashColor(HWBRIDGE::LEDMATRIX::color::BLUE);
     ThisThread::sleep_for(5s);
     blinky.setColor(HWBRIDGE::LEDMATRIX::color::BLUE);
     blinky.clearLights();
