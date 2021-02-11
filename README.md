@@ -202,6 +202,13 @@ chmod +x llvm.sh
 sudo ./llvm.sh <version number>
 ```
 
+For VS Code you will need to specify the path to the clang-format executable. To do this:
+1. In shell script copy the output of the following command: ` which clang-format-11`
+2. Open the User Settings in JSON format
+3. Add the two following settings to the file
+"editor.formatOnSave": true,
+"clang-format.executable": "{path copied from step 1}"
+
 ## Writing Test Apps
 For every feature that gets added, a test app that tests the feature in isolation should be written to verify that the feature actually functions properly in our hardware. The author of the feature should ensure that the test app works on all the board targets that make sense. Typically this means that the test app should work on at least the nucleo board and the board that the feature was designed for. For example, the `test-can` app should be able to be compiled and run successfully for all of our boards, including a nucleo dev board.
 

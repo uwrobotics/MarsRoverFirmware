@@ -31,6 +31,7 @@ typedef struct Config {
   bool antiKickback = true;
   bool antiWindup   = true;
 } Config;
+
 class PID {
  public:
   PID(const Config &config);

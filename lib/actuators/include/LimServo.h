@@ -3,7 +3,7 @@
 #include "Servo.h"
 
 namespace Actuator {
-class LimServo : public Servo {
+class LimServo final : public Servo {
  public:
   typedef struct Config {
     PinName pwmPin;

@@ -13,7 +13,7 @@
 
 #define DEBUG
 
-#define ACK_FLAG (1UL << 0)
+constexpr uint8_t ACK_FLAG(1UL << 0);
 
 // Init. Components
 // Servos

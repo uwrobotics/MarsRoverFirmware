@@ -19,11 +19,11 @@ constexpr auto maxPulse = 2.1ms, minPulse = 0.9ms;
 static PID::PID pid({1, 0, 0, -maxDegPerSec, maxDegPerSec, 0, false, false});
 
 static Actuator::ContServo servo(SRVO_PWM_CR, maxDegPerSec, maxPulse, minPulse);
-static Encoder::MAE3 encoder({ENC_PWM_GIMB, 0});
+static Encoder::MAE3 encoder({ENC_PWM_GIMB, 0}); // app this shit uses aeat6012 younes todo
 
-static Controller::Position pos(&servo, &encoder, std::nullopt, &pid, maxDegPerSec, 0, NC, NC);
-static Controller::Position vel(&servo, &encoder, std::nullopt, &pid, maxDegPerSec, 0, NC, NC);
-static Controller::OpenLoop open(&servo, &encoder, std::nullopt, maxDegPerSec, 0, NC, NC);
+static Controller::Position pos(&servo, &encoder, std::nullopt, &pid, maxDegPerSec, maxCurrent, NC, NC);
+static Controller::Position vel(&servo, &encoder, std::nullopt, &pid, maxDegPerSec, maxCurrent, NC, NC);
+static Controller::OpenLoop open(&servo, &encoder, std::nullopt, maxDegPerSec, maxCurrent, NC, NC);
 
 // younes todo everything should be in degpersec not rpm since encoder read latter. do motors do internal checking with
 // rpm?
