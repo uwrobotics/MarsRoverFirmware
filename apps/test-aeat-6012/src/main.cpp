@@ -1,7 +1,7 @@
 #include "AEAT6012.h"
 #include "mbed.h"
 
-#define ENCODER_READ_PERIOD  (100ms)
+constexpr auto ENCODER_READ_PERIOD = 100ms;
 
 enum Test_Mode_E { TEST_BLOCKING, TEST_ASYNC };
 

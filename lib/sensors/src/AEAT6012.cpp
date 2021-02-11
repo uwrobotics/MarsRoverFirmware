@@ -64,7 +64,7 @@ void AEAT6012::AEAT6012::priv_callback(int event) {
   // Received data stream: -xxxx xxxx  xxxx x---
   // byte[0]: bits 6:0
   // byte[1]: bits 7:3
-  
+
   uint16_t raw_data = ((read_buffer[0] & ~(static_cast<uint8_t>(1 << 7))) << 5) | (read_buffer[1] >> 3);
 
   // Update position data
