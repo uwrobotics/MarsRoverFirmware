@@ -1,8 +1,7 @@
 #include "AEAT6012.h"
 #include "mbed.h"
 
-#define ENCODER_READ_FREQUENCY_HZ 1
-#define ENCODER_READ_PERIOD       (1000ms / (ENCODER_READ_FREQUENCY_HZ))
+#define ENCODER_READ_PERIOD  (100ms)
 
 enum Test_Mode_E { TEST_BLOCKING, TEST_ASYNC };
 
@@ -16,7 +15,7 @@ volatile bool encoder_position_updated = false;
 AEAT6012::AEAT6012 encoder(SPI_CS, SPI_MISO, SPI_SCK, callback);
 
 // Modify this
-Test_Mode_E test_mode = TEST_ASYNC;
+Test_Mode_E test_mode = TEST_BLOCKING;
 
 int main() {
   switch (test_mode) {
@@ -34,7 +33,7 @@ int main() {
 }
 
 void test_blocking(void) {
-  printf("\r\n--- AEAT-6012 Blocking Driver Test App ---\r\n");
+  printf("\r\n--- AEAT-6012 Blocking Driver Test ---\r\n\r\n");
 
   while (true) {
     timer.reset();
@@ -44,10 +43,10 @@ void test_blocking(void) {
 
     timer.stop();
 
-    printf("Encoder reading: %.3f degrees\r\n", encoder.get_position());
-    printf("Encoder reading raw: %d\r\n", encoder.get_position_raw());
+    printf("Encoder reading degrees: %.3f\r\n", encoder.get_position_deg());
+    printf("Encoder reading raw: %u\r\n", encoder.get_position_raw());
 
-    printf("Read time: %llu us\r\n",
+    printf("Read time: %llu us\r\n\r\n",
            std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count());
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
@@ -55,7 +54,7 @@ void test_blocking(void) {
 }
 
 void test_async(void) {
-  printf("\r\n--- AEAT-6012 Async Driver Test App ---\r\n");
+  printf("\r\n--- AEAT-6012 Async Driver Test ---\r\n\r\n");
 
   while (true) {
     timer.reset();
@@ -71,10 +70,10 @@ void test_async(void) {
 
     encoder_position_updated = false;
 
-    printf("Encoder reading: %.3f degrees\r\n", encoder.get_position());
-    printf("Encoder reading raw: %d\r\n", encoder.get_position_raw());
+    printf("Encoder reading degrees: %.3f\r\n", encoder.get_position_deg());
+    printf("Encoder reading raw: %u\r\n", encoder.get_position_raw());
 
-    printf("Read time: %llu us\r\n",
+    printf("Read time: %llu us\r\n\r\n",
            std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count());
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);

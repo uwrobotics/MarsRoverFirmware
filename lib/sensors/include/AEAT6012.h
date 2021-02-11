@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- * Broadcom's AEAT-6012 is an absolute magnetic encoder with 12 bit resolution and SPI interface
+ * Broadcom's AEAT-6012 is an absolute magnetic encoder with 12 bit resolution and SSI interface
  * Datasheet: https://docs.broadcom.com/doc/AV02-0188EN
  */
 
@@ -31,19 +31,17 @@ class AEAT6012 {
   bool read_position_async(void);
 
   // Returns stored absolute position in degrees (without invoking an encoder read)
-  float get_position(void);
+  float get_position_deg(void);
 
-  // Returns stored raw encoder reading (without invoking an encoder read) (TODO: for testing, remove later)
+  // Returns stored raw encoder reading (without invoking an encoder read)
   uint16_t get_position_raw(void);
 
  private:
-  // TODO: need to test this frequency
-  static constexpr uint32_t DEFAULT_FREQUENCY_HZ = 1000000;  // Max frequency given by datasheet
+  static constexpr uint32_t DEFAULT_FREQUENCY_HZ = 1000000;  // 1MHz (max frequency given by datasheet)
   const char dummy_buffer[2]                     = {0x00, 0x00};
   char read_buffer[2]                            = {0x00, 0x00};
 
-  float m_position_deg;     // Encoder position in degrees
-  uint16_t m_position_raw;  // Raw encoder reading (TODO: for testing, remove later)
+  uint16_t m_position_raw;  // Raw encoder reading
   DigitalOut m_cs;
   SPI m_spi;
 
@@ -52,8 +50,5 @@ class AEAT6012 {
 
   // Clean-up helper callback function for asynchronous read
   void priv_callback(int event);
-
-  // Converts encoder reading to degrees
-  static float raw_data_to_degrees(uint16_t raw_data);
 };
 }  // namespace AEAT6012
