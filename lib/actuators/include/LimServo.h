@@ -29,7 +29,7 @@ class LimServo : public Servo {
    */
   void setValue(float position) override;
 
- protected:
+ private:
   static constexpr int DEFAULT_RANGE = 180;  // degrees
 
   PwmOut m_pwm;

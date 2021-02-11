@@ -29,7 +29,7 @@ class ContServo final: public Servo {
    */
   void setValue(float speed) override;
 
- protected:
+ private:
   PwmOut m_pwm;
   float m_abs_max_speed,  // deg/sec
       m_speed;            // deg/sec (from -m_abs_max_speed to +m_abs_max_speed)
