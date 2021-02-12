@@ -27,11 +27,28 @@ uint16_t Netzer::get_raw_data(){
 
 void Netzer::spi_callback_debug(int events){
 	// upper lower?
-  uint16_t raw_data = (static_cast<uint16_t>(rx_buffer[1]) << 8) | (static_cast<uint16_t>(rx_buffer[0]));
-	m_raw_data = raw_data;
-	//TODO: 
-	// Actually get the position data from this (look at datasheet)
-	// ack, start,  zero, pos, error, warn, crc, rem
+	const uint8_t crcPolynomial = 0x03;
+
+	// Not sure if I'm handling the payload correctly
+	// If I get the raw_data correctly, the rest should work fine (taken from Alex's test encoder)
+  uint16_t raw_data = (static_cast<uint16_t>(rx_buffer[0]) << 8) | (static_cast<uint16_t>(rx_buffer[1]));
+
+	uint32_t msg = (raw_data >> 2) & 0x0FFFFFFF;
+	uint16_t ack = (msg >> 27) & 1;
+  uint16_t start = (msg >> 26) & 1;
+  uint16_t zero = (msg >> 25) & 1;
+  uint32_t pos = (msg >> 8) & 0x1FFFF;
+	uint16_t error = (msg >> 7) & 1; // 1 = good
+  uint16_t warn = (msg >> 6) & 1; // 1 = good
+	uint16_t crc = msg & 0x3F;
+  uint32_t rem = (msg & 0x1FFFFFF) % crcPolynomial;
+
+	// Output values
+	 printf("Encoder reading raw: %d\r\n", raw_data);
+  printf("Ack: %d \t Start: %d \t Zero: %d \t Pos: %d \t Error: %d \t Warn: %d \t CRC: %d \t Rem: %d \n",
+           ack, start, zero, (int) pos, error, warn, crc, (int) rem);
+  printf("Pos: 0x%08X \t CRC: 0x%04X \t Msg: 0x%08X \n\n", (unsigned int) pos, crc, (unsigned int) msg);
+
 	m_callback();
 }
 
