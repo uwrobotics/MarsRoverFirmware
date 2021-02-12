@@ -12,7 +12,7 @@ void test_async(void);
 Timer timer;
 volatile bool encoder_position_updated = false;
 
-AEAT6012::AEAT6012 encoder(SPI_CS, SPI_MISO, SPI_SCK, callback);
+Encoder::AEAT6012 encoder(SPI_CS, SPI_MISO, SPI_SCK);
 
 // Modify this
 Test_Mode_E test_mode = TEST_BLOCKING;
@@ -60,7 +60,7 @@ void test_async(void) {
     timer.reset();
     timer.start();
 
-    while (!encoder.read_position_async()) {
+    while (!encoder.read_position_async(callback)) {
     }
 
     while (!encoder_position_updated) {

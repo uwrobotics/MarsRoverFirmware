@@ -5,7 +5,7 @@
  * Datasheet: https://docs.broadcom.com/doc/AV02-0188EN
  */
 
-namespace AEAT6012 {
+namespace Encoder {
 typedef void (*callback_ptr)(void);
 
 typedef struct {
@@ -13,7 +13,6 @@ typedef struct {
   PinName spi_mosi;
   PinName spi_clk;
   uint32_t frequency_hz;
-  callback_ptr callback;
 } Config;
 
 class AEAT6012 {
@@ -28,7 +27,7 @@ class AEAT6012 {
   // Asynchronous API for reading encoder position
   // Invokes user callback once read transaction is complete
   // Returns true if SPI read successfully started, false if SPI peripheral is busy
-  bool read_position_async(void);
+  bool read_position_async(callback_ptr callback);
 
   // Returns stored absolute position in degrees (without invoking an encoder read)
   float get_position_deg(void);
@@ -51,4 +50,4 @@ class AEAT6012 {
   // Clean-up helper callback function for asynchronous read
   void priv_callback(int event);
 };
-}  // namespace AEAT6012
+}  // namespace Encoder
