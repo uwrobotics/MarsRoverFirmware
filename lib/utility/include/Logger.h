@@ -5,7 +5,7 @@ namespace Utility {
 class Logger {
  public:
   // C-style printf
-  static void printf(const char* format, ...);
+  static int printf(const char* format, ...);
 
   Logger& operator<<(long n);
   Logger& operator<<(unsigned long n);

@@ -218,7 +218,7 @@ The ST-LINK debugger can then be connected via header CN4 (pins 1-5 with 1 neare
 | 6 (SWO)               | Not Connected                     |
 +-----------------------+-----------------------------------+
 ```
-![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/cindy/SWO-logging/misc/NucleoSWDLabels.png)
+![](https://github.com/uwrobotics/MarsRover2020-firmware/blob/master/misc/NucleoSWDLabels.png)
 
 After deploying the binary to the board, the Nucleo's `LD1` LED will flash red and green. Programming is complete when the LED stays green, so don't powercycle the board before this.
 
@@ -226,7 +226,7 @@ After deploying the binary to the board, the Nucleo's `LD1` LED will flash red a
 
 The 10-pin Serial Wire Debug (SWD) programming interface does not come with UART lines for standard printf usage. Instead, we will use Serial Wire Output (SWO), a single wire interface to transmit trace messages to an external debugger.
 
-See `apps/test-logger` for an example of using the SWO-supported logger utility.
+See `apps/test-logger` for an example of using the SWO-supported logger utility. Ensure that the target you are building for is configured to support SWO logging (see targets/<**target name**>/CMakeLists.txt).
 
 ### Ubuntu
 
@@ -234,9 +234,9 @@ See `apps/test-logger` for an example of using the SWO-supported logger utility.
 
 ### Windows
 
-1. Ensure that the rover board is running and that the ST-Link is connected
+1. Ensure that the rover board is running and the ST-Link is connected
 2. In the ST-Link Utility software, click "Print via SWO viewer"
-3. Set the system clock rate to 180000000Hz and set the stimulus port to 0
+3. Set the system clock rate to 180000000Hz and stimulus port to 0
 4. Click "Start". The SWO print statements should appear in the Serial Wire Viewer console.
 
 ## Serial Communication (Rev 1)

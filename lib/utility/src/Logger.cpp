@@ -1,24 +1,27 @@
 #include "Logger.h"
 
-#define SWO_Logging  // TODO: need to configure this at the target level
-
 static char buffer[4096];  // Can increase max buffer length if needed
 
-void Utility::Logger::printf(const char* format, ...) {
+int Utility::Logger::printf(const char* format, ...) {
   va_list arg;
 
   va_start(arg, format);
   sprintf(buffer, format, arg, 0);
   va_end(arg);
 
-#if defined(UART_Logging)
-  printf(buffer);
+#if defined(UART_LOGGING)
+  return printf(buffer);
 #endif
-#if defined(SWO_Logging)
-  char* c = buffer;
+
+#if defined(SWO_LOGGING)
+  int num_chars = 0;
+  char* c       = buffer;
+
   while (*c) {
     ITM_SendChar(*c++);
+    num_chars++;
   }
+  return num_chars;
 #endif
 }
 
@@ -51,10 +54,11 @@ Utility::Logger& Utility::Logger::operator<<(unsigned int n) {
 }
 
 Utility::Logger& Utility::Logger::operator<<(long long n) {
-#if defined(UART_Logging)
+#if defined(UART_LOGGING)
   printf("%lld", n);
 #endif
-#if defined(SWO_Logging)
+
+#if defined(SWO_LOGGING)
   sprintf(buffer, "%lld", n);
   char* c = buffer;
 
@@ -62,14 +66,16 @@ Utility::Logger& Utility::Logger::operator<<(long long n) {
     ITM_SendChar(*c++);
   }
 #endif
+
   return *this;
 }
 
 Utility::Logger& Utility::Logger::operator<<(unsigned long long n) {
-#if defined(UART_Logging)
+#if defined(UART_LOGGING)
   printf("%llu", n);
 #endif
-#if defined(SWO_Logging)
+
+#if defined(SWO_LOGGING)
   sprintf(buffer, "%llu", n);
   char* c = buffer;
 
@@ -77,6 +83,7 @@ Utility::Logger& Utility::Logger::operator<<(unsigned long long n) {
     ITM_SendChar(*c++);
   }
 #endif
+
   return *this;
 }
 
@@ -89,10 +96,11 @@ Utility::Logger& Utility::Logger::operator<<(float f) {
 }
 
 Utility::Logger& Utility::Logger::operator<<(long double f) {
-#if defined(UART_Logging)
+#if defined(UART_LOGGING)
   printf("%Lf", f);
 #endif
-#if defined(SWO_Logging)
+
+#if defined(SWO_LOGGING)
   sprintf(buffer, "%Lf", f);
   char* c = buffer;
 
@@ -100,24 +108,28 @@ Utility::Logger& Utility::Logger::operator<<(long double f) {
     ITM_SendChar(*c++);
   }
 #endif
+
   return *this;
 }
 
 Utility::Logger& Utility::Logger::operator<<(char c) {
-#if defined(UART_Logging)
+#if defined(UART_LOGGING)
   printf("%c", c);
 #endif
-#if defined(SWO_Logging)
+
+#if defined(SWO_LOGGING)
   ITM_SendChar(c);
 #endif
+
   return *this;
 }
 
 Utility::Logger& Utility::Logger::operator<<(const char* format) {
-#if defined(UART_Logging)
+#if defined(UART_LOGGING)
   printf(format);
 #endif
-#if defined(SWO_Logging)
+
+#if defined(SWO_LOGGING)
   sprintf(buffer, format);
   char* c = buffer;
 
@@ -125,5 +137,6 @@ Utility::Logger& Utility::Logger::operator<<(const char* format) {
     ITM_SendChar(*c++);
   }
 #endif
+
   return *this;
 }
