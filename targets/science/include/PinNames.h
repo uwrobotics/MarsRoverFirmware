@@ -162,30 +162,23 @@ typedef enum {
   LED_G = PC_2,
   LED_B = PC_3,
 
-  BUTTON_1 = PB_0,
-  BUTTON_2 = PB_1,
-
-  /**** Servo Pins *****/
-
-  SRVO_PWM_1 = PB_2,
-  SRVO_PWM_2 = PB_10,
+  BUTTON_1 = PA_2,
 
   /**** Actuator Pins ****/
   MTR_PWM_1 = PA_6,
-  MTR_DIR_1 = PA_5,
+  MTR_DIR_1 = PC_5,
   MTR_PWM_2 = PA_7,
   MTR_DIR_2 = PC_4,
 
   /**** Limit Switch Pins ****/
-  LIM_SW_1 = PB_4,
-  LIM_SW_2 = PB_3,
-  LIM_SW_3 = PD_2,
-  LIM_SW_4 = PC_12,
+  LIM_SW_1 = PC_15,
+  LIM_SW_2 = PC_14,
+  LIM_SW_3 = PC_13,
+  LIM_SW_4 = PB_9,
 
   /**** Encoder Pins ****/
-  ENC_DCI_A  = PB_6,
-  ENC_DCI_B  = PB_7,
-  ENC_SCI_IN = PB_5,
+  ENC_DCI_A = PB_6,
+  ENC_DCI_B = PB_7,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
@@ -197,19 +190,16 @@ typedef enum {
   CAN_TX = CAN1_TX,
   CAN_RX = CAN1_RX,
 
-  SERIAL_TX  = STDIO_UART_TX,
-  SERIAL_RX  = STDIO_UART_RX,
-  SERIAL_RTS = PA_15,
+  SERIAL_TX  = STDIO_UART_TX, 
+  SERIAL_RX  = STDIO_UART_RX, 
 
-  USBTX = STDIO_UART_TX,
-  USBRX = STDIO_UART_RX,
+  USBTX = STDIO_UART_TX, 
+  USBRX = STDIO_UART_RX, 
 
   TEMP_MOIST_I2C_SCL = PA_8,
   TEMP_MOIST_I2C_SDA = PC_9,
 
   /**** OSCILLATOR pins ****/
-  RCC_OSC32_IN  = PC_14,
-  RCC_OSC32_OUT = PC_15,
   RCC_OSC_IN    = PH_0,
   RCC_OSC_OUT   = PH_1,
 
@@ -219,9 +209,8 @@ typedef enum {
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
   SYS_JTRST      = PB_4,
-  SYS_TRACED0    = PC_8,
-  SYS_WKUP0      = PA_0,
-  SYS_WKUP1      = PC_13,
+  SYS_TRACED0    = PC_8, 
+  SYS_WKUP0      = PA_0, 
 
   // Not connected
   NC = (int)0xFFFFFFFF

@@ -156,32 +156,20 @@ typedef enum {
 #endif
 
   /**** UI ****/
-  LED1 = PC_0,
-  LED2 = PC_1,
-  LED3 = PC_2,
-  LED4 = PC_3,
+  LED1 = PC_7,
+  LED_G = PA_0,
+  LED_B = PA_1,
+  LED_R = PA_2,
 
-  LED_MTRX = PA_2,
-
-  BUTTON_1 = PB_0,
-  BUTTON_2 = PB_1,
+  BUTTON_1 = PA_3,
 
   /**** Actuator Pins ****/
-  SRVO_PWM_CR = PB_14,
-  SRVO_PWM_HS = PB_15,
-  SRVO_PWM_SG = PB_5,
-
-  /**** Limit Switch Pins ****/
-  LIM_GIMB = PC_13,
+  SRVO_PWM_YAW = PB_6,
+  SRVO_PWM_ROLL = PB_5,
+  SRVO_PWM_PITCH = PB_4,
 
   /**** Encoder Pins ****/
-  ENC_PWM_GIMB = PA_3,
-
-  /**** Sensors ****/
-  ULTRA_TRIG_3V3_1 = PB_6,
-  ULTRA_ECHO_1     = PB_7,
-  ULTRA_TRIG_3V3_2 = PB_8,
-  ULTRA_ECHO_2     = PB_9,
+  ENC_CS = PC_4,
 
   /**** Serial Interface Pins ****/
   SPI1_SCK  = PA_5,
@@ -199,8 +187,6 @@ typedef enum {
 
   SERIAL_TX  = STDIO_UART_TX,
   SERIAL_RX  = STDIO_UART_RX,
-  SERIAL_RTS = PC_8,
-  // does not exist
 
   USBTX = STDIO_UART_TX,
   USBRX = STDIO_UART_RX,
@@ -212,14 +198,16 @@ typedef enum {
   RCC_OSC_OUT   = PH_1,
 
   /**** DEBUG pins ****/
-  SYS_JTCK_SWCLK = PA_14,
+  SYS_JTCK_SWCLK = PA_14, 
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
   SYS_JTRST      = PB_4,
   SYS_TRACED0    = PC_8,
   SYS_WKUP0      = PA_0,
-  SYS_WKUP1      = PC_13,
+
+  /**** ADC Input ****/
+  ADC_IN_5V      = PC_1,
 
   // Not connected
   NC = (int)0xFFFFFFFF
