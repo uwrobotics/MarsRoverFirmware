@@ -2,8 +2,9 @@
 
 #include "mbed.h"
 
+// TODO: Integrate Encoder.h 
 
-namespace Netzer {
+namespace Encoder {
 
 class Netzer {
 	typedef void (*callback_ptr)(void);
@@ -12,6 +13,8 @@ class Netzer {
 		Netzer(PinName mosi, PinName miso, PinName sclk, callback_ptr callback);
 		bool spi_read();
 		uint16_t get_raw_data();
+		
+		//Add get_angular_vel and get_angle functions
 	
 	private:
 		static constexpr uint32_t DEFAULT_FREQUENCY_HZ = 500000;  // frequency given by datasheet

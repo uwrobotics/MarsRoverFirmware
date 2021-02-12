@@ -1,6 +1,7 @@
 #include "Netzer.h"
 
-Netzer::Netzer::Netzer(PinName mosi, PinName miso, PinName sclk, 
+using namespace Encoder;
+Netzer::Netzer(PinName mosi, PinName miso, PinName sclk, 
 									callback_ptr callback) 
 									: m_spi(mosi, miso, sclk), m_callback(callback){
 	m_spi.format(16,3);
@@ -8,7 +9,7 @@ Netzer::Netzer::Netzer(PinName mosi, PinName miso, PinName sclk,
 	m_spi.set_dma_usage(DMA_USAGE_ALWAYS);
 }
 
-bool Netzer::Netzer::spi_read(){
+bool Netzer::spi_read(){
 
 	ThisThread::sleep_for(3ms);		// Delay
 
@@ -20,11 +21,11 @@ bool Netzer::Netzer::spi_read(){
 	return (status == 0);
 }
 
-uint16_t Netzer::Netzer::get_raw_data(){
+uint16_t Netzer::get_raw_data(){
 	return m_raw_data;
 }
 
-void Netzer::Netzer::spi_callback_debug(int events){
+void Netzer::spi_callback_debug(int events){
 	// upper lower?
   uint16_t raw_data = (static_cast<uint16_t>(rx_buffer[1]) << 8) | (static_cast<uint16_t>(rx_buffer[0]));
 	m_raw_data = raw_data;

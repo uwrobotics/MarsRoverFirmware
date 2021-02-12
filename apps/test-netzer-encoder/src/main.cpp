@@ -1,6 +1,4 @@
 #include "Netzer.h"
-#include "mbed.h"
-
 
 #define ENCODER_READ_FREQUENCY_HZ 1
 #define ENCODER_READ_PERIOD       (1000ms / (ENCODER_READ_FREQUENCY_HZ))
@@ -9,7 +7,7 @@ void callback(void);
 void run_async();
 Timer timer;
 volatile bool encoder_position_updated = false;
-Netzer::Netzer encoder(SPI_MISO, SPI_MOSI, SPI_SCK, callback);
+Encoder::Netzer encoder(SPI_MISO, SPI_MOSI, SPI_SCK, callback);
 
 int main(){
 	run_async();
