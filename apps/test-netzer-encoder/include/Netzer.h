@@ -14,6 +14,11 @@ class Netzer {
 		bool spi_read();
 		uint16_t get_raw_data();
 		
+		// Encoder api (TODO: after inheriting, override)
+		bool getAngleDeg(float &angle);
+		bool getAngularVelocity(float &speed);
+		bool reset();
+		
 		//Add get_angular_vel and get_angle functions
 	
 	private:
