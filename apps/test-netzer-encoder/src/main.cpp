@@ -1,4 +1,4 @@
-#include "NetzerEncoder.h"
+#include "Netzer.h"
 #include "mbed.h"
 
 
@@ -9,7 +9,7 @@ void callback(void);
 void run_async();
 Timer timer;
 volatile bool encoder_position_updated = false;
-NetzerEncoder::NetzerEncoder encoder(SPI_MISO, SPI_MOSI, SPI_SCK, callback);
+Netzer::Netzer encoder(SPI_MISO, SPI_MOSI, SPI_SCK, callback);
 
 int main(){
 	run_async();
