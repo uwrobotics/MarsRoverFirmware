@@ -165,23 +165,23 @@ typedef enum {
   BUTTON_1 = PA_2,
 
   /**** Actuator Pins ****/
-  SPI_NSS   = PA_4,  // New pin
-  SPI_SCK   = PA_5,  // New pin
+  SPI_NSS   = PA_4,
+  SPI_SCK   = PA_5,
   MTR_PWM_1 = PA_6,
   MTR_DIR_1 = PC_5,
   MTR_PWM_2 = PA_7,
   MTR_DIR_2 = PC_4,
-  PWM_SV1   = PB_10,  // New pin
-  PWM_SV2   = PB_2,   // New pin
-  SPI_MISO  = PB_4,   // New pin
-  SPI1_MOSI = PB_5,   // New pin
+  PWM_SV1   = PB_10,
+  PWM_SV2   = PB_2,
+  SPI_MISO  = PB_4,
+  SPI1_MOSI = PB_5,
 
   /**** Limit Switch Pins ****/
   LIM_SW_1 = PC_15,
   LIM_SW_2 = PC_14,
   LIM_SW_3 = PC_13,
   LIM_SW_4 = PB_9,
-  LIM_SW_4 = PB_8,
+  LIM_SW_5 = PB_8,
 
   /**** Encoder Pins ****/
   ENC_DCI_A = PB_6,
@@ -215,7 +215,6 @@ typedef enum {
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
-  SYS_TRACED0    = PC_8,
   SYS_WKUP0      = PA_0,
 
   // Not connected

@@ -202,7 +202,6 @@ typedef enum {
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
-  SYS_TRACED0    = PC_8,
 
   /**** ADC Input ****/
   ADC_IN_5V = PC_1,
