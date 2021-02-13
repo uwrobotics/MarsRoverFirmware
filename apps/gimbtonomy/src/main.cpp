@@ -11,6 +11,9 @@
 #include "RollConfig.h"
 #include "hw_bridge.h"
 
+// Orson TODO: rename everything that says gimbtonomy to gimbal. rename files, folders, cmake pckgs etc
+
+// Orson TODO: remove this debug functionality. (remove anythign that uses this debug macro)
 #define DEBUG
 
 constexpr uint8_t ACK_FLAG(1UL << 0);
@@ -27,6 +30,7 @@ CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;
 
 // neopixel
+// Orson TODO: removing any mention of neopixel from Gimbal. (it has been moved to pdb)
 Neopixel_Blocking neopixel(16, LED_MTRX);
 
 // Threads
@@ -36,6 +40,7 @@ Thread txCANProcessorThread(osPriorityBelowNormal);
 // Event flags for communication between threads
 EventFlags event_flags;
 
+// Orson TODO: carefully go through each function and make sure there arent any silly mistakes. like if the canid says set motion of pan servo make sure it actually does that
 void handleSetNeoPixelColor(CANMsg *p_newMsg) {
   enum mode : uint8_t { solidRed, solidBlue, flashingGreen, off };
   uint8_t neoPixelMode = 0;

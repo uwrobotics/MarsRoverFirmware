@@ -144,16 +144,18 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
-// STDIO for console print
+// Felix TODO: Ensure that everything below here matches what is in the IOC. When done, make sure that all pins of IOC
+// are here and all pins here are on IOC STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = PC_10,
+  STDIO_UART_TX = PC_10,  // Felix TODO: Check with Cindy but i think these should be NC. this is bc of new flashing and
+                          // printing method
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = PC_11,
+  STDIO_UART_RX = PC_11, // Felix TODO: same as above
 #endif
 
   /**** UI ****/
@@ -166,23 +168,26 @@ typedef enum {
   BUTTON_2 = PB_1,
 
   /**** Servo Pins *****/
-
+  // Felix TODO: name these better. should be SRVO_PWM_CVR for cover servo or something
   SRVO_PWM_1 = PB_2,
   SRVO_PWM_2 = PB_10,
 
   /**** Actuator Pins ****/
+  // Felix TODO: name these better. should be MTR_PWM_ELVTR for elevator motor
   MTR_PWM_1 = PA_6,
   MTR_DIR_1 = PA_5,
   MTR_PWM_2 = PA_7,
   MTR_DIR_2 = PC_4,
 
   /**** Limit Switch Pins ****/
+  // Felix TODO: name these better
   LIM_SW_1 = PB_4,
   LIM_SW_2 = PB_3,
   LIM_SW_3 = PD_2,
   LIM_SW_4 = PC_12,
 
   /**** Encoder Pins ****/
+  // Felix TODO: i think encoders have changed a lot. please update from ioc and name them better
   ENC_DCI_A  = PB_6,
   ENC_DCI_B  = PB_7,
   ENC_SCI_IN = PB_5,
@@ -214,6 +219,8 @@ typedef enum {
   RCC_OSC_OUT   = PH_1,
 
   /**** DEBUG pins ****/
+  // Felix TODO: these will change quite a bit I think. ask Cindy abt how to configure debug pins for new flashing
+  // method
   SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,

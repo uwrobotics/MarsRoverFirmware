@@ -6,6 +6,10 @@
 #include "DiggerConfig.h"
 #include "ElevatorConfig.h"
 
+// TODO: Handle function call failures better
+
+// Felix TODO: Brose through logic and make sure there aren't any silly mistakes. 
+
 Sensor::AdafruitSTEMMA moistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
 CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
@@ -59,6 +63,7 @@ void txCANProcessor() {
     float position = 0, velocity = 0;
   };
 
+  // Felix TODO: Ensure that each time, we get the right data, call setPayload with new data and send the new data
   while (true) {
     MotionReport report;
     float angle = 0, speed = 0;

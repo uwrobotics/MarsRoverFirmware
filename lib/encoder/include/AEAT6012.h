@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Encoder.h"
 #include <mutex>
 
+#include "Encoder.h"
+
+/* TODO: create driver for encoder */
 namespace Encoder {
 class AEAT6012 : public Encoder {
  public:
   typedef struct Config {
-    PinName pin;
+    PinName clk, miso, CS;
     float offsetDeg;
   } Config;
   AEAT6012(const Config &config);
@@ -16,10 +18,5 @@ class AEAT6012 : public Encoder {
   bool reset() override;
 
  private:
-  PinName m_pin;
-
-  Mutex m_mutex;
-
-  float m_offsetDeg;
 };
 }  // namespace Encoder
