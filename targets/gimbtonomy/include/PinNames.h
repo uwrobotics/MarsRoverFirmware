@@ -156,7 +156,7 @@ typedef enum {
 #endif
 
   /**** UI ****/
-  LED1 = PC_7,
+  LED1  = PC_7,
   LED_G = PA_0,
   LED_B = PA_1,
   LED_R = PA_2,
@@ -164,8 +164,8 @@ typedef enum {
   BUTTON_1 = PA_3,
 
   /**** Actuator Pins ****/
-  SRVO_PWM_YAW = PB_6,
-  SRVO_PWM_ROLL = PB_5,
+  SRVO_PWM_YAW   = PB_6,
+  SRVO_PWM_ROLL  = PB_5,
   SRVO_PWM_PITCH = PB_4,
 
   /**** Encoder Pins ****/
@@ -185,8 +185,8 @@ typedef enum {
   CAN_TX = CAN1_TX,
   CAN_RX = CAN1_RX,
 
-  SERIAL_TX  = STDIO_UART_TX,
-  SERIAL_RX  = STDIO_UART_RX,
+  SERIAL_TX = STDIO_UART_TX,
+  SERIAL_RX = STDIO_UART_RX,
 
   USBTX = STDIO_UART_TX,
   USBRX = STDIO_UART_RX,
@@ -198,16 +198,14 @@ typedef enum {
   RCC_OSC_OUT   = PH_1,
 
   /**** DEBUG pins ****/
-  SYS_JTCK_SWCLK = PA_14, 
+  SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
-  SYS_JTRST      = PB_4,
   SYS_TRACED0    = PC_8,
-  SYS_WKUP0      = PA_0,
 
   /**** ADC Input ****/
-  ADC_IN_5V      = PC_1,
+  ADC_IN_5V = PC_1,
 
   // Not connected
   NC = (int)0xFFFFFFFF

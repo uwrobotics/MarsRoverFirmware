@@ -165,16 +165,23 @@ typedef enum {
   BUTTON_1 = PA_2,
 
   /**** Actuator Pins ****/
+  SPI_NSS   = PA_4,  // New pin
+  SPI_SCK   = PA_5,  // New pin
   MTR_PWM_1 = PA_6,
   MTR_DIR_1 = PC_5,
   MTR_PWM_2 = PA_7,
   MTR_DIR_2 = PC_4,
+  PWM_SV1   = PB_10,  // New pin
+  PWM_SV2   = PB_2,   // New pin
+  SPI_MISO  = PB_4,   // New pin
+  SPI1_MOSI = PB_5,   // New pin
 
   /**** Limit Switch Pins ****/
   LIM_SW_1 = PC_15,
   LIM_SW_2 = PC_14,
   LIM_SW_3 = PC_13,
   LIM_SW_4 = PB_9,
+  LIM_SW_4 = PB_8,
 
   /**** Encoder Pins ****/
   ENC_DCI_A = PB_6,
@@ -190,27 +197,26 @@ typedef enum {
   CAN_TX = CAN1_TX,
   CAN_RX = CAN1_RX,
 
-  SERIAL_TX  = STDIO_UART_TX, 
-  SERIAL_RX  = STDIO_UART_RX, 
+  SERIAL_TX = STDIO_UART_TX,
+  SERIAL_RX = STDIO_UART_RX,
 
-  USBTX = STDIO_UART_TX, 
-  USBRX = STDIO_UART_RX, 
+  USBTX = STDIO_UART_TX,
+  USBRX = STDIO_UART_RX,
 
   TEMP_MOIST_I2C_SCL = PA_8,
   TEMP_MOIST_I2C_SDA = PC_9,
 
   /**** OSCILLATOR pins ****/
-  RCC_OSC_IN    = PH_0,
-  RCC_OSC_OUT   = PH_1,
+  RCC_OSC_IN  = PH_0,
+  RCC_OSC_OUT = PH_1,
 
   /**** DEBUG pins ****/
   SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
-  SYS_JTRST      = PB_4,
-  SYS_TRACED0    = PC_8, 
-  SYS_WKUP0      = PA_0, 
+  SYS_TRACED0    = PC_8,
+  SYS_WKUP0      = PA_0,
 
   // Not connected
   NC = (int)0xFFFFFFFF
