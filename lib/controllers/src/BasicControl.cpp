@@ -41,40 +41,38 @@ bool BasicControl::reportAngularVelocityDegPerSec(float &speed) {
 }
 
 bool BasicControl::shouldUpdate() {
-  {
-    if (!m_ignoreRPMChecks.load()) {
-      float speed = 0;
-      if (!m_encoder->getAngularVelocityDegPerSec(speed)) {
+  if (!m_ignoreRPMChecks.load()) {
+    float speed = 0;
+    if (!m_encoder->getAngularVelocityDegPerSec(speed)) {
+      return false;
+    }
+    if (std::abs(speed) > m_maxDegPerSec) {
+      stop();
+    }
+  }
+
+  if (!m_ignoreCurrentChecks.load()) {
+    float current = 0;
+    if (m_currentSensor) {
+      if (!m_currentSensor.value()->read(current)) {
         return false;
       }
-      if (std::abs(speed) > m_maxDegPerSec) {
+      if (std::abs(current) > m_maxCurrent) {
         stop();
       }
     }
-
-    if (!m_ignoreCurrentChecks.load()) {
-      float current = 0;
-      if (m_currentSensor) {
-        if (!m_currentSensor.value()->read(current)) {
-          return false;
-        }
-        if (std::abs(current) > m_maxCurrent) {
-          stop();
-        }
-      }
-    }
-
-    if (m_upperLimit.is_connected()) {
-      if (m_upperLimit.read() && m_sp.load() > 0) {
-        return false;
-      }
-    }
-
-    if (m_lowerLimit.is_connected()) {
-      if (m_lowerLimit.read() && m_sp.load() < 0) {
-        return false;
-      }
-    }
-    return true;
   }
+
+  if (m_upperLimit.is_connected()) {
+    if (m_upperLimit.read() && m_setpoint.load() > 0) {
+      return false;
+    }
+  }
+
+  if (m_lowerLimit.is_connected()) {
+    if (m_lowerLimit.read() && m_setpoint.load() < 0) {
+      return false;
+    }
+  }
+  return true;
 }

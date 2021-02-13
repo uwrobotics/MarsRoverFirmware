@@ -44,15 +44,14 @@ test-can:
 #  - science
 
 test-mae3:
-  #  - nucleo
-  - arm
+  - nucleo
 #  - gimbtonomy
 #  - science
 
 test-lookup-table:
   - nucleo
 
-test-moisture:
+test-adafruitSTEMMA:
 #  - nucleo
   - science
 
@@ -69,8 +68,8 @@ test-pwm:
   - science
 
 test-pwmin:
-  #  - nucleo
-  - arm
+  - nucleo
+#- arm
 #  - gamepad
 #  - gimbtonomy
 #  - science

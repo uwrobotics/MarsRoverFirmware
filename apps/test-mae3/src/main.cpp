@@ -1,10 +1,10 @@
 #include "MAE3.h"
 
-Encoder::MAE3 encoder({ENC_PWM_TRNTBL, 0});
+Encoder::MAE3 encoder({NC, 0});
 
 // Wire the output PWM signal to the PWM input
 // or connect external PWM input to pwmIn pin
-PwmOut pwmOut(PinName::MTR_PWM_TRNTBL);
+PwmOut pwmOut(NC);
 
 Timer timer;
 Timer printTimer;

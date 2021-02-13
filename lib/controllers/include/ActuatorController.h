@@ -19,16 +19,16 @@ class ActuatorController {
   virtual void reinstateDegPerSecChecks() final;
 
   /* functions to be overriden by children */
-  virtual bool update() = 0;
-  virtual void stop()   = 0;
-  virtual void reset()  = 0;
-  virtual bool reportAngleDeg(float &angle) = 0;
+  virtual bool update()                                     = 0;
+  virtual void stop()                                       = 0;
+  virtual void reset()                                      = 0;
+  virtual bool reportAngleDeg(float &angle)                 = 0;
   virtual bool reportAngularVelocityDegPerSec(float &speed) = 0;
 
   virtual std::optional<PID::PID *> getPID() = 0;
 
  protected:
-  std::atomic<float> m_sp                 = {0};
+  std::atomic<float> m_setpoint           = {0};
   std::atomic<bool> m_ignoreCurrentChecks = {false};
   std::atomic<bool> m_ignoreRPMChecks     = {false};
 };
