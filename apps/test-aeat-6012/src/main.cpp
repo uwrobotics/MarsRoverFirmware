@@ -1,7 +1,7 @@
 #include "AEAT6012.h"
 #include "mbed.h"
 
-constexpr auto ENCODER_READ_PERIOD = 100ms;
+constexpr auto ENCODER_READ_PERIOD = 500ms;
 
 enum Test_Mode_E { TEST_BLOCKING, TEST_ASYNC };
 
@@ -39,12 +39,13 @@ void test_blocking(void) {
     timer.reset();
     timer.start();
 
-    encoder.read_position();
+    encoder.read();
 
     timer.stop();
 
-    printf("Encoder reading degrees: %.3f\r\n", encoder.get_position_deg());
-    printf("Encoder reading raw: %u\r\n", encoder.get_position_raw());
+    printf("Encoder position degrees: %.3f\r\n", encoder.get_position_deg());
+    printf("Encoder position raw: %u\r\n", encoder.get_position_raw());
+    printf("Encoder angular velocity deg/s: %.3f\r\n", encoder.get_angular_velocity_dps());
 
     printf("Read time: %llu us\r\n\r\n",
            std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count());
@@ -60,7 +61,7 @@ void test_async(void) {
     timer.reset();
     timer.start();
 
-    while (!encoder.read_position_async(callback)) {
+    while (!encoder.read_async(callback)) {
     }
 
     while (!encoder_position_updated) {
@@ -72,6 +73,7 @@ void test_async(void) {
 
     printf("Encoder reading degrees: %.3f\r\n", encoder.get_position_deg());
     printf("Encoder reading raw: %u\r\n", encoder.get_position_raw());
+    printf("Encoder angular velocity deg/s: %.3f\r\n", encoder.get_angular_velocity_dps());
 
     printf("Read time: %llu us\r\n\r\n",
            std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count());
