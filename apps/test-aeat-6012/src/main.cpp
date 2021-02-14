@@ -12,7 +12,7 @@ void test_async(void);
 Timer timer;
 volatile bool encoder_position_updated = false;
 
-Encoder::AEAT6012 encoder(SPI_CS, SPI_MISO, SPI_SCK);
+Encoder::AEAT6012 encoder(SPI_CS, SPI_MISO, SPI_SCK, 0);
 
 // Modify this
 Test_Mode_E test_mode = TEST_BLOCKING;
@@ -43,9 +43,9 @@ void test_blocking(void) {
 
     timer.stop();
 
-    printf("Encoder position degrees: %.3f\r\n", encoder.get_position_deg());
-    printf("Encoder position raw: %u\r\n", encoder.get_position_raw());
-    printf("Encoder angular velocity deg/s: %.3f\r\n", encoder.get_angular_velocity_dps());
+    printf("Encoder position degrees: %.3f\r\n", encoder.getAngleDegNoTrigger());
+    printf("Encoder position raw: %u\r\n", encoder.getPositionRawNoTrigger());
+    printf("Encoder angular velocity deg/s: %.3f\r\n", encoder.getAngularVelocityDegPerSecNoTrigger());
 
     printf("Read time: %llu us\r\n\r\n",
            std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count());
@@ -61,7 +61,7 @@ void test_async(void) {
     timer.reset();
     timer.start();
 
-    while (!encoder.read_async(callback)) {
+    while (!encoder.readAsync(callback)) {
     }
 
     while (!encoder_position_updated) {
@@ -71,9 +71,9 @@ void test_async(void) {
 
     encoder_position_updated = false;
 
-    printf("Encoder reading degrees: %.3f\r\n", encoder.get_position_deg());
-    printf("Encoder reading raw: %u\r\n", encoder.get_position_raw());
-    printf("Encoder angular velocity deg/s: %.3f\r\n", encoder.get_angular_velocity_dps());
+    printf("Encoder position degrees: %.3f\r\n", encoder.getAngleDegNoTrigger());
+    printf("Encoder position raw: %u\r\n", encoder.getPositionRawNoTrigger());
+    printf("Encoder angular velocity deg/s: %.3f\r\n", encoder.getAngularVelocityDegPerSecNoTrigger());
 
     printf("Read time: %llu us\r\n\r\n",
            std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count());
