@@ -6,6 +6,7 @@
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
 #include "LimServo.h"
+#include "Logger.h"
 #include "MoistureSensor.h"
 #include "ScienceConfig.h"
 #include "hw_bridge.h"
@@ -126,9 +127,9 @@ void txCANProcessor() {
 }
 
 int main() {
-  printf("\r\n\r\n");
-  printf("SCIENCE APP STARTED!\r\n");
-  printf("====================\r\n");
+  Utility::Logger::printf("\r\n\r\n");
+  Utility::Logger::printf("SCIENCE APP STARTED!\r\n");
+  Utility::Logger::printf("====================\r\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);

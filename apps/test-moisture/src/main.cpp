@@ -1,3 +1,4 @@
+#include "Logger.h"
 #include "MoistureSensor.h"
 #include "hw_bridge.h"
 #include "mbed.h"
@@ -20,25 +21,25 @@ int main() {
 
     led1 = (sensor.Is_Initialized());  // turn on LED if the sensor's HW_ID code matches the known value
 
-    printf("\r\nChecking Device ID...\r\n");  // read device HW_ID, reading of 85 is expected
+    Utility::Logger::printf("\r\nChecking Device ID...\r\n");  // read device HW_ID, reading of 85 is expected
     HW_ID = sensor.Read_HW_ID();
-    printf("HW ID: %d \r\n", HW_ID);
+    Utility::Logger::printf("HW ID: %d \r\n", HW_ID);
 
     ThisThread::sleep_for(100ms);
 
-    printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates unsuccessful
-                                            // initialization
+    Utility::Logger::printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates
+                                                             // unsuccessful initialization
     moisture = sensor.Read_Moisture();
-    printf("Moisture: %d \r\n", moisture);
+    Utility::Logger::printf("Moisture: %d \r\n", moisture);
 
     ThisThread::sleep_for(100ms);
 
-    printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0 indicates
-                                               // unsuccessful initialization
+    Utility::Logger::printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0
+                                                                // indicates unsuccessful initialization
     temperature = sensor.Read_Temperature();
-    printf("Temperature: %f \r\n", temperature);
+    Utility::Logger::printf("Temperature: %f \r\n", temperature);
 
-    printf("\r\n-----------------------------\r\n");
+    Utility::Logger::printf("\r\n-----------------------------\r\n");
 
     ThisThread::sleep_for(100ms);
   }

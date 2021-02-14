@@ -1,28 +1,29 @@
 #include "Logger.h"
 
+namespace Utility {
 static char buffer[4096];  // Can increase max buffer length if needed
+}
 
 int Utility::Logger::printf(const char* format, ...) {
   va_list arg;
 
   va_start(arg, format);
-  sprintf(buffer, format, arg, 0);
+  int num_chars = sprintf(buffer, format, arg, 0);
   va_end(arg);
 
 #if defined(UART_LOGGING)
-  return printf(buffer);
+  printf(buffer);
 #endif
 
 #if defined(SWO_LOGGING)
-  int num_chars = 0;
-  char* c       = buffer;
+  char* c = buffer;
 
   while (*c) {
     ITM_SendChar(*c++);
     num_chars++;
   }
-  return num_chars;
 #endif
+  return num_chars;
 }
 
 Utility::Logger& Utility::Logger::operator<<(long n) {

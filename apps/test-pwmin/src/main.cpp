@@ -1,3 +1,4 @@
+#include "Logger.h"
 #include "PwmIn.h"
 #include "mbed.h"
 
@@ -47,7 +48,7 @@ int main() {
 
     if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
-      printf(
+      Utility::Logger::printf(
           "Avg PW: %+f, \tAvg Prd: %+f, \tRaw Duty: %+f, \tAvg Duty: %+f, \tAvg Duty Velo: %+f, \tAvg Ang Velo: "
           "%+f\r\n",
           pwmIn.avgPulseWidth().count(), pwmIn.avgPeriod().count(), pwmIn.dutyCycle(), pwmIn.avgDutyCycle(),

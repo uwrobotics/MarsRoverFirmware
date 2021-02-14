@@ -10,6 +10,7 @@ target_link_libraries(science.${TARGET}-board.elf
     MoistureSensor
     EncoderRelative_Quadrature
     CANBus
+    Logger
     uwrt-mars-rover-hw-bridge)
 target_set_firmware_properties(science.${TARGET}-board.elf)
 

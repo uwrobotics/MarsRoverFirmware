@@ -1,4 +1,5 @@
 #include "EncoderAbsolute_PWM.h"
+#include "Logger.h"
 #include "mbed.h"
 
 Encoder::t_encoderConfig config = {
@@ -54,7 +55,8 @@ int main() {
 
     if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
-      printf("Angle: %f, Angular Velocity :%f\r\n", encoder.getAngle_Degrees(), encoder.getVelocity_DegreesPerSec());
+      Utility::Logger::printf("Angle: %f, Angular Velocity :%f\r\n", encoder.getAngle_Degrees(),
+                              encoder.getVelocity_DegreesPerSec());
     }
   }
 }

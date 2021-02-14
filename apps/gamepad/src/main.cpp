@@ -8,6 +8,7 @@
 #include "AnalogInputGroup.h"
 #include "DigitalInputGroup.h"
 #include "FrameArbiter.h"
+#incldue "Logger.h"
 #include "mbed.h"
 
 using namespace FrameProtocol;
@@ -68,7 +69,7 @@ UnbufferedSerial pc(USBTX, USBRX);
 FrameArbiter frame_controller(&pc);
 
 int main() {
-  printf("Beginning robot gamepad fw app.\r\n");
+  Utility::Logger::printf("Beginning robot gamepad fw app.\r\n");
 
   // set flow control, as we will be sending a lot stuffs
   pc.set_flow_control(SerialBase::RTSCTS, USB_RTS, USB_CTS);
@@ -107,23 +108,26 @@ int main() {
     joys.getValues(joys_values);
     pots.getValues(pots_values);
 
-    printf("Digital Inputs: JOY_BTN: %d, valid: %d", btns_values & 0x1, btns_invalid_reads & 0x1);
-    printf("Digital Inputs: PB1: %d, valid: %d", (btns_values & 0x1 << 1) >> 1, (btns_invalid_reads & 0x1 << 1) >> 1);
-    printf("Digital Inputs: PB2: %d, valid: %d", (btns_values & 0x1 << 2) >> 2, (btns_invalid_reads & 0x1 << 2) >> 2);
-    printf("Digital Inputs: SW_1A: %d, valid: %d", switches_values & 0x1, switches_invalid_reads & 0x1);
-    printf("Digital Inputs: SW_1B: %d, valid: %d", (switches_values & 0x1 << 1) >> 1,
-           (switches_invalid_reads & 0x1 << 1) >> 1);
-    printf("Digital Inputs: SW_2A: %d, valid: %d", (switches_values & 0x1 << 2) >> 2,
-           (switches_invalid_reads & 0x1 << 2) >> 2);
-    printf("Digital Inputs: SW_2B: %d, valid: %d", (switches_values & 0x1 << 3) >> 3,
-           (switches_invalid_reads & 0x1 << 3) >> 3);
+    Utility::Logger::printf("Digital Inputs: JOY_BTN: %d, valid: %d", btns_values & 0x1, btns_invalid_reads & 0x1);
+    Utility::Logger::printf("Digital Inputs: PB1: %d, valid: %d", (btns_values & 0x1 << 1) >> 1,
+                            (btns_invalid_reads & 0x1 << 1) >> 1);
+    Utility::Logger::printf("Digital Inputs: PB2: %d, valid: %d", (btns_values & 0x1 << 2) >> 2,
+                            (btns_invalid_reads & 0x1 << 2) >> 2);
+    Utility::Logger::printf("Digital Inputs: SW_1A: %d, valid: %d", switches_values & 0x1,
+                            switches_invalid_reads & 0x1);
+    Utility::Logger::printf("Digital Inputs: SW_1B: %d, valid: %d", (switches_values & 0x1 << 1) >> 1,
+                            (switches_invalid_reads & 0x1 << 1) >> 1);
+    Utility::Logger::printf("Digital Inputs: SW_2A: %d, valid: %d", (switches_values & 0x1 << 2) >> 2,
+                            (switches_invalid_reads & 0x1 << 2) >> 2);
+    Utility::Logger::printf("Digital Inputs: SW_2B: %d, valid: %d", (switches_values & 0x1 << 3) >> 3,
+                            (switches_invalid_reads & 0x1 << 3) >> 3);
 
-    printf("Digital Inputs: JOY_SM_X: %f", joys_values[0]);
-    printf("Digital Inputs: JOY_SM_Y: %f", joys_values[1]);
-    printf("Digital Inputs: JOY_X: %f", joys_values[2]);
-    printf("Digital Inputs: JOY_Y: %f", joys_values[3]);
-    printf("Digital Inputs: POT_AL: %f", pots_values[0]);
-    printf("Digital Inputs: SLIDE_POT_AL: %f", pots_values[1]);
+    Utility::Logger::printf("Digital Inputs: JOY_SM_X: %f", joys_values[0]);
+    Utility::Logger::printf("Digital Inputs: JOY_SM_Y: %f", joys_values[1]);
+    Utility::Logger::printf("Digital Inputs: JOY_X: %f", joys_values[2]);
+    Utility::Logger::printf("Digital Inputs: JOY_Y: %f", joys_values[3]);
+    Utility::Logger::printf("Digital Inputs: POT_AL: %f", pots_values[0]);
+    Utility::Logger::printf("Digital Inputs: SLIDE_POT_AL: %f", pots_values[1]);
 
 #endif
   }
