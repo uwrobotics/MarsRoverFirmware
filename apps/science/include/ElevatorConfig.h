@@ -16,14 +16,15 @@ namespace Elevator {
 namespace Internal {
 static Actuator::DCMotor motor(MTR_PWM_2, MTR_DIR_2, false);
 
-static Encoder::Pololu37D encoder({NC, NC, NC, 0});  // younes todo figure out ioc file for science
-// bc this shit was using mae3 before and now its pololu
+// Felix TODO: ensure that Elevator uses Pololu encoder
+static Encoder::Pololu37D encoder({NC, NC, NC, 0});
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float maxDegPerSec = 1197.482;
-constexpr float maxCurrent   = std::numeric_limits<float>::infinity();  // since no current sensor
+constexpr float maxDegPerSec =
+    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1197.482?)
+constexpr float maxCurrent = std::numeric_limits<float>::infinity();  // since no current sensor
 
 static Controller::Velocity vel(&motor, &encoder, std::nullopt, &velPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
 static Controller::Position pos(&motor, &encoder, std::nullopt, &posPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);

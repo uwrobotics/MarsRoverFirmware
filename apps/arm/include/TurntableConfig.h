@@ -15,18 +15,19 @@ namespace Turntable {
 
 namespace Internal {
 
-static Encoder::AEAT6012 encoder({ENC_PWM_TRNTBL, 0});
+static Encoder::AEAT6012 encoder({TRNTBL_ENC_SPI_CLK, TRNTBL_ENC_SPI_MISO, NC, 0});
 
 static Actuator::DCMotor motor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
 
-static Sensor::CurrentSensor currentSensor;
+static Sensor::CurrentSensor currentSensor(TRNTBL_CRNT_SNS_SPI_CLK, TRNTBL_CRNT_SNS_SPI_MISO, TRNTBL_CRNT_SNS_SPI_CS);
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr uint8_t maxCurrent    = 53;
-constexpr uint32_t maxDegPerSec = 79080;
+constexpr uint8_t maxCurrent = 53;
+constexpr float maxDegPerSec =
+    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (79080?)
 
 static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
                                 LIM_TRNTBL_RHS);

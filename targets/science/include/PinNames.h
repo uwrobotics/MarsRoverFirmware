@@ -144,17 +144,16 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
-// STDIO for console print
+// Felix TODO: Ensure that everything below here matches what is in the IOC. When done, make sure that all pins of IOC
+// are here and all pins here are on IOC STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
-  STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
+  STDIO_UART_TX = NC,
 #else
-  STDIO_UART_TX = PC_10,
-#endif
+  STDIO_UART_TX = NC,  #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
-  STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
+  STDIO_UART_RX = NC,
 #else
-  STDIO_UART_RX = PC_11,
-#endif
+  STDIO_UART_RX = NC, #endif
 
   /**** UI ****/
   LED1  = PC_0,
@@ -163,29 +162,29 @@ typedef enum {
   LED_B = PC_3,
 
   BUTTON_1 = PA_2,
-  BUTTON_2 = PB_1,
 
   /**** Servo Pins *****/
-
-  SRVO_PWM_1 = PB_10,
-  SRVO_PWM_2 = PB_2,
+  SRVO_PWM_SHVL = PB_2,
+  SRVO_PWM_LID = PB_10,
 
   /**** Actuator Pins ****/
-  MTR_PWM_1 = PA_6,
-  MTR_DIR_1 = PA_5,
-  MTR_PWM_2 = PA_7,
-  MTR_DIR_2 = PC_4,
+  SPI_NSS = PA_4,
+  SPI_SCK = PA_5,
+  MTR_PWM_ELVTR = PA_6,
+  MTR_DIR_ELVTR = PC_5,
+  MTR_PWM_CENTRIFUGE = PA_7,
+  MTR_DIR_CENTRIFUGE = PC_4,
 
   /**** Limit Switch Pins ****/
-  LIM_SW_1 = PC_15,
-  LIM_SW_2 = PC_14,
-  LIM_SW_3 = PC_13,
-  LIM_SW_4 = PB_9,
+  CENTRIFUGE_SW_1 = PC_15,
+  CENTRIFUGE_SW_2 = PC_14,
+  ELVTR_SW_3 = PC_13,
+  ELVTR_SW_4 = PB_9,
+  LIM_SW_5 = PB_8,
 
   /**** Encoder Pins ****/
-  ENC_DCI_A  = PB_6,
-  ENC_DCI_B  = PB_7,
-  ENC_SCI_IN = PB_5,
+  LIFT_ENC_A  = PB_6,
+  LIFT_ENC_B  = PB_7,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
@@ -199,7 +198,6 @@ typedef enum {
 
   SERIAL_TX  = STDIO_UART_TX,
   SERIAL_RX  = STDIO_UART_RX,
-  SERIAL_RTS = PA_15,
 
   USBTX = STDIO_UART_TX,
   USBRX = STDIO_UART_RX,
@@ -208,20 +206,17 @@ typedef enum {
   TEMP_MOIST_I2C_SDA = PC_9,
 
   /**** OSCILLATOR pins ****/
-  RCC_OSC32_IN  = PC_14,
-  RCC_OSC32_OUT = PC_15,
   RCC_OSC_IN    = PH_0,
   RCC_OSC_OUT   = PH_1,
 
   /**** DEBUG pins ****/
+  // Felix TODO: these will change quite a bit I think. ask Cindy abt how to configure debug pins for new flashing
+  // method
   SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
-  SYS_JTRST      = PB_4,
-  SYS_TRACED0    = PC_8,
   SYS_WKUP0      = PA_0,
-  SYS_WKUP1      = PC_13,
 
   // Not connected
   NC = (int)0xFFFFFFFF

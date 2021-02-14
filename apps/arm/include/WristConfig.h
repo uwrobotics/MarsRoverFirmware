@@ -1,5 +1,7 @@
 #pragma once
 
+#include <numeric>
+
 #include "ActuatorControllerManager.h"
 #include "Current.h"
 #include "DCMotor.h"
@@ -23,9 +25,10 @@ static Encoder::Pololu37D rightEncoder({ENC_QUAD_WRST_RHS_A, ENC_QUAD_WRST_RHS_B
 static Actuator::DCMotor leftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 static Actuator::DCMotor rightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 
-/* do not use wrist limit switches since joints are individually addressable */
+/* TODO: Can we use wrist limit switches if motors are individually addressable */
 
-static Sensor::CurrentSensor leftCurrentSensor, rightCurrentSensor;
+static Sensor::CurrentSensor leftCurrentSensor(WRSTL_CRNT_SNS_SPI_CLK, WRSTL_CRNT_SNS_SPI_MISO, WRSTL_CRNT_SNS_SPI_CS),
+    rightCurrentSensor(WRSTR_CRNT_SNS_SPI_CLK, WRSTR_CRNT_SNS_SPI_MISO, WRSTR_CRNT_SNS_SPI_CS);
 
 static PID::PID leftVelPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID leftPosPID({1, 0, 0, -1, 1, 0, false, false});
@@ -35,8 +38,9 @@ static PID::PID rightVelPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID rightPosPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID rightCurPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr uint8_t pololuMaxCurrent    = 3;
-constexpr uint16_t pololumaxDegPerSec = 1680;
+constexpr uint8_t pololuMaxCurrent = 3;
+constexpr float pololumaxDegPerSec =
+    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1680?)
 
 static Controller::Velocity leftVel(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftVelPID, pololumaxDegPerSec,
                                     pololuMaxCurrent, NC, NC);

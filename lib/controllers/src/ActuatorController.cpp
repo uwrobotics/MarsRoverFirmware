@@ -3,11 +3,11 @@
 using namespace Controller;
 
 void ActuatorController::setSetPoint(float sp) {
-  m_sp.store(sp);
+  m_setpoint.store(sp);
 }
 
 float ActuatorController::getSetPoint() const {
-  return m_sp.load();
+  return m_setpoint.load();
 }
 
 void ActuatorController::overrideCurrentChecks() {

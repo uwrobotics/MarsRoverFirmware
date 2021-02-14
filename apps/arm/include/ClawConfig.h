@@ -1,5 +1,7 @@
 #pragma once
 
+#include <numeric>
+
 #include "ActuatorControllerManager.h"
 #include "Current.h"
 #include "DCMotor.h"
@@ -19,14 +21,15 @@ static Encoder::Pololu37D encoder({ENC_QUAD_CLAW_A, ENC_QUAD_CLAW_B, NC, 0, GPIO
 
 static Actuator::DCMotor motor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
 
-static Sensor::CurrentSensor currentSensor;
+static Sensor::CurrentSensor currentSensor(CLAW_CRNT_SNS_SPI_CLK, CLAW_CRNT_SNS_SPI_MISO, CLAW_CRNT_SNS_SPI_CS);
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float pololuMaxCurrent   = 3;
-constexpr float pololuMaxDegPerSec = 1680;
+constexpr float pololuMaxCurrent = 3;
+constexpr float pololuMaxDegPerSec =
+    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1680?);
 
 static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, pololuMaxDegPerSec, pololuMaxCurrent,
                                 LIM_CLAW_OPEN, NC);

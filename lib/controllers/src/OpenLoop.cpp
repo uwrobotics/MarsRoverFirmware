@@ -62,13 +62,13 @@ bool OpenLoop::shouldUpdate() {
   }
 
   if (m_upperLimit) {
-    if (m_upperLimit.read() && m_sp.load() > 0) {
+    if (m_upperLimit.read() && m_setpoint.load() > 0) {
       return false;
     }
   }
 
   if (m_lowerLimit) {
-    if (m_lowerLimit.read() && m_sp.load() < 0) {
+    if (m_lowerLimit.read() && m_setpoint.load() < 0) {
       return false;
     }
   }
@@ -77,7 +77,7 @@ bool OpenLoop::shouldUpdate() {
 
 bool OpenLoop::update() {
   if (shouldUpdate()) {
-    m_actuator->setValue(m_sp.load());
+    m_actuator->setValue(m_setpoint.load());
   }
   return true;
 }
