@@ -144,14 +144,20 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
+
+  // Not connected
+  NC = (int)0xFFFFFFFF,
+
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = NC,
 #else
-  STDIO_UART_TX = NC,  #endif
+  STDIO_UART_TX = NC,  
+#endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = NC,
 #else
-  STDIO_UART_RX = NC, #endif
+  STDIO_UART_RX = NC, 
+#endif
 
   /**** UI ****/
   LED1  = PC_0,
@@ -212,10 +218,7 @@ typedef enum {
   SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
-  SYS_JTMS_SWDIO = PA_13,
-
-  // Not connected
-  NC = (int)0xFFFFFFFF
+  SYS_JTMS_SWDIO = PA_13
 } PinName;
 
 #ifdef __cplusplus
