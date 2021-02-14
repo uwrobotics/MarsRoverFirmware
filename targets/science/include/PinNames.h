@@ -144,8 +144,6 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
-// Felix TODO: Ensure that everything below here matches what is in the IOC. When done, make sure that all pins of IOC
-// are here and all pins here are on IOC STDIO for console print
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = NC,
 #else
@@ -168,8 +166,6 @@ typedef enum {
   SRVO_PWM_LID = PB_10,
 
   /**** Actuator Pins ****/
-  SPI_NSS = PA_4,
-  SPI_SCK = PA_5,
   MTR_PWM_ELVTR = PA_6,
   MTR_DIR_ELVTR = PC_5,
   MTR_PWM_CENTRIFUGE = PA_7,
@@ -185,6 +181,9 @@ typedef enum {
   /**** Encoder Pins ****/
   LIFT_ENC_A  = PB_6,
   LIFT_ENC_B  = PB_7,
+  CENTRIFUGE_ENC_MISO = PB_4,
+  CENTRIFUGE_ENC_SCK = PA_5,
+  CENTRIFUGE_ENC_CS = PA_4,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
@@ -210,13 +209,10 @@ typedef enum {
   RCC_OSC_OUT   = PH_1,
 
   /**** DEBUG pins ****/
-  // Felix TODO: these will change quite a bit I think. ask Cindy abt how to configure debug pins for new flashing
-  // method
   SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
-  SYS_WKUP0      = PA_0,
 
   // Not connected
   NC = (int)0xFFFFFFFF
