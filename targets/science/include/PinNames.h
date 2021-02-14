@@ -162,13 +162,13 @@ typedef enum {
   LED_G = PC_2,
   LED_B = PC_3,
 
-  BUTTON_1 = PB_0,
+  BUTTON_1 = PA_2,
   BUTTON_2 = PB_1,
 
   /**** Servo Pins *****/
 
-  SRVO_PWM_1 = PB_2,
-  SRVO_PWM_2 = PB_10,
+  SRVO_PWM_1 = PB_10,
+  SRVO_PWM_2 = PB_2,
 
   /**** Actuator Pins ****/
   MTR_PWM_1 = PA_6,
@@ -177,10 +177,10 @@ typedef enum {
   MTR_DIR_2 = PC_4,
 
   /**** Limit Switch Pins ****/
-  LIM_SW_1 = PB_4,
-  LIM_SW_2 = PB_3,
-  LIM_SW_3 = PD_2,
-  LIM_SW_4 = PC_12,
+  LIM_SW_1 = PC_15,
+  LIM_SW_2 = PC_14,
+  LIM_SW_3 = PC_13,
+  LIM_SW_4 = PB_9,
 
   /**** Encoder Pins ****/
   ENC_DCI_A  = PB_6,
