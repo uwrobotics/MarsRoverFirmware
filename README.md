@@ -226,7 +226,7 @@ After deploying the binary to the board, the Nucleo's `LD1` LED will flash red a
 
 The 10-pin Serial Wire Debug (SWD) programming interface does not come with UART lines for standard printf usage. Instead, we will use Serial Wire Output (SWO), a single wire interface to transmit trace messages to an external debugger.
 
-See `apps/test-logger` for an example of using the SWO-supported logger utility. Ensure that the target you are building for is configured to support SWO logging (see targets/<**target name**>/CMakeLists.txt).
+See `apps/test-logger` for an example of using the SWO-supported logger utility. Ensure that the target you are building for is configured to support SWO logging (see targets/<**target name**>/include/mbed_config_target.h).
 
 ### Ubuntu
 

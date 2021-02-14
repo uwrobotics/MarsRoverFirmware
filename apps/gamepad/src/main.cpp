@@ -8,7 +8,7 @@
 #include "AnalogInputGroup.h"
 #include "DigitalInputGroup.h"
 #include "FrameArbiter.h"
-#incldue "Logger.h"
+#include "Logger.h"
 #include "mbed.h"
 
 using namespace FrameProtocol;
