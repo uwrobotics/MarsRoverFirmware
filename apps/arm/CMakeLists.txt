@@ -12,6 +12,7 @@ target_link_libraries(arm.${TARGET}-board.elf
         LimServo
         LookupTable
         Motor
+        Logger
         uwrt-mars-rover-hw-bridge
         )
 target_set_firmware_properties(arm.${TARGET}-board.elf)

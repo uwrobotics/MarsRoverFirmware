@@ -9,6 +9,7 @@
 #include "EncoderAbsolute_PWM.h"
 #include "EncoderRelative_Quadrature.h"
 #include "LimServo.h"
+#include "Logger.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
@@ -303,9 +304,9 @@ Thread txCANProcessorThread(osPriorityBelowNormal);
 DigitalOut led1(LED1);
 
 int main() {
-  printf("\r\n\r\n");
-  printf("ARM APPLICATION STARTED\r\n");
-  printf("=======================\r\n");
+  Utility::Logger::printf("\r\n\r\n");
+  Utility::Logger::printf("ARM APPLICATION STARTED\r\n");
+  Utility::Logger::printf("=======================\r\n");
 
   // CAN init stuff
   can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,

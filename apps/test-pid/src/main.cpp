@@ -1,3 +1,4 @@
+#include "Logger.h"
 #include "PID.h"
 #include "mbed.h"
 
@@ -59,7 +60,7 @@ int main() {
   encoderCh2.rise(&countPulses);
   encoderCh2.fall(&countPulses);
 
-  printf("PID Test - Start \r\n");
+  Utility::Logger::printf("PID Test - Start \r\n");
 
   // Initialization
   std::chrono::duration<float> interval = 0.1s;
@@ -73,8 +74,9 @@ int main() {
   // rpmPIDController.autoTune(&pc, true, &autoTuneConfig);
   rpmPIDController.autoTune(true, &autoTuneConfig);
 
-  printf("Autotune Params obtained: Kc: %f \t    TauI: %f \t    TauD: %f \r\n", rpmPIDController.getATunePParam(),
-         rpmPIDController.getATuneIParam(), rpmPIDController.getATuneDParam());
+  Utility::Logger::printf("Autotune Params obtained: Kc: %f \t    TauI: %f \t    TauD: %f \r\n",
+                          rpmPIDController.getATunePParam(), rpmPIDController.getATuneIParam(),
+                          rpmPIDController.getATuneDParam());
   rpmPIDController.setAutoTuneParams();
   interruptTimer.detach();
 
@@ -95,10 +97,10 @@ int main() {
     motorPWMDuty  = rpmPIDController.compute();
     MOTOR_PWM_OUT = motorPWMDuty;
 
-    printf("Motor RPM: %f, \t Goal RPM: %f, \t PWM Output: %f\r\n", motorRPM, GOAL_RPM, motorPWMDuty);
+    Utility::Logger::printf("Motor RPM: %f, \t Goal RPM: %f, \t PWM Output: %f\r\n", motorRPM, GOAL_RPM, motorPWMDuty);
     if (abs(motorRPM - GOAL_RPM) < 1.0) {
-      printf("Time taken to reach goal RPM: %f seconds \r\n",
-             std::chrono::duration_cast<std::chrono::duration<float>>(eval.elapsed_time()).count());
+      Utility::Logger::printf("Time taken to reach goal RPM: %f seconds \r\n",
+                              std::chrono::duration_cast<std::chrono::duration<float>>(eval.elapsed_time()).count());
       MOTOR_DIR = 0;
       return 0;
     }
