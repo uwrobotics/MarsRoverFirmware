@@ -27,8 +27,10 @@ static Actuator::DCMotor rightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
 
 /* TODO: Can we use wrist limit switches if motors are individually addressable */
 
-static Sensor::CurrentSensor leftCurrentSensor(WRSTL_CRNT_SNS_SPI_CLK, WRSTL_CRNT_SNS_SPI_MISO, WRSTL_CRNT_SNS_SPI_CS),
-    rightCurrentSensor(WRSTR_CRNT_SNS_SPI_CLK, WRSTR_CRNT_SNS_SPI_MISO, WRSTR_CRNT_SNS_SPI_CS);
+// static Sensor::CurrentSensor leftCurrentSensor(WRSTL_CRNT_SNS_SPI_CLK, WRSTL_CRNT_SNS_SPI_MISO,
+// WRSTL_CRNT_SNS_SPI_CS),
+//     rightCurrentSensor(WRSTR_CRNT_SNS_SPI_CLK, WRSTR_CRNT_SNS_SPI_MISO, WRSTR_CRNT_SNS_SPI_CS);
+// TODO: Add once current sensor driver works
 
 static PID::PID leftVelPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID leftPosPID({1, 0, 0, -1, 1, 0, false, false});
@@ -42,23 +44,23 @@ constexpr uint8_t POLOLUMAXCURRENT = 3;
 constexpr float POLOLUMAXDEGPERSEC =
     std::numeric_limits<float>::infinity();  // TODO: figure out MAXDEGPERSEC of motors (1680?)
 
-static Controller::Velocity leftVel(leftMotor, leftEncoder, leftCurrentSensor, leftVelPID, POLOLUMAXDEGPERSEC,
+static Controller::Velocity leftVel(leftMotor, leftEncoder, std::nullopt, leftVelPID, POLOLUMAXDEGPERSEC,
                                     POLOLUMAXCURRENT, NC, NC);
-static Controller::Position leftPos(leftMotor, leftEncoder, leftCurrentSensor, leftPosPID, POLOLUMAXDEGPERSEC,
+static Controller::Position leftPos(leftMotor, leftEncoder, std::nullopt, leftPosPID, POLOLUMAXDEGPERSEC,
                                     POLOLUMAXCURRENT, NC, NC);
-static Controller::Current leftCur(leftMotor, leftEncoder, leftCurrentSensor, leftCurPID, POLOLUMAXDEGPERSEC,
+static Controller::Current leftCur(leftMotor, leftEncoder, std::nullopt, leftCurPID, POLOLUMAXDEGPERSEC,
                                    POLOLUMAXCURRENT, NC, NC);
-static Controller::OpenLoop leftOpen(leftMotor, leftEncoder, leftCurrentSensor, POLOLUMAXDEGPERSEC, POLOLUMAXCURRENT,
-                                     NC, NC);
+static Controller::OpenLoop leftOpen(leftMotor, leftEncoder, std::nullopt, POLOLUMAXDEGPERSEC, POLOLUMAXCURRENT, NC,
+                                     NC);
 
-static Controller::Velocity rightVel(rightMotor, rightEncoder, rightCurrentSensor, rightVelPID, POLOLUMAXDEGPERSEC,
+static Controller::Velocity rightVel(rightMotor, rightEncoder, std::nullopt, rightVelPID, POLOLUMAXDEGPERSEC,
                                      POLOLUMAXCURRENT, NC, NC);
-static Controller::Position rightPos(rightMotor, rightEncoder, rightCurrentSensor, rightPosPID, POLOLUMAXDEGPERSEC,
+static Controller::Position rightPos(rightMotor, rightEncoder, std::nullopt, rightPosPID, POLOLUMAXDEGPERSEC,
                                      POLOLUMAXCURRENT, NC, NC);
-static Controller::Current rightCur(rightMotor, rightEncoder, rightCurrentSensor, rightCurPID, POLOLUMAXDEGPERSEC,
+static Controller::Current rightCur(rightMotor, rightEncoder, std::nullopt, rightCurPID, POLOLUMAXDEGPERSEC,
                                     POLOLUMAXCURRENT, NC, NC);
-static Controller::OpenLoop rightOpen(rightMotor, rightEncoder, rightCurrentSensor, POLOLUMAXDEGPERSEC,
-                                      POLOLUMAXCURRENT, NC, NC);
+static Controller::OpenLoop rightOpen(rightMotor, rightEncoder, std::nullopt, POLOLUMAXDEGPERSEC, POLOLUMAXCURRENT, NC,
+                                      NC);
 
 static const Controller::ControlMap leftLut  = {{HWBRIDGE::CONTROL::Mode::Velocity, &leftVel},
                                                {HWBRIDGE::CONTROL::Mode::Position, &leftPos},
