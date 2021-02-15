@@ -19,7 +19,7 @@ typedef struct {
 
 class AEAT6012 {
  public:
-  AEAT6012(PinName cs, PinName spi_mosi, PinName spi_clk, float offset_deg);
+  AEAT6012(PinName cs, PinName spi_mosi, PinName spi_clk, float offset_deg = 0.0f);
   AEAT6012(const Config &config);
 
   // Trigger a blocking encoder read and return absolute position in degrees
@@ -30,9 +30,6 @@ class AEAT6012 {
 
   // Reset encoder values
   bool reset(void);
-
-  // Trigger a blocking encoder read
-  bool read(void);
 
   // Asynchronous API for triggering encoder read
   // Invokes user callback once read transaction is complete
@@ -51,7 +48,7 @@ class AEAT6012 {
  private:
   static constexpr uint32_t FREQUENCY_HZ              = 1000000;  // 1MHz (max frequency given by datasheet)
   static constexpr float FLOAT_COMPARE_TOLERANCE      = 1e-6;
-  static constexpr float MOVING_AVERAGE_FILTER_WEIGHT = 0.9;
+  static constexpr float MOVING_AVERAGE_FILTER_WEIGHT = 0.7;
 
   const char dummy_buffer[2] = {0x00, 0x00};
   char read_buffer[2]        = {0x00, 0x00};
@@ -63,7 +60,7 @@ class AEAT6012 {
 
   DigitalOut m_cs;
   SPI m_spi;
-  Timer m_timer;  // For estimating encoder velocity
+  Timer m_timer;
   Mutex m_mutex;
 
   // User callback function to be invoked when an encoder read is complete (only for async reads)
@@ -71,6 +68,9 @@ class AEAT6012 {
 
   // Clean-up helper callback function for asynchronous read
   void privCallback(int event);
+
+  // Trigger a blocking encoder read
+  bool read(void);
 
   static float rawToDegrees(uint16_t raw);  // Converts raw encoding reading to position in degrees
 };

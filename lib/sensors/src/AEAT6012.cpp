@@ -45,11 +45,25 @@ bool Encoder::AEAT6012::read(void) {
   m_timer.reset();
   m_timer.start();
 
+  // Wrap-around catch for angular velocity estimation:
+  //
+  // If prev_pos = 359 deg and cur_pos = 1 deg, then the change in position would be 1 - 359 = -358
+  //  => This is wrong, since the true change in position is 2
+  //
+  // To prevent this issue, we assume that the sampling rate is high enough and take the smaller of the following
+  // two expressions to be the absolute change in position
+  //   1. abs(cur_pos - prev_pos)
+  //   2. 360 - abs(cur_pos - prev_pos)
+  //
+  // The direction depends on whether we are considering case 1 or case 2:
+  //   1. Direction is positive if cur_pos > prev_pos, negative if cur_pos < prev_pos
+  //   2. Direction is positive if cur_pos < prev_pos, negative if cur_pos > prev_pos
+
   // Avoid divide by zero
   if (dt > FLOAT_COMPARE_TOLERANCE) {
     // Determine change in position
     float delta_pos_abs = fabs(curr_pos - m_position_deg);
-    float dir           = 1;
+    int dir             = 1;
 
     float delta_pos_abs_wrapped = 360 - delta_pos_abs;
 
@@ -61,7 +75,7 @@ bool Encoder::AEAT6012::read(void) {
 
     dir = dir * (curr_pos > m_position_deg ? 1 : -1);
 
-    // Update velocity (apply moving average low pass filter)
+    // Update angular velocity (apply exponential moving average filter)
     float new_ang_vel = dir * delta_pos_abs / dt * 1000000000;
     m_angular_velocity_dps =
         MOVING_AVERAGE_FILTER_WEIGHT * new_ang_vel + (1 - MOVING_AVERAGE_FILTER_WEIGHT) * m_angular_velocity_dps;
@@ -130,11 +144,25 @@ void Encoder::AEAT6012::privCallback(int event) {
   m_timer.reset();
   m_timer.start();
 
+  // Wrap-around catch for angular velocity estimation:
+  //
+  // If prev_pos = 359 deg and cur_pos = 1 deg, then the change in position would be 1 - 359 = -358
+  //  => This is wrong, since the true change in position is 2
+  //
+  // To prevent this issue, we assume that the sampling rate is high enough and take the smaller of the following
+  // two expressions to be the absolute change in position
+  //   1. abs(cur_pos - prev_pos)
+  //   2. 360 - abs(cur_pos - prev_pos)
+  //
+  // The direction depends on whether we are considering case 1 or case 2:
+  //   1. Direction is positive if cur_pos > prev_pos, negative if cur_pos < prev_pos
+  //   2. Direction is positive if cur_pos < prev_pos, negative if cur_pos > prev_pos
+
   // Avoid divide by zero
   if (dt > FLOAT_COMPARE_TOLERANCE) {
     // Determine change in position
     float delta_pos_abs = fabs(curr_pos - m_position_deg);
-    float dir           = 1;
+    int dir             = 1;
 
     float delta_pos_abs_wrapped = 360 - delta_pos_abs;
 
@@ -146,7 +174,7 @@ void Encoder::AEAT6012::privCallback(int event) {
 
     dir = dir * (curr_pos > m_position_deg ? 1 : -1);
 
-    // Update velocity (apply moving average low pass filter)
+    // Update angular velocity (apply exponential moving average filter)
     float new_ang_vel = dir * delta_pos_abs / dt * 1000000000;
     m_angular_velocity_dps =
         MOVING_AVERAGE_FILTER_WEIGHT * new_ang_vel + (1 - MOVING_AVERAGE_FILTER_WEIGHT) * m_angular_velocity_dps;
