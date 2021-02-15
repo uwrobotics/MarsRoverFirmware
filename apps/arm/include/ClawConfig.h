@@ -27,17 +27,17 @@ static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float pololuMaxCurrent = 3;
-constexpr float pololuMaxDegPerSec =
-    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1680?);
+constexpr float POLOLUMAXCURRENT = 3;
+constexpr float POLOLUMADEGPERSEC =
+    std::numeric_limits<float>::infinity();  // TODO: figure out MAXDEGPERSEC of motors (1680?);
 
-static Controller::Velocity vel(motor, encoder, currentSensor, velPID, pololuMaxDegPerSec, pololuMaxCurrent,
+static Controller::Velocity vel(motor, encoder, currentSensor, velPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Position pos(motor, encoder, currentSensor, posPID, pololuMaxDegPerSec, pololuMaxCurrent,
+static Controller::Position pos(motor, encoder, currentSensor, posPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Current cur(motor, encoder, currentSensor, curPID, pololuMaxDegPerSec, pololuMaxCurrent,
+static Controller::Current cur(motor, encoder, currentSensor, curPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT,
                                LIM_CLAW_OPEN, NC);
-static Controller::OpenLoop open(motor, encoder, currentSensor, pololuMaxDegPerSec, pololuMaxCurrent, LIM_CLAW_OPEN,
+static Controller::OpenLoop open(motor, encoder, currentSensor, POLOLUMADEGPERSEC, POLOLUMAXCURRENT, LIM_CLAW_OPEN,
                                  NC);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},

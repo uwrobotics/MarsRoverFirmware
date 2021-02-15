@@ -14,11 +14,6 @@ BasicControl::BasicControl(Actuator::Actuator &actuator, Encoder::Encoder &encod
       m_lowerLimit(lowerLimit),
       m_upperLimit(upperLimit) {}
 
-void BasicControl::stop() {
-  setSetPoint(0);
-  m_actuator.setValue(0);
-}
-
 void BasicControl::reset() {
   stop();
   m_encoder.reset();
@@ -40,39 +35,15 @@ bool BasicControl::reportAngularVelocityDegPerSec(float &speed) {
   return m_encoder.getAngularVelocityDegPerSec(speed);
 }
 
-bool BasicControl::shouldUpdate() {
-  if (!m_ignoreRPMChecks.load()) {
-    float speed = 0;
-    if (!m_encoder.getAngularVelocityDegPerSec(speed)) {
-      return false;
-    }
-    if (std::abs(speed) > m_maxDegPerSec) {
-      stop();
-    }
-  }
+bool BasicControl::shouldStop() {
+  // this takes advantage of short-circuiting for faster evaluation
+  float speed = 0, current = 0;
+  bool shouldStop = !m_ignoreDegPerSecChecks.load() && m_encoder.getAngularVelocityDegPerSec(speed) &&
+                    std::abs(speed) > m_maxDegPerSec;
+  shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor &&
+                              m_currentSensor.value().get().read(current) && std::abs(current) > m_maxCurrent);
+  shouldStop = shouldStop || (m_upperLimit.is_connected() && m_upperLimit.read() && m_setpoint.load() > 0);
+  shouldStop = shouldStop || (m_lowerLimit.is_connected() && m_lowerLimit.read() && m_setpoint.load() < 0);
 
-  if (!m_ignoreCurrentChecks.load()) {
-    float current = 0;
-    if (m_currentSensor) {
-      if (!m_currentSensor.value().get().read(current)) {
-        return false;
-      }
-      if (std::abs(current) > m_maxCurrent) {
-        stop();
-      }
-    }
-  }
-
-  if (m_upperLimit.is_connected()) {
-    if (m_upperLimit.read() && m_setpoint.load() > 0) {
-      return false;
-    }
-  }
-
-  if (m_lowerLimit.is_connected()) {
-    if (m_lowerLimit.read() && m_setpoint.load() < 0) {
-      return false;
-    }
-  }
-  return true;
+  return shouldStop;
 }

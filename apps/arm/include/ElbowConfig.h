@@ -26,17 +26,17 @@ static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float assunMaxCurrent = 25.263;
-constexpr float assunMaxDegPerSec =
-    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (35580?);
+constexpr float ASSUNMACURRENT = 25.263;
+constexpr float ASSUNMAXDEGPERSEC =
+    std::numeric_limits<float>::infinity();  // TODO: figure out MAXDEGPERSEC of motors (35580?);
 
-static Controller::Velocity vel(motor, encoder, currentSensor, velPID, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+static Controller::Velocity vel(motor, encoder, currentSensor, velPID, ASSUNMAXDEGPERSEC, ASSUNMACURRENT, LIM_ELBW_DN,
                                 LIM_ELBW_UP);
-static Controller::Position pos(motor, encoder, currentSensor, posPID, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+static Controller::Position pos(motor, encoder, currentSensor, posPID, ASSUNMAXDEGPERSEC, ASSUNMACURRENT, LIM_ELBW_DN,
                                 LIM_ELBW_UP);
-static Controller::Current cur(motor, encoder, currentSensor, curPID, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+static Controller::Current cur(motor, encoder, currentSensor, curPID, ASSUNMAXDEGPERSEC, ASSUNMACURRENT, LIM_ELBW_DN,
                                LIM_ELBW_UP);
-static Controller::OpenLoop open(motor, encoder, currentSensor, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+static Controller::OpenLoop open(motor, encoder, currentSensor, ASSUNMAXDEGPERSEC, ASSUNMACURRENT, LIM_ELBW_DN,
                                  LIM_ELBW_UP);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},

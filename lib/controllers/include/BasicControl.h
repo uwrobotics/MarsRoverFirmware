@@ -19,7 +19,6 @@ class BasicControl : public ActuatorController {
   BasicControl(BasicControl &&) = delete;
   ~BasicControl()               = default;
 
-  void stop() override final;
   void reset() override final;
 
   bool reportAngleDeg(float &angle) override;
@@ -38,6 +37,6 @@ class BasicControl : public ActuatorController {
 
   DigitalIn m_lowerLimit, m_upperLimit;
 
-  virtual bool shouldUpdate() final;
+  virtual bool shouldStop() final;
 };
 }  // namespace Controller

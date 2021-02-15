@@ -24,7 +24,7 @@ class OpenLoop final : public ActuatorController {
 
   std::optional<std::reference_wrapper<PID::PID>> getPID() override;
 
-  bool shouldUpdate();
+  bool shouldStop();
 
  private:
   Actuator::Actuator &m_actuator;

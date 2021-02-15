@@ -26,16 +26,16 @@ static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr uint8_t PA_O4maxCurrent = 6;
-constexpr float PA_O4maxDegPerSec = std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors
+constexpr uint8_t PA04MAXCURRENT = 6;
+constexpr float PA04MAXDEGPERSEC = std::numeric_limits<float>::infinity();  // TODO: figure out MAXDEGPERSEC of motors
 
-static Controller::Velocity vel(motor, encoder, currentSensor, velPID, PA_O4maxDegPerSec, PA_O4maxCurrent, LIM_SHLDR_DN,
+static Controller::Velocity vel(motor, encoder, currentSensor, velPID, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
                                 LIM_SHLDR_UP);
-static Controller::Position pos(motor, encoder, currentSensor, posPID, PA_O4maxDegPerSec, PA_O4maxCurrent, LIM_SHLDR_DN,
+static Controller::Position pos(motor, encoder, currentSensor, posPID, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
                                 LIM_SHLDR_UP);
-static Controller::Current cur(motor, encoder, currentSensor, curPID, PA_O4maxDegPerSec, PA_O4maxCurrent, LIM_SHLDR_DN,
+static Controller::Current cur(motor, encoder, currentSensor, curPID, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
                                LIM_SHLDR_UP);
-static Controller::OpenLoop open(motor, encoder, currentSensor, PA_O4maxDegPerSec, PA_O4maxCurrent, LIM_SHLDR_DN,
+static Controller::OpenLoop open(motor, encoder, currentSensor, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
                                  LIM_SHLDR_UP);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},

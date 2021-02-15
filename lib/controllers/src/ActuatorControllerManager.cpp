@@ -11,7 +11,7 @@ ActuatorControllerManager::ActuatorControllerManager(
 
 bool ActuatorControllerManager::switchControlMode(HWBRIDGE::CONTROL::Mode newControlType) {
   m_lut.at(getActiveControlMode()).value()->stop();
-  if (auto temp = m_lut.at(newControlType); temp != std::nullopt) {
+  if (auto temp = m_lut.at(newControlType)) {
     m_mode.store(newControlType);
     m_controller.store(m_lut.at(m_mode).value());
     m_controller.load()->reset();

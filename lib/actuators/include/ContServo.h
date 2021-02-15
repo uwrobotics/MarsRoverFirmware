@@ -3,7 +3,7 @@
 #include "Servo.h"
 
 namespace Actuator {
-class ContServo final: public Servo {
+class ContServo final : public Servo {
  public:
   typedef struct Config {
     PinName pwmPin;
@@ -31,7 +31,6 @@ class ContServo final: public Servo {
 
  private:
   PwmOut m_pwm;
-  float m_abs_max_speed,  // deg/sec
-      m_speed;            // deg/sec (from -m_abs_max_speed to +m_abs_max_speed)
+  float m_abs_max_speed;  // deg/sec
 };
 }  // namespace Actuator

@@ -38,46 +38,20 @@ std::optional<std::reference_wrapper<PID::PID>> OpenLoop::getPID() {
   return std::nullopt;
 }
 
-bool OpenLoop::shouldUpdate() {
-  if (!m_ignoreRPMChecks.load()) {
-    float speed = 0;
-    if (!m_encoder.getAngularVelocityDegPerSec(speed)) {
-      return false;
-    }
-    if (std::abs(speed) > m_maxDegPerSec) {
-      stop();
-    }
-  }
+bool OpenLoop::shouldStop() {
+  // this takes advantage of short-circuiting for faster evaluation
+  float speed = 0, current = 0;
+  bool shouldStop = !m_ignoreDegPerSecChecks.load() && m_encoder.getAngularVelocityDegPerSec(speed) &&
+                    std::abs(speed) > m_maxDegPerSec;
+  shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor &&
+                              m_currentSensor.value().get().read(current) && std::abs(current) > m_maxCurrent);
+  shouldStop = shouldStop || (m_upperLimit.is_connected() && m_upperLimit.read() && m_setpoint.load() > 0);
+  shouldStop = shouldStop || (m_lowerLimit.is_connected() && m_lowerLimit.read() && m_setpoint.load() < 0);
 
-  if (!m_ignoreCurrentChecks.load()) {
-    float current = 0;
-    if (m_currentSensor) {
-      if (!m_currentSensor.value().get().read(current)) {
-        return false;
-      }
-      if (std::abs(current) > m_maxCurrent) {
-        stop();
-      }
-    }
-  }
-
-  if (m_upperLimit) {
-    if (m_upperLimit.read() && m_setpoint.load() > 0) {
-      return false;
-    }
-  }
-
-  if (m_lowerLimit) {
-    if (m_lowerLimit.read() && m_setpoint.load() < 0) {
-      return false;
-    }
-  }
-  return true;
+  return shouldStop;
 }
 
 bool OpenLoop::update() {
-  if (shouldUpdate()) {
-    m_actuator.setValue(m_setpoint.load());
-  }
+  shouldStop() ? stop() : m_actuator.setValue(m_setpoint.load());
   return true;
 }

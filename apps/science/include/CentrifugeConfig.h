@@ -22,12 +22,12 @@ static Encoder::AEAT6012 encoder({NC, NC, NC, 0});  // Felix TODO: Fill in corre
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float maxDegPerSec =
-    std::numeric_limits<float>::infinity();                           // TODO: figure out maxDegPerSec of motors (601?)
-constexpr float maxCurrent = std::numeric_limits<float>::infinity();  // since no current sensor
+constexpr float MAXDEGPERSEC =
+    std::numeric_limits<float>::infinity();                           // TODO: figure out MAXDEGPERSEC of motors (601?)
+constexpr float MAXCURRENT = std::numeric_limits<float>::infinity();  // since no current sensor
 
-static Controller::Position pos(motor, encoder, std::nullopt, posPID, maxDegPerSec, maxCurrent, LIM_SW_1, LIM_SW_2);
-static Controller::OpenLoop open(motor, encoder, std::nullopt, maxDegPerSec, maxCurrent, LIM_SW_1, LIM_SW_2);
+static Controller::Position pos(motor, encoder, std::nullopt, posPID, MAXDEGPERSEC, MAXCURRENT, LIM_SW_1, LIM_SW_2);
+static Controller::OpenLoop open(motor, encoder, std::nullopt, MAXDEGPERSEC, MAXCURRENT, LIM_SW_1, LIM_SW_2);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Position, &pos},
                                            {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};

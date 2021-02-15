@@ -25,17 +25,17 @@ static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr uint8_t maxCurrent = 53;
-constexpr float maxDegPerSec =
-    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (79080?)
+constexpr uint8_t MAXCURRENT = 53;
+constexpr float MAXDEGPERSEC =
+    std::numeric_limits<float>::infinity();  // TODO: figure out MAXDEGPERSEC of motors (79080?)
 
-static Controller::Velocity vel(motor, encoder, currentSensor, velPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::Velocity vel(motor, encoder, currentSensor, velPID, MAXDEGPERSEC, MAXCURRENT, LIM_TRNTBL_LHS,
                                 LIM_TRNTBL_RHS);
-static Controller::Position pos(motor, encoder, currentSensor, posPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::Position pos(motor, encoder, currentSensor, posPID, MAXDEGPERSEC, MAXCURRENT, LIM_TRNTBL_LHS,
                                 LIM_TRNTBL_RHS);
-static Controller::Current cur(motor, encoder, currentSensor, curPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::Current cur(motor, encoder, currentSensor, curPID, MAXDEGPERSEC, MAXCURRENT, LIM_TRNTBL_LHS,
                                LIM_TRNTBL_RHS);
-static Controller::OpenLoop open(motor, encoder, currentSensor, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::OpenLoop open(motor, encoder, currentSensor, MAXDEGPERSEC, MAXCURRENT, LIM_TRNTBL_LHS,
                                  LIM_TRNTBL_RHS);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},

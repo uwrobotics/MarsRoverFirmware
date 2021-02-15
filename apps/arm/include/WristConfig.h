@@ -38,27 +38,27 @@ static PID::PID rightVelPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID rightPosPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID rightCurPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr uint8_t pololuMaxCurrent = 3;
-constexpr float pololumaxDegPerSec =
-    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1680?)
+constexpr uint8_t POLOLUMAXCURRENT = 3;
+constexpr float POLOLUMAXDEGPERSEC =
+    std::numeric_limits<float>::infinity();  // TODO: figure out MAXDEGPERSEC of motors (1680?)
 
-static Controller::Velocity leftVel(leftMotor, leftEncoder, leftCurrentSensor, leftVelPID, pololumaxDegPerSec,
-                                    pololuMaxCurrent, NC, NC);
-static Controller::Position leftPos(leftMotor, leftEncoder, leftCurrentSensor, leftPosPID, pololumaxDegPerSec,
-                                    pololuMaxCurrent, NC, NC);
-static Controller::Current leftCur(leftMotor, leftEncoder, leftCurrentSensor, leftCurPID, pololumaxDegPerSec,
-                                   pololuMaxCurrent, NC, NC);
-static Controller::OpenLoop leftOpen(leftMotor, leftEncoder, leftCurrentSensor, pololumaxDegPerSec, pololuMaxCurrent,
+static Controller::Velocity leftVel(leftMotor, leftEncoder, leftCurrentSensor, leftVelPID, POLOLUMAXDEGPERSEC,
+                                    POLOLUMAXCURRENT, NC, NC);
+static Controller::Position leftPos(leftMotor, leftEncoder, leftCurrentSensor, leftPosPID, POLOLUMAXDEGPERSEC,
+                                    POLOLUMAXCURRENT, NC, NC);
+static Controller::Current leftCur(leftMotor, leftEncoder, leftCurrentSensor, leftCurPID, POLOLUMAXDEGPERSEC,
+                                   POLOLUMAXCURRENT, NC, NC);
+static Controller::OpenLoop leftOpen(leftMotor, leftEncoder, leftCurrentSensor, POLOLUMAXDEGPERSEC, POLOLUMAXCURRENT,
                                      NC, NC);
 
-static Controller::Velocity rightVel(rightMotor, rightEncoder, rightCurrentSensor, rightVelPID, pololumaxDegPerSec,
-                                     pololuMaxCurrent, NC, NC);
-static Controller::Position rightPos(rightMotor, rightEncoder, rightCurrentSensor, rightPosPID, pololumaxDegPerSec,
-                                     pololuMaxCurrent, NC, NC);
-static Controller::Current rightCur(rightMotor, rightEncoder, rightCurrentSensor, rightCurPID, pololumaxDegPerSec,
-                                    pololuMaxCurrent, NC, NC);
-static Controller::OpenLoop rightOpen(rightMotor, rightEncoder, rightCurrentSensor, pololumaxDegPerSec,
-                                      pololuMaxCurrent, NC, NC);
+static Controller::Velocity rightVel(rightMotor, rightEncoder, rightCurrentSensor, rightVelPID, POLOLUMAXDEGPERSEC,
+                                     POLOLUMAXCURRENT, NC, NC);
+static Controller::Position rightPos(rightMotor, rightEncoder, rightCurrentSensor, rightPosPID, POLOLUMAXDEGPERSEC,
+                                     POLOLUMAXCURRENT, NC, NC);
+static Controller::Current rightCur(rightMotor, rightEncoder, rightCurrentSensor, rightCurPID, POLOLUMAXDEGPERSEC,
+                                    POLOLUMAXCURRENT, NC, NC);
+static Controller::OpenLoop rightOpen(rightMotor, rightEncoder, rightCurrentSensor, POLOLUMAXDEGPERSEC,
+                                      POLOLUMAXCURRENT, NC, NC);
 
 static const Controller::ControlMap leftLut  = {{HWBRIDGE::CONTROL::Mode::Velocity, &leftVel},
                                                {HWBRIDGE::CONTROL::Mode::Position, &leftPos},
