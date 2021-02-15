@@ -30,20 +30,19 @@ constexpr float assunMaxCurrent = 25.263;
 constexpr float assunMaxDegPerSec =
     std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (35580?);
 
-static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, assunMaxDegPerSec, assunMaxCurrent,
-                                LIM_ELBW_DN, LIM_ELBW_UP);
-static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, assunMaxDegPerSec, assunMaxCurrent,
-                                LIM_ELBW_DN, LIM_ELBW_UP);
-static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, assunMaxDegPerSec, assunMaxCurrent,
-                               LIM_ELBW_DN, LIM_ELBW_UP);
-static Controller::OpenLoop open(&motor, &encoder, &currentSensor, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+static Controller::Velocity vel(motor, encoder, currentSensor, velPID, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+                                LIM_ELBW_UP);
+static Controller::Position pos(motor, encoder, currentSensor, posPID, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+                                LIM_ELBW_UP);
+static Controller::Current cur(motor, encoder, currentSensor, curPID, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
+                               LIM_ELBW_UP);
+static Controller::OpenLoop open(motor, encoder, currentSensor, assunMaxDegPerSec, assunMaxCurrent, LIM_ELBW_DN,
                                  LIM_ELBW_UP);
 
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
-    {HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-    {HWBRIDGE::CONTROL::Mode::Position, &pos},
-    {HWBRIDGE::CONTROL::Mode::Current, &cur},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
+                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::Current, &cur},
+                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
 }  // namespace Internal
 
 static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);

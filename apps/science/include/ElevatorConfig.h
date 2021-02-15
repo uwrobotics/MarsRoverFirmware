@@ -26,14 +26,13 @@ constexpr float maxDegPerSec =
     std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1197.482?)
 constexpr float maxCurrent = std::numeric_limits<float>::infinity();  // since no current sensor
 
-static Controller::Velocity vel(&motor, &encoder, std::nullopt, &velPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
-static Controller::Position pos(&motor, &encoder, std::nullopt, &posPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
-static Controller::OpenLoop open(&motor, &encoder, std::nullopt, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
+static Controller::Velocity vel(motor, encoder, std::nullopt, velPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
+static Controller::Position pos(motor, encoder, std::nullopt, posPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
+static Controller::OpenLoop open(motor, encoder, std::nullopt, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
 
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
-    {HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-    {HWBRIDGE::CONTROL::Mode::Position, &pos},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
+                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
 }  // namespace Internal
 
 static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);

@@ -42,34 +42,32 @@ constexpr uint8_t pololuMaxCurrent = 3;
 constexpr float pololumaxDegPerSec =
     std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1680?)
 
-static Controller::Velocity leftVel(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftVelPID, pololumaxDegPerSec,
+static Controller::Velocity leftVel(leftMotor, leftEncoder, leftCurrentSensor, leftVelPID, pololumaxDegPerSec,
                                     pololuMaxCurrent, NC, NC);
-static Controller::Position leftPos(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftPosPID, pololumaxDegPerSec,
+static Controller::Position leftPos(leftMotor, leftEncoder, leftCurrentSensor, leftPosPID, pololumaxDegPerSec,
                                     pololuMaxCurrent, NC, NC);
-static Controller::Current leftCur(&leftMotor, &leftEncoder, &leftCurrentSensor, &leftCurPID, pololumaxDegPerSec,
+static Controller::Current leftCur(leftMotor, leftEncoder, leftCurrentSensor, leftCurPID, pololumaxDegPerSec,
                                    pololuMaxCurrent, NC, NC);
-static Controller::OpenLoop leftOpen(&leftMotor, &leftEncoder, &leftCurrentSensor, pololumaxDegPerSec, pololuMaxCurrent,
+static Controller::OpenLoop leftOpen(leftMotor, leftEncoder, leftCurrentSensor, pololumaxDegPerSec, pololuMaxCurrent,
                                      NC, NC);
 
-static Controller::Velocity rightVel(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightVelPID, pololumaxDegPerSec,
+static Controller::Velocity rightVel(rightMotor, rightEncoder, rightCurrentSensor, rightVelPID, pololumaxDegPerSec,
                                      pololuMaxCurrent, NC, NC);
-static Controller::Position rightPos(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightPosPID, pololumaxDegPerSec,
+static Controller::Position rightPos(rightMotor, rightEncoder, rightCurrentSensor, rightPosPID, pololumaxDegPerSec,
                                      pololuMaxCurrent, NC, NC);
-static Controller::Current rightCur(&rightMotor, &rightEncoder, &rightCurrentSensor, &rightCurPID, pololumaxDegPerSec,
+static Controller::Current rightCur(rightMotor, rightEncoder, rightCurrentSensor, rightCurPID, pololumaxDegPerSec,
                                     pololuMaxCurrent, NC, NC);
-static Controller::OpenLoop rightOpen(&rightMotor, &rightEncoder, &rightCurrentSensor, pololumaxDegPerSec,
+static Controller::OpenLoop rightOpen(rightMotor, rightEncoder, rightCurrentSensor, pololumaxDegPerSec,
                                       pololuMaxCurrent, NC, NC);
 
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> leftLut = {
-    {HWBRIDGE::CONTROL::Mode::Velocity, &leftVel},
-    {HWBRIDGE::CONTROL::Mode::Position, &leftPos},
-    {HWBRIDGE::CONTROL::Mode::Current, &leftCur},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &leftOpen}};
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> rightLut = {
-    {HWBRIDGE::CONTROL::Mode::Velocity, &rightVel},
-    {HWBRIDGE::CONTROL::Mode::Position, &rightPos},
-    {HWBRIDGE::CONTROL::Mode::Current, &rightCur},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &rightOpen}};
+static const Controller::ControlMap leftLut  = {{HWBRIDGE::CONTROL::Mode::Velocity, &leftVel},
+                                               {HWBRIDGE::CONTROL::Mode::Position, &leftPos},
+                                               {HWBRIDGE::CONTROL::Mode::Current, &leftCur},
+                                               {HWBRIDGE::CONTROL::Mode::OpenLoop, &leftOpen}};
+static const Controller::ControlMap rightLut = {{HWBRIDGE::CONTROL::Mode::Velocity, &rightVel},
+                                                {HWBRIDGE::CONTROL::Mode::Position, &rightPos},
+                                                {HWBRIDGE::CONTROL::Mode::Current, &rightCur},
+                                                {HWBRIDGE::CONTROL::Mode::OpenLoop, &rightOpen}};
 }  // namespace Internal
 
 static Controller::ActuatorControllerManager leftManager(Internal::leftLut, HWBRIDGE::CONTROL::Mode::OpenLoop);

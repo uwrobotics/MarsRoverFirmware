@@ -5,8 +5,8 @@ using namespace Controller;
 bool Position::update() {
   if (shouldUpdate()) {
     float angle = 0;
-    if (m_encoder->getAngleDeg(angle)) {
-      m_actuator->setValue(m_pid->compute(m_setpoint.load(), angle));
+    if (m_encoder.getAngleDeg(angle)) {
+      m_actuator.setValue(m_pid.compute(m_setpoint.load(), angle));
       return true;
     }
   }

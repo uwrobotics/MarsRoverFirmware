@@ -3,7 +3,7 @@
 using namespace Controller;
 
 ActuatorControllerManager::ActuatorControllerManager(
-    const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, ActuatorController *> &lut, HWBRIDGE::CONTROL::Mode active)
+    const ControlMap &lut, HWBRIDGE::CONTROL::Mode active)
     : m_lut(lut), m_mode(active), m_controller(nullptr) {
   MBED_ASSERT(m_lut.find(active) != m_lut.end());
   m_controller = m_lut.at(m_mode).value();

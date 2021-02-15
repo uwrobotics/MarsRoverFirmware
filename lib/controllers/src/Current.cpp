@@ -6,8 +6,8 @@ bool Current::update() {
   if (shouldUpdate()) {
     float current = 0;
     if (m_currentSensor) {
-      if (m_currentSensor.value()->read(current)) {
-        m_actuator->setValue(m_pid->compute(m_setpoint.load(), current));
+      if (m_currentSensor.value().get().read(current)) {
+        m_actuator.setValue(m_pid.compute(m_setpoint.load(), current));
         return true;
       }
     }

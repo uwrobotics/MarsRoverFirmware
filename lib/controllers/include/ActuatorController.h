@@ -1,5 +1,7 @@
 #pragma once
 #include <atomic>
+#include <functional>
+#include <optional>
 
 #include "PID.h"
 
@@ -25,7 +27,7 @@ class ActuatorController {
   virtual bool reportAngleDeg(float &angle)                 = 0;
   virtual bool reportAngularVelocityDegPerSec(float &speed) = 0;
 
-  virtual std::optional<PID::PID *> getPID() = 0;
+  virtual std::optional<std::reference_wrapper<PID::PID>> getPID() = 0;
 
  protected:
   std::atomic<float> m_setpoint           = {0};

@@ -29,20 +29,19 @@ constexpr uint8_t maxCurrent = 53;
 constexpr float maxDegPerSec =
     std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (79080?)
 
-static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::Velocity vel(motor, encoder, currentSensor, velPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
                                 LIM_TRNTBL_RHS);
-static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::Position pos(motor, encoder, currentSensor, posPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
                                 LIM_TRNTBL_RHS);
-static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::Current cur(motor, encoder, currentSensor, curPID, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
                                LIM_TRNTBL_RHS);
-static Controller::OpenLoop open(&motor, &encoder, &currentSensor, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
+static Controller::OpenLoop open(motor, encoder, currentSensor, maxDegPerSec, maxCurrent, LIM_TRNTBL_LHS,
                                  LIM_TRNTBL_RHS);
 
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
-    {HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-    {HWBRIDGE::CONTROL::Mode::Position, &pos},
-    {HWBRIDGE::CONTROL::Mode::Current, &cur},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
+                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::Current, &cur},
+                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
 }  // namespace Internal
 
 static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);

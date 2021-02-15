@@ -24,15 +24,14 @@ static Encoder::MAE3 encoder({NC, 0});  // Orson TODO: figure out if Pan Limit S
                                         // think it uses AEAT6012) also use the right pins
 
 static Controller::Position pos(
-    &servo, &encoder, std::nullopt, &pid, maxDegPerSec, maxCurrent, NC,
+    servo, encoder, std::nullopt, pid, maxDegPerSec, maxCurrent, NC,
     NC);  // Orson TODO: confirm with ee and me that there are no limit switches if there are add them to these objects
-static Controller::Position vel(&servo, &encoder, std::nullopt, &pid, maxDegPerSec, maxCurrent, NC, NC);
-static Controller::OpenLoop open(&servo, &encoder, std::nullopt, maxDegPerSec, maxCurrent, NC, NC);
+static Controller::Position vel(servo, encoder, std::nullopt, pid, maxDegPerSec, maxCurrent, NC, NC);
+static Controller::OpenLoop open(servo, encoder, std::nullopt, maxDegPerSec, maxCurrent, NC, NC);
 
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
-    {HWBRIDGE::CONTROL::Mode::Position, &pos},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &open},
-    {HWBRIDGE::CONTROL::Mode::Velocity, &vel}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Position, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open},
+                                           {HWBRIDGE::CONTROL::Mode::Velocity, &vel}};
 
 }  // namespace Internal
 static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);

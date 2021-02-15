@@ -31,20 +31,19 @@ constexpr float pololuMaxCurrent = 3;
 constexpr float pololuMaxDegPerSec =
     std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1680?);
 
-static Controller::Velocity vel(&motor, &encoder, &currentSensor, &velPID, pololuMaxDegPerSec, pololuMaxCurrent,
+static Controller::Velocity vel(motor, encoder, currentSensor, velPID, pololuMaxDegPerSec, pololuMaxCurrent,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Position pos(&motor, &encoder, &currentSensor, &posPID, pololuMaxDegPerSec, pololuMaxCurrent,
+static Controller::Position pos(motor, encoder, currentSensor, posPID, pololuMaxDegPerSec, pololuMaxCurrent,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Current cur(&motor, &encoder, &currentSensor, &curPID, pololuMaxDegPerSec, pololuMaxCurrent,
+static Controller::Current cur(motor, encoder, currentSensor, curPID, pololuMaxDegPerSec, pololuMaxCurrent,
                                LIM_CLAW_OPEN, NC);
-static Controller::OpenLoop open(&motor, &encoder, &currentSensor, pololuMaxDegPerSec, pololuMaxCurrent, LIM_CLAW_OPEN,
+static Controller::OpenLoop open(motor, encoder, currentSensor, pololuMaxDegPerSec, pololuMaxCurrent, LIM_CLAW_OPEN,
                                  NC);
 
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
-    {HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-    {HWBRIDGE::CONTROL::Mode::Position, &pos},
-    {HWBRIDGE::CONTROL::Mode::Current, &cur},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
+                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::Current, &cur},
+                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
 }  // namespace Internal
 
 static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);

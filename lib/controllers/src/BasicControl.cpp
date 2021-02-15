@@ -2,9 +2,9 @@
 
 using namespace Controller;
 
-BasicControl::BasicControl(Actuator::Actuator *actuator, Encoder::Encoder *encoder,
-                           std::optional<Sensor::CurrentSensor *> currentSensor, PID::PID *pid, float maxDegPerSec,
-                           float maxCurrent, PinName lowerLimit, PinName upperLimit)
+BasicControl::BasicControl(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
+                           const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor,
+                           PID::PID &pid, float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit)
     : m_actuator(actuator),
       m_encoder(encoder),
       m_currentSensor(currentSensor),
@@ -16,34 +16,34 @@ BasicControl::BasicControl(Actuator::Actuator *actuator, Encoder::Encoder *encod
 
 void BasicControl::stop() {
   setSetPoint(0);
-  m_actuator->setValue(0);
+  m_actuator.setValue(0);
 }
 
 void BasicControl::reset() {
   stop();
-  m_encoder->reset();
+  m_encoder.reset();
   if (m_currentSensor) {
-    m_currentSensor.value()->reset();
+    m_currentSensor.value().get().reset();
   }
-  m_pid->reset();
+  m_pid.reset();
 }
 
-std::optional<PID::PID *> BasicControl::getPID() {
+std::optional<std::reference_wrapper<PID::PID>> BasicControl::getPID() {
   return m_pid;
 }
 
 bool BasicControl::reportAngleDeg(float &angle) {
-  return m_encoder->getAngleDeg(angle);
+  return m_encoder.getAngleDeg(angle);
 }
 
 bool BasicControl::reportAngularVelocityDegPerSec(float &speed) {
-  return m_encoder->getAngularVelocityDegPerSec(speed);
+  return m_encoder.getAngularVelocityDegPerSec(speed);
 }
 
 bool BasicControl::shouldUpdate() {
   if (!m_ignoreRPMChecks.load()) {
     float speed = 0;
-    if (!m_encoder->getAngularVelocityDegPerSec(speed)) {
+    if (!m_encoder.getAngularVelocityDegPerSec(speed)) {
       return false;
     }
     if (std::abs(speed) > m_maxDegPerSec) {
@@ -54,7 +54,7 @@ bool BasicControl::shouldUpdate() {
   if (!m_ignoreCurrentChecks.load()) {
     float current = 0;
     if (m_currentSensor) {
-      if (!m_currentSensor.value()->read(current)) {
+      if (!m_currentSensor.value().get().read(current)) {
         return false;
       }
       if (std::abs(current) > m_maxCurrent) {

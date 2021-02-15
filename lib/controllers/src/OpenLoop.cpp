@@ -2,9 +2,9 @@
 
 using namespace Controller;
 
-OpenLoop::OpenLoop(Actuator::Actuator *actuator, Encoder::Encoder *encoder,
-                   std::optional<Sensor::CurrentSensor *> currentSensor, float maxDegPerSec, float maxCurrent,
-                   PinName lowerLimit, PinName upperLimit)
+OpenLoop::OpenLoop(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
+                   const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor,
+                   float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit)
     : m_actuator(actuator),
       m_encoder(encoder),
       m_currentSensor(currentSensor),
@@ -15,33 +15,33 @@ OpenLoop::OpenLoop(Actuator::Actuator *actuator, Encoder::Encoder *encoder,
 
 void OpenLoop::stop() {
   setSetPoint(0);
-  m_actuator->setValue(0);
+  m_actuator.setValue(0);
 }
 
 void OpenLoop::reset() {
   stop();
-  m_encoder->reset();
+  m_encoder.reset();
   if (m_currentSensor) {
-    m_currentSensor.value()->reset();
+    m_currentSensor.value().get().reset();
   }
 }
 
 bool OpenLoop::reportAngleDeg(float &angle) {
-  return m_encoder->getAngleDeg(angle);
+  return m_encoder.getAngleDeg(angle);
 }
 
 bool OpenLoop::reportAngularVelocityDegPerSec(float &speed) {
-  return m_encoder->getAngularVelocityDegPerSec(speed);
+  return m_encoder.getAngularVelocityDegPerSec(speed);
 }
 
-std::optional<PID::PID *> OpenLoop::getPID() {
+std::optional<std::reference_wrapper<PID::PID>> OpenLoop::getPID() {
   return std::nullopt;
 }
 
 bool OpenLoop::shouldUpdate() {
   if (!m_ignoreRPMChecks.load()) {
     float speed = 0;
-    if (!m_encoder->getAngularVelocityDegPerSec(speed)) {
+    if (!m_encoder.getAngularVelocityDegPerSec(speed)) {
       return false;
     }
     if (std::abs(speed) > m_maxDegPerSec) {
@@ -52,7 +52,7 @@ bool OpenLoop::shouldUpdate() {
   if (!m_ignoreCurrentChecks.load()) {
     float current = 0;
     if (m_currentSensor) {
-      if (!m_currentSensor.value()->read(current)) {
+      if (!m_currentSensor.value().get().read(current)) {
         return false;
       }
       if (std::abs(current) > m_maxCurrent) {
@@ -77,7 +77,7 @@ bool OpenLoop::shouldUpdate() {
 
 bool OpenLoop::update() {
   if (shouldUpdate()) {
-    m_actuator->setValue(m_setpoint.load());
+    m_actuator.setValue(m_setpoint.load());
   }
   return true;
 }

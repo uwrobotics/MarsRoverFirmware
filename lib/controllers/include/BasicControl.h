@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <optional>
 
 #include "Actuator.h"
@@ -7,14 +8,13 @@
 #include "CurrentSensor.h"
 #include "Encoder.h"
 #include "PID.h"
-
 namespace Controller {
 
 class BasicControl : public ActuatorController {
  public:
-  BasicControl(Actuator::Actuator *actuator, Encoder::Encoder *encoder,
-               std::optional<Sensor::CurrentSensor *> currentSensor, PID::PID *pid, float maxDegPerSec,
-               float maxCurrent, PinName lowerLimit, PinName upperLimit);
+  BasicControl(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
+               const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor, PID::PID &pid,
+               float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit);
   BasicControl(BasicControl &)  = delete;
   BasicControl(BasicControl &&) = delete;
   ~BasicControl()               = default;
@@ -25,14 +25,14 @@ class BasicControl : public ActuatorController {
   bool reportAngleDeg(float &angle) override;
   bool reportAngularVelocityDegPerSec(float &speed) override;
 
-  std::optional<PID::PID *> getPID() override;
+  std::optional<std::reference_wrapper<PID::PID>> getPID() override;
 
  protected:
-  Actuator::Actuator *m_actuator;
-  Encoder::Encoder *m_encoder;
-  std::optional<Sensor::CurrentSensor *> m_currentSensor;
+  Actuator::Actuator &m_actuator;
+  Encoder::Encoder &m_encoder;
+  const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &m_currentSensor;
 
-  PID::PID *m_pid;
+  PID::PID &m_pid;
 
   const float m_maxDegPerSec, m_maxCurrent;
 
