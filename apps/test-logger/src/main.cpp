@@ -4,7 +4,7 @@
 Utility::Logger logger;
 
 int main() {
-  Utility::Logger::printf("Logger test\n");
+  Utility::Logger::printf("Logger %s%c\n", "Test", '!');
 
   logger << "Long: " << ((long)-58748397) << "\n";
   logger << "Unsigned long: " << ((unsigned long)123478421) << "\n";
