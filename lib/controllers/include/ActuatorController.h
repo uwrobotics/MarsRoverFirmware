@@ -30,8 +30,8 @@ class ActuatorController {
   virtual std::optional<std::reference_wrapper<PID::PID>> getPID() = 0;
 
  protected:
-  std::atomic<float> m_setpoint           = {0};
-  std::atomic<bool> m_ignoreCurrentChecks = {false};
-  std::atomic<bool> m_ignoreDegPerSecChecks     = {false};
+  std::atomic<float> m_setpoint             = {0};
+  std::atomic<bool> m_ignoreCurrentChecks   = {false};
+  std::atomic<bool> m_ignoreDegPerSecChecks = {false};
 };
 }  // namespace Controller

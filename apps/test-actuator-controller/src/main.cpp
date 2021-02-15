@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
 /* TODO: create test driver */
 DigitalOut led1(LED1);
 
