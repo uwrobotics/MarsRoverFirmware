@@ -19,7 +19,8 @@ static Encoder::AEAT6012 encoder({TRNTBL_ENC_SPI_CLK, TRNTBL_ENC_SPI_MISO, NC, 0
 
 static Actuator::DCMotor motor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
 
-// static Sensor::CurrentSensor currentSensor(TRNTBL_CRNT_SNS_SPI_CLK, TRNTBL_CRNT_SNS_SPI_MISO, TRNTBL_CRNT_SNS_SPI_CS);
+// static Sensor::CurrentSensor currentSensor(TRNTBL_CRNT_SNS_SPI_CLK, TRNTBL_CRNT_SNS_SPI_MISO,
+// TRNTBL_CRNT_SNS_SPI_CS);
 // TODO: Add once current sensor driver works
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});

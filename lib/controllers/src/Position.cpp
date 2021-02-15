@@ -17,7 +17,7 @@ bool Position::update() {
 void Position::stop() {
   // set sp to current angle
   float angle = 0;
-  m_encoder.getAngleDeg(angle); // TODO: Handle failures better
+  m_encoder.getAngleDeg(angle);  // TODO: Handle failures better
   m_setpoint.store(angle);
   m_actuator.setValue(0);
 }

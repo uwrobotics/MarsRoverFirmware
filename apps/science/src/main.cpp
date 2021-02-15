@@ -8,7 +8,7 @@
 
 // TODO: Handle function call failures better
 
-// Felix TODO: Brose through logic and make sure there aren't any silly mistakes. 
+// Felix TODO: Brose through logic and make sure there aren't any silly mistakes.
 
 Sensor::AdafruitSTEMMA moistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 

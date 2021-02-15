@@ -36,8 +36,8 @@ static Controller::Velocity vel(motor, encoder, std::nullopt, velPID, POLOLUMADE
                                 LIM_CLAW_OPEN, NC);
 static Controller::Position pos(motor, encoder, std::nullopt, posPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Current cur(motor, encoder, std::nullopt, curPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT,
-                               LIM_CLAW_OPEN, NC);
+static Controller::Current cur(motor, encoder, std::nullopt, curPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT, LIM_CLAW_OPEN,
+                               NC);
 static Controller::OpenLoop open(motor, encoder, std::nullopt, POLOLUMADEGPERSEC, POLOLUMAXCURRENT, LIM_CLAW_OPEN, NC);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},

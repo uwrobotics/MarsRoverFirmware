@@ -155,7 +155,7 @@ typedef enum {
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = PC_11, // Felix TODO: same as above
+  STDIO_UART_RX = PC_11,  // Felix TODO: same as above
 #endif
 
   /**** UI ****/
