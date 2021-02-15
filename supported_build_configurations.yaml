@@ -51,7 +51,10 @@ test-enc-abs-pwm:
 #  - science
 
 test-logger:
+  - gimbtonomy
+  - nucleo
   - pdb
+  - science
 
 test-lookup-table:
   - nucleo

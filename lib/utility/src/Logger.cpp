@@ -8,11 +8,11 @@ int Utility::Logger::printf(const char* format, ...) {
   va_list arg;
 
   va_start(arg, format);
-  int num_chars = sprintf(buffer, format, arg, 0);
+  int num_chars = std::vsprintf(buffer, format, arg);
   va_end(arg);
 
 #if defined(UART_LOGGING)
-  printf(buffer);
+  std::printf(buffer);
 #endif
 
 #if defined(SWO_LOGGING)
@@ -56,11 +56,11 @@ Utility::Logger& Utility::Logger::operator<<(unsigned int n) {
 
 Utility::Logger& Utility::Logger::operator<<(long long n) {
 #if defined(UART_LOGGING)
-  printf("%lld", n);
+  std::printf("%lld", n);
 #endif
 
 #if defined(SWO_LOGGING)
-  sprintf(buffer, "%lld", n);
+  std::sprintf(buffer, "%lld", n);
   char* c = buffer;
 
   while (*c) {
@@ -73,11 +73,11 @@ Utility::Logger& Utility::Logger::operator<<(long long n) {
 
 Utility::Logger& Utility::Logger::operator<<(unsigned long long n) {
 #if defined(UART_LOGGING)
-  printf("%llu", n);
+  std::printf("%llu", n);
 #endif
 
 #if defined(SWO_LOGGING)
-  sprintf(buffer, "%llu", n);
+  std::sprintf(buffer, "%llu", n);
   char* c = buffer;
 
   while (*c) {
@@ -98,11 +98,11 @@ Utility::Logger& Utility::Logger::operator<<(float f) {
 
 Utility::Logger& Utility::Logger::operator<<(long double f) {
 #if defined(UART_LOGGING)
-  printf("%Lf", f);
+  std::printf("%Lf", f);
 #endif
 
 #if defined(SWO_LOGGING)
-  sprintf(buffer, "%Lf", f);
+  std::sprintf(buffer, "%Lf", f);
   char* c = buffer;
 
   while (*c) {
@@ -115,7 +115,7 @@ Utility::Logger& Utility::Logger::operator<<(long double f) {
 
 Utility::Logger& Utility::Logger::operator<<(char c) {
 #if defined(UART_LOGGING)
-  printf("%c", c);
+  std::printf("%c", c);
 #endif
 
 #if defined(SWO_LOGGING)
@@ -127,11 +127,11 @@ Utility::Logger& Utility::Logger::operator<<(char c) {
 
 Utility::Logger& Utility::Logger::operator<<(const char* format) {
 #if defined(UART_LOGGING)
-  printf(format);
+  std::printf(format);
 #endif
 
 #if defined(SWO_LOGGING)
-  sprintf(buffer, format);
+  std::sprintf(buffer, format);
   char* c = buffer;
 
   while (*c) {
