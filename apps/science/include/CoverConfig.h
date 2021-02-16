@@ -5,7 +5,7 @@
 namespace Cover {
 
 namespace Internal {
-constexpr auto RANGE     = 120;  // Felix TODO: Confirm these values with EE and ME
+constexpr auto RANGE     = 90;  // 90 DEGREES - @Mathieu
 constexpr auto MAX_PULSE = 2.2ms, MIN_PULSE = 0.8ms;
 }  // namespace Internal
 

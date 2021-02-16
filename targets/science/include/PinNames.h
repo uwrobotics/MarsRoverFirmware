@@ -144,19 +144,18 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
-
   // Not connected
   NC = (int)0xFFFFFFFF,
 
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = NC,
 #else
-  STDIO_UART_TX = NC,  
+  STDIO_UART_TX = NC,
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = NC,
 #else
-  STDIO_UART_RX = NC, 
+  STDIO_UART_RX = NC,
 #endif
 
   /**** UI ****/
@@ -169,26 +168,26 @@ typedef enum {
 
   /**** Servo Pins *****/
   SRVO_PWM_SHVL = PB_2,
-  SRVO_PWM_LID = PB_10,
+  SRVO_PWM_LID  = PB_10,
 
   /**** Actuator Pins ****/
-  MTR_PWM_ELVTR = PA_6,
-  MTR_DIR_ELVTR = PC_5,
+  MTR_PWM_ELVTR   = PA_6,
+  MTR_DIR_ELVTR   = PC_5,
   MTR_PWM_CENTFGE = PA_7,
   MTR_DIR_CENTFGE = PC_4,
 
   /**** Limit Switch Pins ****/
   LIM_SW_CENTFGE_DN = PC_15,
   LIM_SW_CENTFGE_UP = PC_14,
-  LIM_SW_ELVTR_DN = PC_13,
-  LIM_SW_ELVTR_UP = PB_9,
+  LIM_SW_ELVTR_DN   = PC_13,
+  LIM_SW_ELVTR_UP   = PB_9,
 
   /**** Encoder Pins ****/
-  ENC_A_LIFT  = PB_6,
-  ENC_B_LIFT  = PB_7,
+  ENC_A_LIFT       = PB_6,
+  ENC_B_LIFT       = PB_7,
   ENC_MISO_CENTFGE = PB_4,
-  ENC_SCK_CENTFGE = PA_5,
-  ENC_CS_CENTFGE = PA_4,
+  ENC_SCK_CENTFGE  = PA_5,
+  ENC_CS_CENTFGE   = PA_4,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
@@ -200,8 +199,8 @@ typedef enum {
   CAN_TX = CAN1_TX,
   CAN_RX = CAN1_RX,
 
-  SERIAL_TX  = STDIO_UART_TX,
-  SERIAL_RX  = STDIO_UART_RX,
+  SERIAL_TX = STDIO_UART_TX,
+  SERIAL_RX = STDIO_UART_RX,
 
   USBTX = STDIO_UART_TX,
   USBRX = STDIO_UART_RX,
@@ -210,8 +209,8 @@ typedef enum {
   TEMP_MOIST_I2C_SDA = PC_9,
 
   /**** OSCILLATOR pins ****/
-  RCC_OSC_IN    = PH_0,
-  RCC_OSC_OUT   = PH_1,
+  RCC_OSC_IN  = PH_0,
+  RCC_OSC_OUT = PH_1,
 
   /**** DEBUG pins ****/
   SYS_JTCK_SWCLK = PA_14,
