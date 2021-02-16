@@ -1,7 +1,7 @@
 #include "AEAT6012.h"
 
 Encoder::AEAT6012::AEAT6012(PinName cs, PinName spi_mosi, PinName spi_clk, float offset_deg)
-    : m_position_deg(0), m_position_raw(0), m_offset_deg(offset_deg), m_cs(cs), m_spi(NC, spi_mosi, spi_clk) {
+    : m_position_deg(0), m_offset_deg(offset_deg), m_cs(cs), m_spi(NC, spi_mosi, spi_clk) {
   m_spi.format(12, 2);
   m_spi.frequency(FREQUENCY_HZ);
   m_spi.set_dma_usage(DMA_USAGE_ALWAYS);
@@ -82,8 +82,8 @@ bool Encoder::AEAT6012::read(void) {
   }
 
   // Update posiiton data
-  m_position_raw = raw_data;
   m_position_deg = curr_pos;
+  m_position_raw = raw_data;
 
   return true;
 }
@@ -91,14 +91,26 @@ bool Encoder::AEAT6012::read(void) {
 bool Encoder::AEAT6012::getAngleDeg(float &angle) {
   std::scoped_lock<Mutex> lock(m_mutex);
   bool success = read();
-  angle        = getAngleDegNoTrigger();
+  angle        = m_position_deg;
   return success;
 }
 
 bool Encoder::AEAT6012::getAngularVelocityDegPerSec(float &speed) {
   std::scoped_lock<Mutex> lock(m_mutex);
   bool success = read();
-  speed        = getAngularVelocityDegPerSecNoTrigger();
+  speed        = m_angular_velocity_dps;
+  return success;
+}
+
+bool Encoder::AEAT6012::reset(void) {
+  std::scoped_lock<Mutex> lock(m_mutex);
+
+  bool success = read();
+  m_offset_deg = rawToDegrees(m_position_raw);
+
+  m_position_deg         = 0;
+  m_angular_velocity_dps = 0;
+
   return success;
 }
 
@@ -181,31 +193,15 @@ void Encoder::AEAT6012::privCallback(int event) {
   }
 
   // Update position data
-  m_position_raw = raw_data;
   m_position_deg = curr_pos;
+  m_position_raw = raw_data;
 
   // User callback
   m_callback();
 }
 
-bool Encoder::AEAT6012::reset(void) {
-  std::scoped_lock<Mutex> lock(m_mutex);
-
-  bool success = getAngleDeg(m_offset_deg);
-
-  m_position_deg         = 0;
-  m_position_raw         = 0;
-  m_angular_velocity_dps = 0;
-
-  return success;
-}
-
 float Encoder::AEAT6012::getAngleDegNoTrigger(void) {
   return m_position_deg;
-}
-
-uint16_t Encoder::AEAT6012::getPositionRawNoTrigger(void) {
-  return m_position_raw;
 }
 
 float Encoder::AEAT6012::getAngularVelocityDegPerSecNoTrigger(void) {

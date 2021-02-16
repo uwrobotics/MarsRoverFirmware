@@ -1,4 +1,5 @@
 #include "AEAT6012.h"
+#include "Logger.h"
 #include "mbed.h"
 
 constexpr auto ENCODER_READ_PERIOD = 1ms;
@@ -39,18 +40,18 @@ int main() {
   }
 
   while (true) {
-    printf("Encoder position degrees: %.3f\r\n", encoder_angle_deg);
-    printf("Read time: %lu us\r\n\r\n", encoder_pos_read_time_us);
+    Utility::Logger::printf("Encoder position degrees: %.3f\n", encoder_angle_deg);
+    Utility::Logger::printf("Read time: %lu us\n\n", encoder_pos_read_time_us);
 
-    printf("Encoder angular velocity deg/s: %.3f\r\n", encoder_angular_vel_deg_per_sec);
-    printf("Read time: %lu us\r\n\r\n", encoder_vel_read_time_us);
+    Utility::Logger::printf("Encoder angular velocity deg/s: %.3f\n", encoder_angular_vel_deg_per_sec);
+    Utility::Logger::printf("Read time: %lu us\n\n", encoder_vel_read_time_us);
 
     ThisThread::sleep_for(PRINTF_PERIOD);
   }
 }
 
 void encoder_read_blocking(void) {
-  printf("\r\n--- AEAT-6012 Blocking Driver Test ---\r\n\r\n");
+  Utility::Logger::printf("\n--- AEAT-6012 Blocking Driver Test ---\n\n");
   float measurement;
   encoder.reset();
 
@@ -58,10 +59,10 @@ void encoder_read_blocking(void) {
     timer.reset();
     timer.start();
 
-    while (!encoder.getAngleDeg(measurement))
-      ;
+    encoder.getAngleDeg(measurement);
 
     timer.stop();
+
     encoder_angle_deg        = measurement;
     encoder_pos_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
@@ -70,10 +71,10 @@ void encoder_read_blocking(void) {
     timer.reset();
     timer.start();
 
-    while (!encoder.getAngularVelocityDegPerSec(measurement))
-      ;
+    encoder.getAngularVelocityDegPerSec(measurement);
 
     timer.stop();
+
     encoder_angular_vel_deg_per_sec = measurement;
     encoder_vel_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
@@ -82,27 +83,34 @@ void encoder_read_blocking(void) {
 }
 
 void encoder_read_async(void) {
-  printf("\r\n--- AEAT-6012 Async Driver Test ---\r\n\r\n");
+  Utility::Logger::printf("\n--- AEAT-6012 Async Driver Test ---\n\n");
   encoder.reset();
 
   while (true) {
     timer.reset();
     timer.start();
 
-    while (!encoder.readAsync(callback))
-      ;
+    uint16_t attempts = 5;
+    while (attempts > 0 && !encoder.readAsync(callback)) {
+      attempts--;
+    }
 
-    while (!encoder_position_updated)
-      ;
+    if (attempts == 0) {
+      Utility::Logger::printf("ENCODER READ FAILED AFTER TOO MANY RETRIES\n");
+    } else {
+      // Wait for callback
+      while (!encoder_position_updated)
+        ;
 
-    timer.stop();
+      timer.stop();
 
-    encoder_position_updated = false;
+      encoder_position_updated = false;
 
-    encoder_angle_deg               = encoder.getAngleDegNoTrigger();
-    encoder_angular_vel_deg_per_sec = encoder.getAngularVelocityDegPerSecNoTrigger();
-    encoder_pos_read_time_us        = encoder_vel_read_time_us =
-        std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
+      encoder_angle_deg               = encoder.getAngleDegNoTrigger();
+      encoder_angular_vel_deg_per_sec = encoder.getAngularVelocityDegPerSecNoTrigger();
+      encoder_pos_read_time_us        = encoder_vel_read_time_us =
+          std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
+    }
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
   }

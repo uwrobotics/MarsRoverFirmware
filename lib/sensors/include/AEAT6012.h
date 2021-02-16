@@ -22,13 +22,15 @@ class AEAT6012 {
   AEAT6012(PinName cs, PinName spi_mosi, PinName spi_clk, float offset_deg = 0.0f);
   AEAT6012(const Config &config);
 
-  // Trigger a blocking encoder read and return absolute position in degrees
+  // Trigger a blocking encoder read and retrieve the absolute position in degrees
+  // Returns whether the read was successful
   bool getAngleDeg(float &angle);
 
-  // Trigger a blocking encoder read and return angular velocity in degrees / second
+  // Trigger a blocking encoder read and retrieve the angular velocity in degrees / second
+  // Returns whether the read was successful
   bool getAngularVelocityDegPerSec(float &speed);
 
-  // Reset encoder values
+  // Reset encoder values and offset
   bool reset(void);
 
   // Asynchronous API for triggering encoder read
@@ -36,13 +38,10 @@ class AEAT6012 {
   // Returns true if SPI read successfully started, false if SPI peripheral is busy
   bool readAsync(callback_ptr callback);
 
-  // Returns stored absolute position in degrees (without invoking an encoder read)
+  // For async use - returns stored absolute position in degrees (without invoking an encoder read)
   float getAngleDegNoTrigger(void);
 
-  // Returns stored raw encoder reading (without invoking an encoder read)
-  uint16_t getPositionRawNoTrigger(void);
-
-  // Returns stored angular velocity in degrees / second (without invoking an encoder read)
+  // For async use - returns stored angular velocity in degrees / second (without invoking an encoder read)
   float getAngularVelocityDegPerSecNoTrigger(void);
 
  private:
@@ -54,9 +53,9 @@ class AEAT6012 {
   char read_buffer[2]        = {0x00, 0x00};
 
   float m_position_deg;          // Degrees
-  uint16_t m_position_raw;       // Raw encoder reading
   float m_angular_velocity_dps;  // Degrees per second
   float m_offset_deg;            // Offset in degrees
+  uint16_t m_position_raw;       // Raw encoder reading
 
   DigitalOut m_cs;
   SPI m_spi;
@@ -72,6 +71,7 @@ class AEAT6012 {
   // Trigger a blocking encoder read
   bool read(void);
 
-  static float rawToDegrees(uint16_t raw);  // Converts raw encoding reading to position in degrees
+  // Converts raw encoding reading to position in degrees
+  static float rawToDegrees(uint16_t raw);
 };
 }  // namespace Encoder
