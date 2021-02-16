@@ -52,7 +52,7 @@ void implementInterruptMethod() {
   can.attach(&CANMsgIRQHandler, CANBus::RxIrq);
 
   while (true) {
-    if (timer.elapsed_time().count() >= 30000) break;
+    if (timer.elapsed_time().count() > 30000000) break; // 30 million microseconds, or 30 second limit
   }
 
   printf("Total Messages Received: " + ISRReceived);
@@ -66,10 +66,13 @@ void implementTraditionalMethod() {
   CANMsg msg;
 
   // CAN messages are read and printed for a maximum of 30 seconds
-  while (timer.elapsed_time().count() <= 30000) {
+  while (timer.elapsed_time().count() < 30000000) {
     if (can.read(msg)) {
       // Print data received from the CAN msg
       printf("  Data    =");
+      for (int i = 0; i < msg.len; i++) {
+        printf(" 0x%.2X", msg.data[i]);
+      }
       for (int i = 0; i < msg.len; i++) printf(" 0x%.2X", msg.data[i]);
       printf("\r\n");
 
