@@ -174,22 +174,21 @@ typedef enum {
   /**** Actuator Pins ****/
   MTR_PWM_ELVTR = PA_6,
   MTR_DIR_ELVTR = PC_5,
-  MTR_PWM_CENTRIFUGE = PA_7,
-  MTR_DIR_CENTRIFUGE = PC_4,
+  MTR_PWM_CENTFGE = PA_7,
+  MTR_DIR_CENTFGE = PC_4,
 
   /**** Limit Switch Pins ****/
-  CENTRIFUGE_SW_1 = PC_15,
-  CENTRIFUGE_SW_2 = PC_14,
-  ELVTR_SW_3 = PC_13,
-  ELVTR_SW_4 = PB_9,
-  LIM_SW_5 = PB_8,
+  LIM_SW_CENTFGE_DN = PC_15,
+  LIM_SW_CENTFGE_UP = PC_14,
+  LIM_SW_ELVTR_DN = PC_13,
+  LIM_SW_ELVTR_UP = PB_9,
 
   /**** Encoder Pins ****/
-  LIFT_ENC_A  = PB_6,
-  LIFT_ENC_B  = PB_7,
-  CENTRIFUGE_ENC_MISO = PB_4,
-  CENTRIFUGE_ENC_SCK = PA_5,
-  CENTRIFUGE_ENC_CS = PA_4,
+  ENC_A_LIFT  = PB_6,
+  ENC_B_LIFT  = PB_7,
+  ENC_MISO_CENTFGE = PB_4,
+  ENC_SCK_CENTFGE = PA_5,
+  ENC_CS_CENTFGE = PA_4,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
