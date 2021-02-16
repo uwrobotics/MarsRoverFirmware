@@ -25,9 +25,9 @@ static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 constexpr float MAX_DEG_PER_SEC = 601;                                     // 10.5 RAD/s
 constexpr float MAX_CURRENT     = std::numeric_limits<float>::infinity();  // since no current sensor
 
-static Controller::Position pos(&motor, &encoder, std::nullopt, &posPID, MAX_DEG_PER_SEC, MAX_CURRENT,
-                                LIM_SW_CENTFGE_DN, LIM_SW_CENTFGE_UP);
-static Controller::OpenLoop open(&motor, &encoder, std::nullopt, MAX_DEG_PER_SEC, MAX_CURRENT, LIM_SW_CENTFGE_DN,
+static Controller::Position pos(motor, encoder, std::nullopt, posPID, MAX_DEG_PER_SEC, MAX_CURRENT, LIM_SW_CENTFGE_DN,
+                                LIM_SW_CENTFGE_UP);
+static Controller::OpenLoop open(motor, encoder, std::nullopt, MAX_DEG_PER_SEC, MAX_CURRENT, LIM_SW_CENTFGE_DN,
                                  LIM_SW_CENTFGE_UP);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Position, &pos},
