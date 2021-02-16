@@ -90,28 +90,39 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     return MBED_ERROR_INVALID_ARGUMENT;
   }
   bool success;
-  PID::PID *pid = nullptr;
 
   switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_JOINT_PID_DEADZONE:
-      pid     = act->getActiveController()->getPID().value_or(nullptr);
-      success = pid != nullptr;
-      pid->updateDeadzone(data.value);
+      if (auto temp = act->getActiveController()->getPID()) {
+        temp.value().get().updateDeadzone(data.value);
+        success = true;
+      } else {
+        success = false;
+      }
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      pid     = act->getActiveController()->getPID().value_or(nullptr);
-      success = pid != nullptr;
-      pid->updateProportionalGain(data.value);
+      if (auto temp = act->getActiveController()->getPID()) {
+        temp.value().get().updateProportionalGain(data.value);
+        success = true;
+      } else {
+        success = false;
+      }
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      pid     = act->getActiveController()->getPID().value_or(nullptr);
-      success = pid != nullptr;
-      pid->updateIntegralGain(data.value);
+      if (auto temp = act->getActiveController()->getPID()) {
+        temp.value().get().updateIntegralGain(data.value);
+        success = true;
+      } else {
+        success = false;
+      }
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      pid     = act->getActiveController()->getPID().value_or(nullptr);
-      success = pid != nullptr;
-      pid->updateDerivativeGain(data.value);
+      if (auto temp = act->getActiveController()->getPID()) {
+        temp.value().get().updateDerivativeGain(data.value);
+        success = true;
+      } else {
+        success = false;
+      }
       break;
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
@@ -151,7 +162,7 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      canHandlerMap.at(rxMsg.getID())(rxMsg);  // todo: handle failures
+      canHandlerMap.at(rxMsg.getID())(rxMsg);  // TODO: handle failures
     }
     ThisThread::sleep_for(2ms);
   }

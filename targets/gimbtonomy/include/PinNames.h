@@ -146,7 +146,8 @@ typedef enum {
 // Orson TODO: everything below this you should be fixing and working on. make sure all the pins are aliased correctly.
 // that is that what is on the ioc is on here. ask Ari to share what he found was wrong and you fix it. Work closely
 // with Aidan Gratton and keep him in the loop with what you're doing STDIO for console print
-// once you are done make sure every single pin here is defined in the ioc and that the every single pin on the ioc is here
+// once you are done make sure every single pin here is defined in the ioc and that the every single pin on the ioc is
+// here
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else

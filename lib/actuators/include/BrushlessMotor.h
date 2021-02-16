@@ -2,9 +2,8 @@
 
 #include "Actuator.h"
 
-// TODO: this class is currently unimplemented
 namespace Actuator {
-class BrushlessMotor final: public Actuator {
+class BrushlessMotor final : public Actuator {
  public:
   typedef struct Config {
     PinName pwmPin;

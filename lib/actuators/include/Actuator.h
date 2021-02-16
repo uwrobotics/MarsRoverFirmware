@@ -19,4 +19,4 @@ class Actuator {
   virtual void setValue(float value) = 0;
   virtual ~Actuator() {}
 };
-}
+}  // namespace Actuator

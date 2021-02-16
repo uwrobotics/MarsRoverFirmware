@@ -4,18 +4,17 @@
  * no motors or encoders are required
  * The signal output is plotted in the test-pid folder.
  */
-#include <numeric>
-
 #include <limits>
+#include <numeric>
 
 #include "PID.h"
 #include "test_data.h"
 
 constexpr float KP = 2, KI = 103, KD = 1;
-constexpr float min_rpm   = -std::numeric_limits<float>::max(),
-                max_rpm   = std::numeric_limits<float>::max();  // no saturation
-constexpr float deadzone  = 0;
-constexpr auto pid_period = 1ms;
+constexpr float min_rpm      = -std::numeric_limits<float>::max(),
+                max_rpm      = std::numeric_limits<float>::max();  // no saturation
+constexpr float deadzone     = 0;
+constexpr auto pid_period    = 1ms;
 constexpr bool anti_kickback = false, anti_windup = false;
 
 constexpr float expected_avg_error       = 1.6801f;

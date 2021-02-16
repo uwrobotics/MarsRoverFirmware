@@ -40,7 +40,8 @@ Thread txCANProcessorThread(osPriorityBelowNormal);
 // Event flags for communication between threads
 EventFlags event_flags;
 
-// Orson TODO: carefully go through each function and make sure there arent any silly mistakes. like if the canid says set motion of pan servo make sure it actually does that
+// Orson TODO: carefully go through each function and make sure there arent any silly mistakes. like if the canid says
+// set motion of pan servo make sure it actually does that
 void handleSetNeoPixelColor(CANMsg *p_newMsg) {
   enum mode : uint8_t { solidRed, solidBlue, flashingGreen, off };
   uint8_t neoPixelMode = 0;
