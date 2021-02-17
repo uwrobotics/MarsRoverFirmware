@@ -11,15 +11,15 @@ namespace Encoder {
 typedef void (*callback_ptr)(void);
 
 typedef struct {
-  PinName cs;
   PinName spi_mosi;
   PinName spi_clk;
+  PinName cs;
   float offset_deg;
 } Config;
 
 class AEAT6012 {
  public:
-  AEAT6012(PinName cs, PinName spi_mosi, PinName spi_clk, float offset_deg = 0.0f);
+  AEAT6012(PinName spi_mosi, PinName spi_clk, PinName cs = NC, float offset_deg = 0.0f);
   AEAT6012(const Config &config);
 
   // Trigger a blocking encoder read and retrieve the absolute position in degrees
@@ -57,8 +57,8 @@ class AEAT6012 {
   float m_offset_deg;            // Offset in degrees
   uint16_t m_position_raw;       // Raw encoder reading
 
-  DigitalOut m_cs;
   SPI m_spi;
+  DigitalOut m_cs;
   Timer m_timer;
   Mutex m_mutex;
 

@@ -3,7 +3,7 @@
 #include "mbed.h"
 
 constexpr auto ENCODER_READ_PERIOD = 1ms;
-constexpr auto PRINTF_PERIOD       = 1000ms;
+constexpr auto PRINTF_PERIOD       = 500ms;
 
 enum Test_Mode_E { TEST_BLOCKING, TEST_ASYNC };
 
@@ -20,7 +20,7 @@ volatile float encoder_angular_vel_deg_per_sec = 0;
 volatile uint32_t encoder_pos_read_time_us     = 0;
 volatile uint32_t encoder_vel_read_time_us     = 0;
 
-Encoder::AEAT6012 encoder(SPI_CS, SPI_MISO, SPI_SCK);
+Encoder::AEAT6012 encoder(SPI_MISO, SPI_SCK, SPI_CS);
 
 // Modify this
 Test_Mode_E test_mode = TEST_BLOCKING;

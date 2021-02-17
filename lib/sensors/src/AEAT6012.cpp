@@ -1,20 +1,23 @@
 #include "AEAT6012.h"
 
-Encoder::AEAT6012::AEAT6012(PinName cs, PinName spi_mosi, PinName spi_clk, float offset_deg)
-    : m_position_deg(0), m_offset_deg(offset_deg), m_cs(cs), m_spi(NC, spi_mosi, spi_clk) {
+Encoder::AEAT6012::AEAT6012(PinName spi_mosi, PinName spi_clk, PinName cs, float offset_deg)
+    : m_position_deg(0), m_offset_deg(offset_deg), m_spi(NC, spi_mosi, spi_clk), m_cs(cs) {
   m_spi.format(12, 2);
   m_spi.frequency(FREQUENCY_HZ);
   m_spi.set_dma_usage(DMA_USAGE_ALWAYS);
 
-  m_cs = 1;  // Keep CS high until a read is requested
+  if (m_cs.is_connected()) {
+    m_cs = 1;  // Keep CS high until a read is requested
+  }
 }
 
 Encoder::AEAT6012::AEAT6012(const Config &config)
-    : AEAT6012(config.cs, config.spi_mosi, config.spi_clk, config.offset_deg) {}
+    : AEAT6012(config.spi_mosi, config.spi_clk, config.cs, config.offset_deg) {}
 
 bool Encoder::AEAT6012::read(void) {
-  // Assert CS to start signaling
-  m_cs = 0;
+  if (m_cs.is_connected()) {
+    m_cs = 0;  // Assert CS to start signaling
+  }
 
   // Specced delay >500ns after CS assertion
   // ThisThread::sleep_for(1ms);
@@ -22,8 +25,9 @@ bool Encoder::AEAT6012::read(void) {
   // Write low dummy bytes to recieve
   m_spi.write(dummy_buffer, 2, read_buffer, 2);
 
-  // Deassert CS to stop signaling
-  m_cs = 1;
+  if (m_cs.is_connected()) {
+    m_cs = 1;  // Deassert CS to stop signaling
+  }
 
   // Specced delay >500ns after CS deassertion
   // ThisThread::sleep_for(1ms);
@@ -120,8 +124,9 @@ bool Encoder::AEAT6012::readAsync(callback_ptr callback) {
   // Set up user callback
   m_callback = callback;
 
-  // Assert CS to start signaling
-  m_cs = 0;
+  if (m_cs.is_connected()) {
+    m_cs = 0;  // Assert CS to start signaling
+  }
 
   // Specced delay >500ns after CS assertion
   // ThisThread::sleep_for(1ms);
@@ -136,8 +141,9 @@ bool Encoder::AEAT6012::readAsync(callback_ptr callback) {
 }
 
 void Encoder::AEAT6012::privCallback(int event) {
-  // Deassert CS to stop signaling
-  m_cs = 1;
+  if (m_cs.is_connected()) {
+    m_cs = 1;  // Deassert CS to stop signaling
+  }
 
   // Received data stream: -xxxx xxxx  xxxx x---
   // byte[0]: bits 6:0
