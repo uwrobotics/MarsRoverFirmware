@@ -44,9 +44,8 @@ test-can:
   - gimbtonomy
 #  - science
 
-test-enc-abs-pwm:
-  #  - nucleo
-  - arm
+test-mae3:
+  - nucleo
 #  - gimbtonomy
 #  - science
 
@@ -59,7 +58,7 @@ test-logger:
 test-lookup-table:
   - nucleo
 
-test-moisture:
+test-adafruitSTEMMA:
 #  - nucleo
   - science
 
@@ -77,7 +76,7 @@ test-pwm:
   - science
 
 test-pwmin:
-  #  - nucleo
+  - nucleo
   - arm
 #  - gamepad
 #  - gimbtonomy

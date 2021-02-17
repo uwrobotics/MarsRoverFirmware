@@ -3,19 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "ActuatorController.h"
 #include "CANBus.h"
 #include "CANMsg.h"
-#include "Encoder.h"
-#include "EncoderAbsolute_PWM.h"
-#include "GimbtonomyConfig.h"
-#include "LimServo.h"
 #include "Logger.h"
 #include "Neopixel_Blocking.h"
-#include "ServoMotor.h"
+#include "PanConfig.h"
+#include "PitchConfig.h"
+#include "RollConfig.h"
 #include "hw_bridge.h"
-#include "mbed.h"
 
+// Orson TODO: rename everything that says gimbtonomy to gimbal. rename files, folders, cmake pckgs etc
+
+// Orson TODO: remove this debug functionality. (remove anythign that uses this debug macro)
 #define DEBUG
 
 constexpr uint8_t ACK_FLAG(1UL << 0);
@@ -27,23 +26,12 @@ constexpr uint8_t ACK_FLAG(1UL << 0);
 • Pitch: HS-422 (https://www.robotshop.com/en/hitec-hs-422-servo-motor.html)
 • Roll: SG90 (https://datasheetspdf.com/pdf/791970/TowerPro/SG90/1)
 */
-ServoMotor panServoMotor(SRVO_PWM_CR, false, 2.1ms, 0.9ms,
-                         38);  // 38 RPM (228 deg/sec) at 4.8V, max->2100us PW, min->900us PW.
-LimServo pitchServo(SRVO_PWM_HS, 180, 2.1ms, 0.9ms);
-/* @TODO: electrical hasn't choose a pin for this servo yet, I'm just using a random free pin for this for now*/
-LimServo rollServo(SRVO_PWM_SG, 180, 2ms, 1ms);
-
-// Absolute encoder
-EncoderAbsolute_PWM panEncoder(GimbtonomyConfig::panEncoderConfig);
-
-// Actuators
-ActuatorController panServoActuator(GimbtonomyConfig::panServoActuatorConfig, panServoMotor, panEncoder);
-
 // CAN Object
 CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg, txMsg;
 
 // neopixel
+// Orson TODO: removing any mention of neopixel from Gimbal. (it has been moved to pdb)
 Neopixel_Blocking neopixel(16, LED_MTRX);
 
 // Threads
@@ -53,6 +41,8 @@ Thread txCANProcessorThread(osPriorityBelowNormal);
 // Event flags for communication between threads
 EventFlags event_flags;
 
+// Orson TODO: carefully go through each function and make sure there arent any silly mistakes. like if the canid says
+// set motion of pan servo make sure it actually does that
 void handleSetNeoPixelColor(CANMsg *p_newMsg) {
   enum mode : uint8_t { solidRed, solidBlue, flashingGreen, off };
   uint8_t neoPixelMode = 0;
@@ -84,43 +74,33 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg) {
 void rxCANProcessor() {
   const auto rxPeriod = 2ms;
 
-  float pan_pos = 0.0, pan_speed = 0.0, pitch_pos = 0.0, roll_pos = 0.0;
-  ActuatorController::t_actuatorControlMode controlMode;
+  float data = 0;
+  HWBRIDGE::CONTROL::Mode controlMode;
 
   while (true) {
     if (can1.read(rxMsg)) {
       switch (rxMsg.getID()) {
-        case HWBRIDGE::CANID::GIMBAL_PAN_POSITION:
-          rxMsg.getPayload(pan_pos);
-          panServoActuator.setMotionData(pan_pos);
+        case HWBRIDGE::CANID::SET_PAN_MOTION_DATA:
+          rxMsg.getPayload(data);
+          Pan::manager.getActiveController()->setSetPoint(data);
           break;
-
-        case HWBRIDGE::CANID::GIMBAL_PAN_SPEED:
-          rxMsg.getPayload(pan_speed);
-          panServoMotor.servoSetSpeed(pan_speed);
+        case HWBRIDGE::CANID::SET_PITCH_MOTION_DATA:
+          rxMsg.getPayload(data);
+          Pitch::pitchServo.setValue(data);
           break;
-
-        case HWBRIDGE::CANID::GIMBAL_PAN_MODE:
+        case HWBRIDGE::CANID::SET_ROLL_MOTION_DATA:
+          rxMsg.getPayload(data);
+          Roll::rollServo.setValue(data);
+          break;
+        case HWBRIDGE::CANID::SET_PAN_CONTROL_MODE:
           rxMsg.getPayload(controlMode);
-          panServoActuator.setControlMode(controlMode);
+          Pan::manager.switchControlMode(controlMode);
           break;
-
-        case HWBRIDGE::CANID::GIMBAL_PITCH_POS:
-          rxMsg.getPayload(pitch_pos);
-          pitchServo.setPosition(pitch_pos);
-          break;
-
-        case HWBRIDGE::CANID::GIMBAL_ROLL_POS:
-          rxMsg.getPayload(roll_pos);
-          rollServo.setPosition(roll_pos);
-          break;
-
         case HWBRIDGE::CANID::NEOPIXEL_SET:
           handleSetNeoPixelColor(&rxMsg);
           // Hangle can writes in a separate thread
           event_flags.set(ACK_FLAG);
           break;
-
         default:
           break;
       }
@@ -161,12 +141,15 @@ int main() {
   while (true) {
     // Output info over serial
 #ifdef DEBUG
-    Utility::Logger::printf("pitchServo(pos): %f \r\n", pitchServo.read());
-    Utility::Logger::printf("rollServo(pos): %f \r\n", rollServo.read());
-    Utility::Logger::printf("panServo(speed): %f \r\n", panServoMotor.servoRead());
+    float speed = 0;
+    if (Pan::manager.getActiveController()->reportAngularVelocityDegPerSec(speed)) {
+      Utility::Logger::printf("panServo(speed): %f \r\n", speed);
+    } else {
+      Utility::Logger::printf("panServo(speed): READ ERROR \r\n");
+    }
 #endif
-    panServoActuator.update();
+    Pan::manager.getActiveController()->update();
 
-    ThisThread::sleep_for(2ms);
+    ThisThread::sleep_for(1ms);
   }
 }

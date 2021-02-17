@@ -4,7 +4,7 @@
 #include "hw_bridge.h"
 #include "mbed.h"
 
-CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg;
 CANMsg txMsg;
 DigitalOut ledTX(LED1);
