@@ -77,7 +77,7 @@ test-pwm:
 
 test-pwmin:
   - nucleo
-#- arm
+  - arm
 #  - gamepad
 #  - gimbtonomy
 #  - science
