@@ -5,8 +5,8 @@
 
 #include "CANBus.h"
 #include "CANMsg.h"
-#include "Neopixel_Blocking.h"
 #include "PanConfig.h"
+#include "PinNames.h"
 #include "PitchConfig.h"
 #include "RollConfig.h"
 #include "hw_bridge.h"
