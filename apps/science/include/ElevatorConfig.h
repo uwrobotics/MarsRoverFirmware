@@ -32,10 +32,9 @@ static Controller::Position pos(motor, encoder, std::nullopt, posPID, MAX_DEG_PR
 static Controller::OpenLoop open(motor, encoder, std::nullopt, MAX_DEG_PRE_SEC, MAX_CURRENT, LIM_SW_ELVTR_DN,
                                  LIM_SW_ELVTR_UP);
 
-static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
-    {HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-    {HWBRIDGE::CONTROL::Mode::Position, &pos},
-    {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
+                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
 }  // namespace Internal
 
 static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);
