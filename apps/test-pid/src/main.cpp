@@ -44,13 +44,16 @@ int main() {
   Utility::Logger::printf("TEST RESULTS\r\n");
   float average_error       = total_error / control.size();
   auto average_compute_time = total_compute_time / control.size();
-  Utility::Logger::printf("Average difference between Matlab control signal and our control signal: %.5f\r\n", average_error);
-  Utility::Logger::printf("Average time for a single call to the compute function: %llu us\r\n", average_compute_time.count());
+  Utility::Logger::printf("Average difference between Matlab control signal and our control signal: %.5f\r\n",
+                          average_error);
+  Utility::Logger::printf("Average time for a single call to the compute function: %llu us\r\n",
+                          average_compute_time.count());
   if (average_error > expected_avg_error) {
     Utility::Logger::printf("WARNING: Changes made to PID library have increased average error\r\n");
   }
   if (average_compute_time > expected_avg_compute_time) {
-    Utility::Logger::printf("WARNING: Changes made to PID library have increased execution time of compute function\r\n");
+    Utility::Logger::printf(
+        "WARNING: Changes made to PID library have increased execution time of compute function\r\n");
   }
   while (true)
     ;

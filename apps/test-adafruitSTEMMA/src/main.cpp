@@ -23,8 +23,8 @@ int main() {
 
     ThisThread::sleep_for(100ms);
 
-    Utility::Logger::printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates unsuccessful
-                                            // initialization
+    Utility::Logger::printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates
+                                                             // unsuccessful initialization
     bool read_status = sensor.read(moisture);
     if (read_status == false) {
       return 0;
@@ -33,8 +33,8 @@ int main() {
 
     ThisThread::sleep_for(100ms);
 
-    Utility::Logger::printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0 indicates
-                                               // unsuccessful initialization
+    Utility::Logger::printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0
+                                                                // indicates unsuccessful initialization
     read_status = sensor.alternateRead(temperature);
     if (read_status == false) {
       return 0;
