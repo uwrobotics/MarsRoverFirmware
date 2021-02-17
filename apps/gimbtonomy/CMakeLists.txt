@@ -21,5 +21,6 @@ target_link_libraries(gimbtonomy.${TARGET}-board.elf PRIVATE
         CurrentSensor
 #Other
         Neopixel_Blocking
+        Logger
         uwrt-mars-rover-hw-bridge)
 target_set_firmware_properties(gimbtonomy.${TARGET}-board.elf)

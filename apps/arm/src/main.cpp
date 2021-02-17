@@ -3,6 +3,7 @@
 #include "ClawConfig.h"
 #include "ElbowConfig.h"
 #include "LimServo.h"
+#include "Logger.h"
 #include "ShoulderConfig.h"
 #include "TooltipConfig.h"
 #include "TurntableConfig.h"
@@ -77,7 +78,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::CONTROL::PID::TuningApiPayload data;
   msg.getPayload(data);
 
-  const LookupTable::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
+  const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
       {HWBRIDGE::ARM::ActuatorID::TURNTABLE, &Turntable::manager},
       {HWBRIDGE::ARM::ActuatorID::SHOULDER, &Shoulder::manager},
       {HWBRIDGE::ARM::ActuatorID::ELBOW, &Elbow::manager},
@@ -239,9 +240,9 @@ Thread rxCANProcessorThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
 
 int main() {
-  printf("\r\n\r\n");
-  printf("ARM APPLICATION STARTED\r\n");
-  printf("=======================\r\n");
+  Utility::Logger::printf("\r\n\r\n");
+  Utility::Logger::printf("ARM APPLICATION STARTED\r\n");
+  Utility::Logger::printf("=======================\r\n");
 
   // CAN init stuff
   can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,

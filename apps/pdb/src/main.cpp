@@ -2,6 +2,7 @@
 
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "Logger.h"
 #include "hw_bridge.h"
 
 AnalogIn railBattery(RAIL_BATTERY_ANLG_IN), rail5V(RAIL_5V_ANLG_IN), rail17V(RAIL_17V_ANLG_IN),

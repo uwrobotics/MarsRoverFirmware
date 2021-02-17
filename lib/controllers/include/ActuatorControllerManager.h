@@ -7,7 +7,7 @@
 #include "hw_bridge.h"
 
 namespace Controller {
-using ControlMap = LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, ActuatorController *>;
+using ControlMap = Utility::LookupTable<HWBRIDGE::CONTROL::Mode, ActuatorController *>;
 class ActuatorControllerManager {
  public:
   ActuatorControllerManager(const ControlMap &lut, HWBRIDGE::CONTROL::Mode active);
@@ -20,7 +20,7 @@ class ActuatorControllerManager {
   ActuatorController *getActiveController() const;
 
  private:
-  const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, ActuatorController *> m_lut;
+  const Utility::LookupTable<HWBRIDGE::CONTROL::Mode, ActuatorController *> m_lut;
 
   std::atomic<HWBRIDGE::CONTROL::Mode> m_mode;
   std::atomic<ActuatorController *> m_controller;

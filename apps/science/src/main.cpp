@@ -5,6 +5,7 @@
 #include "CoverConfig.h"
 #include "DiggerConfig.h"
 #include "ElevatorConfig.h"
+#include "Logger.h"
 
 // TODO: Handle function call failures better
 
@@ -104,9 +105,9 @@ void txCANProcessor() {
 }
 
 int main() {
-  printf("\r\n\r\n");
-  printf("SCIENCE APP STARTED!\r\n");
-  printf("====================\r\n");
+  Utility::Logger::printf("\r\n\r\n");
+  Utility::Logger::printf("SCIENCE APP STARTED!\r\n");
+  Utility::Logger::printf("====================\r\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);

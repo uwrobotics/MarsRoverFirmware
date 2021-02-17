@@ -1,4 +1,5 @@
 #include "AdafruitSTEMMA.h"
+#include "Logger.h"
 #include "hw_bridge.h"
 
 DigitalOut led1(LED1);
@@ -18,29 +19,29 @@ int main() {
 
     led1 = (sensor.getStatus());  // turn on LED if the sensor's HW_ID code matches the known value
 
-    printf("\r\nChecking Device ID...\r\n");  // read device HW_ID, reading of 85 is expected
+    Utility::Logger::printf("\r\nChecking Device ID...\r\n");  // read device HW_ID, reading of 85 is expected
 
     ThisThread::sleep_for(100ms);
 
-    printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates unsuccessful
+    Utility::Logger::printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates unsuccessful
                                             // initialization
     bool read_status = sensor.read(moisture);
     if (read_status == false) {
       return 0;
     }
-    printf("Moisture: %f \r\n", moisture);
+    Utility::Logger::printf("Moisture: %f \r\n", moisture);
 
     ThisThread::sleep_for(100ms);
 
-    printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0 indicates
+    Utility::Logger::printf("\r\nReading Temperature...\r\n");  // read temperature from sensor, reading of -273.0 indicates
                                                // unsuccessful initialization
     read_status = sensor.alternateRead(temperature);
     if (read_status == false) {
       return 0;
     }
-    printf("Temperature: %f \r\n", temperature);
+    Utility::Logger::printf("Temperature: %f \r\n", temperature);
 
-    printf("\r\n-----------------------------\r\n");
+    Utility::Logger::printf("\r\n-----------------------------\r\n");
 
     ThisThread::sleep_for(100ms);
   }

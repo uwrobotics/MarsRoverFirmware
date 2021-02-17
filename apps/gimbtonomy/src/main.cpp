@@ -5,6 +5,7 @@
 
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "Logger.h"
 #include "Neopixel_Blocking.h"
 #include "PanConfig.h"
 #include "PitchConfig.h"
@@ -48,23 +49,23 @@ void handleSetNeoPixelColor(CANMsg *p_newMsg) {
   *p_newMsg >> neoPixelMode;
   switch (neoPixelMode) {
     case solidRed:
-      printf("Setting neo pixels to solid red\r\n");
+      Utility::Logger::printf("Setting neo pixels to solid red\r\n");
       neopixel.displayRed();
       break;
     case solidBlue:
-      printf("Setting neo pixels to solid blue\r\n");
+      Utility::Logger::printf("Setting neo pixels to solid blue\r\n");
       neopixel.displayBlue();
       break;
     case flashingGreen:
-      printf("Setting neo pixels to flashing green\r\n");
+      Utility::Logger::printf("Setting neo pixels to flashing green\r\n");
       neopixel.blinkPixels(10, 2s, neopixel.Green);
       break;
     case off:
-      printf("Turning neo pixels off\r\n");
+      Utility::Logger::printf("Turning neo pixels off\r\n");
       neopixel.shutdown();
       break;
     default:
-      printf("Neo pixels tried to be set to unknow mode\r\n");
+      Utility::Logger::printf("Neo pixels tried to be set to unknow mode\r\n");
       break;
   }
 }
@@ -117,22 +118,22 @@ void txCANProcessor() {
 
     // Send an acknowledgement CANMsg back to the Jetson
 #ifdef DEBUG
-    printf("Sending neopixel acknowledgement message\r\n");
+    Utility::Logger::printf("Sending neopixel acknowledgement message\r\n");
 #endif
     txMsg.clear();
     txMsg.setID(HWBRIDGE::CANID::NEOPIXEL_ACK);
     txMsg << true;
     can1.write(txMsg);
 #ifdef DEBUG
-    printf("Updating neo pixels\r\n");
+    Utility::Logger::printf("Updating neo pixels\r\n");
 #endif
   }
 }
 
 int main() {
-  printf("\r\n\r\n");
-  printf("ARM APPLICATION STARTED\r\n");
-  printf("=======================\r\n");
+  Utility::Logger::printf("\r\n\r\n");
+  Utility::Logger::printf("ARM APPLICATION STARTED\r\n");
+  Utility::Logger::printf("=======================\r\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
@@ -142,9 +143,9 @@ int main() {
 #ifdef DEBUG
     float speed = 0;
     if (Pan::manager.getActiveController()->reportAngularVelocityDegPerSec(speed)) {
-      printf("panServo(speed): %f \r\n", speed);
+      Utility::Logger::printf("panServo(speed): %f \r\n", speed);
     } else {
-      printf("panServo(speed): READ ERROR \r\n");
+      Utility::Logger::printf("panServo(speed): READ ERROR \r\n");
     }
 #endif
     Pan::manager.getActiveController()->update();

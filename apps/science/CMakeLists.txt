@@ -23,7 +23,8 @@ PRIVATE
         CurrentSensor
         AdafruitSTEMMA
 #Other
-        uwrt-mars-rover-hw-bridge)
+        uwrt-mars-rover-hw-bridge
+        Logger)
 target_set_firmware_properties(science.${TARGET}-board.elf)
 
 add_library(ScienceConfig INTERFACE)
