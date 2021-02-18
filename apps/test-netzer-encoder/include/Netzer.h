@@ -22,7 +22,7 @@ class Netzer {
 		//Add get_angular_vel and get_angle functions
 	
 	private:
-		static constexpr uint32_t DEFAULT_FREQUENCY_HZ = 500000;  // frequency given by datasheet
+		static constexpr uint32_t DEFAULT_FREQUENCY_HZ = 20000;  // frequency given by datasheet
 		static const int WORDS = 2;											// 2, 8 bit words
 		const uint8_t tx_buffer[WORDS] = {0};						// Initialize dummy tx
 		uint8_t rx_buffer[WORDS] = {0};									// Initialize rx buffer to receive data (16 bits in total)
