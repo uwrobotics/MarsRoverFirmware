@@ -20,7 +20,7 @@ volatile float encoder_angular_vel_deg_per_sec = 0;
 volatile uint32_t encoder_pos_read_time_us     = 0;
 volatile uint32_t encoder_vel_read_time_us     = 0;
 
-Encoder::AEAT6012 encoder(SPI_MISO, SPI_SCK, SPI_CS);
+Encoder::AEAT6012 encoder({SPI_SCK, SPI_MISO, SPI_CS, 0});
 
 // Modify this
 Test_Mode_E test_mode = TEST_BLOCKING;
