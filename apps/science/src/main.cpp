@@ -1,80 +1,52 @@
-#include "ActuatorController.h"
-#include "CANBuffer.h"
+#include "AdafruitSTEMMA.h"
 #include "CANBus.h"
 #include "CANMsg.h"
-#include "Encoder.h"
-#include "EncoderAbsolute_PWM.h"
-#include "EncoderRelative_Quadrature.h"
-#include "LimServo.h"
-#include "MoistureSensor.h"
-#include "ScienceConfig.h"
-#include "hw_bridge.h"
-#include "mbed.h"
+#include "CentrifugeConfig.h"
+#include "CoverConfig.h"
+#include "DiggerConfig.h"
+#include "ElevatorConfig.h"
+#include "Logger.h"
 
-// motors
-Motor elevatorMotor(MTR_PWM_2, MTR_DIR_2, false);
-Motor indexerMotor(MTR_PWM_1, MTR_DIR_1, false);
+// TODO: Handle function call failures better
 
-// Servo
-LimServo coverServo(SRVO_PWM_1, ScienceConfig::coverServoRange, ScienceConfig::coverServoMaxPulse,
-                    ScienceConfig::coverServoMinPulse);
+// Felix TODO: Brose through logic and make sure there aren't any silly mistakes.
 
-LimServo diggerServo(SRVO_PWM_2, ScienceConfig::diggerServoRange, ScienceConfig::diggerServoMaxPulse,
-                     ScienceConfig::diggerServoMinPulse);
+Sensor::AdafruitSTEMMA moistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
-// encoders
-EncoderAbsolute_PWM elevatorEncoder(ScienceConfig::elevatorEncoderConfig);
-EncoderRelative_Quadrature indexerEncoder(ScienceConfig::centrifugeEncoderConfig);
-
-// limit switches
-DigitalIn elevatorLimTop(LIM_SW_3);
-DigitalIn elevatorLimBottom(LIM_SW_4);
-DigitalIn indexerLimFront(LIM_SW_1);
-DigitalIn indexerLimBack(LIM_SW_2);
-
-// Actuators
-ActuatorController elevatorActuator(ScienceConfig::diggerLiftActuatorConfig, elevatorMotor, elevatorEncoder,
-                                    elevatorLimBottom, elevatorLimTop);
-ActuatorController indexerActuator(ScienceConfig::indexerActuatorConfig, indexerMotor, indexerEncoder, indexerLimFront,
-                                   indexerLimBack);
-
-// I2C
-MoistureSensor moistureSensor = MoistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
-
-// Declaring CANBus object
 CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
-// static objects
 static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
 
   switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_GENEVA_ANGLE:
-      return indexerActuator.setAngle_Degrees(motionData);
+      Centrifuge::manager.getActiveController()->setSetPoint(motionData);
+      break;
     case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:
-      return elevatorActuator.setMotionData(motionData);
+      Digger::servo.setValue(motionData);
+      break;
     case HWBRIDGE::CANID::SET_COVER_ANGLE:
-      return coverServo.setPosition(motionData);
+      Cover::servo.setValue(motionData);
+      break;
     case HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT:
-      return diggerServo.setPosition(motionData);
+      Elevator::manager.getActiveController()->setSetPoint(motionData);
+      break;
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
   }
+  return MBED_SUCCESS;
 }
 
-static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_ANGLE, setMotionData},
-                                                 {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, setMotionData},
-                                                 {HWBRIDGE::CANID::SET_COVER_ANGLE, setMotionData},
-                                                 {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, setMotionData}};
+static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_ANGLE, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_COVER_ANGLE, &setMotionData},
+                                                 {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, &setMotionData}};
 
-// CAN Threads
 Thread rxCANProcessorThread;
 Thread txCANProcessorThread;
 
-// recieving CAN messages
 void rxCANProcessor() {
-  //    TO DO:  Replace this logic with new CAN logic coming from issue #23
   CANMsg rxMsg;
   while (true) {
     if (can.read(rxMsg)) {
@@ -83,41 +55,48 @@ void rxCANProcessor() {
   }
 }
 
-// Send outgoing CAN messages
 void txCANProcessor() {
-  constexpr std::chrono::milliseconds txPeriod     = 500ms;
-  constexpr std::chrono::milliseconds txInterdelay = 2ms;
+  constexpr auto txPeriod     = 500ms;
+  constexpr auto txInterdelay = 2ms;
   CANMsg txMsg;
 
+  struct __attribute__((__packed__)) MotionReport {
+    float position = 0, velocity = 0;
+  };
+
+  // Felix TODO: Ensure that each time, we get the right data, call setPayload with new data and send the new data
   while (true) {
+    MotionReport report;
+    float angle = 0, speed = 0;
+
     txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_ANGLE);
-    txMsg.setPayload(indexerActuator.getAngle_Degrees());
-    can.write(txMsg);
-    ThisThread::sleep_for(txInterdelay);
-
-    txMsg.setID(HWBRIDGE::CANID::REPORT_SCOOPER_ANGLE);
-    txMsg.setPayload(elevatorActuator.getAngle_Degrees());
-    can.write(txMsg);
-    ThisThread::sleep_for(txInterdelay);
-
-    txMsg.setID(HWBRIDGE::CANID::REPORT_COVER_ANGLE);
-    txMsg.setPayload(coverServo.read());
+    Centrifuge::manager.getActiveController()->reportAngleDeg(angle);
+    Centrifuge::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
+    report = {angle, speed};
+    txMsg.setPayload(report);
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_ELEVATOR_HEIGHT);
-    txMsg.setPayload(diggerServo.read());
+    Elevator::manager.getActiveController()->reportAngleDeg(angle);
+    Elevator::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
+    report = {angle, speed};
+    txMsg.setPayload(report);
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
     txMsg.setID(HWBRIDGE::CANID::REPORT_MOISTURE_DATA);
-    txMsg.setPayload(static_cast<int>(moistureSensor.Read_Moisture()));
+    float moisture = 0;
+    moistureSensor.read(moisture);
+    txMsg.setPayload(moisture);
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_TEMPERATURE_DATA);
-    txMsg.setPayload(moistureSensor.Read_Temperature());
+    float temperature = 0;
+    moistureSensor.alternateRead(temperature);
+    txMsg.setPayload(temperature);
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
@@ -126,17 +105,17 @@ void txCANProcessor() {
 }
 
 int main() {
-  printf("\r\n\r\n");
-  printf("SCIENCE APP STARTED!\r\n");
-  printf("====================\r\n");
+  Utility::Logger::printf("\r\n\r\n");
+  Utility::Logger::printf("SCIENCE APP STARTED!\r\n");
+  Utility::Logger::printf("====================\r\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 
   while (true) {
-    indexerActuator.update();
-    elevatorActuator.update();
+    Centrifuge::manager.getActiveController()->update();
+    Elevator::manager.getActiveController()->update();
 
-    ThisThread::sleep_for(2000ms);
+    ThisThread::sleep_for(1ms);
   }
 }

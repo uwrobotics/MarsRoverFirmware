@@ -1,16 +1,30 @@
 add_executable(science.${TARGET}-board.elf)
 target_sources(science.${TARGET}-board.elf PRIVATE src/main.cpp)
+target_include_directories(science.${TARGET}-board.elf PUBLIC include)
 target_link_libraries(science.${TARGET}-board.elf 
-    PRIVATE
-    CANMsg
-    ActuatorController
-    ScienceConfig
-    Encoder
-    LimServo
-    MoistureSensor
-    EncoderRelative_Quadrature
-    CANBus
-    uwrt-mars-rover-hw-bridge)
+PRIVATE
+#Control
+        OpenLoopController
+        PositionController
+        VelocityController
+        CurrentController
+        ActuatorControllerManager
+#Motors
+        LimServo
+        DCMotor
+#Encoders
+        EncoderAEAT6012
+        EncoderMAE3
+        EncoderPololu37D
+#CAN
+        CANBus
+        CANMsg
+#Sensor
+        CurrentSensor
+        AdafruitSTEMMA
+#Other
+        uwrt-mars-rover-hw-bridge
+        Logger)
 target_set_firmware_properties(science.${TARGET}-board.elf)
 
 add_library(ScienceConfig INTERFACE)

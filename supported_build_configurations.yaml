@@ -31,6 +31,7 @@ test-blinky:
   - arm
   - gamepad
   - gimbtonomy
+  - pdb
   - science
 
 test-blockingneo:
@@ -43,16 +44,21 @@ test-can:
   - gimbtonomy
 #  - science
 
-test-enc-abs-pwm:
-  #  - nucleo
-  - arm
+test-mae3:
+  - nucleo
 #  - gimbtonomy
 #  - science
+
+test-logger:
+  - gimbtonomy
+  - nucleo
+  - pdb
+  - science
 
 test-lookup-table:
   - nucleo
 
-test-moisture:
+test-adafruitSTEMMA:
 #  - nucleo
   - science
 
@@ -69,10 +75,11 @@ test-pwm:
   - nucleo
   - arm
   - gimbtonomy
+  - pdb
   - science
 
 test-pwmin:
-  #  - nucleo
+  - nucleo
   - arm
 #  - gamepad
 #  - gimbtonomy

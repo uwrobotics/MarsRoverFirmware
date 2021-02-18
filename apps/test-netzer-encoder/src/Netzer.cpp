@@ -11,8 +11,6 @@ Netzer::Netzer(PinName mosi, PinName miso, PinName sclk,
 
 bool Netzer::spi_read(){
 
-	ThisThread::sleep_for(3ms);		// Delay
-
 	// return status
 	int status = m_spi.transfer(tx_buffer, WORDS, rx_buffer, WORDS, event_callback_t(this, &Netzer::Netzer::spi_callback_debug));
 	
