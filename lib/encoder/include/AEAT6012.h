@@ -49,15 +49,15 @@ class AEAT6012 : public Encoder {
  private:
   static constexpr uint32_t FREQUENCY_HZ              = 1000000;  // 1MHz (max frequency given by datasheet)
   static constexpr float FLOAT_COMPARE_TOLERANCE      = 1e-6;
-  static constexpr float MOVING_AVERAGE_FILTER_WEIGHT = 0.7;
+  static constexpr float MOVING_AVERAGE_FILTER_WEIGHT = 0.1;
 
   const char dummy_buffer[2] = {0x00, 0x00};
   char read_buffer[2]        = {0x00, 0x00};
 
-  float m_position_deg;          // Degrees
-  float m_angular_velocity_dps;  // Degrees per second
-  uint16_t m_position_raw;       // Raw encoder reading
-  float m_offset_deg;            // Offset in degrees
+  float m_position_deg;
+  float m_angular_velocity_deg_per_sec;
+  uint16_t m_position_raw;
+  float m_offset_deg;
 
   SPI m_spi;
   DigitalOut m_cs;
@@ -73,7 +73,7 @@ class AEAT6012 : public Encoder {
   // Trigger a blocking encoder read
   bool read(void);
 
-  // Converts raw encoding reading to position in degrees
+  // Converts raw encoder reading to position in degrees
   static float rawToDegrees(uint16_t raw);
 };
 }  // namespace Encoder

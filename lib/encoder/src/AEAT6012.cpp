@@ -4,7 +4,7 @@ using namespace Encoder;
 
 AEAT6012::AEAT6012(const Config &config)
     : m_position_deg(0),
-      m_angular_velocity_dps(0),
+      m_angular_velocity_deg_per_sec(0),
       m_position_raw(0),
       m_offset_deg(config.offset_deg),
       m_spi(NC, config.spi_mosi, config.spi_clk),
@@ -13,15 +13,11 @@ AEAT6012::AEAT6012(const Config &config)
   m_spi.frequency(FREQUENCY_HZ);
   m_spi.set_dma_usage(DMA_USAGE_ALWAYS);
 
-  if (m_cs.is_connected()) {
-    m_cs = 1;  // Keep CS high until a read is requested
-  }
+  m_cs = 1;  // Keep CS high until a read is requested
 }
 
 bool AEAT6012::read(void) {
-  if (m_cs.is_connected()) {
-    m_cs = 0;  // Assert CS to start signaling
-  }
+  m_cs = 0;  // Assert CS to start signaling
 
   // Specced delay >500ns after CS assertion
   // ThisThread::sleep_for(1ms);
@@ -29,9 +25,7 @@ bool AEAT6012::read(void) {
   // Write low dummy bytes to recieve
   m_spi.write(dummy_buffer, 2, read_buffer, 2);
 
-  if (m_cs.is_connected()) {
-    m_cs = 1;  // Deassert CS to stop signaling
-  }
+  m_cs = 1;  // Deassert CS to stop signaling
 
   // Specced delay >500ns after CS deassertion
   // ThisThread::sleep_for(1ms);
@@ -84,9 +78,9 @@ bool AEAT6012::read(void) {
     dir = dir * (curr_pos > m_position_deg ? 1 : -1);
 
     // Update angular velocity (apply exponential moving average filter)
-    float new_ang_vel = dir * delta_pos_abs / dt * 1000000000;
-    m_angular_velocity_dps =
-        MOVING_AVERAGE_FILTER_WEIGHT * new_ang_vel + (1 - MOVING_AVERAGE_FILTER_WEIGHT) * m_angular_velocity_dps;
+    float new_ang_vel              = dir * delta_pos_abs / dt * 1000000000;
+    m_angular_velocity_deg_per_sec = MOVING_AVERAGE_FILTER_WEIGHT * new_ang_vel +
+                                     (1 - MOVING_AVERAGE_FILTER_WEIGHT) * m_angular_velocity_deg_per_sec;
   }
 
   // Update posiiton data
@@ -106,7 +100,7 @@ bool AEAT6012::getAngleDeg(float &angle) {
 bool AEAT6012::getAngularVelocityDegPerSec(float &speed) {
   std::scoped_lock<Mutex> lock(m_mutex);
   bool success = read();
-  speed        = m_angular_velocity_dps;
+  speed        = m_angular_velocity_deg_per_sec;
   return success;
 }
 
@@ -116,8 +110,8 @@ bool AEAT6012::reset(void) {
   bool success = read();
   m_offset_deg = rawToDegrees(m_position_raw);
 
-  m_position_deg         = 0;
-  m_angular_velocity_dps = 0;
+  m_position_deg                 = 0;
+  m_angular_velocity_deg_per_sec = 0;
 
   return success;
 }
@@ -128,9 +122,7 @@ bool AEAT6012::readAsync(callback_ptr callback) {
   // Set up user callback
   m_callback = callback;
 
-  if (m_cs.is_connected()) {
-    m_cs = 0;  // Assert CS to start signaling
-  }
+  m_cs = 0;  // Assert CS to start signaling
 
   // Specced delay >500ns after CS assertion
   // ThisThread::sleep_for(1ms);
@@ -144,9 +136,7 @@ bool AEAT6012::readAsync(callback_ptr callback) {
 }
 
 void AEAT6012::privCallback(int event) {
-  if (m_cs.is_connected()) {
-    m_cs = 1;  // Deassert CS to stop signaling
-  }
+  m_cs = 1;  // Deassert CS to stop signaling
 
   // Received data stream: -xxxx xxxx  xxxx x---
   // byte[0]: bits 6:0
@@ -196,9 +186,9 @@ void AEAT6012::privCallback(int event) {
     dir = dir * (curr_pos > m_position_deg ? 1 : -1);
 
     // Update angular velocity (apply exponential moving average filter)
-    float new_ang_vel = dir * delta_pos_abs / dt * 1000000000;
-    m_angular_velocity_dps =
-        MOVING_AVERAGE_FILTER_WEIGHT * new_ang_vel + (1 - MOVING_AVERAGE_FILTER_WEIGHT) * m_angular_velocity_dps;
+    float new_ang_vel              = dir * delta_pos_abs / dt * 1000000000;
+    m_angular_velocity_deg_per_sec = MOVING_AVERAGE_FILTER_WEIGHT * new_ang_vel +
+                                     (1 - MOVING_AVERAGE_FILTER_WEIGHT) * m_angular_velocity_deg_per_sec;
   }
 
   // Update position data
@@ -214,7 +204,7 @@ float AEAT6012::getAngleDegNoTrigger(void) {
 }
 
 float AEAT6012::getAngularVelocityDegPerSecNoTrigger(void) {
-  return m_angular_velocity_dps;
+  return m_angular_velocity_deg_per_sec;
 }
 
 float AEAT6012::rawToDegrees(uint16_t raw) {
