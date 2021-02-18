@@ -7,8 +7,8 @@ arm:
 gamepad:
   - gamepad
 
-gimbtonomy:
-  - gimbtonomy
+gimbal:
+  - gimbal
 
 pdb:
   - pdb
@@ -23,37 +23,30 @@ test-aeat-8800:
 test-actuator-controller:
   - nucleo
   - arm
-  - gimbtonomy
+  - gimbal
   - science
 
 test-blinky:
   - nucleo
   - arm
   - gamepad
-  - gimbtonomy
-  - pdb
+  - gimbal
   - science
 
 test-blockingneo:
 #  - nucleo
-  - gimbtonomy
+  - gimbal
 
 test-can:
   - nucleo
   - arm
-  - gimbtonomy
+  - gimbal
 #  - science
 
 test-mae3:
   - nucleo
-#  - gimbtonomy
+#  - gimbal
 #  - science
-
-test-logger:
-  - gimbtonomy
-  - nucleo
-  - pdb
-  - science
 
 test-lookup-table:
   - nucleo
@@ -65,19 +58,18 @@ test-adafruitSTEMMA:
 test-pid:
   - nucleo
 #  - arm
-#  - gimbtonomy
+#  - gimbal
 #  - science
 
 test-pwm:
   - nucleo
   - arm
-  - gimbtonomy
-  - pdb
+  - gimbal
   - science
 
 test-pwmin:
   - nucleo
-  - arm
+#- arm
 #  - gamepad
-#  - gimbtonomy
+#  - gimbal
 #  - science

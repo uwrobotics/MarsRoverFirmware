@@ -1,5 +1,4 @@
 #include "MAE3.h"
-
 #include <mutex>
 
 using namespace Encoder;

@@ -1,4 +1,3 @@
-#include "Logger.h"
 #include "MAE3.h"
 
 Encoder::MAE3 encoder({NC, 0});
@@ -52,7 +51,7 @@ int main() {
       MBED_ASSERT_WARN(encoder.getAngleDeg(angle));
       MBED_ASSERT_WARN(encoder.getAngularVelocityDegPerSec(speed));
 
-      Utility::Logger::printf("Angle: %f, Angular Velocity :%f\r\n", angle, speed);
+      printf("Angle: %f, Angular Velocity :%f\r\n", angle, speed);
     }
   }
 }

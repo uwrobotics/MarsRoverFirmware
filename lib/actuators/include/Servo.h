@@ -13,4 +13,4 @@ class Servo : public Actuator {
   std::chrono::duration<float> m_max_pulse,  // PULSE LENGTH for MAX ANGLE/SPEED
       m_min_pulse;                           // PULSE LENGTH for MIN ANGLE/SPEED
 };
-}  // namespace Actuator
+}

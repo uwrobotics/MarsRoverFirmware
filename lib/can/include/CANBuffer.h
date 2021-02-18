@@ -4,6 +4,7 @@
 
 #include "CANMsg.h"
 #include "CircularBuffer.h"
+#include "mbed.h"
 
 constexpr uint8_t CANBUFFER_SIZE = 8;
 

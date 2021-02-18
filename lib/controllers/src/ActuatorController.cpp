@@ -19,9 +19,9 @@ void ActuatorController::reinstateCurrentChecks() {
 }
 
 void ActuatorController::overrideDegPerSecChecks() {
-  m_ignoreDegPerSecChecks.store(true);
+  m_ignoreRPMChecks.store(true);
 }
 
 void ActuatorController::reinstateDegPerSecChecks() {
-  m_ignoreDegPerSecChecks.store(false);
+  m_ignoreRPMChecks.store(false);
 }

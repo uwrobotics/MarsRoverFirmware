@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "Logger.h"
 #include "mbed.h"
 
 // Blinking rate in millisecond
@@ -15,7 +14,7 @@ int main() {
 
   while (true) {
     led = !led;
-    Utility::Logger::printf("Current LED State is %s\n", led ? "ON" : "OFF");
+    printf("Current LED State is %s\n", led ? "ON" : "OFF");
     ThisThread::sleep_for(BLINKING_RATE);
   }
 }

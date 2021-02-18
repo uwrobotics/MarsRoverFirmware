@@ -3,7 +3,6 @@
 #include "ClawConfig.h"
 #include "ElbowConfig.h"
 #include "LimServo.h"
-#include "Logger.h"
 #include "ShoulderConfig.h"
 #include "TooltipConfig.h"
 #include "TurntableConfig.h"
@@ -78,7 +77,7 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::CONTROL::PID::TuningApiPayload data;
   msg.getPayload(data);
 
-  const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
+  const LookupTable::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
       {HWBRIDGE::ARM::ActuatorID::TURNTABLE, &Turntable::manager},
       {HWBRIDGE::ARM::ActuatorID::SHOULDER, &Shoulder::manager},
       {HWBRIDGE::ARM::ActuatorID::ELBOW, &Elbow::manager},
@@ -91,39 +90,28 @@ static mbed_error_status_t setPIDParameter(CANMsg &msg) {
     return MBED_ERROR_INVALID_ARGUMENT;
   }
   bool success;
+  PID::PID *pid = nullptr;
 
   switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_JOINT_PID_DEADZONE:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateDeadzone(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
+      pid     = act->getActiveController()->getPID().value_or(nullptr);
+      success = pid != nullptr;
+      pid->updateDeadzone(data.value);
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateProportionalGain(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
+      pid     = act->getActiveController()->getPID().value_or(nullptr);
+      success = pid != nullptr;
+      pid->updateProportionalGain(data.value);
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateIntegralGain(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
+      pid     = act->getActiveController()->getPID().value_or(nullptr);
+      success = pid != nullptr;
+      pid->updateIntegralGain(data.value);
       break;
     case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateDerivativeGain(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
+      pid     = act->getActiveController()->getPID().value_or(nullptr);
+      success = pid != nullptr;
+      pid->updateDerivativeGain(data.value);
       break;
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
@@ -163,7 +151,7 @@ void rxCANProcessor() {
 
   while (true) {
     if (can1.read(rxMsg)) {
-      canHandlerMap.at(rxMsg.getID())(rxMsg);  // TODO: handle failures
+      canHandlerMap.at(rxMsg.getID())(rxMsg);  // todo: handle failures
     }
     ThisThread::sleep_for(2ms);
   }
@@ -240,9 +228,9 @@ Thread rxCANProcessorThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
 
 int main() {
-  Utility::Logger::printf("\r\n\r\n");
-  Utility::Logger::printf("ARM APPLICATION STARTED\r\n");
-  Utility::Logger::printf("=======================\r\n");
+  printf("\r\n\r\n");
+  printf("ARM APPLICATION STARTED\r\n");
+  printf("=======================\r\n");
 
   // CAN init stuff
   can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,

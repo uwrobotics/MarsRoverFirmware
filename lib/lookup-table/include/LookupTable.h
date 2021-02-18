@@ -8,7 +8,7 @@
 #include <optional>
 #include <unordered_map>
 
-namespace Utility {
+namespace LookupTable {
 namespace internal {
 struct UnusedDefaultValue {};
 }  // namespace internal
@@ -95,4 +95,4 @@ class LookupTable {
     return at(key);
   }
 };
-}  // namespace Utility
+}  // namespace LookupTable

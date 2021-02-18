@@ -8,7 +8,7 @@ class AdafruitSTEMMA final : public Sensor {
   typedef struct Config {
     PinName sda, scl;
   } Config;
-
+  
   AdafruitSTEMMA(PinName sda, PinName scl);
   AdafruitSTEMMA(const Config &config);
   AdafruitSTEMMA(AdafruitSTEMMA &)  = delete;

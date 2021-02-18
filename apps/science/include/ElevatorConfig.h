@@ -14,27 +14,26 @@
 namespace Elevator {
 
 namespace Internal {
-static Actuator::DCMotor motor(MTR_PWM_ELVTR, MTR_DIR_ELVTR, false);
+static Actuator::DCMotor motor(MTR_PWM_2, MTR_DIR_2, false);
 
-// channela, channelb, index, offset deg, qei encoding
-static Encoder::Pololu37D encoder({ENC_A_LIFT, ENC_B_LIFT, NC, 0});
+// Felix TODO: ensure that Elevator uses Pololu encoder
+static Encoder::Pololu37D encoder({NC, NC, NC, 0});
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float MAX_DEG_PER_SEC = 1197;                                    // 20.9 RAD/s
-constexpr float MAX_CURRENT     = std::numeric_limits<float>::infinity();  // since no current sensor
+constexpr float maxDegPerSec =
+    std::numeric_limits<float>::infinity();  // TODO: figure out maxDegPerSec of motors (1197.482?)
+constexpr float maxCurrent = std::numeric_limits<float>::infinity();  // since no current sensor
 
-static Controller::Velocity vel(motor, encoder, std::nullopt, velPID, MAX_DEG_PER_SEC, MAX_CURRENT, LIM_SW_ELVTR_DN,
-                                LIM_SW_ELVTR_UP);
-static Controller::Position pos(motor, encoder, std::nullopt, posPID, MAX_DEG_PER_SEC, MAX_CURRENT, LIM_SW_ELVTR_DN,
-                                LIM_SW_ELVTR_UP);
-static Controller::OpenLoop open(motor, encoder, std::nullopt, MAX_DEG_PER_SEC, MAX_CURRENT, LIM_SW_ELVTR_DN,
-                                 LIM_SW_ELVTR_UP);
+static Controller::Velocity vel(&motor, &encoder, std::nullopt, &velPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
+static Controller::Position pos(&motor, &encoder, std::nullopt, &posPID, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
+static Controller::OpenLoop open(&motor, &encoder, std::nullopt, maxDegPerSec, maxCurrent, LIM_SW_3, LIM_SW_4);
 
-static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
-                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const LookupTable::LookupTable<HWBRIDGE::CONTROL::Mode, Controller::ActuatorController *> lut = {
+    {HWBRIDGE::CONTROL::Mode::Velocity, &vel},
+    {HWBRIDGE::CONTROL::Mode::Position, &pos},
+    {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
 }  // namespace Internal
 
 static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);

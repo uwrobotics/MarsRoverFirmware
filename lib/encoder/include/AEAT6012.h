@@ -6,7 +6,7 @@
 
 /* TODO: create driver for encoder */
 namespace Encoder {
-class AEAT6012 : public Encoder {
+class AEAT6012 final : public Encoder {
  public:
   typedef struct Config {
     PinName clk, miso, CS;

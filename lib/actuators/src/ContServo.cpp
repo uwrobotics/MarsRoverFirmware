@@ -4,7 +4,7 @@ using namespace Actuator;
 
 ContServo::ContServo::ContServo(PinName pin, float max_speed, std::chrono::duration<float> max_pulse,
                                 std::chrono::duration<float> min_pulse, std::chrono::duration<float> period)
-    : m_pwm(pin), m_abs_max_speed(std::abs(max_speed)) {
+    : m_pwm(pin), m_abs_max_speed(std::abs(max_speed)), m_speed(0) {
   // Set initial condition of PWM
   m_pwm.period(period.count());
   m_pwm = 0.0;
@@ -22,6 +22,9 @@ float ContServo::ContServo::getMaxSpeed(void) const {
 }
 
 void ContServo::ContServo::setValue(float speed) {
+  int sign = (speed >= 0) ? 1 : -1;
+  m_speed  = (std::abs(speed) < m_abs_max_speed) ? speed : m_abs_max_speed * sign;
+
   // So now speed is from 0 to 2 * m_abs_max_speed
   speed += m_abs_max_speed;
   m_pwm.pulsewidth(((m_max_pulse - m_min_pulse) * speed / (m_abs_max_speed * 2) + m_min_pulse).count());

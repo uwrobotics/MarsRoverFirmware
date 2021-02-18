@@ -1,4 +1,3 @@
-#include "Logger.h"
 #include "mbed.h"
 
 SPI spi(SPI_MOSI, SPI_MISO, SPI_SCK);  // mosi, miso, sclk (PA_7, PA_6, PA_5)
@@ -24,6 +23,6 @@ int main() {
     upper = (upper << 1) | (lower >> 15);
     // lower = (lower << 1) & 0xF000;
 
-    Utility::Logger::printf("Data = 0x%04X %d \t Diag = 0x%04X\t%d\r\n", upper, upper, lower, lower);
+    printf("Data = 0x%04X %d \t Diag = 0x%04X\t%d\r\n", upper, upper, lower, lower);
   }
 }
