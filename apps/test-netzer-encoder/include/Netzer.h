@@ -23,7 +23,7 @@ class Netzer {
 	
 	private:
 		static constexpr uint32_t DEFAULT_FREQUENCY_HZ = 20000;  // frequency given by datasheet
-		static const int WORDS = 2;											// 2, 8 bit words
+		static const int WORDS = 4;											// 2, 8 bit words
 		const uint8_t tx_buffer[WORDS] = {0};						// Initialize dummy tx
 		uint8_t rx_buffer[WORDS] = {0};									// Initialize rx buffer to receive data (16 bits in total)
 		uint16_t m_raw_data;														// between 14-19 bits

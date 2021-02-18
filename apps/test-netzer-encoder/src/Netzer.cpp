@@ -29,7 +29,8 @@ void Netzer::spi_callback_debug(int events){
 
 	// Not sure if I'm handling the payload correctly
 	// If I get the raw_data correctly, the rest should work fine (taken from Alex's test encoder)
-  uint16_t raw_data = (static_cast<uint16_t>(rx_buffer[0]) << 8) | (static_cast<uint16_t>(rx_buffer[1]));
+  uint32_t raw_data = 	((static_cast<uint32_t>(rx_buffer[0]) << 24) | (static_cast<uint32_t>(rx_buffer[1]) << 16))
+												| ((static_cast<uint32_t>(rx_buffer[0]) << 8) | (static_cast<uint32_t>(rx_buffer[0])));
 
 	uint32_t msg = (raw_data >> 2) & 0x0FFFFFFF;
 	uint16_t ack = (msg >> 27) & 1;
