@@ -242,6 +242,10 @@ typedef enum {
   CAN1_TX = PA_12,
   CAN1_RX = PA_11,
 
+  /*** random ***/
+  CAN_TX = CAN1_TX,
+  CAN_RX = CAN1_RX,
+
   CAN2_TX = PB_13,
   CAN2_RX = PB_12,
 

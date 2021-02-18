@@ -69,7 +69,7 @@ test-pwm:
 
 test-pwmin:
   - nucleo
-#- arm
+  - arm
 #  - gamepad
 #  - gimbal
 #  - science

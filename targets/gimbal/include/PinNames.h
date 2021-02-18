@@ -160,6 +160,10 @@ typedef enum {
   LED_B = PA_1,
   LED_R = PA_2,
 
+  /*** Random ***/
+  LED2     = LED_R,
+  LED_MTRX = LED_B,
+
   BUTTON_1 = PA_3,
 
   /**** Actuator Pins ****/
