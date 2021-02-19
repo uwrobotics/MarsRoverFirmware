@@ -20,6 +20,5 @@ target_link_libraries(gimbal.${TARGET}-board.elf PRIVATE
 #Sensor
         CurrentSensor
 #Other
-        Neopixel_Blocking
         uwrt-mars-rover-hw-bridge)
 target_set_firmware_properties(gimbal.${TARGET}-board.elf)

@@ -163,8 +163,7 @@ typedef enum {
   BUTTON_1 = PA_3,
 
   /*** pins needed for other apps to work ***/
-  LED_MTRX = LED_B,
-  LED2     = LED_R,
+  LED2 = LED_R,
 
   /**** Actuator Pins ****/
   SRVO_PWM_YAW   = PB_6,
