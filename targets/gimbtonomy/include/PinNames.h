@@ -143,41 +143,54 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
-// STDIO for console print
+// Orson TODO: everything below this you should be fixing and working on. make sure all the pins are aliased correctly.
+// that is that what is on the ioc is on here. ask Ari to share what he found was wrong and you fix it. Work closely
+// with Aidan Gratton and keep him in the loop with what you're doing STDIO for console print
+// once you are done make sure every single pin here is defined in the ioc and that the every single pin on the ioc is
+// here
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = PC_10,
+  STDIO_UART_TX =
+      PC_10,  // Orson TODO: I think this should be NC bc of new flashing and printing method. check with Cindy
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = PC_11,
+  STDIO_UART_RX = PC_11,  // Orson TODO: same as above
 #endif
 
   /**** UI ****/
+  // Orson TODO: name these based on their color. mbed will complain if you dont define LED1 so define one of em to be
+  // LED1
   LED1 = PC_0,
   LED2 = PC_1,
   LED3 = PC_2,
   LED4 = PC_3,
-
+  // Orson TODO: led matrix is not on gimbal so delete
   LED_MTRX = PA_2,
 
   BUTTON_1 = PB_0,
   BUTTON_2 = PB_1,
 
   /**** Actuator Pins ****/
+  // Orson TODO: name these better for example. SRVO_PWM_PAN should be the pwm pin for controlling Pan Servo
   SRVO_PWM_CR = PB_14,
   SRVO_PWM_HS = PB_15,
   SRVO_PWM_SG = PB_5,
 
   /**** Limit Switch Pins ****/
+  // Orson TODO: figure out what has limit switches and if we can add them see arm app for how we deal with limit
+  // switches
   LIM_GIMB = PC_13,
 
   /**** Encoder Pins ****/
+  // Orson TODO: figure out what this is for and name it better. actually this prob goes away since i think we use
+  // aeat6012 on gimbal not mae3
   ENC_PWM_GIMB = PA_3,
 
   /**** Sensors ****/
+  // Orson TODO: remove these idk we have US on gimbal
   ULTRA_TRIG_3V3_1 = PB_6,
   ULTRA_ECHO_1     = PB_7,
   ULTRA_TRIG_3V3_2 = PB_8,
@@ -201,6 +214,7 @@ typedef enum {
   SERIAL_RX  = STDIO_UART_RX,
   SERIAL_RTS = PC_8,
   // does not exist
+  // Orson TODO: figure out what the above comment was for. what doesnt exist? if it doesnt exist delete it
 
   USBTX = STDIO_UART_TX,
   USBRX = STDIO_UART_RX,
@@ -212,6 +226,8 @@ typedef enum {
   RCC_OSC_OUT   = PH_1,
 
   /**** DEBUG pins ****/
+  // Orson TODO: check with cindy and aidan after you fix these. its a bit confisuing bc new flashing and printing
+  // method
   SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,

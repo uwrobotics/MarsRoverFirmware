@@ -4,14 +4,14 @@
 arm:
   - arm
 
-controller:
-  - controller
+gamepad:
+  - gamepad
 
 gimbtonomy:
   - gimbtonomy
 
-safety:
-  - safety
+pdb:
+  - pdb
 
 science:
   - science
@@ -29,9 +29,9 @@ test-actuator-controller:
 test-blinky:
   - nucleo
   - arm
-  - controller
+  - gamepad
   - gimbtonomy
-  - safety
+  - pdb
   - science
 
 test-blockingneo:
@@ -42,17 +42,24 @@ test-can:
   - nucleo
   - arm
   - gimbtonomy
-  - safety
 #  - science
 
-test-enc-abs-pwm:
-  #  - nucleo
-  - arm
+test-mae3:
+  - nucleo
 #  - gimbtonomy
 #  - science
 
-test-moisture:
-  #  - nucleo
+test-logger:
+  - gimbtonomy
+  - nucleo
+  - pdb
+  - science
+
+test-lookup-table:
+  - nucleo
+
+test-adafruitSTEMMA:
+#  - nucleo
   - science
 
 test-pid:
@@ -65,11 +72,12 @@ test-pwm:
   - nucleo
   - arm
   - gimbtonomy
+  - pdb
   - science
 
 test-pwmin:
-  #  - nucleo
+  - nucleo
   - arm
-#  - controller
+#  - gamepad
 #  - gimbtonomy
 #  - science

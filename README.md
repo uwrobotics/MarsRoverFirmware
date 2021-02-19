@@ -88,8 +88,8 @@ This repository contains:
     Ex. Compile the science application for the science board:  
     `make APP=science TARGET=science`
 
-    Ex. Compile the CAN test application for the safety board:  
-    `make APP=test-can TARGET=safety`
+    Ex. Compile the arm application for the arm board:  
+    `make APP=arm TARGET=arm`
     
     After compiling an application you should see a message similar to the following:  
     ```shell script
@@ -102,9 +102,22 @@ This repository contains:
     make[1]: Leaving directory '/home/wmmc88/MarsRover2020-firmware/build-arm-board'
     ```
     
-    **Note:** Our makefile automatically detects the number of available execution threads and uses them all to significantly speed up compile time.
+    **Note:** Our makefile automatically detects the number of available execution threads and uses them all to 
+    significantly speed up compile time. You can choose to use fewer threads during build with the following command:
+    ```
+    UWRT_FIRMWARE_MAX_JOBS=<max number of threads> make APP=<app-name> TARGET=<target-name>
+    ```
+    You can add the `UWRT_FIRMWARE_MAX_JOBS` to your `.bashrc` to have this max thread limit be persistent.
+    ```
+    echo "export UWRT_FIRMWARE_MAX_JOBS=<max number of threads>" >> ~/.bashrc
+    ``` 
+   
+   **Tip:** You can choose to build all the supported app/target configs at once using `make all`
+   
 
 5. Deploy onto board (see below for how to connect to a rover control board)
+
+    **Note:** The following instructions only apply to Nucleo and Rev 1 boards. For Rev 2 boards and beyond, see [Using the ST-Link to Program Rover Boards (Rev 2 +)](#using-the-st-link-to-program-rover-boards-rev-2-)
 
     Find the application .bin file, located in the build-<TARGET>-board/apps/<APP> directory.
 
@@ -128,8 +141,66 @@ This repository contains:
 - To clean the project workspace of app and library build files, run `make clean`
 - To clean compiled MBED SDK files, run `make clean-mbed`
 
-    
-## Using the Nucleo Dev Board to Program the Rover Boards
+## Using the ST-Link to Program Rover Boards (Rev 2 +)
+Rev 2 PCBs come with ARM 10-pin SWD headers and can be programmed via ST-Link. A 20-pin to 10-pin adapter is needed to hook the ST-Link 20-pin header to the rover board 10-pin header.
+
+### ST-Link Software Installation
+
+### Ubuntu
+1.  Download and build the ST-Link utilities:
+    ```
+    git clone https://github.com/stlink-org/stlink
+    cd stlink
+    cmake .
+    make
+    ```
+
+2. Copy the built binaries into their place:
+    ```
+    cd bin
+    sudo cp st-* /usr/local/bin
+    cd ../lib
+    sudo cp *.so* /lib32
+    ```
+
+3. Copy the udev rules to their place (this lets you run the st-link commands without using `sudo`):
+    ```
+    cd ../config/udev/rules.d
+    sudo cp 49-stlinkv* /etc/udev/rules.d/
+    ```
+
+### Windows
+
+1. Download [st-link utility](http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-programmers/stsw-link004.html)
+
+### Steps to Flashing a Rover Board
+
+#### Ubuntu
+
+1. Cd into the folder containing the binary of the program to flash (eg. `MarsRover2020-firmware/build-<target name>/apps/<app name>`)
+
+2. Ensure that the ST-Link is connected to your computer and to the rover board.
+    - **Tip:** You can run `st-info --probe` to check if the ST-Link connection is detected
+
+3. Flash the program binary: `st-flash write <app name>.bin 0x8000000` (may need to run this command twice to get a successful flash)
+    - If the flashing was successful, you should see a blinking LED pattern on the board and the following message: `Flash written and verified! jolly good!`
+
+4. Reset the board: `st-flash reset`
+    - This is required to run the program that was flashed
+
+- Alternatively, instead of performing steps 3-4, run `st-flash --reset write <app name>.bin 0x8000000` to flash the board and trigger a reset both before and after flashing
+- See [github.com/stlink-org/stlink](https://github.com/stlink-org/stlink) for further documentation
+
+#### Windows
+
+1. Connect the ST-Link to the rover board and to your computer
+2. Open ST-Link Utility
+3. Click "Connect to the target"
+4. Click "Open file" and select the `.bin` file of the program to flash
+5. Click "Program & verify:
+6. Click "Start"
+
+## Using the Nucleo Dev Board to Program the Rover Boards (Rev 1)
 
 In order to use the Nucleo development board as a programmer, the two jumpers (black caps) labelled NUCLEO - ST-LINK will need to be removed. This will sever the ST-LINK debugger portion of the Nucleo from the MCU side, allowing it to be used as a general debugger.
 
@@ -151,9 +222,26 @@ The ST-LINK debugger can then be connected via header CN4 (pins 1-5 with 1 neare
 
 After deploying the binary to the board, the Nucleo's `LD1` LED will flash red and green. Programming is complete when the LED stays green, so don't powercycle the board before this.
 
-## Serial Communication
+## Serial Wire Output (SWO) (Rev 2 +)
 
-The boards can be communicated with through the serial interface exposed through the debug pins. You can use the USB-serial interface built into the Nucleo dev boards to communicate with the control boards by connecting the TX pin to the board's RX pin and the RX pin to the board's TX pin (transmit to recieve and vice versa). 
+The 10-pin Serial Wire Debug (SWD) programming interface does not come with UART lines for standard printf usage. Instead, we will use Serial Wire Output (SWO), a single wire interface to transmit trace messages to an external debugger.
+
+See `apps/test-logger` for an example of using the SWO-supported logger utility. Ensure that the target you are building for is configured to support SWO logging (see targets/<**target name**>/include/mbed_config_target.h).
+
+### Ubuntu
+
+**TODO**
+
+### Windows
+
+1. Ensure that the rover board is running and the ST-Link is connected
+2. In the ST-Link Utility software, click "Print via SWO viewer"
+3. Set the system clock rate to 180000000Hz and stimulus port to 0
+4. Click "Start". The SWO print statements should appear in the Serial Wire Viewer console.
+
+## Serial Communication (Rev 1)
+
+The boards can be communicated with through the serial interface exposed through the debug pins. You can use the USB-serial interface built into the Nucleo dev boards to communicate with the control boards by connecting the TX pin to the board's RX pin and the RX pin to the board's TX pin (transmit to recieve and vice versa). Ensure the program running on the nucleo is not printing too.
 
 On Ubuntu
 - Run `screen /dev/serial/by-id/usb-STM* 115200` from the terminal. You may need to prepend this with `sudo`.
@@ -190,6 +278,13 @@ wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 sudo ./llvm.sh <version number>
 ```
+
+For VS Code you will need to specify the path to the clang-format executable. To do this:
+1. In shell script copy the output of the following command: ` which clang-format-11`
+2. Open the User Settings in JSON format
+3. Add the two following settings to the file
+"editor.formatOnSave": true,
+"clang-format.executable": "{path copied from step 1}"
 
 ## Writing Test Apps
 For every feature that gets added, a test app that tests the feature in isolation should be written to verify that the feature actually functions properly in our hardware. The author of the feature should ensure that the test app works on all the board targets that make sense. Typically this means that the test app should work on at least the nucleo board and the board that the feature was designed for. For example, the `test-can` app should be able to be compiled and run successfully for all of our boards, including a nucleo dev board.

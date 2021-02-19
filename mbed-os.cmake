@@ -21,9 +21,29 @@ set(TARGET_DEFINITIONS
 add_library(mbed-os-target-interface INTERFACE)
 target_include_directories(mbed-os-target-interface INTERFACE
         mbed-os
-        mbed-os/cmsis/TARGET_CORTEX_M
-        mbed-os/hal
-        mbed-os/platform
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/Include
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Config
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Include
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Include1
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source
+        mbed-os/cmsis/CMSIS_5/CMSIS/TARGET_CORTEX_M/Include
+        mbed-os/cmsis/device
+        mbed-os/cmsis/device/RTE/include
+        mbed-os/cmsis/device/rtos/include
+        mbed-os/drivers/include
+        mbed-os/drivers/include/drivers
+        mbed-os/events/include
+        mbed-os/hal/include
+        mbed-os/hal/include/hal
+        mbed-os/hal/usb/include/usb
+        mbed-os/platform/include
+        mbed-os/platform/include/platform
+        mbed-os/platform/include/platform/internal
+        mbed-os/platform/mbed-trace/include
+        mbed-os/rtos/include
+        mbed-os/rtos/include/rtos
+        mbed-os/rtos/include/rtos/internal
+        mbed-os/storage/blockdevice/include
         mbed-os/targets/TARGET_STM
         mbed-os/targets/TARGET_STM/TARGET_STM32F4
         mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/CMSIS
@@ -35,6 +55,30 @@ target_compile_definitions(mbed-os-target-interface INTERFACE ${MEMORY_DEFINITIO
 
 add_library(mbed-os STATIC)
 target_sources(mbed-os PRIVATE
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Config/RTX_Config.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Library/cmsis_os1.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/TOOLCHAIN_GCC/TARGET_RTOS_M4_M7/irq_cm4f.S
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_delay.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_evflags.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_evr.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_kernel.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_lib.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_memory.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_mempool.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_msgqueue.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_mutex.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_semaphore.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_system.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_thread.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/rtx_timer.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/Source/os_systick.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/Source/os_tick_ptim.c
+        mbed-os/cmsis/CMSIS_5/CMSIS/TARGET_CORTEX_M/Source/mbed_tz_context.c
+        mbed-os/cmsis/device/rtos/source/mbed_boot.c
+        mbed-os/cmsis/device/rtos/source/mbed_rtos_rtx.c
+        mbed-os/cmsis/device/rtos/source/mbed_rtx_handlers.c
+        mbed-os/cmsis/device/rtos/source/mbed_rtx_idle.cpp
+        mbed-os/cmsis/device/rtos/TOOLCHAIN_GCC_ARM/mbed_boot_gcc_arm.c
         mbed-os/drivers/source/AnalogIn.cpp
         mbed-os/drivers/source/AnalogOut.cpp
         mbed-os/drivers/source/BufferedSerial.cpp
@@ -71,23 +115,23 @@ target_sources(mbed-os PRIVATE
         mbed-os/events/source/equeue_posix.c
         mbed-os/events/source/EventQueue.cpp
         mbed-os/events/source/mbed_shared_queues.cpp
-        mbed-os/hal/LowPowerTickerWrapper.cpp
-        mbed-os/hal/mbed_compat.c
-        mbed-os/hal/mbed_critical_section_api.c
-        mbed-os/hal/mbed_flash_api.c
-        mbed-os/hal/mbed_gpio.c
-        mbed-os/hal/mbed_gpio_irq.c
-        mbed-os/hal/mbed_itm_api.c
-        mbed-os/hal/mbed_lp_ticker_api.c
-        mbed-os/hal/mbed_lp_ticker_wrapper.cpp
-        mbed-os/hal/mbed_pinmap_common.c
-        mbed-os/hal/mbed_pinmap_default.cpp
-        mbed-os/hal/mbed_ticker_api.c
-        mbed-os/hal/mbed_us_ticker_api.c
-        mbed-os/hal/mpu/mbed_mpu_v7m.c
-        mbed-os/hal/mpu/mbed_mpu_v8m.c
-        mbed-os/hal/static_pinmap.cpp
-        mbed-os/hal/usb/mbed_usb_phy.cpp
+        mbed-os/hal/source/LowPowerTickerWrapper.cpp
+        mbed-os/hal/source/mbed_compat.c
+        mbed-os/hal/source/mbed_critical_section_api.c
+        mbed-os/hal/source/mbed_flash_api.c
+        mbed-os/hal/source/mbed_gpio.c
+        mbed-os/hal/source/mbed_gpio_irq.c
+        mbed-os/hal/source/mbed_itm_api.c
+        mbed-os/hal/source/mbed_lp_ticker_api.c
+        mbed-os/hal/source/mbed_lp_ticker_wrapper.cpp
+        mbed-os/hal/source/mbed_pinmap_common.c
+        mbed-os/hal/source/mbed_pinmap_default.cpp
+        mbed-os/hal/source/mbed_ticker_api.c
+        mbed-os/hal/source/mbed_us_ticker_api.c
+        mbed-os/hal/source/mpu/mbed_mpu_v7m.c
+        mbed-os/hal/source/mpu/mbed_mpu_v8m.c
+        mbed-os/hal/source/static_pinmap.cpp
+        mbed-os/hal/usb/source/mbed_usb_phy.cpp
         mbed-os/platform/cxxsupport/mstd_mutex.cpp
         mbed-os/platform/source/ATCmdParser.cpp
         mbed-os/platform/source/CriticalSectionLock.cpp
@@ -132,29 +176,6 @@ target_sources(mbed-os PRIVATE
         mbed-os/rtos/source/Kernel.cpp
         mbed-os/rtos/source/Mutex.cpp
         mbed-os/rtos/source/Semaphore.cpp
-        mbed-os/rtos/source/TARGET_CORTEX/mbed_boot.c
-        mbed-os/rtos/source/TARGET_CORTEX/mbed_rtos_rtx.c
-        mbed-os/rtos/source/TARGET_CORTEX/mbed_rtx_handlers.c
-        mbed-os/rtos/source/TARGET_CORTEX/mbed_rtx_idle.cpp
-        mbed-os/rtos/source/TARGET_CORTEX/rtx4/cmsis_os1.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Config/RTX_Config.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_delay.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_evflags.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_evr.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_kernel.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_lib.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_memory.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_mempool.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_msgqueue.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_mutex.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_semaphore.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_system.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_thread.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/rtx_timer.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/RTX/Source/TOOLCHAIN_GCC/TARGET_RTOS_M4_M7/irq_cm4f.S
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/Source/os_systick.c
-        mbed-os/rtos/source/TARGET_CORTEX/rtx5/Source/os_tick_ptim.c
-        mbed-os/rtos/source/TARGET_CORTEX/TOOLCHAIN_GCC_ARM/mbed_boot_gcc_arm.c
         mbed-os/rtos/source/ThisThread.cpp
         mbed-os/rtos/source/Thread.cpp
         mbed-os/targets/TARGET_STM/analogin_api.c

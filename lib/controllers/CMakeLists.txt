@@ -1,22 +1,41 @@
+add_library(ActuatorControllerManager STATIC)
+target_sources(ActuatorControllerManager PRIVATE src/ActuatorControllerManager.cpp)
+target_include_directories(ActuatorControllerManager PUBLIC include)
+target_link_libraries(ActuatorControllerManager PUBLIC ActuatorController LookupTable uwrt-mars-rover-hw-bridge)
+target_set_mbed_dependency(ActuatorControllerManager)
+
 add_library(ActuatorController STATIC)
 target_sources(ActuatorController PRIVATE src/ActuatorController.cpp)
 target_include_directories(ActuatorController PUBLIC include)
-target_link_libraries(ActuatorController
-        PUBLIC
-        PID
-        PRIVATE
-        EncoderAbsolute_PWM
-        Motor
-        )
+target_link_libraries(ActuatorController PUBLIC PID)
 target_set_mbed_dependency(ActuatorController)
 
-add_library(Motor STATIC)
-target_sources(Motor PRIVATE src/Motor.cpp)
-target_include_directories(Motor PUBLIC include)
-target_set_mbed_dependency(Motor)
+add_library(BasicController STATIC)
+target_sources(BasicController PRIVATE src/BasicControl.cpp)
+target_include_directories(BasicController PUBLIC include)
+target_link_libraries(BasicController PUBLIC PID CurrentSensor Encoder Actuator ActuatorController)
+target_set_mbed_dependency(BasicController)
 
-add_library(ServoMotor STATIC)
-target_sources(ServoMotor PRIVATE src/ServoMotor.cpp)
-target_include_directories(ServoMotor PUBLIC include)
-target_link_libraries(ServoMotor PRIVATE ContServo Motor)
-target_set_mbed_dependency(ServoMotor)
+add_library(PositionController STATIC)
+target_sources(PositionController PRIVATE src/Position.cpp)
+target_include_directories(PositionController PUBLIC include)
+target_link_libraries(PositionController PUBLIC BasicController)
+target_set_mbed_dependency(PositionController)
+
+add_library(VelocityController STATIC)
+target_sources(VelocityController PRIVATE src/Velocity.cpp)
+target_include_directories(VelocityController PUBLIC include)
+target_link_libraries(VelocityController PUBLIC BasicController)
+target_set_mbed_dependency(VelocityController)
+
+add_library(CurrentController STATIC)
+target_sources(CurrentController PRIVATE src/Current.cpp)
+target_include_directories(CurrentController PUBLIC include)
+target_link_libraries(CurrentController PUBLIC BasicController)
+target_set_mbed_dependency(CurrentController)
+
+add_library(OpenLoopController STATIC)
+target_sources(OpenLoopController PRIVATE src/OpenLoop.cpp)
+target_include_directories(OpenLoopController PUBLIC include)
+target_link_libraries(OpenLoopController PUBLIC CurrentSensor Encoder Actuator ActuatorController)
+target_set_mbed_dependency(OpenLoopController)
