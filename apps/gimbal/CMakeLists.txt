@@ -1,7 +1,7 @@
-add_executable(gimbtonomy.${TARGET}-board.elf)
-target_sources(gimbtonomy.${TARGET}-board.elf PRIVATE src/main.cpp)
-target_include_directories(gimbtonomy.${TARGET}-board.elf PUBLIC include)
-target_link_libraries(gimbtonomy.${TARGET}-board.elf PRIVATE 
+add_executable(gimbal.${TARGET}-board.elf)
+target_sources(gimbal.${TARGET}-board.elf PRIVATE src/main.cpp)
+target_include_directories(gimbal.${TARGET}-board.elf PUBLIC include)
+target_link_libraries(gimbal.${TARGET}-board.elf PRIVATE 
         PRIVATE
 #Control
         OpenLoopController
@@ -13,7 +13,7 @@ target_link_libraries(gimbtonomy.${TARGET}-board.elf PRIVATE
         LimServo
         ContServo
 #Encoders
-        EncoderMAE3
+	EncoderAEAT6012
 #CAN
         CANBus
         CANMsg
@@ -21,6 +21,5 @@ target_link_libraries(gimbtonomy.${TARGET}-board.elf PRIVATE
         CurrentSensor
 #Other
         Neopixel_Blocking
-        Logger
         uwrt-mars-rover-hw-bridge)
-target_set_firmware_properties(gimbtonomy.${TARGET}-board.elf)
+target_set_firmware_properties(gimbal.${TARGET}-board.elf)
