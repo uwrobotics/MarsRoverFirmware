@@ -1,7 +1,9 @@
 #include "Pololu37D.h"
 
 int main() {
-  constexpr Encoder::Pololu37D::Config config = {PA_10, PB_5, NC, 1, GPIO::QEI::Encoding::X2_ENCODING};
+  // first pin is yellow wire
+  // second pin is white wire
+  constexpr Encoder::Pololu37D::Config config = {PA_5, PA_6, NC, 1, GPIO::QEI::Encoding::X2_ENCODING};
   Encoder::Pololu37D enc(config);
 
   Timer theta_timer, theta_dot_timer;
