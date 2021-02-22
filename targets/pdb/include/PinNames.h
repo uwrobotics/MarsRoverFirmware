@@ -164,25 +164,30 @@ typedef enum {
   LED2 = PA_1,
   LED3 = PA_2,
 
-  /**** Voltage Measurement ****/
+  /**** Rail Monitoring ****/
   RAIL_5V_ANLG_IN      = PA_4,
   RAIL_17V_ANLG_IN     = PA_5,
   RAIL_24V_ANLG_IN     = PB_0,
   RAIL_BATTERY_ANLG_IN = PB_1,
 
-  /**** Smart Switches ****/
-  SMART_SWITCH_5V_LOAD1_FAULT = PA_7,
-  SMART_SWITCH_5V_LOAD1_DIAG_EN = PA_6,
-  SMART_SWITCH_5V_LOAD2_FAULT = PC_3,
-  SMART_SWITCH_5V_LOAD2_DIAG_EN = PC_2,
-  SMART_SWITCH_5V_LOAD3_FAULT = PC_1,
-  SMART_SWITCH_5V_LOAD3_DIAG_EN = PC_0,
-  SMART_SWITCH_5V_LOAD4_FAULT = PC_14,
-  SMART_SWITCH_5V_LOAD4_DIAG_EN = PC_13,
-  SMART_SWITCH_5V_LOAD5_FAULT = PB_9,
-  SMART_SWITCH_5V_LOAD5_DIAG_EN = PB_8,
-  SMART_SWITCH_17V_LOAD_FAULT = PC_5,
-  SMART_SWITCH_17V_LOAD_DIAG_EN = PC_4,
+  RAIL_24V_PGOOD_N = PC_6,
+
+  /**** Load Monitoring ****/
+  LOAD1_5V_FAULT   = PA_7,
+  LOAD1_5V_DIAG_EN = PA_6,
+  LOAD2_5V_FAULT   = PC_3,
+  LOAD2_5V_DIAG_EN = PC_2,
+  LOAD3_5V_FAULT   = PC_1,
+  LOAD3_5V_DIAG_EN = PC_0,
+  LOAD4_5V_FAULT   = PC_14,
+  LOAD4_5V_DIAG_EN = PC_13,
+  LOAD5_5V_FAULT   = PB_9,
+  LOAD5_5V_DIAG_EN = PB_8,
+  LOAD_17V_FAULT   = PC_5,
+  LOAD_17V_DIAG_EN = PC_4,
+
+  /**** Temperature Monitoring ****/
+  TEMPERATURE_ADC_IN = PA_3,
 
   /**** LED Matrix ****/
   LED_MATRIX_R_CHANNEL = PB_4,
@@ -191,8 +196,8 @@ typedef enum {
 
   /**** Ultrasonic Sensor ****/
   ULTRASONIC_TRIG = PC_9,
-  ULTRASONIC_TX = PC_10,
-  ULTRASONIC_RX = PC_11,
+  ULTRASONIC_TX   = PC_10,
+  ULTRASONIC_RX   = PC_11,
 
   /**** Serial Interface Pins ****/
   CAN1_TX = PA_12,
