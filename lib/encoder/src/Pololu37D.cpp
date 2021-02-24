@@ -10,7 +10,8 @@ Pololu37D::Pololu37D(const Config &config)
 
 bool Pololu37D::getAngleDeg(float &angle) {
   std::scoped_lock<Mutex> lock(m_mutex);
-  angle = (m_QEI.getPulses() * m_degreesPerCount) - m_zeroOffsetDeg;
+  angle = (m_QEI.getPulses() * m_degreesPerCount * 2) -
+          m_zeroOffsetDeg;  // multiplying by 2 since our measurements were off by a factor of 2
   return true;
 }
 
