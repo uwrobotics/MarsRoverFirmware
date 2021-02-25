@@ -13,6 +13,8 @@ int main() {
     theta_timer.reset();
     theta_dot_timer.reset();
 
+    enc.read();  // returns true if successful
+
     theta_timer.start();
     enc.getAngleDeg(theta);  // returns true if successful
     theta_timer.stop();
