@@ -21,7 +21,16 @@ class Pololu37D final : public Encoder {
   bool getAngularVelocityDegPerSec(float &speed) override;
   bool reset() override;
 
+  bool read();
+
  private:
+  // tracks the previous angle in degrees reading to calculate speed
+  float m_previous_angle_deg;
+  // holds the current angle in degrees
+  float m_current_angle_deg;
+  // holds the measured speed in degrees per second
+  float m_speed_deg_per_second;
+
   GPIO::QEI m_QEI;
 
   Mutex m_mutex;
