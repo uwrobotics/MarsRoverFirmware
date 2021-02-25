@@ -13,18 +13,28 @@ int main() {
     theta_timer.reset();
     theta_dot_timer.reset();
 
-    enc.read();  // returns true if successful
-
-    theta_timer.start();
-    enc.getAngleDeg(theta);  // returns true if successful
-    theta_timer.stop();
-
-    theta_dot_timer.start();
-    enc.getAngularVelocityDegPerSec(theta_dot);  // returns true if successful
-    theta_dot_timer.stop();
-
-    printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
-    printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n", theta_dot_timer.elapsed_time().count(), theta_dot);
+    // try reading the encoder
+    if (enc.read()) {
+      // angle reading
+      theta_timer.start();
+      if (enc.getAngleDeg(theta)) {
+        theta_timer.stop();
+        printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
+      } else {
+        printf("an error occured :(");
+      }
+      // speed reading
+      theta_dot_timer.start();
+      if (enc.getAngularVelocityDegPerSec(theta_dot)) {
+        theta_dot_timer.stop();
+        printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n", theta_dot_timer.elapsed_time().count(),
+               theta_dot);
+      } else {
+        printf("an error occured :(");
+      }
+    } else {
+      printf("an error occured :(");
+    }
 
     ThisThread::sleep_for(500ms);
   }
