@@ -15,6 +15,7 @@ int main() {
 
     // try reading the encoder
     if (enc.read()) {
+      printf("Time since last reading: %.3fms\tAngle: %.3f\r\n", enc.return_delta_time(), theta);
       // angle reading
       theta_timer.start();
       if (enc.getAngleDeg(theta)) {

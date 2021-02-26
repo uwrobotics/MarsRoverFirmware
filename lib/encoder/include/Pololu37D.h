@@ -22,6 +22,7 @@ class Pololu37D final : public Encoder {
   bool reset() override;
 
   bool read();
+  float return_delta_time();
 
  private:
   // tracks the previous angle in degrees reading to calculate speed
@@ -30,9 +31,11 @@ class Pololu37D final : public Encoder {
   float m_current_angle_deg;
   // holds the measured speed in degrees per second
   float m_speed_deg_per_second;
+  // holds the time since last measurement
+  float m_delta_time_ms;
 
   GPIO::QEI m_QEI;
-
+  Timer m_timer;
   Mutex m_mutex;
 
   static constexpr float m_degreesPerCount = 360.0 / 64.0;  // since encoder is 64 CPR
