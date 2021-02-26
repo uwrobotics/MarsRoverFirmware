@@ -1,4 +1,5 @@
 #include "OpenLoop.h"
+
 #include "../../utility/include/Logger.h"
 
 using namespace Controller;
