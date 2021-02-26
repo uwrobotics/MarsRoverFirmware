@@ -143,15 +143,18 @@ typedef enum {
   ADC_VREF = 0xF1,
   ADC_VBAT = 0xF2,
 
+  // not connected
+  NC = (int)0xFFFFFFFF,
+
 #ifdef MBED_CONF_TARGET_STDIO_UART_TX
   STDIO_UART_TX = MBED_CONF_TARGET_STDIO_UART_TX,
 #else
-  STDIO_UART_TX = PC_10,
+  STDIO_UART_TX = NC,
 #endif
 #ifdef MBED_CONF_TARGET_STDIO_UART_RX
   STDIO_UART_RX = MBED_CONF_TARGET_STDIO_UART_RX,
 #else
-  STDIO_UART_RX = PC_11,
+  STDIO_UART_RX = NC,
 #endif
 
   /**** UI ****/
@@ -171,22 +174,19 @@ typedef enum {
   SRVO_PWM_ROLL  = PB_5,
 
   /**** Serial Interface Pins ****/
-  SPI1_CS   = PC_4,
-  SPI1_SCK  = PA_5,
-  SPI1_MOSI = PA_7,
-  SPI1_MISO = PA_6,
+  PAN_ENC_SPI_CS   = PC_4,
+  PAN_ENC_SPI_SCK  = PA_5,
+  PAN_ENC_SPI_MOSI = PA_7,
+  PAN_ENC_SPI_MISO = PA_6,
 
-  CAN_TX_A = PA_12,
-  CAN_RX_A = PA_11,
-
-  CAN_TX_B = PB_13,
-  CAN_RX_B = PB_12,
-
-  CAN_TX = CAN_TX_A,
-  CAN_RX = CAN_RX_A,
+  CAN_TX = PA_12,
+  CAN_RX = PA_11,
 
   CAN1_TX = CAN_TX,
   CAN1_RX = CAN_RX,
+
+  CAN2_TX = PB_13,
+  CAN2_RX = PB_12,
 
   SERIAL_TX = STDIO_UART_TX,
   SERIAL_RX = STDIO_UART_RX,
@@ -206,10 +206,8 @@ typedef enum {
   SYS_JTDO_SWO   = PB_3,
   SYS_JTMS_SWDIO = PA_13,
 
-  ADC_IN_5V = PC_1,
+  ADC_IN_5V = PC_1
 
-  // Not connected
-  NC = (int)0xFFFFFFFF
 } PinName;
 
 #ifdef __cplusplus

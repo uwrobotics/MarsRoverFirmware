@@ -4,10 +4,14 @@
 
 namespace Pitch {
 
+/*
+• Pitch: HS-422 (https://www.robotshop.com/en/hitec-hs-422-servo-motor.html)
+*/
+
 namespace Internal {
-constexpr auto range    = 195;
-constexpr auto maxPulse = 2.5ms, minPulse = 0.5ms;
+constexpr auto RANGE     = 195;
+constexpr auto MAX_PULSE = 2.5ms, MIN_PULSE = 0.5ms;
 }  // namespace Internal
 
-static Actuator::LimServo pitchServo(SRVO_PWM_PITCH, Internal::range, Internal::maxPulse, Internal::minPulse);
+static Actuator::LimServo pitchServo(SRVO_PWM_PITCH, Internal::RANGE, Internal::MAX_PULSE, Internal::MIN_PULSE);
 }  // namespace Pitch

@@ -5,6 +5,7 @@
 
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "Logger.h"
 #include "PanConfig.h"
 #include "PinNames.h"
 #include "PitchConfig.h"
@@ -14,26 +15,16 @@
 constexpr uint8_t ACK_FLAG(1UL << 0);
 
 // Init. Components
-// Servos
-/*
-• Pan: HS-1425 CR (https://www.robotshop.com/en/hitec-hsr-1425cr-continuous-rotation-servo.html)
-• Pitch: HS-422 (https://www.robotshop.com/en/hitec-hs-422-servo-motor.html)
-• Roll: SG90 (https://datasheetspdf.com/pdf/791970/TowerPro/SG90/1)
-*/
 // CAN Object
 CANBus can1(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
-CANMsg rxMsg, txMsg;
+CANMsg rxMsg;
 
 // Threads
 Thread rxCANProcessorThread(osPriorityAboveNormal);
-Thread txCANProcessorThread(osPriorityBelowNormal);
-
-// Event flags for communication between threads
-EventFlags event_flags;
 
 // Incoming message processor
 void rxCANProcessor() {
-  const auto rxPeriod = 2ms;
+  const auto RX_PERIOD = 2ms;
 
   float data = 0;
   HWBRIDGE::CONTROL::Mode controlMode;
@@ -62,30 +53,16 @@ void rxCANProcessor() {
       }
     }
 
-    ThisThread::sleep_for(rxPeriod);
-  }
-}
-
-// Outgoing message processor
-void txCANProcessor() {
-  while (true) {
-    // This thread does not sleep, but only executes if signaled by rxCANProcessor to write out a response
-    event_flags.wait_any(ACK_FLAG);
-
-    // Send an acknowledgement CANMsg back to the Jetson
-    txMsg.clear();
-    txMsg << true;
-    can1.write(txMsg);
+    ThisThread::sleep_for(RX_PERIOD);
   }
 }
 
 int main() {
-  printf("\r\n\r\n");
-  printf("ARM APPLICATION STARTED\r\n");
-  printf("=======================\r\n");
+  Utility::Logger::printf("\n\n");
+  Utility::Logger::printf("ARM APPLICATION STARTED\n");
+  Utility::Logger::printf("=======================\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
-  txCANProcessorThread.start(txCANProcessor);
 
   while (true) {
     // Output info over serial

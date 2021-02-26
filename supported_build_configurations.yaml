@@ -39,7 +39,6 @@ test-blinky:
 
 test-blockingneo:
 #  - nucleo
-  - gimbal
 
 test-can:
   - nucleo
