@@ -49,7 +49,7 @@ class AEAT6012 : public Encoder {
  private:
   static constexpr uint32_t FREQUENCY_HZ              = 1000000;  // 1MHz (max frequency given by datasheet)
   static constexpr float FLOAT_COMPARE_TOLERANCE      = 1e-6;
-  static constexpr float MOVING_AVERAGE_FILTER_WEIGHT = 0.1;
+  static constexpr float MOVING_AVERAGE_FILTER_WEIGHT = 0.8;
 
   const char dummy_buffer[2] = {0x00, 0x00};
   char read_buffer[2]        = {0x00, 0x00};

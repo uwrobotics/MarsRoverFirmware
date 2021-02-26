@@ -2,7 +2,7 @@
 #include "Logger.h"
 #include "mbed.h"
 
-constexpr auto ENCODER_READ_PERIOD = 1ms;
+constexpr auto ENCODER_READ_PERIOD = 100ms;
 constexpr auto PRINTF_PERIOD       = 500ms;
 
 enum Test_Mode_E { TEST_BLOCKING, TEST_ASYNC };
@@ -66,7 +66,7 @@ void encoder_read_blocking(void) {
     encoder_angle_deg        = measurement;
     encoder_pos_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
-    ThisThread::sleep_for(1ms);
+    ThisThread::sleep_for(ENCODER_READ_PERIOD);
 
     timer.reset();
     timer.start();
