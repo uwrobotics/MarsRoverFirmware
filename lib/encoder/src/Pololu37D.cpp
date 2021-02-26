@@ -27,13 +27,13 @@ bool Pololu37D::reset() {
 }
 
 float Pololu37D::return_delta_time() {
-  return m_delta_time_ms;
+  return m_delta_time_ns;
 }
 
 bool Pololu37D::read() {
   // time since last measurement
   m_timer.stop();
-  m_delta_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(m_timer.elapsed_time()).count();
+  m_delta_time_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(m_timer.elapsed_time()).count();
   m_timer.reset();
   m_timer.start();
 
@@ -43,7 +43,7 @@ bool Pololu37D::read() {
                         m_zeroOffsetDeg;  // multiplying by 2 since our measurements were off by a factor of 2
 
   // to estimate speed: delta_angle / delta_time (degrees / sec)
-  m_speed_deg_per_second = (m_current_angle_deg - m_previous_angle_deg) / (m_delta_time_ms / 1000);
+  m_speed_deg_per_second = (m_current_angle_deg - m_previous_angle_deg) / m_delta_time_ns * 1000000000;
 
   return true;
 }
