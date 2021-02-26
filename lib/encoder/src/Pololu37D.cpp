@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-using namespace Encoder;
+namespace Encoder;
 
 Pololu37D::Pololu37D(const Config &config)
     : m_QEI(config.ChannelA, config.ChannelB, config.Index, config.quadratureEncoding),
