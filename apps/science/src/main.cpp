@@ -43,7 +43,7 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_AN
                                                  {HWBRIDGE::CANID::SET_COVER_ANGLE, &setMotionData},
                                                  {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, &setMotionData}};
 
-Thread rxCANProcessorThread;
+Thread rxCANProcessorThread(osPriorityRealtime);
 Thread txCANProcessorThread;
 
 void rxCANProcessor() {
@@ -52,6 +52,7 @@ void rxCANProcessor() {
     if (can.read(rxMsg)) {
       canHandlerMap.at(rxMsg.getID())(rxMsg);
     }
+    ThisThread::sleep_for(5ms);
   }
 }
 

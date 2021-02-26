@@ -1,4 +1,5 @@
 #include "OpenLoop.h"
+#include "../../utility/include/Logger.h"
 
 using namespace Controller;
 
@@ -14,6 +15,7 @@ OpenLoop::OpenLoop(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
       m_upperLimit(upperLimit) {}
 
 void OpenLoop::stop() {
+  Utility::Logger::printf("OpenLoop::stop() called\r\n");
   setSetPoint(0);
   m_actuator.setValue(0);
 }
@@ -43,11 +45,10 @@ bool OpenLoop::shouldStop() {
   float speed = 0, current = 0;
   bool shouldStop = !m_ignoreDegPerSecChecks.load() && m_encoder.getAngularVelocityDegPerSec(speed) &&
                     std::abs(speed) > m_maxDegPerSec;
-  shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor != std::nullopt &&
+  shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor &&
                               m_currentSensor.value().get().read(current) && std::abs(current) > m_maxCurrent);
-  shouldStop = shouldStop || (m_upperLimit.is_connected() && m_upperLimit.read() && m_setpoint.load() > 0);
-  shouldStop = shouldStop || (m_lowerLimit.is_connected() && m_lowerLimit.read() && m_setpoint.load() < 0);
-
+  shouldStop = shouldStop || (m_upperLimit.is_connected() && !m_upperLimit.read() && m_setpoint.load() > 0);
+  shouldStop = shouldStop || (m_lowerLimit.is_connected() && !m_lowerLimit.read() && m_setpoint.load() < 0);
   return shouldStop;
 }
 
