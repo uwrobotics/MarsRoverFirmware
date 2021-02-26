@@ -10,12 +10,14 @@ Pololu37D::Pololu37D(const Config &config)
 
 bool Pololu37D::getAngleDeg(float &angle) {
   std::scoped_lock<Mutex> lock(m_mutex);
+  read();
   angle = m_current_angle_deg;
   return true;
 }
 
 bool Pololu37D::getAngularVelocityDegPerSec(float &speed) {
   std::scoped_lock<Mutex> lock(m_mutex);
+  read();
   speed = m_speed_deg_per_second;
   return true;
 }

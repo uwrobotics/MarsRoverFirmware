@@ -14,7 +14,7 @@ int main() {
     theta_dot_timer.reset();
 
     // try reading the encoder
-    if (enc.read()) {
+    if (true) {
       // angle reading
       theta_timer.start();
       if (enc.getAngleDeg(theta)) {
@@ -23,7 +23,7 @@ int main() {
       } else {
         printf("an error occured :(");
       }
-      // speed reading
+      ThisThread::sleep_for(1ms);  // speed reading
       theta_dot_timer.start();
       if (enc.getAngularVelocityDegPerSec(theta_dot)) {
         theta_dot_timer.stop();
