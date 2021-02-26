@@ -40,7 +40,7 @@ bool BasicControl::shouldStop() {
   float speed = 0, current = 0;
   bool shouldStop = !m_ignoreDegPerSecChecks.load() && m_encoder.getAngularVelocityDegPerSec(speed) &&
                     std::abs(speed) > m_maxDegPerSec;
-  shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor &&
+  shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor != std::nullopt &&
                               m_currentSensor.value().get().read(current) && std::abs(current) > m_maxCurrent);
   shouldStop = shouldStop || (m_upperLimit.is_connected() && m_upperLimit.read() && m_setpoint.load() > 0);
   shouldStop = shouldStop || (m_lowerLimit.is_connected() && m_lowerLimit.read() && m_setpoint.load() < 0);
