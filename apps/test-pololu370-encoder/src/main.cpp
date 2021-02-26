@@ -36,6 +36,6 @@ int main() {
       printf("an error occured :(");
     }
 
-    ThisThread::sleep_for(500ms);
+    ThisThread::sleep_for(1ms);
   }
 }
