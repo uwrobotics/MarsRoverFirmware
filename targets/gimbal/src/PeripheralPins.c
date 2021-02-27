@@ -29,6 +29,7 @@
  */
 
 #include "PeripheralPins.h"
+
 #include "mbed_toolchain.h"
 
 //==============================================================================
@@ -338,7 +339,7 @@ MBED_WEAK const PinMap PinMap_USB_HS[] = {
     {PB_13, USB_HS, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, GPIO_AF_NONE)},         // USB_OTG_HS_VBUS
     {PB_14, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF12_OTG_HS_FS)},  // USB_OTG_HS_DM
     {PB_15, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF12_OTG_HS_FS)},  // USB_OTG_HS_DP
-#else                                                                                 /* MBED_CONF_TARGET_USB_SPEED */
+#else /* MBED_CONF_TARGET_USB_SPEED */
     //  {PA_3,      USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG_HS)}, // USB_OTG_HS_ULPI_D0 //
     //  Connected to STDIO_UART_RX
     {PA_5, USB_HS,
@@ -354,5 +355,5 @@ MBED_WEAK const PinMap PinMap_USB_HS[] = {
     {PC_0, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG_HS)},   // USB_OTG_HS_ULPI_STP
     {PC_2, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG_HS)},   // USB_OTG_HS_ULPI_DIR
     {PC_3, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG_HS)},   // USB_OTG_HS_ULPI_NXT
-#endif                                                                                /* MBED_CONF_TARGET_USB_SPEED */
+#endif /* MBED_CONF_TARGET_USB_SPEED */
     {NC, NC, 0}};
