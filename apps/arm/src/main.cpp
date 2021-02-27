@@ -161,16 +161,40 @@ const static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_TUR
 
 CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
-// Incoming message processor
-void rxCANProcessor() {
-  CANMsg rxMsg;
+// CAN Processing Objects
+Mail<CANMsg, 100> mail_box;
+EventQueue event_queue;
 
+void rxCANClient() {
   while (true) {
-    if (can1.read(rxMsg)) {
-      canHandlerMap.at(rxMsg.getID())(rxMsg);  // TODO: handle failures
-    }
-    ThisThread::sleep_for(2ms);
+    CANMsg *mail = nullptr;
+    do {
+      mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
+      ThisThread::sleep_for(1ms);
+    } while (mail == nullptr);
+    MBED_ASSERT((mail != nullptr));
+    canHandlerMap.at(mail->getID())(*mail);
+    MBED_ASSERT(mail_box.free(mail) == osOK);
   }
+}
+
+// this function is indirectly triggered by an IRQ. It reads a CAN msg and puts in the mail_box
+void rxCANPostman() {
+  CANMsg msg;
+  // this loop is needed to avoid missing msg received between turning off the IRQ and turning it back on
+  while (can1.read(msg)) {
+    // TODO: Handle mail related errors better
+    CANMsg *mail = mail_box.try_alloc_for(1ms);
+    MBED_ASSERT(mail != nullptr);
+    *mail = msg;
+    mail_box.put(mail);
+  }
+  can_irq_set(can1.getHandle(), IRQ_RX, true);
+}
+
+void rxCANISR() {
+  can_irq_set(can1.getHandle(), IRQ_RX, false);
+  event_queue.call(&rxCANPostman);
 }
 
 // Outgoing message processor
@@ -240,7 +264,8 @@ void txCANProcessor() {
   }
 }
 
-Thread rxCANProcessorThread(osPriorityAboveNormal);
+Thread rxCANPostmanThread(osPriorityRealtime);
+Thread rxCANClientThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
 
 int main() {
@@ -251,8 +276,12 @@ int main() {
   // CAN init stuff
   can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,
                  HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
-  rxCANProcessorThread.start(rxCANProcessor);
+
+  rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
+  rxCANClientThread.start(&rxCANClient);
   txCANProcessorThread.start(txCANProcessor);
+
+  can1.attach(&rxCANISR, CANBus::RxIrq);
 
   while (true) {
     // Compute actuator controls
