@@ -115,7 +115,7 @@ void rxCANClient() {
       mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
       ThisThread::sleep_for(1ms);
     } while (mail == nullptr);
-    MBED_ASSERT((mail != nullptr) && true);
+    MBED_ASSERT(mail != nullptr);
     rxCANConsumer(*mail);
     MBED_ASSERT(mail_box.free(mail) == osOK);
   }
@@ -128,7 +128,7 @@ void rxCANPostman() {
   while (can1.read(msg)) {
     // TODO: Handle mail related errors better
     CANMsg *mail = mail_box.try_alloc_for(1ms);
-    MBED_ASSERT((mail != nullptr));
+    MBED_ASSERT(mail != nullptr);
     *mail = msg;
     mail_box.put(mail);
   }

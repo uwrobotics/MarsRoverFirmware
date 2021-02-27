@@ -58,7 +58,7 @@ void rxCANClient() {
       mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
       ThisThread::sleep_for(1ms);
     } while (mail == nullptr);
-    MBED_ASSERT((mail != nullptr) && true);
+    MBED_ASSERT(mail != nullptr);
     canHandlerMap.at(mail->getID())(*mail);
     MBED_ASSERT(mail_box.free(mail) == osOK);
   }
@@ -71,7 +71,7 @@ void rxCANPostman() {
   while (can.read(msg)) {
     // TODO: Handle mail related errors better
     CANMsg *mail = mail_box.try_alloc_for(1ms);
-    MBED_ASSERT((mail != nullptr));
+    MBED_ASSERT(mail != nullptr) ;
     *mail = msg;
     mail_box.put(mail);
   }
@@ -81,15 +81,6 @@ void rxCANPostman() {
 void rxCANISR() {
   can_irq_set(can.getHandle(), IRQ_RX, false);
   event_queue.call(&rxCANPostman);
-}
-
-void rxCANProcessor() {
-  CANMsg rxMsg;
-  while (true) {
-    if (can.read(rxMsg)) {
-      canHandlerMap.at(rxMsg.getID())(rxMsg);
-    }
-  }
 }
 
 void txCANProcessor() {
@@ -149,6 +140,8 @@ int main() {
   rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
   rxCANClientThread.start(&rxCANClient);
   txCANProcessorThread.start(txCANProcessor);
+
+  can.attach(&rxCANISR, CANBus::RxIrq);
 
   while (true) {
     Centrifuge::manager.getActiveController()->update();
