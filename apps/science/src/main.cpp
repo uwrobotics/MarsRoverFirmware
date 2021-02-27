@@ -71,7 +71,7 @@ void rxCANPostman() {
   while (can.read(msg)) {
     // TODO: Handle mail related errors better
     CANMsg *mail = mail_box.try_alloc_for(1ms);
-    MBED_ASSERT(mail != nullptr) ;
+    MBED_ASSERT(mail != nullptr);
     *mail = msg;
     mail_box.put(mail);
   }
