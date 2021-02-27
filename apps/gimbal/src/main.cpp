@@ -12,8 +12,6 @@
 #include "RollConfig.h"
 #include "hw_bridge.h"
 
-constexpr uint8_t ACK_FLAG(1UL << 0);
-
 // Init. Components
 // CAN Object
 CANBus can1(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
@@ -59,7 +57,7 @@ void rxCANProcessor() {
 
 int main() {
   Utility::Logger::printf("\n\n");
-  Utility::Logger::printf("ARM APPLICATION STARTED\n");
+  Utility::Logger::printf("GIMBAL APPLICATION STARTED\n");
   Utility::Logger::printf("=======================\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
