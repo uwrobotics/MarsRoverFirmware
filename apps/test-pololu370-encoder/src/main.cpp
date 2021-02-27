@@ -1,3 +1,4 @@
+#include "Logger.h"
 #include "Pololu37D.h"
 
 int main() {
@@ -19,21 +20,22 @@ int main() {
       theta_timer.start();
       if (enc.getAngleDeg(theta)) {
         theta_timer.stop();
-        printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
+        Utility::Logger::printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(),
+                                theta);
       } else {
-        printf("an error occured :(");
+        Utility::Logger::printf("an error occured :(");
       }
       ThisThread::sleep_for(1ms);  // speed reading
       theta_dot_timer.start();
       if (enc.getAngularVelocityDegPerSec(theta_dot)) {
         theta_dot_timer.stop();
-        printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n", theta_dot_timer.elapsed_time().count(),
-               theta_dot);
+        Utility::Logger::printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n",
+                                theta_dot_timer.elapsed_time().count(), theta_dot);
       } else {
-        printf("an error occured :(");
+        Utility::Logger::printf("an error occured :(");
       }
     } else {
-      printf("an error occured :(");
+      Utility::Logger::printf("an error occured :(");
     }
 
     ThisThread::sleep_for(1ms);
