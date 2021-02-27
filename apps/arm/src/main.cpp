@@ -283,7 +283,7 @@ int main() {
     // Compute actuator controls
     Turntable::manager.getActiveController()->update();
     Elbow::manager.getActiveController()->update();
-    Elbow::manager.getActiveController()->update();
+    Shoulder::manager.getActiveController()->update();
     Wrist::leftManager.getActiveController()->update();
     Wrist::rightManager.getActiveController()->update();
     Claw::manager.getActiveController()->update();

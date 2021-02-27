@@ -31,7 +31,7 @@ class ActuatorController {
 
  protected:
   std::atomic<float> m_setpoint             = {0};
-  std::atomic<bool> m_ignoreCurrentChecks   = {false};
-  std::atomic<bool> m_ignoreDegPerSecChecks = {false};
+  std::atomic<bool> m_ignoreCurrentChecks   = {true};
+  std::atomic<bool> m_ignoreDegPerSecChecks = {true};
 };
 }  // namespace Controller
