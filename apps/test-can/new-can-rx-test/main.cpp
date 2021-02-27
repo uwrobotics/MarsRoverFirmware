@@ -29,7 +29,7 @@ void work(CANMsg &msg) {
 }
 
 void consumer() {
-  while(true) {
+  while (true) {
     CANMsg *mail = nullptr;
     do {
       mail = mailBox.try_get();  // TODO: try_get_for was not working. Investigate why and use it
