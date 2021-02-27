@@ -15,6 +15,10 @@ Sensor::AdafruitSTEMMA moistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
 CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 
+// CAN Processing Objects
+Mail<CANMsg, 100> mail_box;
+EventQueue event_queue;
+
 static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
@@ -43,8 +47,41 @@ static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_AN
                                                  {HWBRIDGE::CANID::SET_COVER_ANGLE, &setMotionData},
                                                  {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, &setMotionData}};
 
-Thread rxCANProcessorThread;
-Thread txCANProcessorThread;
+Thread rxCANPostmanThread(osPriorityRealtime);
+Thread rxCANClientThread(osPriorityAboveNormal);
+Thread txCANProcessorThread(osPriorityBelowNormal);
+
+void rxCANClient() {
+  while (true) {
+    CANMsg *mail = nullptr;
+    do {
+      mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
+      ThisThread::sleep_for(1ms);
+    } while (mail == nullptr);
+    MBED_ASSERT((mail != nullptr) && true);
+    canHandlerMap.at(mail->getID())(*mail);
+    MBED_ASSERT(mail_box.free(mail) == osOK);
+  }
+}
+
+// this function is indirectly triggered by an IRQ. It reads a CAN msg and puts in the mail_box
+void rxCANPostman() {
+  CANMsg msg;
+  // this loop is needed to avoid missing msg received between turning off the IRQ and turning it back on
+  while (can.read(msg)) {
+    // TODO: Handle mail related errors better
+    CANMsg *mail = mail_box.try_alloc_for(1ms);
+    MBED_ASSERT((mail != nullptr));
+    *mail = msg;
+    mail_box.put(mail);
+  }
+  can_irq_set(can.getHandle(), IRQ_RX, true);
+}
+
+void rxCANISR() {
+  can_irq_set(can.getHandle(), IRQ_RX, false);
+  event_queue.call(&rxCANPostman);
+}
 
 void rxCANProcessor() {
   CANMsg rxMsg;
@@ -109,7 +146,8 @@ int main() {
   Utility::Logger::printf("SCIENCE APP STARTED!\r\n");
   Utility::Logger::printf("====================\r\n");
 
-  rxCANProcessorThread.start(rxCANProcessor);
+  rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
+  rxCANClientThread.start(&rxCANClient);
   txCANProcessorThread.start(txCANProcessor);
 
   while (true) {
