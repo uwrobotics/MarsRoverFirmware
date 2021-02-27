@@ -38,7 +38,7 @@ test-blinky:
   - science
 
 test-blockingneo:
-#  - nucleo
+  - nucleo
 
 test-can:
   - nucleo
