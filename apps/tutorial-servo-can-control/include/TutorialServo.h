@@ -1,6 +1,3 @@
-#ifndef MBED_TUTORIALSERVO_H
-#define MBED_TUTORIALSERVO_H
-
 #pragma once
 
 #include "mbed.h"

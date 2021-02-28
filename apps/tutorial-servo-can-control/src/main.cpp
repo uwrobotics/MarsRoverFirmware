@@ -26,8 +26,8 @@ CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
               // extract data from the received CAN message 
               // in the same order as it was added on the transmitter side
               //Use pyaload function instesad of right shift
-              rxMsg.getPayload(percentageDegrees)
-              float actualDegrees = percentageDegrees*myServo.getServoRangeInDegrees()
+              rxMsg.getPayload(percentageDegrees);
+              float actualDegrees = percentageDegrees*myServo.getServoRangeInDegrees();
               myServo.setPositionInDegrees(actualDegrees);
               // rxMsg >> percentageDegrees; 
               // myServo.setPositionInDegrees((m_servoRangeInDegrees*percentageDegrees));   

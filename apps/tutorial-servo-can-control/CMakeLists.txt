@@ -9,6 +9,8 @@ PRIVATE
 TutorialServo
 CANBuffer
 CANBus
+LookupTable
+uwrt-mars-rover-hw-bridge
 )
 target_include_directories(TutorialServo PUBLIC include)
 target_set_mbed_dependency(TutorialServo)
