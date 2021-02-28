@@ -22,6 +22,9 @@ int main() {
          << "hello logger"
          << "\n";
 
+  // Test error logging
+  MBED_ASSERT(false);
+
   while (true)
     ;
 }
