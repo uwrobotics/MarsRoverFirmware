@@ -159,10 +159,12 @@ typedef enum {
 #endif
 
   /**** UI ****/
-  LED1  = PC_0,
   LED_R = PC_1,
   LED_G = PC_2,
   LED_B = PC_3,
+  LED1 = LED_B,
+  LED2 = LED_G,
+  LED3 = LED_R,
 
   BUTTON_1 = PA_2,
 

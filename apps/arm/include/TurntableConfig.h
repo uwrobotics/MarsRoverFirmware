@@ -15,7 +15,7 @@ namespace Turntable {
 
 namespace Internal {
 
-static Encoder::AEAT6012 encoder({TRNTBL_ENC_SPI_CLK, TRNTBL_ENC_SPI_MISO, NC, 0});
+static Encoder::AEAT6012 encoder({TRNTBL_ENC_SPI_CLK, TRNTBL_ENC_SPI_MISO, TRNTBL_CRNT_SNS_SPI_CS, 0});
 
 static Actuator::DCMotor motor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
 

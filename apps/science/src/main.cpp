@@ -20,6 +20,7 @@ Mail<CANMsg, 100> mail_box;
 EventQueue event_queue;
 
 static mbed_error_status_t setMotionData(CANMsg &msg) {
+  Utility::Logger::printf("setMotionData called\r\n");
   float motionData;
   msg.getPayload(motionData);
 
@@ -37,7 +38,7 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
       Elevator::manager.getActiveController()->setSetPoint(motionData);
       break;
     default:
-      return MBED_ERROR_INVALID_ARGUMENT;
+      break;
   }
   return MBED_SUCCESS;
 }

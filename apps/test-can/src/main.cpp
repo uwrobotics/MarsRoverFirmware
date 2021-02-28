@@ -55,13 +55,14 @@ int main(void) {
     }
 
     if (can.read(rxMsg)) {
-      ledRX = !ledRX;  // turn the LED on
+//      ledRX = !ledRX;  // turn the LED on
       Utility::Logger::printf("-------------------------------------\r\n");
       Utility::Logger::printf("CAN message received\r\n");
       printMsg(rxMsg);
 
       // Filtering performed by software:
       if (rxMsg.getID() == static_cast<HWBRIDGE::CANID>(RX_ID)) {
+        ledRX = !ledRX;
         rxMsg >> counter;  // extract data from the received CAN message
         Utility::Logger::printf("  counter = %d\r\n", counter);
         timer.start();  // transmission lag

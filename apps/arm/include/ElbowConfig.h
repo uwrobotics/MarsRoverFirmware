@@ -16,7 +16,7 @@ namespace Elbow {
 
 namespace Internal {
 
-static Encoder::AEAT6012 encoder({ELBW_ENC_SPI_CLK, ELBW_ENC_SPI_MISO, NC, 0});
+static Encoder::AEAT6012 encoder({ELBW_ENC_SPI_CLK, ELBW_ENC_SPI_MISO, ELBW_CRNT_SNS_SPI_CS, 0});
 
 static Actuator::DCMotor motor(MTR_PWM_ELBW, MTR_DIR_ELBW, false);
 

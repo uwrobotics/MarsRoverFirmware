@@ -157,21 +157,23 @@ typedef enum {
   STDIO_UART_RX = NC,
 #endif
 
-  /**** UI ****/
-  LED1  = PC_7,
+  // Orson TODO: name these based on their color. mbed will complain if you dont define LED1 so define one of em to be
+  // LED1
   LED_G = PA_0,
   LED_B = PA_1,
   LED_R = PA_2,
+  LED1 = LED_G,
+  LED2 = LED_B,
+  LED3 = LED_R,
+  // Orson TODO: led matrix is not on gimbal so delete
 
   BUTTON_1 = PA_3,
 
-  /*** pins needed for other apps to work ***/
-  LED2 = LED_R,
-
   /**** Actuator Pins ****/
-  SRVO_PWM_YAW   = PB_6,
-  SRVO_PWM_PITCH = PB_4,
-  SRVO_PWM_ROLL  = PB_5,
+  // Orson TODO: name these better for example. SRVO_PWM_PAN should be the pwm pin for controlling Pan Servo
+  YAW_SERVO = PB_6,
+  ROLL_SERVO = PB_5,
+  PITCH_SERVO = PB_4,
 
   /**** Serial Interface Pins ****/
   PAN_ENC_SPI_CS   = PC_4,

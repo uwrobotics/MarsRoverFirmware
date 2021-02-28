@@ -1,13 +1,17 @@
 #include "CANBus.h"
 #include "CANMsg.h"
 #include "ClawConfig.h"
-#include "ElbowConfig.h"
+#include "ElbowConfig.h" //broken
 #include "LimServo.h"
 #include "Logger.h"
 #include "ShoulderConfig.h"
 #include "TooltipConfig.h"
-#include "TurntableConfig.h"
+#include "TurntableConfig.h" //broken
 #include "WristConfig.h"
+
+DigitalOut ledG(LED_GREEN);
+DigitalOut ledB(LED_BLUE);
+DigitalOut ledR(LED_RED);
 
 /*** ARM COMMAND HANDLER FUNCTIONS ***/
 /*************************************/
@@ -45,7 +49,6 @@ static mbed_error_status_t setControlMode(CANMsg &msg) {
 static mbed_error_status_t setMotionData(CANMsg &msg) {
   float motionData;
   msg.getPayload(motionData);
-
   switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA:
       Turntable::manager.getActiveController()->setSetPoint(motionData);
@@ -264,7 +267,11 @@ Thread rxCANPostmanThread(osPriorityRealtime);
 Thread rxCANClientThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
 
+
 int main() {
+  ledG = 1;
+  ledR = 1;
+  ledB = 1;
   Utility::Logger::printf("\r\n\r\n");
   Utility::Logger::printf("ARM APPLICATION STARTED\r\n");
   Utility::Logger::printf("=======================\r\n");
@@ -287,7 +294,6 @@ int main() {
     Wrist::leftManager.getActiveController()->update();
     Wrist::rightManager.getActiveController()->update();
     Claw::manager.getActiveController()->update();
-
     ThisThread::sleep_for(1ms);
   }
 }
