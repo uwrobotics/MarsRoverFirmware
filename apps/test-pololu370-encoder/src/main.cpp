@@ -32,7 +32,8 @@ void read_all() {
   } else {
     Utility::Logger::printf("an error occured :(");
   }
-  ThisThread::sleep_for(500ms);  // speed reading
+  ThisThread::sleep_for(500ms);
+  // speed reading
   theta_dot_timer.start();
   if (enc.getAngularVelocityDegPerSec(theta_dot)) {
     theta_dot_timer.stop();
@@ -40,7 +41,6 @@ void read_all() {
                             theta_dot_timer.elapsed_time().count(), theta_dot);
   } else {
     Utility::Logger::printf("an error occured :(");
-
-    ThisThread::sleep_for(500ms);
   }
+  ThisThread::sleep_for(500ms);
 }
