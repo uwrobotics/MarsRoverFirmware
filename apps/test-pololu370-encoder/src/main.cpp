@@ -30,7 +30,7 @@ void read_all() {
     theta_timer.stop();
     Utility::Logger::printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
   } else {
-    Utility::Logger::printf("an error occured :(");
+    Utility::Logger::printf("an error occured :(\n");
   }
   ThisThread::sleep_for(500ms);
   // speed reading
@@ -40,7 +40,7 @@ void read_all() {
     Utility::Logger::printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n",
                             theta_dot_timer.elapsed_time().count(), theta_dot);
   } else {
-    Utility::Logger::printf("an error occured :(");
+    Utility::Logger::printf("an error occured :(\n");
   }
   ThisThread::sleep_for(500ms);
 }
