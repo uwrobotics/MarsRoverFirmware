@@ -21,5 +21,6 @@ target_link_libraries(gimbal.${TARGET}-board.elf PRIVATE
         CurrentSensor
 #Other
         Logger 
-        uwrt-mars-rover-hw-bridge)
+        uwrt-mars-rover-hw-bridge
+        LEDMatrix)
 target_set_firmware_properties(gimbal.${TARGET}-board.elf)

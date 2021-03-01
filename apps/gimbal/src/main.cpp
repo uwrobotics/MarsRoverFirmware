@@ -5,6 +5,7 @@
 
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "LEDMatrix.h"
 #include "Logger.h"
 #include "PanConfig.h"
 #include "PinNames.h"
@@ -20,12 +21,35 @@ CANMsg rxMsg;
 // Threads
 Thread rxCANProcessorThread(osPriorityAboveNormal);
 
+LEDMatrix matrix(PAN_ENC_SPI_CS, PAN_ENC_SPI_SCK, PAN_ENC_SPI_MISO);
+
+void LEDMatrixHandler(uint8_t color) {
+  enum { RED = 0, BLUE = 1, FLASHING_GREEN = 2, OFF = 3 };  // THIS IS WHAT SW SENDS
+  switch (color) {
+    case RED:
+      matrix.setColor(255, 0, 0);
+      break;
+    case BLUE:
+      matrix.setColor(0, 0, 255);
+      break;
+    case FLASHING_GREEN:
+      matrix.flashColor(0, 255, 0);
+      break;
+    case OFF:
+      matrix.clearLights();
+      break;
+    default:
+      break;
+  }
+}
+
 // Incoming message processor
 void rxCANProcessor() {
   const auto RX_PERIOD = 2ms;
 
   float data = 0;
   HWBRIDGE::CONTROL::Mode controlMode;
+  uint8_t color;
 
   while (true) {
     if (can1.read(rxMsg)) {
@@ -45,6 +69,10 @@ void rxCANProcessor() {
         case HWBRIDGE::CANID::SET_PAN_CONTROL_MODE:
           rxMsg.getPayload(controlMode);
           Pan::manager.switchControlMode(controlMode);
+          break;
+        case HWBRIDGE::CANID::NEOPIXEL_SET:
+          rxMsg.getPayload(color);
+          LEDMatrixHandler(color);
           break;
         default:
           break;

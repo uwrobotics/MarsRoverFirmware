@@ -22,7 +22,8 @@ void LEDMatrix::flashing() {
     // do flashing with flashing_color which is a member var
 
     while (true) {
-      setColor(flashing_red, flashing_green, flashing_blue);  // is okay that it calls the thread that tries to terminate it... nvmm
+      setColor(flashing_red, flashing_green,
+               flashing_blue);  // is okay that it calls the thread that tries to terminate it... nvmm
       ThisThread::sleep_for(period_delay);
       clearLights();
       ThisThread::sleep_for(period_delay);
@@ -40,55 +41,54 @@ void LEDMatrix::setColor(uint8_t R, uint8_t G, uint8_t B) {
   m_BChannel.pulsewidth(B / 255.0);
 }
 // Just for convenience. Call setColorRGB().
-void LEDMatrix::setColor(HWBRIDGE::LEDMATRIX::color c) {
+/*void LEDMatrix::setColor(HWBRIDGE::LEDMATRIX::Color c) {
   if (lightsThread == nullptr) {
     terminateFlashing();
   }
 
   switch (c) {
-    case HWBRIDGE::LEDMATRIX::color::RED:
+    case HWBRIDGE::LEDMATRIX::Color::RED:
       setColor(255, 0, 0);
       break;
-    case HWBRIDGE::LEDMATRIX::color::GREEN:
+    case HWBRIDGE::LEDMATRIX::Color::GREEN:
       setColor(0, 255, 0);
       break;
-    case HWBRIDGE::LEDMATRIX::color::BLUE:
+    case HWBRIDGE::LEDMATRIX::Color::BLUE:
       setColor(0, 0, 255);
       break;
   }
-}
+}*/
 
 void LEDMatrix::flashColor(uint8_t R, uint8_t G, uint8_t B) {
-  flashing_red = R;
+  flashing_red   = R;
   flashing_green = G;
-  flashing_blue = B;
+  flashing_blue  = B;
 
-  if(lightsThread == nullptr) { // make sure to not create a thread if another one is running
+  if (lightsThread == nullptr) {  // make sure to not create a thread if another one is running
     lightsThread = new Thread;
     lightsThread->start(callback(this, &LEDMatrix::flashing));
   }
 }
 
-void LEDMatrix::flashColor(HWBRIDGE::LEDMATRIX::color c) {
+/*void LEDMatrix::flashColor(HWBRIDGE::LEDMATRIX::Color c) {
   flashing_color = c;  // we have to store the arg like this bc the callback cant take args (also must return void btw)
 
   switch (c) {
-    case HWBRIDGE::LEDMATRIX::color::RED:
+    case HWBRIDGE::LEDMATRIX::Color::RED:
       flashColor(255, 0, 0);
       break;
-    case HWBRIDGE::LEDMATRIX::color::GREEN:
+    case HWBRIDGE::LEDMATRIX::Color::GREEN:
       flashColor(0, 255, 0);
       break;
-    case HWBRIDGE::LEDMATRIX::color::BLUE:
+    case HWBRIDGE::LEDMATRIX::Color::BLUE:
       flashColor(0, 0, 255);
       break;
   }
-}      
- 
+}  */
+
 void LEDMatrix::clearLights() {
   setColor(0, 0, 0);
 }
-
 
 /*
 #include "LEDMatrix.h"
@@ -104,15 +104,15 @@ void LEDMatrix ::setColor(uint8_t R, uint8_t G, uint8_t B) {
 }
 
 // Just for convenience. Call setColorRGB().
-void LEDMatrix ::setColor(HWBRIDGE::LEDMATRIX::color c) {
+void LEDMatrix ::setColor(HWBRIDGE::LEDMATRIX::Color c) {
   switch (c) {
-    case HWBRIDGE::LEDMATRIX::color::RED:
+    case HWBRIDGE::LEDMATRIX::Color::RED:
       setColor(255, 0, 0);
       break;
-    case HWBRIDGE::LEDMATRIX::color::GREEN:
+    case HWBRIDGE::LEDMATRIX::Color::GREEN:
       setColor(0, 255, 0);
       break;
-    case HWBRIDGE::LEDMATRIX::color::BLUE:
+    case HWBRIDGE::LEDMATRIX::Color::BLUE:
       setColor(0, 0, 255);
       break;
   }
@@ -133,15 +133,15 @@ void LEDMatrix ::setFlashingColor(uint8_t R, uint8_t G, uint8_t B, float period_
 }
 
 // Just for convenience. Call setFlashingColorRBG().
-void LEDMatrix ::setFlashingColor(HWBRIDGE::LEDMATRIX::color c, float period_sec) {
+void LEDMatrix ::setFlashingColor(HWBRIDGE::LEDMATRIX::Color c, float period_sec) {
   switch (c) {
-    case HWBRIDGE::LEDMATRIX::color::RED:
+    case HWBRIDGE::LEDMATRIX::Color::RED:
       setFlashingColor(255, 0, 0, period_sec);
       break;
-    case HWBRIDGE::LEDMATRIX::color::GREEN:
+    case HWBRIDGE::LEDMATRIX::Color::GREEN:
       setFlashingColor(0, 255, 0, period_sec);
       break;
-    case HWBRIDGE::LEDMATRIX::color::BLUE:
+    case HWBRIDGE::LEDMATRIX::Color::BLUE:
       setFlashingColor(0, 0, 255, period_sec);
       break;
   }
