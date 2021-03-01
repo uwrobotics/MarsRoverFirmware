@@ -61,7 +61,13 @@ test-lookup-table:
   - nucleo
 
 test-adafruitSTEMMA:
-#  - nucleo
+ - science
+
+test-led-matrix:
+  - nucleo
+
+test-moisture:
+  #  - nucleo
   - science
 
 test-pid:
