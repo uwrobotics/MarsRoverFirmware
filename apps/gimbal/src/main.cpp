@@ -19,7 +19,12 @@ CANBus can1(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg;
 
 // Threads
-Thread rxCANProcessorThread(osPriorityAboveNormal);
+Thread rxCANPostmanThread(osPriorityRealtime);
+Thread rxCANClientThread(osPriorityAboveNormal);
+
+// CAN Processing Objects
+Mail<CANMsg, 100> mail_box;
+EventQueue event_queue;
 
 LEDMatrix matrix(PAN_ENC_SPI_CS, PAN_ENC_SPI_SCK, PAN_ENC_SPI_MISO);
 
@@ -44,56 +49,83 @@ void LEDMatrixHandler(uint8_t color) {
 }
 
 // Incoming message processor
-void rxCANProcessor() {
-  const auto RX_PERIOD = 2ms;
+void rxCANConsumer(CANMsg &rxMsg) {
+  const auto rxPeriod = 2ms;
 
   float data = 0;
   HWBRIDGE::CONTROL::Mode controlMode;
   uint8_t color;
 
-  while (true) {
-    if (can1.read(rxMsg)) {
-      switch (rxMsg.getID()) {
-        case HWBRIDGE::CANID::SET_PAN_MOTION_DATA:
-          rxMsg.getPayload(data);
-          Pan::manager.getActiveController()->setSetPoint(data);
-          break;
-        case HWBRIDGE::CANID::SET_PITCH_MOTION_DATA:
-          rxMsg.getPayload(data);
-          Pitch::pitchServo.setValue(data);
-          break;
-        case HWBRIDGE::CANID::SET_ROLL_MOTION_DATA:
-          rxMsg.getPayload(data);
-          Roll::rollServo.setValue(data);
-          break;
-        case HWBRIDGE::CANID::SET_PAN_CONTROL_MODE:
-          rxMsg.getPayload(controlMode);
-          Pan::manager.switchControlMode(controlMode);
-          break;
-        case HWBRIDGE::CANID::NEOPIXEL_SET:
-          rxMsg.getPayload(color);
-          LEDMatrixHandler(color);
-          break;
-        default:
-          break;
-      }
-    }
-
-    ThisThread::sleep_for(RX_PERIOD);
+  switch (rxMsg.getID()) {
+    case HWBRIDGE::CANID::SET_PAN_MOTION_DATA:
+      rxMsg.getPayload(data);
+      Pan::manager.getActiveController()->setSetPoint(data);
+      break;
+    case HWBRIDGE::CANID::SET_PITCH_MOTION_DATA:
+      rxMsg.getPayload(data);
+      Pitch::pitchServo.setValue(data);
+      break;
+    case HWBRIDGE::CANID::SET_ROLL_MOTION_DATA:
+      rxMsg.getPayload(data);
+      Roll::rollServo.setValue(data);
+      break;
+    case HWBRIDGE::CANID::SET_PAN_CONTROL_MODE:
+      rxMsg.getPayload(controlMode);
+      Pan::manager.switchControlMode(controlMode);
+      break;
+    case HWBRIDGE::CANID::NEOPIXEL_SET:
+      rxMsg.getPayload(color);
+      LEDMatrixHandler(color);
+      break;
+    default:
+      break;
   }
 }
 
-int main() {
-  Utility::Logger::printf("\n\n");
-  Utility::Logger::printf("GIMBAL APPLICATION STARTED\n");
-  Utility::Logger::printf("=======================\n");
+void rxCANClient() {
+  while (true) {
+    CANMsg *mail = nullptr;
+    do {
+      mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
+      ThisThread::sleep_for(1ms);
+    } while (mail == nullptr);
+    MBED_ASSERT(mail != nullptr);
+    rxCANConsumer(*mail);
+    MBED_ASSERT(mail_box.free(mail) == osOK);
+  }
+}
 
-  rxCANProcessorThread.start(rxCANProcessor);
+// this function is indirectly triggered by an IRQ. It reads a CAN msg and puts in the mail_box
+void rxCANPostman() {
+  CANMsg msg;
+  // this loop is needed to avoid missing msg received between turning off the IRQ and turning it back on
+  while (can1.read(msg)) {
+    // TODO: Handle mail related errors better
+    CANMsg *mail = mail_box.try_alloc_for(1ms);
+    MBED_ASSERT(mail != nullptr);
+    *mail = msg;
+    mail_box.put(mail);
+  }
+  can_irq_set(can1.getHandle(), IRQ_RX, true);
+}
+
+void rxCANISR() {
+  can_irq_set(can1.getHandle(), IRQ_RX, false);
+  event_queue.call(&rxCANPostman);
+}
+
+int main() {
+  Utility::Logger::printf("\r\n\r\n");
+  Utility::Logger::printf("GIMBAL APPLICATION STARTED\r\n");
+  Utility::Logger::printf("=======================\r\n");
+
+  rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
+  rxCANClientThread.start(&rxCANClient);
+
+  can1.attach(&rxCANISR, CANBus::RxIrq);
 
   while (true) {
-    // Output info over serial
     Pan::manager.getActiveController()->update();
-
     ThisThread::sleep_for(1ms);
   }
 }
