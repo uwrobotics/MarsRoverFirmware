@@ -32,13 +32,13 @@ void LEDMatrixHandler(uint8_t color) {
   enum { RED = 0, BLUE = 1, FLASHING_GREEN = 2, OFF = 3 };  // THIS IS WHAT SW SENDS
   switch (color) {
     case RED:
-      matrix.setColor(255, 0, 0);
+      matrix.setColor(RED);
       break;
     case BLUE:
-      matrix.setColor(0, 0, 255);
+      matrix.setColor(BLUE);
       break;
     case FLASHING_GREEN:
-      matrix.flashColor(0, 255, 0);
+      matrix.flashGreen(); // THIS WILL FLASH FOR 10 SECONDS AND WONT STOP TIL ITS DONE.
       break;
     case OFF:
       matrix.clearLights();

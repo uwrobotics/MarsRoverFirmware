@@ -9,37 +9,20 @@
 LEDMatrix::LEDMatrix(PinName R, PinName G, PinName B)
     : m_RChannel(R), m_GChannel(G), m_BChannel(B), lightsThread(nullptr), reqEndFlash(0, 1) {}
 
-void LEDMatrix::terminateFlashing() {
-  reqEndFlash.release();  // ask flashing thread to end - signal semaphore
-  lightsThread->join();   // wait for the thread to finish. we've asked it to finish so should be quick wait
-  lightsThread->terminate();
-  delete lightsThread;
-  lightsThread = nullptr;
-}
-void LEDMatrix::flashing() {
-  while (!reqEndFlash.try_acquire()) {  // while we havent been asked to terminate this thread
-    printf("Flashing thread\r\n");
-    // do flashing with flashing_color which is a member var
-
-    while (true) {
-      setColor(flashing_red, flashing_green,
-               flashing_blue);  // is okay that it calls the thread that tries to terminate it... nvmm
-      ThisThread::sleep_for(period_delay);
-      clearLights();
-      ThisThread::sleep_for(period_delay);
-    }
+void LEDMatrix::setColor(uint8_t mode) { // this only supports red and blue
+  clearLights();
+  enum { RED = 0, BLUE = 1 };     // THIS IS WHAT SW SENDS
+  if (mode == RED) {
+    m_RChannel.write(1);
+  } else if (mode == BLUE) {
+    m_BChannel.write(1);
   }
 }
 
-void LEDMatrix::setColor(uint8_t R, uint8_t G, uint8_t B) {
-  if (lightsThread == nullptr) {  // make sure a thread exists before trying to terminate it
-    terminateFlashing();
-  }
-
-  m_RChannel.pulsewidth(R / 255.0);
-  m_GChannel.pulsewidth(G / 255.0);
-  m_BChannel.pulsewidth(B / 255.0);
-}
+/* m_RChannel.pulsewidth(R / 255.0);
+ m_GChannel.pulsewidth(G / 255.0);
+ m_BChannel.pulsewidth(B / 255.0);*/
+//}
 // Just for convenience. Call setColorRGB().
 /*void LEDMatrix::setColor(HWBRIDGE::LEDMATRIX::Color c) {
   if (lightsThread == nullptr) {
@@ -59,14 +42,13 @@ void LEDMatrix::setColor(uint8_t R, uint8_t G, uint8_t B) {
   }
 }*/
 
-void LEDMatrix::flashColor(uint8_t R, uint8_t G, uint8_t B) {
-  flashing_red   = R;
-  flashing_green = G;
-  flashing_blue  = B;
-
-  if (lightsThread == nullptr) {  // make sure to not create a thread if another one is running
-    lightsThread = new Thread;
-    lightsThread->start(callback(this, &LEDMatrix::flashing));
+void LEDMatrix::flashGreen() {
+  clearLights();
+  for (uint8_t i = 0; i < 20; i++) {
+    m_GChannel.write(1);
+    ThisThread::sleep_for(500ms);
+    clearLights();
+    ThisThread::sleep_for(500ms);
   }
 }
 
@@ -87,7 +69,9 @@ void LEDMatrix::flashColor(uint8_t R, uint8_t G, uint8_t B) {
 }  */
 
 void LEDMatrix::clearLights() {
-  setColor(0, 0, 0);
+  m_RChannel.write(0);
+  m_GChannel.write(0);
+  m_BChannel.write(0);
 }
 
 /*

@@ -3,9 +3,9 @@
 #include "hw_bridge.h"
 class LEDMatrix {
  private:
-  PwmOut m_RChannel;
-  PwmOut m_GChannel;  
-  PwmOut m_BChannel;
+  DigitalOut m_RChannel;
+  DigitalOut m_GChannel;  
+  DigitalOut m_BChannel;
 
   //HWBRIDGE::LEDMATRIX::Color flashing_color;
   uint8_t flashing_red, flashing_green, flashing_blue;
@@ -22,14 +22,14 @@ class LEDMatrix {
   LEDMatrix(PinName R, PinName G, PinName B);
 
   // Take in values from 0 to 255 for each pin and map them to a PWM signal.
-  void setColor(uint8_t R, uint8_t G, uint8_t B);
+  void setColor(uint8_t mode);
 
   // Just for convenience. Call setColorRGB().
   //void setColor(HWBRIDGE::LEDMATRIX::Color c);
 
   // Set the specified color, wait, turn off all LEDs, wait
   // Repeat until another function is called by main.cpp.
-  void flashColor(uint8_t R, uint8_t G, uint8_t B);
+  void flashGreen();
 
   //void flashColor(HWBRIDGE::LEDMATRIX::Color c);
 
