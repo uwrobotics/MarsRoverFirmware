@@ -38,7 +38,7 @@ void LEDMatrixHandler(uint8_t color) {
       matrix.setColor(BLUE);
       break;
     case FLASHING_GREEN:
-      matrix.flashGreen(); // THIS WILL FLASH FOR 10 SECONDS AND WONT STOP TIL ITS DONE.
+      matrix.flashGreen();  // THIS WILL FLASH FOR 10 SECONDS AND WONT STOP TIL ITS DONE.
       break;
     case OFF:
       matrix.clearLights();
@@ -118,6 +118,10 @@ int main() {
   Utility::Logger::printf("\r\n\r\n");
   Utility::Logger::printf("GIMBAL APPLICATION STARTED\r\n");
   Utility::Logger::printf("=======================\r\n");
+
+  // CAN filter
+  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_GIMBAL_RX, CANStandard,
+                 HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
 
   rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
   rxCANClientThread.start(&rxCANClient);

@@ -137,6 +137,10 @@ int main() {
   Utility::Logger::printf("SCIENCE APP STARTED!\r\n");
   Utility::Logger::printf("====================\r\n");
 
+  // CAN filter
+  can.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_SCIENCE_RX, CANStandard,
+                HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
+
   rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
   rxCANClientThread.start(&rxCANClient);
   txCANProcessorThread.start(txCANProcessor);
