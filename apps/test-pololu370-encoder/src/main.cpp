@@ -16,10 +16,7 @@ int main() {
   while (true) {
     theta_timer.reset();
     theta_dot_timer.reset();
-    for (int i = 0; i < 3; i++) {
-      read_all();
-    }
-    enc.reset();
+    read_all();
   }
 }
 
