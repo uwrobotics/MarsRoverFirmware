@@ -46,8 +46,7 @@ bool Pololu37D::read() {
 
   m_previous_angle_deg = m_current_angle_deg;
 
-  m_current_angle_deg = (m_QEI.getPulses() * m_degreesPerCount * 2) -
-                        m_zeroOffsetDeg;  // multiplying by 2 since our measurements were off by a factor of 2
+  m_current_angle_deg = (m_QEI.getPulses() * m_degreesPerCount) - m_zeroOffsetDeg;
 
   // to estimate speed: delta_angle / delta_time (degrees / sec)
   m_speed_deg_per_second = (m_current_angle_deg - m_previous_angle_deg) / m_delta_time_ns * 1000000000;

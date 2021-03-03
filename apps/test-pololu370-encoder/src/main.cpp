@@ -5,7 +5,7 @@ void read_all();
 
 // first pin is yellow wire
 // second pin is white wire
-constexpr Encoder::Pololu37D::Config config = {PA_5, PA_6, NC, 0, GPIO::QEI::Encoding::X2_ENCODING};
+constexpr Encoder::Pololu37D::Config config = {PA_5, PA_6, NC, 0, GPIO::QEI::Encoding::X4_ENCODING};
 Encoder::Pololu37D enc(config);
 
 Timer theta_timer, theta_dot_timer;
