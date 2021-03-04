@@ -18,17 +18,17 @@ bool Pololu37D::getAngleDeg(float &angle) {
 bool Pololu37D::getAngularVelocityDegPerSec(float &speed) {
   std::scoped_lock<Mutex> lock(m_mutex);
   read();
-  speed = m_speed_deg_per_second;
+  speed = m_anglular_velocity_deg_per_sec;
   return true;
 }
 
 bool Pololu37D::reset() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  m_zeroOffsetDeg        = 0.0;
-  m_current_angle_deg    = 0.0;
-  m_previous_angle_deg   = 0.0;
-  m_delta_time_ns        = 0.0;
-  m_speed_deg_per_second = 0.0;
+  m_zeroOffsetDeg                 = 0.0;
+  m_current_angle_deg             = 0.0;
+  m_previous_angle_deg            = 0.0;
+  m_delta_time_ns                 = 0.0;
+  m_anglular_velocity_deg_per_sec = 0.0;
   m_QEI.reset();
   return true;
 }
@@ -45,7 +45,7 @@ bool Pololu37D::read() {
   m_current_angle_deg = (m_QEI.getPulses() * m_degreesPerCount) - m_zeroOffsetDeg;
 
   // to estimate speed: delta_angle / delta_time (degrees / sec)
-  m_speed_deg_per_second = (m_current_angle_deg - m_previous_angle_deg) / m_delta_time_ns * 1000000000;
+  m_anglular_velocity_deg_per_sec = (m_current_angle_deg - m_previous_angle_deg) / m_delta_time_ns * 1000000000;
 
   return true;
 }

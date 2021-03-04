@@ -30,7 +30,7 @@ class Pololu37D final : public Encoder {
   // holds the current angle in degrees
   float m_current_angle_deg;
   // holds the measured speed in degrees per second
-  float m_speed_deg_per_second;
+  float m_anglular_velocity_deg_per_sec;
   // holds the time since last measurement
   float m_delta_time_ns;
 
