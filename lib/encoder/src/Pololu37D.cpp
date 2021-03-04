@@ -27,7 +27,6 @@ bool Pololu37D::reset() {
   m_zeroOffsetDeg                 = 0.0;
   m_current_angle_deg             = 0.0;
   m_previous_angle_deg            = 0.0;
-  m_delta_time_ns                 = 0.0;
   m_anglular_velocity_deg_per_sec = 0.0;
   m_QEI.reset();
   return true;
@@ -36,7 +35,7 @@ bool Pololu37D::reset() {
 bool Pololu37D::read() {
   // time since last measurement
   m_timer.stop();
-  m_delta_time_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(m_timer.elapsed_time()).count();
+  float dt = std::chrono::duration_cast<std::chrono::nanoseconds>(m_timer.elapsed_time()).count();
   m_timer.reset();
   m_timer.start();
 
@@ -45,7 +44,7 @@ bool Pololu37D::read() {
   m_current_angle_deg = (m_QEI.getPulses() * m_degreesPerCount) - m_zeroOffsetDeg;
 
   // to estimate speed: delta_angle / delta_time (degrees / sec)
-  m_anglular_velocity_deg_per_sec = (m_current_angle_deg - m_previous_angle_deg) / m_delta_time_ns * 1000000000;
+  m_anglular_velocity_deg_per_sec = (m_current_angle_deg - m_previous_angle_deg) / dt * 1000000000;
 
   return true;
 }

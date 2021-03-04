@@ -31,8 +31,6 @@ class Pololu37D final : public Encoder {
   float m_current_angle_deg;
   // holds the measured speed in degrees per second
   float m_anglular_velocity_deg_per_sec;
-  // holds the time since last measurement
-  float m_delta_time_ns;
 
   GPIO::QEI m_QEI;
   Timer m_timer;
