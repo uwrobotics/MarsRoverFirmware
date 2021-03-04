@@ -5,7 +5,7 @@
 using namespace Encoder;
 
 Pololu37D::Pololu37D(const Config &config)
-    : m_QEI(config.ChannelA, config.ChannelB, config.Index, config.quadratureEncoding),
+    : m_QEI(config.ChannelA, config.ChannelB, config.Index, GPIO::QEI::Encoding::X4_ENCODING),
       m_zeroOffsetDeg(config.offsetDeg) {}
 
 bool Pololu37D::getAngleDeg(float &angle) {

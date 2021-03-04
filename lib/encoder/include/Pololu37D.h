@@ -11,7 +11,6 @@ class Pololu37D final : public Encoder {
   typedef struct Config {
     PinName ChannelA, ChannelB, Index;
     float offsetDeg;
-    GPIO::QEI::Encoding quadratureEncoding;
   } Config;
 
   Pololu37D(const Config &config);
