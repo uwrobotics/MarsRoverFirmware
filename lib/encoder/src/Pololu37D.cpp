@@ -33,7 +33,7 @@ bool Pololu37D::reset() {
 }
 
 bool Pololu37D::read() {
-  // time since last measurement
+  // time since last measurement in nanoseconds
   m_timer.stop();
   float dt = std::chrono::duration_cast<std::chrono::nanoseconds>(m_timer.elapsed_time()).count();
   m_timer.reset();
