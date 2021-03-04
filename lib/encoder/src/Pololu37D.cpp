@@ -33,10 +33,6 @@ bool Pololu37D::reset() {
   return true;
 }
 
-float Pololu37D::return_delta_time() {
-  return m_delta_time_ns;
-}
-
 bool Pololu37D::read() {
   // time since last measurement
   m_timer.stop();

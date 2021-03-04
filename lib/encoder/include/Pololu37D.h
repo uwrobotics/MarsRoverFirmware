@@ -24,7 +24,6 @@ class Pololu37D final : public Encoder {
 
  private:
   bool read();
-  float return_delta_time();
 
   // tracks the previous angle in degrees reading to calculate speed
   float m_previous_angle_deg;
