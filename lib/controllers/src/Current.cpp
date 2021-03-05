@@ -2,6 +2,12 @@
 
 using namespace Controller;
 
+Current::Current(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
+                 const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor, PID::PID &pid,
+                 float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit)
+    : ActuatorController(actuator, encoder, currentSensor, maxDegPerSec, maxCurrent, lowerLimit, upperLimit),
+      m_pid(pid) {}
+
 bool Current::update() {
   if (shouldStop()) {
     stop();
@@ -18,4 +24,17 @@ bool Current::update() {
 void Current::stop() {
   setSetPoint(0);
   m_actuator.setValue(0);
+}
+
+void Current::reset() {
+  stop();
+  m_encoder.reset();
+  if (m_currentSensor.has_value()) {
+    m_currentSensor.value().get().reset();
+  }
+  m_pid.reset();
+}
+
+std::optional<std::reference_wrapper<PID::PID>> Current::getPID() {
+  return m_pid;
 }
