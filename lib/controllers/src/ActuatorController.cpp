@@ -5,8 +5,12 @@ using namespace Controller;
 ActuatorController::ActuatorController(
     Actuator::Actuator &actuator, Encoder::Encoder &encoder,
     const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor, float maxDegPerSec,
-    float maxCurrent, PinName lowerLimit, PinName upperLimit)
-    : m_actuator(actuator),
+    float maxCurrent, PinName lowerLimit, PinName upperLimit, bool ignoreDegPerSecChecks, bool ignoreCurrentChecks,
+    bool ignoreLimitSwitchChecks)
+    : m_ignoreDegPerSecChecks(ignoreDegPerSecChecks),
+      m_ignoreCurrentChecks(ignoreCurrentChecks),
+      m_ignoreLimitSwitchChecks(ignoreLimitSwitchChecks),
+      m_actuator(actuator),
       m_encoder(encoder),
       m_currentSensor(currentSensor),
       m_maxDegPerSec(maxDegPerSec),
@@ -22,27 +26,27 @@ float ActuatorController::getSetPoint() const {
   return m_setpoint.load();
 }
 
-void ActuatorController::overrideCurrentChecks() {
+void ActuatorController::deactivateCurrentChecks() {
   m_ignoreCurrentChecks.store(true);
 }
 
-void ActuatorController::reinstateCurrentChecks() {
+void ActuatorController::activateCurrentChecks() {
   m_ignoreCurrentChecks.store(false);
 }
 
-void ActuatorController::overrideDegPerSecChecks() {
+void ActuatorController::deactivateDegPerSecChecks() {
   m_ignoreDegPerSecChecks.store(true);
 }
 
-void ActuatorController::reinstateDegPerSecChecks() {
+void ActuatorController::activateDegPerSecChecks() {
   m_ignoreDegPerSecChecks.store(false);
 }
 
-void ActuatorController::overrideLimitSwitchChecks() {
+void ActuatorController::deactivateLimitSwitchChecks() {
   m_ignoreLimitSwitchChecks.store(true);
 }
 
-void ActuatorController::reinstateLimitSwitchChecks() {
+void ActuatorController::activateLimitSwitchChecks() {
   m_ignoreLimitSwitchChecks.store(false);
 }
 

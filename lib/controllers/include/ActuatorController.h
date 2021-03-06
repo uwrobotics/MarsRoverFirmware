@@ -12,23 +12,26 @@
 namespace Controller {
 class ActuatorController {
  public:
+  // TODO: Enable current sensor checks once Current Sensor Driver exists
   ActuatorController(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
                      const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor,
-                     float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit);
+                     float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit,
+                     bool ignoreDegPerSecChecks = false, bool ignoreCurrentChecks = true,
+                     bool ignoreLimitSwitchChecks = false);
   virtual ~ActuatorController() = default;
 
   /* final functions cannot be overriden by children */
   virtual void setSetPoint(float sp) final;
   virtual float getSetPoint() const final;
 
-  virtual void overrideCurrentChecks() final;
-  virtual void reinstateCurrentChecks() final;
+  virtual void activateCurrentChecks() final;
+  virtual void deactivateCurrentChecks() final;
 
-  virtual void overrideDegPerSecChecks() final;
-  virtual void reinstateDegPerSecChecks() final;
+  virtual void activateDegPerSecChecks() final;
+  virtual void deactivateDegPerSecChecks() final;
 
-  virtual void overrideLimitSwitchChecks() final;
-  virtual void reinstateLimitSwitchChecks() final;
+  virtual void activateLimitSwitchChecks() final;
+  virtual void deactivateLimitSwitchChecks() final;
 
   virtual bool reportAngleDeg(float &angle) final;
   virtual bool reportAngularVelocityDegPerSec(float &speed) final;
@@ -44,9 +47,9 @@ class ActuatorController {
 
   std::atomic<float> m_setpoint = {0};
 
-  std::atomic<bool> m_ignoreCurrentChecks     = {true};  // TODO: Enable once Current Sensor Driver exists
-  std::atomic<bool> m_ignoreDegPerSecChecks   = {false};
-  std::atomic<bool> m_ignoreLimitSwitchChecks = {false};
+  std::atomic<bool> m_ignoreDegPerSecChecks;
+  std::atomic<bool> m_ignoreCurrentChecks;
+  std::atomic<bool> m_ignoreLimitSwitchChecks;
 
   Actuator::Actuator &m_actuator;
   Encoder::Encoder &m_encoder;

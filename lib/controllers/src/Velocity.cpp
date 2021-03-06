@@ -4,8 +4,10 @@ using namespace Controller;
 
 Velocity::Velocity(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
                    const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor,
-                   PID::PID &pid, float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit)
-    : ActuatorController(actuator, encoder, currentSensor, maxDegPerSec, maxCurrent, lowerLimit, upperLimit),
+                   PID::PID &pid, float maxDegPerSec, float maxCurrent, PinName lowerLimit, PinName upperLimit,
+                   bool ignoreDegPerSecChecks, bool ignoreCurrentChecks, bool ignoreLimitSwitchChecks)
+    : ActuatorController(actuator, encoder, currentSensor, maxDegPerSec, maxCurrent, lowerLimit, upperLimit,
+                         ignoreDegPerSecChecks, ignoreCurrentChecks, ignoreLimitSwitchChecks),
       m_pid(pid) {}
 
 bool Velocity::update() {
