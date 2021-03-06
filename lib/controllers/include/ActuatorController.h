@@ -27,6 +27,9 @@ class ActuatorController {
   virtual void overrideDegPerSecChecks() final;
   virtual void reinstateDegPerSecChecks() final;
 
+  virtual void overrideLimitSwitchChecks() final;
+  virtual void reinstateLimitSwitchChecks() final;
+
   virtual bool reportAngleDeg(float &angle) final;
   virtual bool reportAngularVelocityDegPerSec(float &speed) final;
 
@@ -39,9 +42,11 @@ class ActuatorController {
  protected:
   virtual bool shouldStop() final;
 
-  std::atomic<float> m_setpoint             = {0};
-  std::atomic<bool> m_ignoreCurrentChecks   = {true};  // TODO: Enable once Current Sensor Driver exists
-  std::atomic<bool> m_ignoreDegPerSecChecks = {false};
+  std::atomic<float> m_setpoint = {0};
+
+  std::atomic<bool> m_ignoreCurrentChecks     = {true};  // TODO: Enable once Current Sensor Driver exists
+  std::atomic<bool> m_ignoreDegPerSecChecks   = {false};
+  std::atomic<bool> m_ignoreLimitSwitchChecks = {false};
 
   Actuator::Actuator &m_actuator;
   Encoder::Encoder &m_encoder;

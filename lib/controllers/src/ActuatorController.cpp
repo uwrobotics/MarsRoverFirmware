@@ -38,6 +38,14 @@ void ActuatorController::reinstateDegPerSecChecks() {
   m_ignoreDegPerSecChecks.store(false);
 }
 
+void ActuatorController::overrideLimitSwitchChecks() {
+  m_ignoreLimitSwitchChecks.store(true);
+}
+
+void ActuatorController::reinstateLimitSwitchChecks() {
+  m_ignoreLimitSwitchChecks.store(false);
+}
+
 bool ActuatorController::reportAngleDeg(float &angle) {
   return m_encoder.getAngleDeg(angle);
 }
@@ -53,8 +61,10 @@ bool ActuatorController::shouldStop() {
                     std::abs(speed) > m_maxDegPerSec;
   shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor.has_value() &&
                               m_currentSensor.value().get().read(current) && std::abs(current) > m_maxCurrent);
-  shouldStop = shouldStop || (m_upperLimit.is_connected() && m_upperLimit.read() && m_setpoint.load() > 0);
-  shouldStop = shouldStop || (m_lowerLimit.is_connected() && m_lowerLimit.read() && m_setpoint.load() < 0);
+  shouldStop = shouldStop || (!m_ignoreLimitSwitchChecks.load() && m_upperLimit.is_connected() && m_upperLimit.read() &&
+                              m_setpoint.load() > 0);
+  shouldStop = shouldStop || (!m_ignoreLimitSwitchChecks.load() && m_lowerLimit.is_connected() && m_lowerLimit.read() &&
+                              m_setpoint.load() < 0);
 
   return shouldStop;
 }
