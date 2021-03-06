@@ -25,6 +25,7 @@ bool Pololu37D::getAngularVelocityDegPerSec(float &speed) {
     // reading was succesful
     speed = m_anglular_velocity_deg_per_sec;
   } else {
+    speed = m_anglular_velocity_deg_per_sec;
     return false;
   }
   return true;
@@ -56,6 +57,7 @@ bool Pololu37D::read() {
     m_anglular_velocity_deg_per_sec = (m_current_angle_deg - m_previous_angle_deg) / dt * 1000000000;
   } else {
     // to avoid div by zero
+    m_anglular_velocity_deg_per_sec = 0;
     return false;
   }
 
