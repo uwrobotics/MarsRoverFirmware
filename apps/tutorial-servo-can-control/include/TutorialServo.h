@@ -3,7 +3,6 @@
 #include "mbed.h"
 
 class TutorialServo {
-
  public:
   // Constructor: Takes a servo pin name (ex. PA_1), and optionally a servo range
   // that has a default value of 180.0 degrees, a minimum pulsewidth of 1ms, and a
@@ -29,6 +28,8 @@ class TutorialServo {
   const float m_servoRangeInDegrees;
   const float m_minPulsewidthInMs;
   const float m_maxPulsewidthInMs;
+  // private static helper function
+  static float fixValue(float value, float minValue, float maxValue);
 };
 
 #endif
