@@ -31,5 +31,3 @@ class TutorialServo {
   // private static helper function
   static float fixValue(float value, float minValue, float maxValue);
 };
-
-#endif

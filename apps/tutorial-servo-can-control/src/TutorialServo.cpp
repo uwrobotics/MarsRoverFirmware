@@ -16,7 +16,6 @@ float TutorialServo::fixValue(float value, float minValue, float maxValue) {
   } else
     return value;
 }
-}
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
   // Set the pulse width on the PWM Pin using the degrees entered and
