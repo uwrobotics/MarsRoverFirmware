@@ -38,6 +38,8 @@ void CANMsgIRQHandler() {
 }
 
 int main() {
+  printf('Start of sequence');
+  printf('\r\n');
   implementTraditionalMethod();
   implementInterruptMethod();
 }
