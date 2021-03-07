@@ -1,28 +1,41 @@
 #pragma once
 
+#include <iostream>
+#include <mutex>
+#include <sstream>
+
+#include "FeatureFlags.h"
+
 namespace Utility {
 
-class Logger {
+class Logger;
+extern Logger logger;
+
+class Logger : public FileHandle {
  public:
-  // C-style printf
-  static int printf(const char* format, ...);
+  Logger();
 
-  Logger& operator<<(long n);
-  Logger& operator<<(unsigned long n);
-  Logger& operator<<(bool n);
-  Logger& operator<<(short n);
-  Logger& operator<<(unsigned short n);
-  Logger& operator<<(int n);
-  Logger& operator<<(unsigned int n);
-  Logger& operator<<(long long n);
-  Logger& operator<<(unsigned long long n);
+  template <typename T>
+  Logger& operator<<(T out) {
+    std::scoped_lock<Mutex> lock(m_mutex);
 
-  Logger& operator<<(double f);
-  Logger& operator<<(float f);
-  Logger& operator<<(long double f);
+    std::stringstream ss;
+    ss << out;
 
-  Logger& operator<<(char c);
-  Logger& operator<<(const char* format);
+    write(static_cast<const char*>(ss.str().c_str()), ss.str().length());
+
+    return *this;
+  }
+
+  // FileHandle overrides
+  ssize_t read(void* buffer, size_t size) override;
+  ssize_t write(const void* buffer, size_t size) override;
+  off_t seek(off_t offset, int whence = SEEK_SET) override;
+  int close() override;
+  off_t size() override;
+
+ private:
+  static Mutex m_mutex;
 };
 
 }  // namespace Utility

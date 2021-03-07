@@ -1,212 +1,66 @@
 #include "Logger.h"
 
-#include <inttypes.h>
+#include "hal/itm_api.h"
+#include "hal/serial_api.h"
 
-using namespace Utility;
+extern serial_t stdio_uart;
 
-static char buffer[4096];  // Can increase max buffer length if needed
+namespace mbed {
+// Redirect stdin, stdout, and stderr to Logger
+FileHandle *mbed_target_override_console(int) {
+  static Utility::Logger logger;
+  return &logger;
+}
+}  // namespace mbed
 
-#if defined(SWO_LOGGING)
-static int swo_printf(const char* format, ...);  // Only print to SWO (helper for mbed error hook)
-#endif
+namespace Utility {
 
-int Logger::printf(const char* format, ...) {
-  va_list arg;
+Logger logger;
+Mutex Logger::m_mutex;
 
-  va_start(arg, format);
-  int num_chars = std::vsprintf(buffer, format, arg);
-  va_end(arg);
-
-#if defined(UART_LOGGING)
-  std::printf(buffer);
-#endif
-
-#if defined(SWO_LOGGING)
-  char* c = buffer;
-
-  while (*c) {
-    ITM_SendChar(*c++);
-    num_chars++;
+Logger::Logger() {
+  if constexpr (FeatureFlags::UART_LOGGING) {
+    serial_init(&stdio_uart, STDIO_UART_TX, STDIO_UART_RX);
   }
-#endif
-
-  return num_chars;
 }
 
-Logger& Logger::operator<<(long n) {
-  return operator<<(static_cast<long long>(n));
-}
+ssize_t Logger::write(const void *buffer, size_t size) {
+  std::scoped_lock<Mutex> lock(m_mutex);
 
-Logger& Logger::operator<<(unsigned long n) {
-  return operator<<(static_cast<unsigned long long>(n));
-}
-
-Logger& Logger::operator<<(bool n) {
-  return operator<<(static_cast<long long>(n));
-}
-
-Logger& Logger::operator<<(short n) {
-  return operator<<(static_cast<long long>(n));
-}
-
-Logger& Logger::operator<<(unsigned short n) {
-  return operator<<(static_cast<unsigned long long>(n));
-}
-
-Logger& Logger::operator<<(int n) {
-  return operator<<(static_cast<long long>(n));
-}
-
-Logger& Logger::operator<<(unsigned int n) {
-  return operator<<(static_cast<unsigned long long>(n));
-}
-
-Logger& Logger::operator<<(long long n) {
-#if defined(UART_LOGGING)
-  std::printf("%lld", n);
-#endif
-
-#if defined(SWO_LOGGING)
-  std::sprintf(buffer, "%lld", n);
-  char* c = buffer;
-
-  while (*c) {
-    ITM_SendChar(*c++);
-  }
-#endif
-
-  return *this;
-}
-
-Logger& Logger::operator<<(unsigned long long n) {
-#if defined(UART_LOGGING)
-  std::printf("%llu", n);
-#endif
-
-#if defined(SWO_LOGGING)
-  std::sprintf(buffer, "%llu", n);
-  char* c = buffer;
-
-  while (*c) {
-    ITM_SendChar(*c++);
-  }
-#endif
-
-  return *this;
-}
-
-Logger& Logger::operator<<(double f) {
-  return operator<<(static_cast<long double>(f));
-}
-
-Logger& Logger::operator<<(float f) {
-  return operator<<(static_cast<long double>(f));
-}
-
-Logger& Logger::operator<<(long double f) {
-#if defined(UART_LOGGING)
-  std::printf("%Lf", f);
-#endif
-
-#if defined(SWO_LOGGING)
-  std::sprintf(buffer, "%Lf", f);
-  char* c = buffer;
-
-  while (*c) {
-    ITM_SendChar(*c++);
-  }
-#endif
-
-  return *this;
-}
-
-Logger& Logger::operator<<(char c) {
-#if defined(UART_LOGGING)
-  std::printf("%c", c);
-#endif
-
-#if defined(SWO_LOGGING)
-  ITM_SendChar(c);
-#endif
-
-  return *this;
-}
-
-Logger& Logger::operator<<(const char* format) {
-  Logger::printf(format);
-  return *this;
-}
-
-#if defined(SWO_LOGGING)
-int swo_printf(const char* format, ...) {
-  va_list arg;
-
-  va_start(arg, format);
-  int num_chars = std::vsprintf(buffer, format, arg);
-  va_end(arg);
-
-  char* c = buffer;
-
-  while (*c) {
-    ITM_SendChar(*c++);
-    num_chars++;
+  if constexpr (FeatureFlags::UART_LOGGING) {
+    const char *c = static_cast<const char *>(buffer);
+    for (size_t i = 0; i < size; i++) {
+      serial_putc(&stdio_uart, *c++);
+    }
   }
 
-  return num_chars;
-}
-
-// Application callback hook for mbed error events, only needed for SWO since mbed already logs through UART to stderr
-// Partially copied from print_error_report() from mbed_error.c
-void mbed_error_hook(const mbed_error_ctx* error_context) {
-  int error_code   = MBED_GET_ERROR_CODE(error_context->error_status);
-  int error_module = MBED_GET_ERROR_MODULE(error_context->error_status);
-
-  swo_printf("\n\n++ MbedOS Error Info ++\nError Status: 0x%X Code: %d Module: %d\nError Message: ",
-             error_context->error_status, error_code, error_module);
-
-  switch (error_code) {
-    // These are errors reported by kernel handled from mbed_rtx_handlers
-    case MBED_ERROR_CODE_RTOS_EVENT:
-      swo_printf("Kernel Error: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_RTOS_THREAD_EVENT:
-      swo_printf("Thread: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_RTOS_MUTEX_EVENT:
-      swo_printf("Mutex: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_RTOS_SEMAPHORE_EVENT:
-      swo_printf("Semaphore: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_RTOS_MEMORY_POOL_EVENT:
-      swo_printf("MemoryPool: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_RTOS_EVENT_FLAGS_EVENT:
-      swo_printf("EventFlags: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_RTOS_TIMER_EVENT:
-      swo_printf("Timer: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_RTOS_MESSAGE_QUEUE_EVENT:
-      swo_printf("MessageQueue: 0x%" PRIX32 ", ", error_context->error_value);
-      break;
-
-    case MBED_ERROR_CODE_ASSERTION_FAILED:
-      swo_printf("Assertion failed: ");
-      break;
-
-    default:
-      // Nothing to do here, just print the error info down
-      break;
+  if constexpr (FeatureFlags::SWO_LOGGING) {
+    const char *c = static_cast<const char *>(buffer);
+    for (size_t i = 0; i < size; i++) {
+      ITM_SendChar(*c++);
+    }
   }
-  swo_printf("\nLocation: 0x%" PRIX32, error_context->error_address);
-  swo_printf("\n-- MbedOS Error Info --\n");
+
+  return size;
 }
-#endif
+
+ssize_t Logger::read(void *buffer, size_t size) {
+  // Reading is not supported by this file handle
+  return -EBADF;
+}
+
+off_t Logger::seek(off_t offset, int whence) {
+  // Seeking is not support by this file handler
+  return -ESPIPE;
+}
+
+off_t Logger::size() {
+  // Size is not defined for this file handle
+  return -EINVAL;
+}
+
+int Logger::close() {
+  return 0;
+}
+
+}  // namespace Utility

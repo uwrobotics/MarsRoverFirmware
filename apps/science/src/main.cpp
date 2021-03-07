@@ -105,9 +105,9 @@ void txCANProcessor() {
 }
 
 int main() {
-  Utility::Logger::printf("\r\n\r\n");
-  Utility::Logger::printf("SCIENCE APP STARTED!\r\n");
-  Utility::Logger::printf("====================\r\n");
+  printf("\r\n\r\n");
+  printf("SCIENCE APP STARTED!\r\n");
+  printf("====================\r\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
