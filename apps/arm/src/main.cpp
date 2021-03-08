@@ -244,9 +244,9 @@ Thread rxCANProcessorThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
 
 int main() {
-  Utility::Logger::printf("\r\n\r\n");
-  Utility::Logger::printf("ARM APPLICATION STARTED\r\n");
-  Utility::Logger::printf("=======================\r\n");
+  printf("\r\n\r\n");
+  printf("ARM APPLICATION STARTED\r\n");
+  printf("=======================\r\n");
 
   // CAN init stuff
   can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,
