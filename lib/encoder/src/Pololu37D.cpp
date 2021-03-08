@@ -21,13 +21,8 @@ bool Pololu37D::getAngleDeg(float &angle) {
 
 bool Pololu37D::getAngularVelocityDegPerSec(float &speed) {
   std::scoped_lock<Mutex> lock(m_mutex);
-  if (read()) {
-    // reading was succesful
-    speed = m_anglular_velocity_deg_per_sec;
-  } else {
-    speed = m_anglular_velocity_deg_per_sec;
-    return false;
-  }
+  read();
+  speed = m_anglular_velocity_deg_per_sec;
   return true;
 }
 
@@ -58,7 +53,6 @@ bool Pololu37D::read() {
   } else {
     // to avoid div by zero
     m_anglular_velocity_deg_per_sec = 0;
-    return false;
   }
 
   return true;
