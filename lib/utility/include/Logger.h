@@ -1,10 +1,9 @@
 #pragma once
 
-#include <iostream>
 #include <mutex>
 #include <sstream>
 
-#include "FeatureFlags.h"
+#include "uwrt_config_target.h"
 
 namespace Utility {
 

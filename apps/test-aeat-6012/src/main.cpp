@@ -51,7 +51,7 @@ int main() {
 }
 
 void encoder_read_blocking(void) {
-  printf("\n--- AEAT-6012 Blocking Driver Test ---\n\n");
+  printf("\r\n--- AEAT-6012 Blocking Driver Test ---\r\n\r\n");
   float measurement;
   encoder.reset();
 
@@ -66,7 +66,7 @@ void encoder_read_blocking(void) {
       encoder_pos_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
     } else {
-      Utility::Logger::printf("Encoder read FAILED!\n");
+      printf("Encoder read FAILED!\r\n");
     }
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
@@ -81,7 +81,7 @@ void encoder_read_blocking(void) {
       encoder_vel_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
     } else {
-      Utility::Logger::printf("Encoder read FAILED!\n");
+      printf("Encoder read FAILED!\r\n");
     }
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
