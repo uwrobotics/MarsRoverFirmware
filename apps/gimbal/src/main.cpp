@@ -56,9 +56,9 @@ void rxCANProcessor() {
 }
 
 int main() {
-  Utility::Logger::printf("\n\n");
-  Utility::Logger::printf("GIMBAL APPLICATION STARTED\n");
-  Utility::Logger::printf("=======================\n");
+  printf("\r\n\r\n");
+  printf("GIMBAL APPLICATION STARTED\r\n");
+  printf("=======================\r\n");
 
   rxCANProcessorThread.start(rxCANProcessor);
 
