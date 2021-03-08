@@ -74,6 +74,10 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   return MBED_SUCCESS;
 }
 
+// TODO: Add CAN handler for enabling/disabling current checks.
+// TODO: Add CAN handler for enabling/disabling rpm checks
+// TODO: Add CAN handler for enabling/disabling current checks
+
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::CONTROL::PID::TuningApiPayload data;
   msg.getPayload(data);
