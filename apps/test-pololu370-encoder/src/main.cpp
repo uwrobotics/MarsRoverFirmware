@@ -25,24 +25,22 @@ void read_all() {
   theta_timer.start();
   if (enc.getAngleDeg(theta)) {
     theta_timer.stop();
-    Utility::Logger::printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
+    printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
   } else {
     // here we can log the error in the future
     theta_timer.stop();
-    Utility::Logger::printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
+    printf("Erron reading angle");
   }
   ThisThread::sleep_for(500ms);
   // speed reading
   theta_dot_timer.start();
   if (enc.getAngularVelocityDegPerSec(theta_dot)) {
     theta_dot_timer.stop();
-    Utility::Logger::printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n",
-                            theta_dot_timer.elapsed_time().count(), theta_dot);
+    printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n", theta_dot_timer.elapsed_time().count(), theta_dot);
   } else {
     // here we can log the error in the future
     theta_dot_timer.stop();
-    Utility::Logger::printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n",
-                            theta_dot_timer.elapsed_time().count(), theta_dot);
+    printf("Error reading angular speed");
   }
   ThisThread::sleep_for(500ms);
 }
