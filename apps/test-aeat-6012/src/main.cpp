@@ -59,24 +59,30 @@ void encoder_read_blocking(void) {
     timer.reset();
     timer.start();
 
-    encoder.getAngleDeg(measurement);
+    if (encoder.getAngleDeg(measurement)) {
+      timer.stop();
 
-    timer.stop();
+      encoder_angle_deg        = measurement;
+      encoder_pos_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
-    encoder_angle_deg        = measurement;
-    encoder_pos_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
+    } else {
+      Utility::Logger::printf("Encoder read FAILED!\n");
+    }
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
 
     timer.reset();
     timer.start();
 
-    encoder.getAngularVelocityDegPerSec(measurement);
+    if (encoder.getAngularVelocityDegPerSec(measurement)) {
+      timer.stop();
 
-    timer.stop();
+      encoder_angular_vel_deg_per_sec = measurement;
+      encoder_vel_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
-    encoder_angular_vel_deg_per_sec = measurement;
-    encoder_vel_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
+    } else {
+      Utility::Logger::printf("Encoder read FAILED!\n");
+    }
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
   }
