@@ -15,7 +15,7 @@ int main() {
 
   while (true) {
     led = !led;
-    Utility::Logger::printf("Current LED State is %s\n", led ? "ON" : "OFF");
+    printf("Current LED State is %s\r\n", led ? "ON" : "OFF");
     ThisThread::sleep_for(BLINKING_RATE);
   }
 }
