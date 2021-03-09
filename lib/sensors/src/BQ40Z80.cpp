@@ -13,6 +13,7 @@ BQ40Z80::BQ40Z80(PinName SDA_PIN, SCL_PIN, uint16_t addr)
 
 BQ40Z80::seal()
 {
+  // write nothing
   uint32_t data; 
   return manufacturer_write(SBS_CMD.MANUFACTURER_INFO , data, 0);
 }
@@ -58,6 +59,7 @@ BQ40Z80::manufacturer_write(const uint16_t sbs_cmd, uint32_t &data, const uint8_
   uint8_t buf[MAC_DATA_BUF_SIZE +2] = {};
   buf[0] = sbs_cmd & 0xff;
   buf[1] = (sbs_cmd >> 8) & 0xff;
+  memcpy(&buf[2], data, length);
 
   return m_smbus.block_write(SBS_MANUFACTURER_BLOCK_ACCESS, buf, length +2);
 }
@@ -112,8 +114,21 @@ BQ40Z80::getTemperatures()
 
 BQ40Z80::getStartupInfo()
 {
+  int status;
 
+  status = m_smbus.read_word(MA_FIRMWARE_VERSION, m_firmware_version);
 
+  status = m_smbus.read_word(MA_STATE_OF_HEALTH, m_state_of_health);
+
+  status = m_smbus.read_word(MA_CYCLE_COUNT, m_cycle_count);
+
+  status = m_smbus.read_word(MA_DEVICE_TYPE, m_device_type);
+
+  status = m_smbus.read_word(MA_REMAINING_CAPACITY, m_remaining_capacity);
+
+  status = m_smbus.read_word(MA_FULL_CHARGE_CAPACITY, m_full_charge_capacity);
+
+  return status;
 }
 
 BQ40Z80::lifetimeDataFlush()
@@ -121,6 +136,23 @@ BQ40Z80::lifetimeDataFlush()
   return manufacturer_write(MA_LIFETIME_DATA_FLUSH, NULL, 0);
 }
 
+BQ40Z80::readLifeTimeData()
+{
+  uint8_t data_blk[32+2] = {};
+
+  int status = manufacturer_read(MA_LIFETIME_BLK_1, data_blk, sizeof(data_blk));
+
+  //parse lifetime voltage data
+  float cell_1_max_V =(float)(data_blk[1] << 8 | data_blk[0])/ 1000f;
+  
+
+  //parse other data blk 2
+  status = manufacturer_read(MA_LIFETIME_BLK_2, data_blk, sizeof(data_blk));
+
+  float max_charge_current = (float)(data_blk[1] << 8 | data_blk[0])/1000f;
+  float max_discharge_current = (float)(data_blk[3] << 8 | data_blk[2])/1000f;
+  return status;
+}
 
 } //namespace BQ40Z80
 

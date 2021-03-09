@@ -152,6 +152,17 @@ class BQ40Z80 {
 
    float m_avg_power;
 
+   float m_firmware_version;
+
+   float m_state_of_health;
+   
+   float m_cycle_count;
+             
+   float m_device_type;
+
+   float m_remaining_capacity;
+
+   float m_full_charge_capacity;
 
  public:
   /**
@@ -186,6 +197,8 @@ class BQ40Z80 {
   int setUndervoltageProtection(float avgCurrent);
 
   int flushLifetimeData();
+
+  int readLifeTimeData();
 
   int setShutdownMode();
 
