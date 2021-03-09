@@ -60,10 +60,10 @@ int SMBus::read_word(const uint8_t cmd_code, uint16_t &data)
 {
 	uint8_t buf[6];
 	// 2 data bytes + pec byte
+	buf[0] = cmd_code;
+
 	m_i2c.write(m_address, buf, 1);
 	m_i2c.read(m_address, buf, 3);
-
-//	int result = transfer(&cmd_code, 1, buf + 3, 3);
 
 	data = buf[3] | ((uint16_t)buf[4] << 8);
 	// Check PEC.
@@ -91,8 +91,8 @@ int SMBus::write_word(const uint8_t cmd_code, uint16_t data)
 
 	buf[4] = get_pec(buf, 4);
 
- 	return m_i2c.write(m_address, buf, 4);
-//	int result = transfer(&buf[1], 4, nullptr, 0);
+	//not sure if buf[0] should be used. may be able to just use address from class
+ 	return m_i2c.write(m_address, buf, 5);
 }
 
 int SMBus::block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec)
@@ -105,14 +105,14 @@ int SMBus::block_read(const uint8_t cmd_code, void *data, const uint8_t length, 
 		return -EINVAL;
 	}
 
-	m_i2c.write(m_address, buf, 1)
-	m_i2c.read(m_address, rx_data, length+2);
-//	int result = transfer(&cmd_code, 1, (uint8_t *)&rx_data[3], length + 2);
+	rx_data[0] = cmd_code;
 
-	uint8_t device_address = m_address;
-	rx_data[0] = (device_address << 1) | 0x00;
+	m_i2c.write(m_address, rx_data, 1)
+	m_i2c.read(m_address, rx_data, length+2);
+
+	rx_data[0] = (m_address << 1) | 0x00;
 	rx_data[1] = cmd_code;
-	rx_data[2] = (device_address << 1) | 0x01;
+	rx_data[2] = (m_address << 1) | 0x01;
 	byte_count = std::min(rx_data[3], MAX_BLOCK_LEN);
 
 	// ensure data is not longer than given buffer
