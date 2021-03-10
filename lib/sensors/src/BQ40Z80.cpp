@@ -120,13 +120,13 @@ BQ40Z80::getStartupInfo()
 
   status = m_smbus.read_word(MA_STATE_OF_HEALTH, m_state_of_health);
 
-  status = m_smbus.read_word(MA_CYCLE_COUNT, m_cycle_count);
-
   status = m_smbus.read_word(MA_DEVICE_TYPE, m_device_type);
 
-  status = m_smbus.read_word(MA_REMAINING_CAPACITY, m_remaining_capacity);
+  status = m_smbus.read_word(SBS_CMD.CYCLE_COUNT, m_cycle_count);
 
-  status = m_smbus.read_word(MA_FULL_CHARGE_CAPACITY, m_full_charge_capacity);
+  status = m_smbus.read_word(SBS_CMD.REMAINING_CAPACITY, m_remaining_capacity);
+
+  status = m_smbus.read_word(SBS_CMD.FULL_CHARGE_CAPACITY, m_full_charge_capacity);
 
   return status;
 }
@@ -151,6 +151,18 @@ BQ40Z80::readLifeTimeData()
 
   float max_charge_current = (float)(data_blk[1] << 8 | data_blk[0])/1000f;
   float max_discharge_current = (float)(data_blk[3] << 8 | data_blk[2])/1000f;
+  float max_temp_cell = (float)(data_blk[8])/1000f;
+
+  float min_temp_cell = (float)(data_blk[9])/1000f;
+
+  int num_shutdowns = data_blk[14];
+
+  int num_full_resets = data_blk[16];
+
+  //bytes 18-24 contain the cell balancing time for each cel
+
+  //block 3 contains time spent in the different modes
+
   return status;
 }
 
