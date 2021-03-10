@@ -86,3 +86,6 @@ test-pwmin:
 
 tutorial-servo-pot-control:
 - nucleo
+
+tutorial-servo-can-control:
+- nucleo
