@@ -29,7 +29,7 @@ void read_all() {
   } else {
     // here we can log the error in the future
     theta_timer.stop();
-    printf("Erron reading angle");
+    printf("Error reading angle\r\n");
   }
   ThisThread::sleep_for(500ms);
   // speed reading
@@ -40,7 +40,7 @@ void read_all() {
   } else {
     // here we can log the error in the future
     theta_dot_timer.stop();
-    printf("Error reading angular speed");
+    printf("Error reading angular speed\r\n");
   }
   ThisThread::sleep_for(500ms);
 }
