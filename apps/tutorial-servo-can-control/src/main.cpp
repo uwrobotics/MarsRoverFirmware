@@ -22,7 +22,10 @@ void rxCANProcessor()
   }
 }
 
+Thread rxCANProcessorThread(osPriorityAboveNormal);
+
 int main() 
 {
   
+  rxCANProcessorThread.start(rxCANProcessor);
 }
