@@ -60,17 +60,17 @@ static Controller::Current rightCur(rightMotor, rightEncoder, std::nullopt, righ
 static Controller::OpenLoop rightOpen(rightMotor, rightEncoder, std::nullopt, POLOLUMAXDEGPERSEC, POLOLUMAXCURRENT, NC,
                                       NC);
 
-static const Controller::ControlMap leftLut  = {{HWBRIDGE::CONTROL::Mode::Velocity, &leftVel},
-                                               {HWBRIDGE::CONTROL::Mode::Position, &leftPos},
-                                               {HWBRIDGE::CONTROL::Mode::Current, &leftCur},
-                                               {HWBRIDGE::CONTROL::Mode::OpenLoop, &leftOpen}};
-static const Controller::ControlMap rightLut = {{HWBRIDGE::CONTROL::Mode::Velocity, &rightVel},
-                                                {HWBRIDGE::CONTROL::Mode::Position, &rightPos},
-                                                {HWBRIDGE::CONTROL::Mode::Current, &rightCur},
-                                                {HWBRIDGE::CONTROL::Mode::OpenLoop, &rightOpen}};
+static const Controller::ControlMap leftLut  = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &leftVel},
+                                               {HWBRIDGE::CONTROL::Mode::POSITION, &leftPos},
+                                               {HWBRIDGE::CONTROL::Mode::CURRENT, &leftCur},
+                                               {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &leftOpen}};
+static const Controller::ControlMap rightLut = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &rightVel},
+                                                {HWBRIDGE::CONTROL::Mode::POSITION, &rightPos},
+                                                {HWBRIDGE::CONTROL::Mode::CURRENT, &rightCur},
+                                                {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &rightOpen}};
 }  // namespace Internal
 
-static Controller::ActuatorControllerManager leftManager(Internal::leftLut, HWBRIDGE::CONTROL::Mode::OpenLoop);
-static Controller::ActuatorControllerManager rightManager(Internal::rightLut, HWBRIDGE::CONTROL::Mode::OpenLoop);
+static Controller::ActuatorControllerManager leftManager(Internal::leftLut, HWBRIDGE::CONTROL::Mode::OPEN_LOOP);
+static Controller::ActuatorControllerManager rightManager(Internal::rightLut, HWBRIDGE::CONTROL::Mode::OPEN_LOOP);
 
 }  // namespace Wrist
