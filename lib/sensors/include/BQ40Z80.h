@@ -11,16 +11,12 @@
 namespace BQ40Z80 {
 #define SBS_MANUFACTURER_ACCESS 0x00
 #define SBS_MANUFACTURER_BLOCK_ACCESS 0x44
-#define DA_STATUS_1 0x0071
-#define DA_STATUS_2 0x0072
-#define DA_STATUS_3 0x007B
+	
+//TODO determine the actual size
+#define MAC_DATA_BUF_SIZE 4
 
-#define MA_DEVICE_TYPE 0x0001
-#define MA_FIRMWARE_VERSION 0x0002
+constexpr MAX_NUM_CELLS = 6;
 
-#define MA_LIFETIME_DATA_FLUSH 0x002E
-#define MA_LIFETIME_BLK_1 0x0060
-#define MA_LIFETIME_BLK_2 0x0061
 typedef enum SBS_MA_COMMAND_CODES {
   DEVICE_TYPE = 0x0001,
   FIRMWARE_VERSION,
@@ -61,7 +57,6 @@ typedef enum SBS_MA_COMMAND_CODES {
   STATE_OF_HEALTH,
   DA_STATUS_3 = 0X007B,
 
-
 } SBS_MA_CMD; 
 
 // below are command codes for BMS SMBus communication
@@ -85,7 +80,7 @@ typedef enum SBS_COMMAND_CODES {
   FULL_CHARGE_CAPACITY = 0x10,
   RUN_TIME_TO_EMPTY,
   AVERAGE_TIME_TO_EMPTY,
-  AVERAGE_TIME_TO_EMPTY,
+  AVERAGE_TIME_TO_FULL,
   CHARGING_CURRENT,
   CHARGING_VOLTAGE,
   BATTERY_STATUS,
@@ -184,12 +179,6 @@ class BQ40Z80 {
    */
    uint16_t m_keys[2];
 
-  /**
-   * @param m_cell_voltages
-   * voltage level of cells 1-7
-   * (last read value)
-   */
-   constexpr MAX_NUM_CELLS = 6;
    float m_cell_voltages[MAX_NUM_CELLS];
 
    float m_cell_currents[MAX_NUM_CELLS];
@@ -211,6 +200,8 @@ class BQ40Z80 {
    float m_remaining_capacity;
 
    float m_full_charge_capacity;
+
+   float m_temp_1;
 
  public:
   /**
@@ -242,6 +233,7 @@ class BQ40Z80 {
   // will send manufacturere access command 0x44 then the data sent is the query for the data command(little endian)
   int manufacturer_write(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length);
 
+  //handled in BQ studio?
   int setUndervoltageProtection(float avgCurrent);
 
   int flushLifetimeData();
@@ -271,6 +263,24 @@ class BQ40Z80 {
   //TODO Alarm setting for various things EG. capacity
 
 //NORMAL CMDS
-  // TODO read all lifetime data blocks
+  int getCurrent(uint32_t & data);
 
+  int getVoltage(uint32_t & data);
+
+  int getAvgCurrent(uint32_t & data);
+
+  int getTimeToEmpty(uint32_t & data);
+
+  int getAvgTimeToEmpty(uint32_t & data);
+
+  int getRemainingCapacity(uint32_t & data);
+
+  int getMaxError(uint32_t & data);
+
+  int getTemp(uint32_t & data);
+
+  //SOC = state of charge
+  int getRelativeSOC(uint32_t & data);
+
+  int getAbsSOC(uint32_t & data);
 };

@@ -20,9 +20,7 @@ BQ40Z80::seal()
 
 BQ40Z80::unseal()
 {
-  //should be initialized with constructor
   //  uint16_t keys[2] = {0x0414, 0x3672};
-
   int status = m_smbus.write_word(SBS_MANUFACTURER_ACCESS, m_keys[0]);
 
   status |= m_smbus.write_word(SBS_MANUFACTURER_ACCESS, m_keys[1]); 
@@ -44,10 +42,8 @@ BQ40Z80::manufacturer_read(const uint16_t sbs_cmd, uint32_t &data, const uint8_t
 
   status = m_smbus.block_read(SBS_MANUFACTURER_BLOCK_ACCESS, data, length);
 
-
   //parse out address bytes
   //if using ptr can use mmove
-  
   return status;
 }
 
@@ -69,7 +65,7 @@ BQ40Z80::getAllCellStatus()
   uint8_t DAstatus1[32 + 2] = {};
   uint8_t DAstatus3[18 + 2] = {};
 
-  int status = manufacturer_read(DA_STATUS_1, DAstatus1, sizeof(DAstatus1)); 
+  int status = manufacturer_read(SBS_MA_CMD.DA_STATUS_1, DAstatus1, sizeof(DAstatus1)); 
 
   m_cell_voltages[0] = ((float)((DAstatus1[1] << 8) | DAstatus1[0]) / 1000);
   m_cell_voltages[1] = ((float)((DAstatus1[3] << 8) | DAstatus1[2]) / 1000);
@@ -90,7 +86,7 @@ BQ40Z80::getAllCellStatus()
   m_avg_power = ((float)((DAstatus1[31] << 8 | DAstatus1[30]) / 1000); 
 
   //can add cell current calculations and cell power calculations
-   status = manufacturer_read(DA_STATUS_3, DAstatus3, sizeof(DAstatus3));
+  status = manufacturer_read(SBS_MA_CMD.DA_STATUS_3, DAstatus3, sizeof(DAstatus3));
   m_cell_voltages[4] = ((float)((DAstatus3[1] << 8) | DAstatus1[0]) / 1000);
   m_cell_voltages[5] = ((float)((DAstatus3[7] << 8) | DAstatus1[6]) / 1000);
   m_cell_current[4] = ((float)((DAstatus1[3] << 8) | DAstatus1[2]) / 1000);
@@ -104,10 +100,8 @@ BQ40Z80::getAllCellStatus()
 BQ40Z80::getTemperatures()
 {
   uint8_t DAstatus2[14 + 2] = {};
-
-  int status = manufacturer_read(DA_STATUS_2, DAstatus2, sizeof(DAstatus2));
-
-  float temp_sensor_1 = ((float)((DAstatus2[3] << 8) | DAstatus2[2]) / 1000); 
+  int status = manufacturer_read(SBS_MA_CMD.DA_STATUS_2, DAstatus2, sizeof(DAstatus2));
+  m_temp_1 = ((float)((DAstatus2[3] << 8) | DAstatus2[2]) / 1000); 
   
   return status;
 }
@@ -116,11 +110,11 @@ BQ40Z80::getStartupInfo()
 {
   int status;
 
-  status = m_smbus.read_word(MA_FIRMWARE_VERSION, m_firmware_version);
+  status = m_smbus.read_word(SBS_MA_CMD.FIRMWARE_VERSION, m_firmware_version);
 
-  status = m_smbus.read_word(MA_STATE_OF_HEALTH, m_state_of_health);
+  status = m_smbus.read_word(SBS_MA_CMD.STATE_OF_HEALTH, m_state_of_health);
 
-  status = m_smbus.read_word(MA_DEVICE_TYPE, m_device_type);
+  status = m_smbus.read_word(SBS_MA_CMD.DEVICE_TYPE, m_device_type);
 
   status = m_smbus.read_word(SBS_CMD.CYCLE_COUNT, m_cycle_count);
 
@@ -133,14 +127,14 @@ BQ40Z80::getStartupInfo()
 
 BQ40Z80::lifetimeDataFlush()
 {
-  return manufacturer_write(MA_LIFETIME_DATA_FLUSH, NULL, 0);
+  return manufacturer_write(SBS_MA_CMD.LIFETIME_DATA_FLUSH, NULL, 0);
 }
 
 BQ40Z80::readLifeTimeData()
 {
   uint8_t data_blk[32+2] = {};
 
-  int status = manufacturer_read(MA_LIFETIME_BLK_1, data_blk, sizeof(data_blk));
+  int status = manufacturer_read(SBS_MA_CMD.LIFETIME_BLK_1, data_blk, sizeof(data_blk));
 
   //parse lifetime voltage data
   float cell_1_max_V =(float)(data_blk[1] << 8 | data_blk[0])/ 1000f;
@@ -164,6 +158,61 @@ BQ40Z80::readLifeTimeData()
   //block 3 contains time spent in the different modes
 
   return status;
+}
+
+
+//==============================
+//some get functions for basic battery data
+//==============================
+
+BQ40Z80::getCurrent(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.CURRENT, data); 
+}
+
+BQ40Z80::getVoltage(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.VOLTAGE, data);
+}
+
+BQ40Z80::getAvgCurrent(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.AVERAGE_CURRENT, data);
+}
+
+BQ40Z80::getTimeToEmpty(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.RUN_TIME_TO_EMPTY , data);
+}
+
+BQ40Z80::getAvgTimeToEmpty(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.AVERAGE_TIME_TO_EMPTY , data);
+}
+
+BQ40Z80::getRemainingCapacity(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.REMAINING_CAPACITY , data);
+}
+
+BQ40Z80::getMaxError(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.MAX_ERROR , data);
+}
+
+BQ40Z80::getTemp(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.TEMPERATURE , data);
+}
+
+BQ40Z80::getRelativeSOC(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.RELATIVE_STATE_OF_CHANGE , data);
+}
+
+BQ40Z80::getAbsSOC(uint32_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.ABS_STATE_OF_CHANGE , data);
 }
 
 } //namespace BQ40Z80
