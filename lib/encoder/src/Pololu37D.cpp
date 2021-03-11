@@ -53,6 +53,4 @@ void Pololu37D::read() {
     // to avoid div by zero
     m_anglular_velocity_deg_per_sec = 0;
   }
-
-  return true;
 }
