@@ -170,7 +170,7 @@ Option 1: Use GUI
 3. Click Open and select your .bin file
 4. Click Flash (leave memory address as 0x8000000)
 
-Option2: Use CLI
+Option 2: Use CLI
 1. Ensure that the st-link is connected with `st-info --probe`
 2. Flash with `st-flash write <path to .bin> 0x8000000`
 - If the flashing was successful, you should see the following message: `Flash written and verified! jolly good!`
