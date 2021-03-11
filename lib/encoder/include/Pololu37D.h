@@ -5,7 +5,7 @@
 
 namespace Encoder {
 class Pololu37D final : public Encoder {
-  // link to the encoder:
+  // link to the Polulu37D encoder:
   // https://www.pololu.com/product/2821
  public:
   typedef struct Config {
