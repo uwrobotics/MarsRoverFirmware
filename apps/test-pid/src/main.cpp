@@ -22,7 +22,7 @@ constexpr float expected_avg_error       = 1.6801f;
 constexpr auto expected_avg_compute_time = 15us;
 
 int main() {
-  Utility::Logger::printf("##################### PID TEST APP STARTED #####################\r\n");
+  printf("##################### PID TEST APP STARTED #####################\r\n");
   PID::Config config = {KP, KI, KD, min_rpm, max_rpm, deadzone, anti_kickback, anti_windup};
   PID::PID controller(config);
   Timer timer;
@@ -30,7 +30,7 @@ int main() {
   float total_error       = 0;
   for (std::size_t i = 0; i < control.size(); i++) {
     if (i % 1000 == 0) {
-      Utility::Logger::printf("Completed %zu /50001 iterations\r\n", i);
+      printf("Completed %zu /50001 iterations\r\n", i);
     }
     timer.reset();
     timer.start();
@@ -41,19 +41,16 @@ int main() {
     MBED_ASSERT(pid_period > timer.elapsed_time());
     wait_us((pid_period - timer.elapsed_time()).count());  // account for compute time
   }
-  Utility::Logger::printf("TEST RESULTS\r\n");
+  printf("TEST RESULTS\r\n");
   float average_error       = total_error / control.size();
   auto average_compute_time = total_compute_time / control.size();
-  Utility::Logger::printf("Average difference between Matlab control signal and our control signal: %.5f\r\n",
-                          average_error);
-  Utility::Logger::printf("Average time for a single call to the compute function: %llu us\r\n",
-                          average_compute_time.count());
+  printf("Average difference between Matlab control signal and our control signal: %.5f\r\n", average_error);
+  printf("Average time for a single call to the compute function: %llu us\r\n", average_compute_time.count());
   if (average_error > expected_avg_error) {
-    Utility::Logger::printf("WARNING: Changes made to PID library have increased average error\r\n");
+    printf("WARNING: Changes made to PID library have increased average error\r\n");
   }
   if (average_compute_time > expected_avg_compute_time) {
-    Utility::Logger::printf(
-        "WARNING: Changes made to PID library have increased execution time of compute function\r\n");
+    printf("WARNING: Changes made to PID library have increased execution time of compute function\r\n");
   }
   while (true)
     ;

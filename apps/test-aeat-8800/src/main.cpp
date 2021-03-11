@@ -24,6 +24,6 @@ int main() {
     upper = (upper << 1) | (lower >> 15);
     // lower = (lower << 1) & 0xF000;
 
-    Utility::Logger::printf("Data = 0x%04X %d \t Diag = 0x%04X\t%d\r\n", upper, upper, lower, lower);
+    printf("Data = 0x%04X %d \t Diag = 0x%04X\t%d\r\n", upper, upper, lower, lower);
   }
 }
