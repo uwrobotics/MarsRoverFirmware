@@ -10,12 +10,8 @@ Pololu37D::Pololu37D(const Config &config)
 
 bool Pololu37D::getAngleDeg(float &angle) {
   std::scoped_lock<Mutex> lock(m_mutex);
-  if (read()) {
-    // reading was succesful
-    angle = m_current_angle_deg;
-  } else {
-    return false;
-  }
+  read();
+  angle = m_current_angle_deg;
   return true;
 }
 
