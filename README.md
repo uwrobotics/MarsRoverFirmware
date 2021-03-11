@@ -146,7 +146,7 @@ Rev 2 PCBs come with ARM 10-pin SWD headers and can be programmed via ST-Link. A
 
 ### ST-Link Software Installation
 
-### Ubuntu
+### Ubuntu 20.04
 
 1. sudo apt install stlink-tools
 - Tested on 1.6.0
