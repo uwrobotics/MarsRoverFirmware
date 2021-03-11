@@ -27,10 +27,10 @@ static Controller::Position pos(servo, encoder, std::nullopt, pid, MAX_DEG_PER_S
 static Controller::Position vel(servo, encoder, std::nullopt, pid, MAX_DEG_PER_SEC, MAX_CURRENT, NC, NC);
 static Controller::OpenLoop open(servo, encoder, std::nullopt, MAX_DEG_PER_SEC, MAX_CURRENT, NC, NC);
 
-static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Position, &pos},
-                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open},
-                                           {HWBRIDGE::CONTROL::Mode::Velocity, &vel}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::POSITION, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &open},
+                                           {HWBRIDGE::CONTROL::Mode::VELOCITY, &vel}};
 
 }  // namespace Internal
-static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);
+static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OPEN_LOOP);
 }  // namespace Pan
