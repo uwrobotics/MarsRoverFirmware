@@ -109,6 +109,10 @@ int main() {
   printf("SCIENCE APP STARTED!\r\n");
   printf("====================\r\n");
 
+  // CAN filter
+  can.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_SCIENCE_RX, CANStandard,
+                HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
+
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
 
