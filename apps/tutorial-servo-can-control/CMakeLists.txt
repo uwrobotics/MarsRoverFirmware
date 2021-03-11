@@ -7,6 +7,8 @@ target_sources (TutorialServo PRIVATE src/TutorialServo.cpp)
 target_link_libraries (tutorial-servo-can-control. ${TARGET} -board.elf
 PRIVATE
 TutorialServo
+CANBus
+CANMsg
 )
 
 target_include_directories (TutorialServo PUBLIC include)
