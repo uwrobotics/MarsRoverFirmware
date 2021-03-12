@@ -160,6 +160,24 @@ BQ40Z80::readLifeTimeData()
   return status;
 }
 
+BQ40Z80::enterEmergencyFETShutDown()
+{
+	//MFC = manual fet control
+  uint16_t MFCcode = 0x279C;
+  int status = manufacturer_write(SBS_MANUFACTURER_ACCESS, MFCcode, sizeof(MFCcode));
+
+  uint16_t shutdown_code = 0x043D;
+  status = manufacturer_write(SBS_MANUFACTURER_ACCESS, shutdown_code, sizeof(shutdown_code));
+
+  return status;
+}
+
+BQ40Z80::exitEmergencyFETShutdown()
+{
+  uint16_t wakeup_code = 0x23A7;
+  int status = manufacturer_write(SBS_MANUFACTURER_ACCESS, wakeup_code, sizeof(wakeup_code));
+  return status;
+}
 
 //==============================
 //some get functions for basic battery data
@@ -168,6 +186,16 @@ BQ40Z80::readLifeTimeData()
 BQ40Z80::getCurrent(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.CURRENT, data); 
+}
+
+BQ40Z80::getBatteryMode(uint16_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.BATTERY_MODE, data);
+}
+
+BQ40Z80::getBatteryStatus(uint16_t & data)
+{
+  return m_smbus.read_word(SBS_CMD.BATTERY_STATUS, data);
 }
 
 BQ40Z80::getVoltage(uint32_t & data)

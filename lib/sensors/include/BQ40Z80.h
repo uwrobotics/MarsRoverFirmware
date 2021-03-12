@@ -242,12 +242,15 @@ class BQ40Z80 {
 
   int setShutdownMode();
 
-  //TODO basic version read functions to be implemented FIRST
   int getDeviceType(uint32_t &data);
  
   int getFirmwareVersion(uint32_t &data);
 
   int getHardwareVersion(uint32_t &data);
+
+  int enterEmergencyFETShutdown();
+
+  int exitEmergencyFETShutdown();
 
 //MANUFACTURER ACCESS CMDS
   //TODO want to set FET toggles? or should chip handle that?
@@ -264,6 +267,10 @@ class BQ40Z80 {
 
 //NORMAL CMDS
   int getCurrent(uint32_t & data);
+
+  int getBatteryMode(uint16_t & data);
+  
+  int getBatteryStatus(uint16_t &data);
 
   int getVoltage(uint32_t & data);
 
