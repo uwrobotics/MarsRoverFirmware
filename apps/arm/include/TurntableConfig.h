@@ -40,12 +40,12 @@ static Controller::Current cur(motor, encoder, std::nullopt, curPID, MAXDEGPERSE
 static Controller::OpenLoop open(motor, encoder, std::nullopt, MAXDEGPERSEC, MAXCURRENT, LIM_TRNTBL_LHS,
                                  LIM_TRNTBL_RHS);
 
-static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
-                                           {HWBRIDGE::CONTROL::Mode::Current, &cur},
-                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &vel},
+                                           {HWBRIDGE::CONTROL::Mode::POSITION, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::CURRENT, &cur},
+                                           {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &open}};
 }  // namespace Internal
 
-static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);
+static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OPEN_LOOP);
 
 }  // namespace Turntable

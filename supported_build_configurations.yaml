@@ -7,8 +7,8 @@ arm:
 gamepad:
   - gamepad
 
-gimbtonomy:
-  - gimbtonomy
+gimbal:
+  - gimbal
 
 pdb:
   - pdb
@@ -17,40 +17,42 @@ science:
   - science
 
 # Test Apps
+test-aeat-6012:
+  - nucleo
+
 test-aeat-8800:
   - nucleo
 
 test-actuator-controller:
   - nucleo
   - arm
-  - gimbtonomy
+  - gimbal
   - science
 
 test-blinky:
   - nucleo
   - arm
   - gamepad
-  - gimbtonomy
+  - gimbal
   - pdb
   - science
 
 test-blockingneo:
-#  - nucleo
-  - gimbtonomy
+  - nucleo
 
 test-can:
   - nucleo
   - arm
-  - gimbtonomy
+  - gimbal
 #  - science
 
 test-mae3:
   - nucleo
-#  - gimbtonomy
+#  - gimbal
 #  - science
 
 test-logger:
-  - gimbtonomy
+  - gimbal
   - nucleo
   - pdb
   - science
@@ -68,13 +70,13 @@ test-netzer-encoder:
 test-pid:
   - nucleo
 #  - arm
-#  - gimbtonomy
+#  - gimbal
 #  - science
 
 test-pwm:
   - nucleo
   - arm
-  - gimbtonomy
+  - gimbal
   - pdb
   - science
 
@@ -82,5 +84,5 @@ test-pwmin:
   - nucleo
   - arm
 #  - gamepad
-#  - gimbtonomy
+#  - gimbal
 #  - science

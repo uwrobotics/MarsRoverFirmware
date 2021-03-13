@@ -3,7 +3,7 @@
 #include "mbed.h"
 
 int main() {
-  Neopixel_Blocking pixels(16, LED_MTRX);
+  Neopixel_Blocking pixels(16, LED1);
 
   while (1) {
     pixels.displayRed();

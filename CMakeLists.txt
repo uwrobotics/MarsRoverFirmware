@@ -158,12 +158,13 @@ add_subdirectory(uwrt-mars-rover-hw-bridge)
 # Include Rover App CMakeLists
 add_subdirectory(apps/arm)
 add_subdirectory(apps/gamepad)
-add_subdirectory(apps/gimbtonomy)
+add_subdirectory(apps/gimbal)
 add_subdirectory(apps/pdb)
 add_subdirectory(apps/science)
 
 # Include Test App CMakeLists
 add_subdirectory(apps/test-actuator-controller)
+add_subdirectory(apps/test-aeat-6012)
 add_subdirectory(apps/test-aeat-8800)
 add_subdirectory(apps/test-blinky)
 add_subdirectory(apps/test-blockingneo)
