@@ -1,282 +1,68 @@
 /**
- * @author Aaron Berk
+ * This PID library was inspired by http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
+ * Terminology:
+ *  Plant: What you are trying to control
+ *  Process Variable(PV): Measured value of plant. Sensor reading.
+ *  Setpoint: Desired state of the plant
+ *  Deadzone: Value below which error is considered 0
+ *  Gain: Scalar seen in the state space representation of a PID controller
+ *  Path: A path on the state space representation of a PID controller
+ * Features:
+ *  Thread-safety: This PID library is thread safe.
+ *                 WARNING: Mutexes wait for lock indefinetly, since deadlock is currently impossible
+ *                          If modifying the code, ensure deadlock remains impossible
+ *  Anti-Windup: See this video: https://www.youtube.com/watch?v=NVLXCwc8HzM&t=571s&ab_channel=MATLAB
+ *               See also Brett Beauregard blog:
+ *               http://brettbeauregard.com/blog/2011/04/improving-the-beginner%e2%80%99s-pid-reset-windup/
+ * Anti-Derivative-Kickback: Avoid jerkiness, by differentiating on PV. See Brett Beauregard blog:
+ *                           http://brettbeauregard.com/blog/2011/04/improving-the-beginner%e2%80%99s-pid-derivative-kick/
+ * On-The-Fly Tuning: Allows gains to be changed with reduced joltiness. Done by multiplying the gain into the error
+ *                    accumulator:
+ * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%e2%80%99s-pid-tuning-changes/
  *
- * @section LICENSE
- *
- * Copyright (c) 2010 ARM Limited
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @section DESCRIPTION
- *
- * A PID controller is a widely used feedback controller commonly found in
- * industry.
- *
- * This library is a port of Brett Beauregard's Arduino PID library:
- *
- *  http://www.arduino.cc/playground/Code/PIDLibrary
- *
- * The wikipedia article on PID controllers is a good place to start on
- * understanding how they work:
- *
- *  http://en.wikipedia.org/wiki/PID_controller
- *
- * For a clear and elegant explanation of how to implement and tune a
- * controller, the controlguru website by Douglas J. Cooper (who also happened
- * to be Brett's controls professor) is an excellent reference:
- *
- *  http://www.controlguru.com/
  */
-
 #pragma once
 
-/**
- * Includes
- */
-#include "mbed.h"
+namespace PID {
+typedef struct Config {
+  float proportionalGain, integralGain, derivativeGain;
+  float lowerBound, upperBound;
+  float deadzone;
+  bool antiKickback = true;
+  bool antiWindup   = true;
+} Config;
 
-/**
- * Defines
- */
-#define PID_MANUAL_MODE 0
-#define PID_AUTO_MODE   1
-
-/**
- * Proportional-integral-derivative controller.
- */
 class PID {
  public:
-  typedef struct {
-    float P, I, D, bias = 0.0;
-    float deadZoneError = 0.0;
-  } t_pidConfig;
+  PID(const Config &config);
+  PID(PID &)  = delete;
+  PID(PID &&) = delete;
+  ~PID()      = default;
 
-  // add other actuators here
-  enum ActuatorType { PWM_MOTOR };
+  void updateProportionalGain(float p);
+  void updateIntegralGain(float i);
+  void updateDerivativeGain(float d);
+  void updateDeadzone(float deadzone);
 
-  // configurable parameters for autotuning process
-  typedef struct {
-    int nLookBack;
-    std::chrono::duration<float> sampleTime;
-    float outputStart, oStep, noiseBand, setpoint;
-  } t_AutoTuneConfig;
+  float reportProportionalGain() const;
+  float reportIntegralGain() const;
+  float reportDerivativeGain() const;
+  float reportDeadzone() const;
 
-  /**
-   * Constructor.
-   *
-   * Sets default limits [0-3.3V], calculates tuning parameters, and sets
-   * manual mode with no bias.
-   *
-   * @param Kc - Tuning parameter
-   * @param tauI - Tuning parameter
-   * @param tauD - Tuning parameter
-   * @param interval PID calculation performed every interval seconds.
-   */
-  PID(float Kc, float tauI, float tauD, std::chrono::duration<float> interval);
+  void reset();
 
-  /**
-   * Scale from inputs to 0-100%.
-   *
-   * @param InMin The real world value corresponding to 0%.
-   * @param InMax The real world value corresponding to 100%.
-   */
-  void setInputLimits(float inMin, float inMax);
-
-  /**
-   * Scale from outputs to 0-100%.
-   *
-   * @param outMin The real world value corresponding to 0%.
-   * @param outMax The real world value corresponding to 100%.
-   */
-  void setOutputLimits(float outMin, float outMax);
-
-  /**
-   * Calculate PID constants.
-   *
-   * Allows parameters to be changed on the fly without ruining calculations.
-   *
-   * @param Kc - Tuning parameter
-   * @param tauI - Tuning parameter
-   * @param tauD - Tuning parameter
-   */
-  void setTunings(float Kc, float tauI, float tauD);
-
-  /**
-   * Reinitializes controller internals. Automatically
-   * called on a manual to auto transition.
-   */
-  void reset(void);
-
-  /**
-   * Set PID to manual or auto mode.
-   *
-   * @param mode        0 -> Manual
-   *             Non-zero -> Auto
-   */
-  void setMode(int mode);
-
-  /**
-   * Set how fast the PID loop is run.
-   *
-   * @param interval PID calculation peformed every interval seconds.
-   */
-  void setInterval(std::chrono::duration<float> interval);
-
-  /**
-   * Set the set point.
-   *
-   * @param sp The set point as a real world value.
-   */
-  void setSetPoint(float sp);
-
-  /**
-   * Set the process value.
-   *
-   * @param pv The process value as a real world value.
-   */
-  void setProcessValue(float pv);
-
-  /**
-   * Set the bias.
-   *
-   * @param bias The bias for the controller output.
-   */
-  void setBias(float bias);
-
-  /**
-   * Set the dead zone error to allow error to round down if within +/- this value
-   * @param error Round error down to 0.0 if error is within +/- this value
-   */
-  void setDeadZoneError(float error);
-
-  /**
-   * Set real output value
-   * @param realOutput real life output
-   */
-  void setRealOutput(float realOutput);
-
-  /**
-   * Setup needed before autotuning
-   * @param outputPointer generic pointer to actual output (ex. PWM pin)
-   * @param inputPointer pointer to calculated input value, usually done in background on main
-   * @param actuatorType type of actuator needed to cast generic void pointer
-   */
-  void setupAutoTune(void *outputPointer, float *inputPointer, int actuatorType);
-
-  /**
-   * Run the autotuning algorithm and set autoTune class member variables
-   * @param PI choose between PI and PID control, calculation is different
-   * @param autoTuneConfig pointer to config struct for autotune, optional
-   */
-  // uncomment below line and comment line after for debug output
-  // void autoTune(Serial *pc, bool PI, t_AutoTuneConfig *autoTuneConfig = nullptr);
-  void autoTune(bool PI, t_AutoTuneConfig *autoTuneConfig = nullptr);
-
-  /**
-   * Set the output from within the PID class, needed for autotuning
-   * @param output output as a float, casting done in function based on actuator type
-   */
-  void setOutput(float output);
-
-  /**
-   * Set the tuning values to the calculated autotuning parameters
-   */
-  void setAutoTuneParams();
-
-  /**
-   * PID calculation.
-   *
-   * @return The controller output as a float between outMin and outMax.
-   */
-  float compute(void);
-
-  // Getters.
-  float getInMin();
-  float getInMax();
-  float getOutMin();
-  float getOutMax();
-  std::chrono::duration<float> getInterval();
-  float getPParam();
-  float getIParam();
-  float getDParam();
-  float getATunePParam();
-  float getATuneIParam();
-  float getATuneDParam();
-  float getSetPoint();
+  float compute(float setPoint, float processVariable, float ff = 0);  // takes ~15us to run
 
  private:
-  bool usingFeedForward;
-  bool inAuto;
-
-  // Actual tuning parameters used in PID calculation.
-  float Kc_;
-  float tauR_;
-  float tauD_;
-
-  // Tuning parameters calculated from autotuning function
-  float autoTuneKc_;
-  float autoTuneTauR_;
-  float autoTuneTauD_;
-
-  // Input/Output pointers for AutoTuning
-  void *output_;
-  float *input_;
-
-  // Store type of actuator PID is being used on
-  int actuatorType_;
-
-  // Struct with all the autotune parameters
-  t_AutoTuneConfig AutoTuneConfig;
-
-  // Raw tuning parameters.
-  float pParam_;
-  float iParam_;
-  float dParam_;
-
-  // The point we want to reach.
-  float setPoint_;
-  // The thing we measure.
-  float processVariable_;
-  float prevProcessVariable_;
-  // The output that affects the process variable.
-  float controllerOutput_;
-  float prevControllerOutput_;
-
-  // We work in % for calculations so these will scale from
-  // real world values to 0-100% and back again.
-  float inMin_;
-  float inMax_;
-  float inSpan_;
-  float outMin_;
-  float outMax_;
-  float outSpan_;
-
-  // The accumulated error, i.e. integral.
-  float accError_;
-  // The allowed error range for error to be rounded to 0.0
-  float deadZoneError_;
-  // The controller output bias.
-  float bias_;
-
-  // The interval between samples.
-  std::chrono::duration<float> tSample_;
-
-  // Controller output as a real world value.
-  volatile float realOutput_;
+  mutable Mutex m_mutex;
+  Timer m_timer;
+  float m_PGain, m_IGain, m_DGain;
+  const float m_lowerBound, m_upperBound;
+  float m_deadzone;
+  float m_IAccumulator{0};
+  float m_pastError{0}, m_pastPV{0};
+  const bool m_antiKickback, m_antiWindup;
+  float computePPath(float error);
+  float computeDPath(float deltaNumerator, float dt);
 };
+}  // namespace PID

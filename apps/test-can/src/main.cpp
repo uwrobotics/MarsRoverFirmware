@@ -1,9 +1,10 @@
 #include "CANBus.h"
 #include "CANMsg.h"
+#include "Logger.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
-CANBus can(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
 CANMsg rxMsg;
 CANMsg txMsg;
 DigitalOut ledTX(LED1);
@@ -11,8 +12,8 @@ DigitalOut ledRX(LED2);
 Timer timer;
 uint8_t counter = 0;
 
-#define TX_ID 0x100
-#define RX_ID 0x101
+constexpr uint16_t TX_ID = 0x100;
+constexpr uint16_t RX_ID = 0x101;
 
 /**
  * @brief   Prints CAN msg to PC's serial terminal

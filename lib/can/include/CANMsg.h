@@ -11,7 +11,7 @@ class CANMsg : public CANMessage {
  public:
   using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
   using CANMsgHandlerMap =
-      lookup_table::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, +[](CANMsg &) -> mbed_error_status_t {
+      Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, +[](CANMsg &) -> mbed_error_status_t {
         MBED_ERROR(MBED_MAKE_ERROR(MBED_MODULE_APPLICATION, MBED_ERROR_CODE_INVALID_ARGUMENT),
                    "Invalid key to CANMsgHandlerMap");
         return MBED_ERROR_CODE_INVALID_ARGUMENT;
