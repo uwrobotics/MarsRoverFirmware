@@ -1,84 +1,81 @@
 #include "LEDMatrix.h"
-
 #include "mbed.h"
 
 LEDMatrix::LEDMatrix(PinName R, PinName G, PinName B)
-    : m_RChannel(R), m_GChannel(G), m_BChannel(B), lightsThread(nullptr), reqEndFlash(0, 1) {}
+    : m_RChannel(R), m_GChannel(G), m_BChannel(B), lightsThread(nullptr) {}
 
 LEDMatrix::~LEDMatrix() {
-  if (lightsThread != nullptr) terminateFlashing();
+  if (lightsThread != nullptr) 
+  {
+    lightsThread->terminate();  //kills thread - check proper termination of thread (lightsThread->join()?)
+    delete lightsThread;        //double check this
+    lightsThread = nullptr;
+  }
+  clearLights();
 }
 
-void LEDMatrix::terminateFlashing() {
-  reqEndFlash.release();
-  lightsThread->join();
-  lightsThread->terminate();
-  delete lightsThread;
-  lightsThread = nullptr;
-}
 void LEDMatrix::flashing() {
-  while (!reqEndFlash.try_acquire()) {
-    setColor(flashing_red, flashing_green, flashing_blue);
-    ThisThread::sleep_for(PERIOD_DELAY);
-    clearLights();
-    ThisThread::sleep_for(PERIOD_DELAY);
+  while(true){
+    event_flags.wait_all(START_FLASH); //would yield until flag is set
+    continue_flashing = true;
+    
+    while (continue_flashing)
+    {
+      setColor(flashing_red, flashing_green, flashing_blue);
+      ThisThread::sleep_for(PERIOD_DELAY);
+      clearLights();
+      ThisThread::sleep_for(PERIOD_DELAY);
+    }
+    event_flags.set(ENDED_FLASH);
   }
 }
 
-void LEDMatrix::setColor(uint8_t R, uint8_t G, uint8_t B) {
-  if (lightsThread != nullptr) {
-    terminateFlashing();
-  }
-
-  m_RChannel.pulsewidth(R / 255.0);
-  m_GChannel.pulsewidth(G / 255.0);
-  m_BChannel.pulsewidth(B / 255.0);
-}
-
-void LEDMatrix::setColor(HWBRIDGE::LEDMATRIX::color c) {
-  if (lightsThread != nullptr) {
-    terminateFlashing();
-  }
-
-  switch (c) {
-    case HWBRIDGE::LEDMATRIX::color::RED:
-      setColor(255, 0, 0);
-      break;
-    case HWBRIDGE::LEDMATRIX::color::GREEN:
-      setColor(0, 255, 0);
-      break;
-    case HWBRIDGE::LEDMATRIX::color::BLUE:
-      setColor(0, 0, 255);
-      break;
-  }
-}
-
-void LEDMatrix::flashColor(uint8_t R, uint8_t G, uint8_t B) {
+void LEDMatrix::setFlashColor(bool R, bool G, bool B) {
   flashing_red   = R;
   flashing_green = G;
   flashing_blue  = B;
 
-  if (lightsThread == nullptr) {
-    lightsThread = new Thread;
-    lightsThread->start(callback(this, &LEDMatrix::flashing));
+  if(!continue_flashing){
+    if (lightsThread == nullptr) {
+      lightsThread = new Thread;
+      if (lightsThread == nullptr) 
+        return; //raise an error instead of returning
+      lightsThread->start(callback(this, &LEDMatrix::flashing)); //why this
+    }
+    event_flags.set(START_FLASH);
   }
 }
 
-void LEDMatrix::flashColor(HWBRIDGE::LEDMATRIX::color c) {
-  flashing_color = c;
+void LEDMatrix::setSolidColor(bool R, bool G, bool B){
+  if (continue_flashing){  
+    continue_flashing = false;
+    event_flags.wait_all(ENDED_FLASH);
+  }
+  setColor(R, G, B);
+}
+
+void LEDMatrix::setColor(bool R, bool G, bool B) {
+  m_RChannel = R;
+  m_GChannel = G;
+  m_BChannel = B;
+}
+
+/*
+void LEDMatrix::setColor(HWBRIDGE::LEDMATRIX::color c) {
 
   switch (c) {
     case HWBRIDGE::LEDMATRIX::color::RED:
-      flashColor(255, 0, 0);
+      setColor(1, 0, 0);
       break;
     case HWBRIDGE::LEDMATRIX::color::GREEN:
-      flashColor(0, 255, 0);
+      setColor(0, 1, 0);
       break;
     case HWBRIDGE::LEDMATRIX::color::BLUE:
-      flashColor(0, 0, 255);
+      setColor(0, 0, 1);
       break;
   }
-}
+}*/
+
 
 void LEDMatrix::clearLights() {
   setColor(0, 0, 0);

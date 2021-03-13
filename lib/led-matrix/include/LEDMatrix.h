@@ -1,40 +1,41 @@
 #pragma once
 #include "hw_bridge.h"
+
+#define START_FLASH 1UL //01
+#define ENDED_FLASH 2UL //10
+
 class LEDMatrix {
- private:
-  PwmOut m_RChannel;
-  PwmOut m_GChannel;
-  PwmOut m_BChannel;
+  private:
+    DigitalOut m_RChannel;
+    DigitalOut m_GChannel;
+    DigitalOut m_BChannel;
 
-  HWBRIDGE::LEDMATRIX::color flashing_color;
-  volatile uint8_t flashing_red, flashing_green, flashing_blue;
+    HWBRIDGE::LEDMATRIX::color flashing_color;
+    volatile bool flashing_red, flashing_green, flashing_blue; 
+    volatile bool continue_flashing;
 
-  Thread *lightsThread;
-  Semaphore reqEndFlash;
-  static constexpr auto PERIOD_DELAY = 500ms;
-  void terminateFlashing();
-  void flashing();
+    EventFlags event_flags;
+    Thread *lightsThread; 
+    static constexpr auto PERIOD_DELAY = 500ms;
 
- public:
-  // Define matrix by the pins it is connected to.
-  LEDMatrix(PinName R, PinName G, PinName B);
+    void flashing();
 
-  // Delete the pointer to the thread if it has not been deleted already.
-  ~LEDMatrix();
+    // Turn off all the LEDs. Call setColor(0,0,0).
+    void setColor(bool R, bool G, bool B);
 
-  // Take in values from 0 to 255 for each pin and map them to a PWM signal.
-  void setColor(uint8_t R, uint8_t G, uint8_t B);
+    // Call setColor with the enum color.
+    void setColor(HWBRIDGE::LEDMATRIX::color c);
 
-  // Call setColor with the enum color.
-  void setColor(HWBRIDGE::LEDMATRIX::color c);
+  public:
+    // Define matrix by the pins it is connected to.
+    LEDMatrix(PinName R, PinName G, PinName B);
 
-  // Set the specified color, wait, turn off all LEDs, wait
-  // Repeat until another function is called by main.cpp.
-  void flashColor(uint8_t R, uint8_t G, uint8_t B);
+    // Delete the pointer to the thread if it has not been deleted already. Clear lights.
+    ~LEDMatrix();
 
-  // Call falshColor with the enum color.
-  void flashColor(HWBRIDGE::LEDMATRIX::color c);
+    void setFlashColor(bool R, bool G, bool B);
 
-  // Turn off all the LEDs. Call setColor(0,0,0).
-  void clearLights();
+    void setSolidColor(bool R, bool G, bool B);
+
+    void clearLights();    
 };

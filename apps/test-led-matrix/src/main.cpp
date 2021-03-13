@@ -7,17 +7,17 @@ int main() {
   LEDMatrix blinky(PA_0, PA_1, PB_0);
 
   while (true) {
-    blinky.flashColor(HWBRIDGE::LEDMATRIX::color::RED);
+    blinky.setFlashColor(1, 0, 0);
     ThisThread::sleep_for(5s);
-    blinky.setColor(HWBRIDGE::LEDMATRIX::color::RED);
+    blinky.setSolidColor(1, 0, 0);
     ThisThread::sleep_for(5s);
-    blinky.flashColor(HWBRIDGE::LEDMATRIX::color::GREEN);
+    blinky.setFlashColor(0, 1, 0);
     ThisThread::sleep_for(5s);
-    blinky.setColor(HWBRIDGE::LEDMATRIX::color::GREEN);
+    blinky.setSolidColor(0, 1, 0);
     ThisThread::sleep_for(5s);
-    blinky.flashColor(HWBRIDGE::LEDMATRIX::color::BLUE);
+    blinky.setFlashColor(0, 0, 1);
     ThisThread::sleep_for(5s);
-    blinky.setColor(HWBRIDGE::LEDMATRIX::color::BLUE);
+    blinky.setSolidColor(0, 0, 1);
     blinky.clearLights();
   }
 }
