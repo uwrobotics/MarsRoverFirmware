@@ -1,7 +1,7 @@
 #include <cmath>
 
+#include "Logger.h"
 #include "units.h"
-
 // These are various namespaces defined that make units esaier to work with
 using namespace units::length;
 using namespace units::force;
@@ -26,14 +26,14 @@ int main() {
   degree_t degreesMoved = speed * second_t(5);
 
   // Printing both the angular velocity and the degrees subtended:
-  std::cout << speed << std::endl;
-  std::cout << degreesMoved << std::endl;
+  Utility::logger << speed;
+  Utility::logger << degreesMoved;
 
   radian_t angleInRad = radian_t(2 * M_PI);    // Create angle object in radians
   degree_t angleInDeg = degree_t(angleInRad);  // Can be cast to degrees
 
-  std::cout << angleInRad << std::endl;  // prints 6.28319 rad
-  std::cout << angleInDeg << std::endl;  // prints 360 degrees
+  Utility::logger << angleInRad;  // prints 6.28319 rad
+  Utility::logger << angleInDeg;  // prints 360 degrees
 
   // Testing current in Amperes
 
@@ -41,14 +41,14 @@ int main() {
   ohm_t resistance    = ohm_t(4);                // resistance through the load
   auto voltageThrough = currentIn * resistance;  // automatically casted to voltage since V = IR
 
-  std::cout << voltageThrough << std::endl;  // prints a voltage object
+  Utility::loger << voltageThrough;  // prints a voltage object
 
   // Testing force in Newtons
 
   newton_t forceIn        = newton_t(5);             // Create a 5 newton force
   kilogram_t massOfObject = kilogram_t(10);          // applied on a 10 kg object
   auto accelerationIn     = forceIn / massOfObject;  // automatically casted to m/s^2 (acceleration)
-  std::cout << accelerationIn << std::endl;
+  Utility::logger << accelerationIn;
 }
 
 /*
