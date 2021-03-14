@@ -147,6 +147,10 @@ typedef enum SBS_COMMAND_CODES {
   CURRENT_LONG,
 } SBS_CMD;
 
+typedef struct dataflash {
+  ENABLE_PROTECTIONS_a = 0x4BBE,
+} BQ_DATAFLSH;
+
 /**
  * @brief a class to configure and control the Battery Management system
  * Will be a central hub of data retrieval and control of BMS, also will calculate values to
@@ -290,4 +294,9 @@ class BQ40Z80 {
   int getRelativeSOC(uint32_t & data);
 
   int getAbsSOC(uint32_t & data);
+
+//DATAFLASH CMDS
+  int readDataFlash(const uint16_t address, uint32_t &data, const unsigned length);
+
+  int writeDataFlash(const uint16_t address, uint32_t &data, const unsigned length);
 };

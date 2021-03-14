@@ -4,21 +4,21 @@
 
 namespace BQ40Z80 {
 
-BQ40Z80::BQ40Z80(PinName SDA_PIN, SCL_PIN, uint16_t addr)
+int BQ40Z80::BQ40Z80(PinName SDA_PIN, SCL_PIN, uint16_t addr)
 {
   m_keys[0] = 0x0414;
   m_keys[1] = 0x3672;
   m_address = addr;
 }
 
-BQ40Z80::seal()
+int BQ40Z80::seal()
 {
   // write nothing
   uint32_t data; 
   return manufacturer_write(SBS_CMD.MANUFACTURER_INFO , data, 0);
 }
 
-BQ40Z80::unseal()
+int BQ40Z80::unseal()
 {
   //  uint16_t keys[2] = {0x0414, 0x3672};
   int status = m_smbus.write_word(SBS_MANUFACTURER_ACCESS, m_keys[0]);
@@ -28,7 +28,7 @@ BQ40Z80::unseal()
   return status;
 }
 
-BQ40Z80::manufacturer_read(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length)
+int BQ40Z80::manufacturer_read(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length)
 {
 
 //write 0x44 ox 0x00 then the data sent is teh command
@@ -47,7 +47,7 @@ BQ40Z80::manufacturer_read(const uint16_t sbs_cmd, uint32_t &data, const uint8_t
   return status;
 }
 
-BQ40Z80::manufacturer_write(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length)
+int BQ40Z80::manufacturer_write(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length)
 {
 //write 0x44 0x00 then the data sent is the data written
 //block or word
@@ -60,7 +60,7 @@ BQ40Z80::manufacturer_write(const uint16_t sbs_cmd, uint32_t &data, const uint8_
   return m_smbus.block_write(SBS_MANUFACTURER_BLOCK_ACCESS, buf, length +2);
 }
 
-BQ40Z80::getAllCellStatus()
+int BQ40Z80::getAllCellStatus()
 {
   uint8_t DAstatus1[32 + 2] = {};
   uint8_t DAstatus3[18 + 2] = {};
@@ -97,7 +97,7 @@ BQ40Z80::getAllCellStatus()
   return status;
 }
 
-BQ40Z80::getTemperatures()
+int BQ40Z80::getTemperatures()
 {
   uint8_t DAstatus2[14 + 2] = {};
   int status = manufacturer_read(SBS_MA_CMD.DA_STATUS_2, DAstatus2, sizeof(DAstatus2));
@@ -106,7 +106,7 @@ BQ40Z80::getTemperatures()
   return status;
 }
 
-BQ40Z80::getStartupInfo()
+int BQ40Z80::getStartupInfo()
 {
   int status;
 
@@ -125,12 +125,12 @@ BQ40Z80::getStartupInfo()
   return status;
 }
 
-BQ40Z80::lifetimeDataFlush()
+int BQ40Z80::lifetimeDataFlush()
 {
   return manufacturer_write(SBS_MA_CMD.LIFETIME_DATA_FLUSH, NULL, 0);
 }
 
-BQ40Z80::readLifeTimeData()
+int BQ40Z80::readLifeTimeData()
 {
   uint8_t data_blk[32+2] = {};
 
@@ -160,7 +160,7 @@ BQ40Z80::readLifeTimeData()
   return status;
 }
 
-BQ40Z80::enterEmergencyFETShutDown()
+int BQ40Z80::enterEmergencyFETShutDown()
 {
 	//MFC = manual fet control
   uint16_t MFCcode = 0x279C;
@@ -172,7 +172,7 @@ BQ40Z80::enterEmergencyFETShutDown()
   return status;
 }
 
-BQ40Z80::exitEmergencyFETShutdown()
+int BQ40Z80::exitEmergencyFETShutdown()
 {
   uint16_t wakeup_code = 0x23A7;
   int status = manufacturer_write(SBS_MANUFACTURER_ACCESS, wakeup_code, sizeof(wakeup_code));
@@ -183,65 +183,94 @@ BQ40Z80::exitEmergencyFETShutdown()
 //some get functions for basic battery data
 //==============================
 
-BQ40Z80::getCurrent(uint32_t & data)
+int BQ40Z80::getCurrent(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.CURRENT, data); 
 }
 
-BQ40Z80::getBatteryMode(uint16_t & data)
+int BQ40Z80::getBatteryMode(uint16_t & data)
 {
   return m_smbus.read_word(SBS_CMD.BATTERY_MODE, data);
 }
 
-BQ40Z80::getBatteryStatus(uint16_t & data)
+int BQ40Z80::getBatteryStatus(uint16_t & data)
 {
   return m_smbus.read_word(SBS_CMD.BATTERY_STATUS, data);
 }
 
-BQ40Z80::getVoltage(uint32_t & data)
+int BQ40Z80::getVoltage(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.VOLTAGE, data);
 }
 
-BQ40Z80::getAvgCurrent(uint32_t & data)
+int BQ40Z80::getAvgCurrent(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.AVERAGE_CURRENT, data);
 }
 
-BQ40Z80::getTimeToEmpty(uint32_t & data)
+int BQ40Z80::getTimeToEmpty(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.RUN_TIME_TO_EMPTY , data);
 }
 
-BQ40Z80::getAvgTimeToEmpty(uint32_t & data)
+int BQ40Z80::getAvgTimeToEmpty(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.AVERAGE_TIME_TO_EMPTY , data);
 }
 
-BQ40Z80::getRemainingCapacity(uint32_t & data)
+int BQ40Z80::getRemainingCapacity(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.REMAINING_CAPACITY , data);
 }
 
-BQ40Z80::getMaxError(uint32_t & data)
+int BQ40Z80::getMaxError(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.MAX_ERROR , data);
 }
 
-BQ40Z80::getTemp(uint32_t & data)
+int BQ40Z80::getTemp(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.TEMPERATURE , data);
 }
 
-BQ40Z80::getRelativeSOC(uint32_t & data)
+int BQ40Z80::getRelativeSOC(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.RELATIVE_STATE_OF_CHANGE , data);
 }
 
-BQ40Z80::getAbsSOC(uint32_t & data)
+int BQ40Z80::getAbsSOC(uint32_t & data)
 {
   return m_smbus.read_word(SBS_CMD.ABS_STATE_OF_CHANGE , data);
 }
+
+ 
+int BQ40Z80::readDataFlash(const uint16_t address, uint32_t &data, const unsigned length)
+{
+  int status = m_smbus.block_write(SBS_MANUFACTURER_BLOCK_ACCESS, &address, 2);
+
+  status = m_smbus.block_read(SBS_MANUFACTURER_BLOCK_ACCESS, data, length);
+  return status;
+}
+
+int BQ40Z80::writeDataFlash(const uint16_t address, uint32_t &data, const unsigned length)
+{
+  uint8_t buf[MAC_DATA_BUF_SIZE + 2] = {};
+
+  buf[0] = address & 0xff;
+  buf[1] = (address >> 8) & 0xff;
+
+  if(length > MAC_DATA_BUF_SIZE)
+  {
+    return 0;
+  }
+
+  memcpy(&buf[2], data, length);
+
+  int status = m_smbus.block_write(SBS_MANUFACTURER_BLOCK_ACCESS, buf, length +2);
+
+  return status;
+}
+
 
 } //namespace BQ40Z80
 
