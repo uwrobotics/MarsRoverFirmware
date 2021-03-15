@@ -84,6 +84,6 @@ test-pwmin:
 #  - gimbal
 #  - science
 
-test-pololu370-encoder:
+test-quadrature64cpr:
   - nucleo
   
