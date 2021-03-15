@@ -4,8 +4,8 @@
 #include "QEI.h"
 
 namespace Encoder {
-class Pololu37D final : public Encoder {
-  // link to the Polulu37D encoder:
+class Quadrature64CPR final : public Encoder {
+  // link to the Quadrature64CPR encoder:
   // https://www.pololu.com/product/2821
  public:
   typedef struct Config {
@@ -13,10 +13,10 @@ class Pololu37D final : public Encoder {
     float offsetDeg;
   } Config;
 
-  Pololu37D(const Config &config);
-  Pololu37D(Pololu37D &)  = delete;
-  Pololu37D(Pololu37D &&) = delete;
-  ~Pololu37D()            = default;
+  Quadrature64CPR(const Config &config);
+  Quadrature64CPR(Quadrature64CPR &)  = delete;
+  Quadrature64CPR(Quadrature64CPR &&) = delete;
+  ~Quadrature64CPR()                  = default;
 
   bool getAngleDeg(float &angle) override;
   bool getAngularVelocityDegPerSec(float &speed) override;

@@ -1,31 +1,31 @@
-#include "Pololu37D.h"
+#include "Quadrature64CPR.h"
 
 #include <mutex>
 
 using namespace Encoder;
 
-Pololu37D::Pololu37D(const Config &config)
+Quadrature64CPR::Quadrature64CPR(const Config &config)
     : m_QEI(config.ChannelA, config.ChannelB, config.Index, GPIO::QEI::Encoding::X4_ENCODING),
       m_zeroOffsetDeg(config.offsetDeg) {}
 
-bool Pololu37D::getAngleDeg(float &angle) {
+bool Quadrature64CPR::getAngleDeg(float &angle) {
   std::scoped_lock<Mutex> lock(m_mutex);
   read();
   angle = m_current_angle_deg;
   return true;
 }
 
-bool Pololu37D::getAngularVelocityDegPerSec(float &speed) {
+bool Quadrature64CPR::getAngularVelocityDegPerSec(float &speed) {
   std::scoped_lock<Mutex> lock(m_mutex);
   read();
   speed = m_anglular_velocity_deg_per_sec;
   return true;
 }
 
-bool Pololu37D::reset() {
+bool Quadrature64CPR::reset() {
   std::scoped_lock<Mutex> lock(m_mutex);
   read();
-  
+
   m_zeroOffsetDeg = m_current_angle_deg;
 
   m_current_angle_deg  = 0.0;
@@ -37,7 +37,7 @@ bool Pololu37D::reset() {
   return true;
 }
 
-void Pololu37D::read() {
+void Quadrature64CPR::read() {
   // time since last measurement in nanoseconds
   m_timer.stop();
   float dt = std::chrono::duration_cast<std::chrono::nanoseconds>(m_timer.elapsed_time()).count();
