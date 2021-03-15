@@ -43,14 +43,13 @@ class Netzer : public Encoder {
   char rx_buffer[WORDS]       = {0};  // Initialize rx buffer to receive data (16 bits in total)
   uint32_t m_raw_data;                // 32 bit raw data
 
+  SPI m_spi;                // most, miso, sclk (PA_7, PA_6, PA_5)
+  callback_ptr m_callback;  // User callback function to be invoked when an encoder read is complete
+
+  float m_offset_deg;
   float m_position_deg;
   float m_angular_velocity_deg_per_sec;
   uint16_t m_position_raw;
-  float m_offset_deg;
-  // User callback function to be invoked when an encoder read is complete (only for async reads)
-  callback_ptr m_callback;
-
-  SPI m_spi;  // most, miso, sclk (PA_7, PA_6, PA_5)
 
   void spi_callback_debug(int events);
 
