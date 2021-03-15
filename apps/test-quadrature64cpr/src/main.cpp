@@ -1,12 +1,12 @@
 #include "Logger.h"
-#include "Pololu37D.h"
+#include "Quadrature64CPR.h"
 
 void read_all();
 
 // first pin is yellow wire
 // second pin is white wire
-constexpr Encoder::Pololu37D::Config config = {PA_5, PA_6, NC, 0};
-Encoder::Pololu37D enc(config);
+constexpr Encoder::Quadrature64CPR::Config config = {PA_5, PA_6, NC, 0};
+Encoder::Quadrature64CPR enc(config);
 
 Timer theta_timer, theta_dot_timer;
 float theta     = 0;
