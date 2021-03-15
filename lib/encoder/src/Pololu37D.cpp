@@ -24,6 +24,8 @@ bool Pololu37D::getAngularVelocityDegPerSec(float &speed) {
 
 bool Pololu37D::reset() {
   std::scoped_lock<Mutex> lock(m_mutex);
+  read();
+  
   m_zeroOffsetDeg = m_current_angle_deg;
 
   m_current_angle_deg  = 0.0;
