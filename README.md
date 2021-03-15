@@ -146,50 +146,38 @@ Rev 2 PCBs come with ARM 10-pin SWD headers and can be programmed via ST-Link. A
 
 ### ST-Link Software Installation
 
-### Ubuntu
-1.  Download and build the ST-Link utilities:
-    ```
-    git clone https://github.com/stlink-org/stlink
-    cd stlink
-    cmake .
-    make
-    ```
+### Ubuntu 20.04
 
-2. Copy the built binaries into their place:
-    ```
-    cd bin
-    sudo cp st-* /usr/local/bin
-    cd ../lib
-    sudo cp *.so* /lib32
-    ```
-
-3. Copy the udev rules to their place (this lets you run the st-link commands without using `sudo`):
-    ```
-    cd ../config/udev/rules.d
-    sudo cp 49-stlinkv* /etc/udev/rules.d/
-    ```
+1. sudo apt install stlink-tools
+- Tested on 1.6.0
+2. sudo apt install stlink-gui
+- Tested on 1.6.0
+3. sudo apt install openocd
+- Tested on 0.10.0
 
 ### Windows
 
 1. Download [st-link utility](http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-programmers/stsw-link004.html)
 
 ### Steps to Flashing a Rover Board
+**Important**: Ensure your PCB is powered prior to connecting the st-link to your computer (this is an ST bug)
 
 #### Ubuntu
 
-1. Cd into the folder containing the binary of the program to flash (eg. `MarsRover2020-firmware/build-<target name>/apps/<app name>`)
+Option 1: Use GUI
+1. Launch the GUI with `stlink-gui`
+2. Click connect
+3. Click Open and select your .bin file
+4. Click Flash (leave memory address as 0x8000000)
 
-2. Ensure that the ST-Link is connected to your computer and to the rover board.
-    - **Tip:** You can run `st-info --probe` to check if the ST-Link connection is detected
+Option 2: Use CLI
+1. Ensure that the st-link is connected with `st-info --probe`
+2. Flash with `st-flash write <path to .bin> 0x8000000`
+- If the flashing was successful, you should see the following message: `Flash written and verified! jolly good!`
 
-3. Flash the program binary: `st-flash write <app name>.bin 0x8000000` (may need to run this command twice to get a successful flash)
-    - If the flashing was successful, you should see a blinking LED pattern on the board and the following message: `Flash written and verified! jolly good!`
-
-4. Reset the board: `st-flash reset`
-    - This is required to run the program that was flashed
-
-- Alternatively, instead of performing steps 3-4, run `st-flash --reset write <app name>.bin 0x8000000` to flash the board and trigger a reset both before and after flashing
-- See [github.com/stlink-org/stlink](https://github.com/stlink-org/stlink) for further documentation
+Pro tips:
+To erase the loaded program from flash: `st-flash erase`
+To reset/rerun the program: `st-flash reset`
 
 #### Windows
 
@@ -230,7 +218,9 @@ See `apps/test-logger` for an example of using the SWO-supported logger utility.
 
 ### Ubuntu
 
-**TODO**
+1. In one terminal, launch the openocd server and specify runtime parameters with 
+`openocd -f /usr/share/openocd/scripts/interface/stlink-v2.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "tpiu config internal - uart off 180000000" -c "itm ports on"`
+2. In a different terminal, run the swo_parser.py under the scripts folder with `python3 <path to swo_parser.py>`
 
 ### Windows
 
@@ -238,6 +228,9 @@ See `apps/test-logger` for an example of using the SWO-supported logger utility.
 2. In the ST-Link Utility software, click "Print via SWO viewer"
 3. Set the system clock rate to 180000000Hz and stimulus port to 0
 4. Click "Start". The SWO print statements should appear in the Serial Wire Viewer console.
+
+## Using the Debugger (SWO) (Rev 2 +)
+Detailed steps for this have not been created yet. Refer to this (link)[https://github.com/stlink-org/stlink/blob/develop/doc/tutorial.md] for guidance
 
 ## Serial Communication (Rev 1)
 
