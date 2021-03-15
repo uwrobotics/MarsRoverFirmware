@@ -1,0 +1,560 @@
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Detecting C compiler ABI info failed to compile with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_6a083/fast && /usr/bin/make  -f CMakeFiles/cmTC_6a083.dir/build.make CMakeFiles/cmTC_6a083.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1   -v -o CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/cc1 -quiet -v -iprefix /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/ -isysroot /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=arm7tdmi -mfloat-abi=soft -marm -march=armv4t -auxbase-strip CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o -version -o /tmp/ccqe7leA.s
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/local/include"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include-fixed"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include-fixed
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include
+End of search list.
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 17f1e178bf798cb7013d26242c30c1f0
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o /tmp/ccqe7leA.s
+GNU assembler version 2.34.0 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 9-2020-q2-update) 2.34.0.20200428
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+Linking C executable cmTC_6a083
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6a083.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1  -v CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o -o cmTC_6a083 
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+COLLECT_LTO_WRAPPER=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6a083' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/collect2 -plugin /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/liblto_plugin.so -plugin-opt=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccZXyLkI.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc --sysroot=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -X -o cmTC_6a083 /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crti.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtbegin.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/crt0.o -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1 -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib CMakeFiles/cmTC_6a083.dir/CMakeCCompilerABI.c.o --start-group -lgcc -lc --end-group /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtend.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtn.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_6a083.dir/build.make:105: recipe for target 'cmTC_6a083' failed
+make[1]: *** [cmTC_6a083] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_6a083/fast' failed
+make: *** [cmTC_6a083/fast] Error 2
+
+
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_7a369/fast && /usr/bin/make  -f CMakeFiles/cmTC_7a369.dir/build.make CMakeFiles/cmTC_7a369.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7a369.dir/testCCompiler.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1    -o CMakeFiles/cmTC_7a369.dir/testCCompiler.c.o -c /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_7a369
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a369.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 CMakeFiles/cmTC_7a369.dir/testCCompiler.c.o -o cmTC_7a369 
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_7a369.dir/build.make:105: recipe for target 'cmTC_7a369' failed
+make[1]: *** [cmTC_7a369] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_7a369/fast' failed
+make: *** [cmTC_7a369/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Detecting C compiler ABI info failed to compile with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9697a/fast && /usr/bin/make  -f CMakeFiles/cmTC_9697a.dir/build.make CMakeFiles/cmTC_9697a.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1   -v -o CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/cc1 -quiet -v -iprefix /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/ -isysroot /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=arm7tdmi -mfloat-abi=soft -marm -march=armv4t -auxbase-strip CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o -version -o /tmp/ccCYpEPw.s
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/local/include"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include-fixed"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include-fixed
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include
+End of search list.
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 17f1e178bf798cb7013d26242c30c1f0
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o /tmp/ccCYpEPw.s
+GNU assembler version 2.34.0 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 9-2020-q2-update) 2.34.0.20200428
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+Linking C executable cmTC_9697a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9697a.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1  -v CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o -o cmTC_9697a 
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+COLLECT_LTO_WRAPPER=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_9697a' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/collect2 -plugin /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/liblto_plugin.so -plugin-opt=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/cc3TMdlB.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc --sysroot=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -X -o cmTC_9697a /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crti.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtbegin.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/crt0.o -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1 -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib CMakeFiles/cmTC_9697a.dir/CMakeCCompilerABI.c.o --start-group -lgcc -lc --end-group /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtend.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtn.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_9697a.dir/build.make:105: recipe for target 'cmTC_9697a' failed
+make[1]: *** [cmTC_9697a] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_9697a/fast' failed
+make: *** [cmTC_9697a/fast] Error 2
+
+
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_f6bf5/fast && /usr/bin/make  -f CMakeFiles/cmTC_f6bf5.dir/build.make CMakeFiles/cmTC_f6bf5.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f6bf5.dir/testCCompiler.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1    -o CMakeFiles/cmTC_f6bf5.dir/testCCompiler.c.o -c /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_f6bf5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f6bf5.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 CMakeFiles/cmTC_f6bf5.dir/testCCompiler.c.o -o cmTC_f6bf5 
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_f6bf5.dir/build.make:105: recipe for target 'cmTC_f6bf5' failed
+make[1]: *** [cmTC_f6bf5] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_f6bf5/fast' failed
+make: *** [cmTC_f6bf5/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Detecting C compiler ABI info failed to compile with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_b8cbd/fast && /usr/bin/make  -f CMakeFiles/cmTC_b8cbd.dir/build.make CMakeFiles/cmTC_b8cbd.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1   -v -o CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/cc1 -quiet -v -iprefix /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/ -isysroot /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=arm7tdmi -mfloat-abi=soft -marm -march=armv4t -auxbase-strip CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o -version -o /tmp/ccWiep4x.s
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/local/include"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include-fixed"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include-fixed
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include
+End of search list.
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 17f1e178bf798cb7013d26242c30c1f0
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o /tmp/ccWiep4x.s
+GNU assembler version 2.34.0 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 9-2020-q2-update) 2.34.0.20200428
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+Linking C executable cmTC_b8cbd
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b8cbd.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1  -v CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o -o cmTC_b8cbd 
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+COLLECT_LTO_WRAPPER=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_b8cbd' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/collect2 -plugin /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/liblto_plugin.so -plugin-opt=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/cc9OCbrD.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc --sysroot=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -X -o cmTC_b8cbd /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crti.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtbegin.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/crt0.o -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1 -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib CMakeFiles/cmTC_b8cbd.dir/CMakeCCompilerABI.c.o --start-group -lgcc -lc --end-group /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtend.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtn.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_b8cbd.dir/build.make:105: recipe for target 'cmTC_b8cbd' failed
+make[1]: *** [cmTC_b8cbd] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_b8cbd/fast' failed
+make: *** [cmTC_b8cbd/fast] Error 2
+
+
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_d2e9d/fast && /usr/bin/make  -f CMakeFiles/cmTC_d2e9d.dir/build.make CMakeFiles/cmTC_d2e9d.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d2e9d.dir/testCCompiler.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1    -o CMakeFiles/cmTC_d2e9d.dir/testCCompiler.c.o -c /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_d2e9d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d2e9d.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 CMakeFiles/cmTC_d2e9d.dir/testCCompiler.c.o -o cmTC_d2e9d 
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_d2e9d.dir/build.make:105: recipe for target 'cmTC_d2e9d' failed
+make[1]: *** [cmTC_d2e9d] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_d2e9d/fast' failed
+make: *** [cmTC_d2e9d/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Detecting C compiler ABI info failed to compile with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_ba923/fast && /usr/bin/make  -f CMakeFiles/cmTC_ba923.dir/build.make CMakeFiles/cmTC_ba923.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1   -v -o CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/cc1 -quiet -v -iprefix /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/ -isysroot /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=arm7tdmi -mfloat-abi=soft -marm -march=armv4t -auxbase-strip CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o -version -o /tmp/ccjA3ubr.s
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/local/include"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include-fixed"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include-fixed
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include
+End of search list.
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 17f1e178bf798cb7013d26242c30c1f0
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o /tmp/ccjA3ubr.s
+GNU assembler version 2.34.0 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 9-2020-q2-update) 2.34.0.20200428
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+Linking C executable cmTC_ba923
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ba923.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1  -v CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o -o cmTC_ba923 
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+COLLECT_LTO_WRAPPER=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_ba923' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/collect2 -plugin /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/liblto_plugin.so -plugin-opt=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/cc4IEUoo.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc --sysroot=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -X -o cmTC_ba923 /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crti.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtbegin.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/crt0.o -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1 -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib CMakeFiles/cmTC_ba923.dir/CMakeCCompilerABI.c.o --start-group -lgcc -lc --end-group /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtend.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtn.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_ba923.dir/build.make:105: recipe for target 'cmTC_ba923' failed
+make[1]: *** [cmTC_ba923] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_ba923/fast' failed
+make: *** [cmTC_ba923/fast] Error 2
+
+
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_b260c/fast && /usr/bin/make  -f CMakeFiles/cmTC_b260c.dir/build.make CMakeFiles/cmTC_b260c.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b260c.dir/testCCompiler.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1    -o CMakeFiles/cmTC_b260c.dir/testCCompiler.c.o -c /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_b260c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b260c.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 CMakeFiles/cmTC_b260c.dir/testCCompiler.c.o -o cmTC_b260c 
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_b260c.dir/build.make:105: recipe for target 'cmTC_b260c' failed
+make[1]: *** [cmTC_b260c] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_b260c/fast' failed
+make: *** [cmTC_b260c/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+
+
+Detecting C compiler ABI info failed to compile with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_fd443/fast && /usr/bin/make  -f CMakeFiles/cmTC_fd443.dir/build.make CMakeFiles/cmTC_fd443.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1   -v -o CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/cc1 -quiet -v -iprefix /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/ -isysroot /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake-3.18/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=arm7tdmi -mfloat-abi=soft -marm -march=armv4t -auxbase-strip CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o -version -o /tmp/ccRcRv9F.s
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/local/include"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/include-fixed"
+ignoring duplicate directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include"
+ignoring nonexistent directory "/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/usr/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/include-fixed
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/include
+End of search list.
+GNU C17 (GNU Arm Embedded Toolchain 9-2020-q2-update) version 9.3.1 20200408 (release) (arm-none-eabi)
+	compiled by GNU C version 4.8.4, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 17f1e178bf798cb7013d26242c30c1f0
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o /tmp/ccRcRv9F.s
+GNU assembler version 2.34.0 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 9-2020-q2-update) 2.34.0.20200428
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+Linking C executable cmTC_fd443
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fd443.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1  -v CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o -o cmTC_fd443 
+Using built-in specs.
+COLLECT_GCC=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1
+COLLECT_LTO_WRAPPER=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper
+Target: arm-none-eabi
+Configured with: /mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/src/gcc/configure --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native --libexecdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/lib --infodir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-plugins --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-newlib --with-headers=yes --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/install-native/arm-none-eabi --build=x86_64-linux-gnu --host=x86_64-linux-gnu --with-gmp=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-9-pipeline/jenkins-GCC-9-pipeline-200_20200521_1590053374/build-native/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 9-2020-q2-update' --with-multilib-list=rmprofile,aprofile
+Thread model: single
+gcc version 9.3.1 20200408 (release) (GNU Arm Embedded Toolchain 9-2020-q2-update) 
+COMPILER_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/
+LIBRARY_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_fd443' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-march=armv4t'
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/collect2 -plugin /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/liblto_plugin.so -plugin-opt=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccXcxO9L.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc --sysroot=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi -X -o cmTC_fd443 /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crti.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtbegin.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/crt0.o -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1 -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib -L/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../arm-none-eabi/lib CMakeFiles/cmTC_fd443.dir/CMakeCCompilerABI.c.o --start-group -lgcc -lc --end-group /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtend.o /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/crtn.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_fd443.dir/build.make:105: recipe for target 'cmTC_fd443' failed
+make[1]: *** [cmTC_fd443] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_fd443/fast' failed
+make: *** [cmTC_fd443/fast] Error 2
+
+
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e7bee/fast && /usr/bin/make  -f CMakeFiles/cmTC_e7bee.dir/build.make CMakeFiles/cmTC_e7bee.dir/build
+make[1]: Entering directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e7bee.dir/testCCompiler.c.o
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1    -o CMakeFiles/cmTC_e7bee.dir/testCCompiler.c.o -c /home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_e7bee
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e7bee.dir/link.txt --verbose=1
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-gcc-9.3.1 CMakeFiles/cmTC_e7bee.dir/testCCompiler.c.o -o cmTC_e7bee 
+/opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/bin/ld: /opt/gcc-arm-none-eabi-9-2020-q2-update/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): in function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_e7bee.dir/build.make:105: recipe for target 'cmTC_e7bee' failed
+make[1]: *** [cmTC_e7bee] Error 1
+make[1]: Leaving directory '/home/main/MarsRover2020-firmware/build/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_e7bee/fast' failed
+make: *** [cmTC_e7bee/fast] Error 2
+
+
+
