@@ -1,5 +1,5 @@
 #include "Netzer.h"
 
-int main(){
+int main() {
   return 1;
 }
