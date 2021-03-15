@@ -19,3 +19,10 @@ target_sources(EncoderAEAT6012 PRIVATE src/AEAT6012.cpp)
 target_include_directories(EncoderAEAT6012 PUBLIC include)
 target_link_libraries(EncoderAEAT6012 PRIVATE Encoder)
 target_set_mbed_dependency(EncoderAEAT6012)
+
+add_library(EncoderNetzer STATIC)
+target_sources(EncoderNetzer PRIVATE src/Netzer.cpp)
+target_include_directories(EncoderNetzer PUBLIC include)
+target_link_libraries(EncoderNetzer PRIVATE Encoder)
+target_set_mbed_dependency(EncoderNetzer)
+
