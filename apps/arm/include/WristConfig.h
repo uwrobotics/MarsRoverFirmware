@@ -8,8 +8,8 @@
 #include "LookupTable.h"
 #include "OpenLoop.h"
 #include "PID.h"
-#include "Quadrature64CPR.h"
 #include "Position.h"
+#include "Quadrature64CPR.h"
 #include "Velocity.h"
 #include "hw_bridge.h"
 
@@ -17,8 +17,8 @@ namespace Wrist {
 
 namespace Internal {
 
-static Encoder::Pololu37D leftEncoder({ENC_QUAD_WRST_LHS_A, ENC_QUAD_WRST_LHS_B, NC, 0});
-static Encoder::Pololu37D rightEncoder({ENC_QUAD_WRST_RHS_A, ENC_QUAD_WRST_RHS_B, NC, 0});
+static Encoder::Quadrature64CPR leftEncoder({ENC_QUAD_WRST_LHS_A, ENC_QUAD_WRST_LHS_B, NC, 0});
+static Encoder::Quadrature64CPR rightEncoder({ENC_QUAD_WRST_RHS_A, ENC_QUAD_WRST_RHS_B, NC, 0});
 
 static Actuator::DCMotor leftMotor(MTR_PWM_WRST_LHS, MTR_DIR_WRST_LHS, false);
 static Actuator::DCMotor rightMotor(MTR_PWM_WRST_RHS, MTR_DIR_WRST_RHS, false);
