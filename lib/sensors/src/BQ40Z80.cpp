@@ -36,7 +36,7 @@ int BQ40Z80::manufacturer_read(const uint16_t sbs_cmd, uint32_t &data, const uin
 
   uint8_t command[2] = {};
   command[0] = ((uint8_t *)&sbs_cmd)[0];
-  command[0] = ((uint8_t *)&sbs_cmd)[1];
+  command[1] = ((uint8_t *)&sbs_cmd)[1];
 
   int status = m_smbus.block_write(SBS_MANUFACTURER_BLOCK_ACCESS, command, 2); 
 
@@ -96,6 +96,7 @@ int BQ40Z80::getAllCellStatus()
  
   return status;
 }
+
 
 int BQ40Z80::getTemperatures()
 {
@@ -166,6 +167,7 @@ int BQ40Z80::enterEmergencyFETShutDown()
   uint16_t MFCcode = 0x279C;
   int status = manufacturer_write(SBS_MANUFACTURER_ACCESS, MFCcode, sizeof(MFCcode));
 
+  //shutdown code must be written within 4 secs
   uint16_t shutdown_code = 0x043D;
   status = manufacturer_write(SBS_MANUFACTURER_ACCESS, shutdown_code, sizeof(shutdown_code));
 

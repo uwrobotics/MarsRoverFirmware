@@ -11,9 +11,7 @@
 namespace BQ40Z80 {
 #define SBS_MANUFACTURER_ACCESS 0x00
 #define SBS_MANUFACTURER_BLOCK_ACCESS 0x44
-	
-//TODO determine the actual size
-#define MAC_DATA_BUF_SIZE 4
+#define MAC_DATA_BUF_SIZE 32 
 
 constexpr MAX_NUM_CELLS = 6;
 
