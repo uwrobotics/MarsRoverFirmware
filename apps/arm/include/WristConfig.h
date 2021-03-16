@@ -8,7 +8,7 @@
 #include "LookupTable.h"
 #include "OpenLoop.h"
 #include "PID.h"
-#include "Pololu37D.h"
+#include "Quadrature64CPR.h"
 #include "Position.h"
 #include "Velocity.h"
 #include "hw_bridge.h"
