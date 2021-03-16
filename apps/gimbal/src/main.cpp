@@ -9,7 +9,6 @@
 #include "PanConfig.h"
 #include "PinNames.h"
 #include "PitchConfig.h"
-#include "RollConfig.h"
 #include "hw_bridge.h"
 
 // Init. Components
@@ -41,17 +40,9 @@ void rxCANConsumer(CANMsg &rxMsg) {
       rxMsg.getPayload(data);
       Pitch::pitchServo.setValue(data);
       break;
-    case HWBRIDGE::CANID::SET_ROLL_MOTION_DATA:
-      rxMsg.getPayload(data);
-      Roll::rollServo.setValue(data);
-      break;
     case HWBRIDGE::CANID::SET_PAN_CONTROL_MODE:
       rxMsg.getPayload(controlMode);
       Pan::manager.switchControlMode(controlMode);
-      break;
-    case HWBRIDGE::CANID::NEOPIXEL_SET:
-      rxMsg.getPayload(color);
-      LEDMatrixHandler(color);
       break;
     default:
       break;
