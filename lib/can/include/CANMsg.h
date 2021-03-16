@@ -11,9 +11,8 @@ class CANMsg : public CANMessage {
  public:
   using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
   using CANMsgHandlerMap =
-      Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, +[](CANMsg &) -> mbed_error_status_t {
-        return MBED_ERROR_CODE_INVALID_ARGUMENT;
-      }>;
+      Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler,
+                           +[](CANMsg &) -> mbed_error_status_t { return MBED_ERROR_CODE_INVALID_ARGUMENT; }>;
 
   template <class T>
   union CANPayload {
