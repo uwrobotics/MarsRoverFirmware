@@ -1,13 +1,21 @@
 #pragma once
 
-#include <map>
-
+#include "LookupTable.h"
+#include "hw_bridge.h"
 #include "mbed.h"
 
 class CANMsg : public CANMessage {
+ private:
+  using CAN_Message::id;
+
  public:
-  typedef mbed_error_status_t (*CANMsgHandler)(CANMsg &);
-  typedef std::map<unsigned int, CANMsg::CANMsgHandler> CANMsgHandlerMap;
+  using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
+  using CANMsgHandlerMap =
+      Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, +[](CANMsg &) -> mbed_error_status_t {
+        MBED_ERROR(MBED_MAKE_ERROR(MBED_MODULE_APPLICATION, MBED_ERROR_CODE_INVALID_ARGUMENT),
+                   "Invalid key to CANMsgHandlerMap");
+        return MBED_ERROR_CODE_INVALID_ARGUMENT;
+      }>;
 
   template <class T>
   union CANPayload {
@@ -21,12 +29,25 @@ class CANMsg : public CANMessage {
 
   /** Creates CAN message with specific content.
    */
-  CANMsg(int _id, const char *_data, char _len = 8, CANType _type = CANData, CANFormat _format = CANStandard)
-      : CANMessage(_id, _data, _len, _type, _format) {}
+  CANMsg(HWBRIDGE::CANID _id, const char *_data, char _len = 8, CANType _type = CANData,
+         CANFormat _format = CANStandard)
+      : CANMessage(static_cast<uint16_t>(_id), _data, _len, _type, _format) {}
 
   /** Creates CAN remote message.
    */
-  CANMsg(int _id, CANFormat _format = CANStandard) : CANMessage(_id, _format) {}
+  CANMsg(HWBRIDGE::CANID _id, CANFormat _format = CANStandard) : CANMessage(static_cast<uint16_t>(_id), _format) {}
+
+  /** Sets the ID for a CAN messages
+   */
+  void setID(const HWBRIDGE::CANID newID) {
+    id = static_cast<uint16_t>(newID);
+  }
+
+  /** Returns the ID of the CAN message
+   */
+  HWBRIDGE::CANID getID() const {
+    return static_cast<HWBRIDGE::CANID>(id);
+  }
 
   /** Clears CAN message content
    */

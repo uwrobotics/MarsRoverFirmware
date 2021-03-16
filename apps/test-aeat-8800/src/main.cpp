@@ -1,3 +1,4 @@
+#include "Logger.h"
 #include "mbed.h"
 
 SPI spi(SPI_MOSI, SPI_MISO, SPI_SCK);  // mosi, miso, sclk (PA_7, PA_6, PA_5)

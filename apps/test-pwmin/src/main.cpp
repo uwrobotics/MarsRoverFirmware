@@ -1,12 +1,12 @@
+#include "Logger.h"
 #include "PwmIn.h"
-#include "mbed.h"
 
 DigitalOut led(LED1);
 
 // Wire the output PWM signal to the PWM input
 // or connect external PWM input to pwmIn pin
-PwmOut pwmOut(PinName::MTR_PWM_TRNTBL);
-PwmIn pwmIn(PinName::ENC_PWM_TRNTBL, 50);
+PwmOut pwmOut(NC);
+GPIO::PwmIn pwmIn(NC, 50);
 
 Timer timer;
 Timer printTimer;
@@ -17,7 +17,7 @@ int main() {
   float duty     = 0.1;
 
   // Specify PWM period
-  pwmOut.period(std::chrono::duration_cast<std::chrono::duration<double>>(period).count());
+  pwmOut.period(std::chrono::duration_cast<std::chrono::duration<float>>(period).count());
 
   // START THE TIMER
   timer.start();
