@@ -26,8 +26,6 @@ EventQueue event_queue;
 
 // Incoming message processor
 void rxCANConsumer(CANMsg &rxMsg) {
-  const auto rxPeriod = 2ms;
-
   float data = 0;
   HWBRIDGE::CONTROL::Mode controlMode;
 
