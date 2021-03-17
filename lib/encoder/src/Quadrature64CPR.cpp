@@ -54,5 +54,6 @@ void Quadrature64CPR::read() {
   } else {
     // to avoid div by zero
     m_anglular_velocity_deg_per_sec = 0;
+    // TODO log this as an error considering dt = 0
   }
 }
