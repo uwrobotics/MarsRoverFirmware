@@ -20,7 +20,7 @@ int main()
   {
     if (can1.read(rxMsg))
     {
-      can1.getPayload(percentage);
+      rxMsg.getPayload(percentage);
       servoAngle = testServo.getServoRangeInDegrees()*percentage;
       testServo.setPositionInDegrees(servoAngle);
     }

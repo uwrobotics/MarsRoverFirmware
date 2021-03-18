@@ -2,7 +2,7 @@
 
 #include "mbed.h"
 
-class Tutorial Servo {
+class TutorialServo {
   public:
     TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1, float maxPulsewidthInMs = 2);
     
@@ -19,6 +19,7 @@ class Tutorial Servo {
     float getMaxPulsewidthInMs() const;
   
   private:
+    PwmOut m_servoPwmOut;
     const float m_servoRangeInDegrees;
     const float m_minPulsewidthInMs;
     const float m_maxPulsewidthInMs;
