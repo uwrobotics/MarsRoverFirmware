@@ -1,0 +1,5 @@
+add_executable(test-BQ40Z80.${TARGET}-board.elf)
+target_sources(test-BQ40Z80.${TARGET}-board.elf PRIVATE src/main.cpp)
+target_include_directories(test-BQ40Z80.${TARGET}-board.elf PUBLIC include)
+target_link_libraries(test-BQ40Z80.${TARGET}-board.elf PRIVATE Logger)
+target_set_firmware_properties(test-BQ40Z80.${TARGET}-board.elf)
