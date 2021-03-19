@@ -1,6 +1,6 @@
 #include "math.h"
 #include "mbed.h"
-#include "SMBus.hpp"
+#include "SMBus.h"
 
 /*
  * Will not be using the Sensor class as this Chip is much more complex than most sensors

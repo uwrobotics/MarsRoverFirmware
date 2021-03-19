@@ -47,7 +47,7 @@
 //Modified by Felix Wong for UW Robotics Firwmare Team
 //TODO swap transfer for mbed i2c command
 
-#include "SMBus.hpp"
+#include "SMBus.h"
 
 SMBus::SMBus(PinName sda, PinName scl, uint16_t address)
 {
