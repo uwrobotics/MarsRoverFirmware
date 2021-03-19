@@ -10,15 +10,15 @@ The goal of this task is to create a limit switch driver to abstract away whethe
     the switch is active high or active low.
 
 */
-// Research on whether you should make the DigitalIn vairable a reference to the actual variable
-// I added the code to configure the LimtiSwitch class in the CMakeLists.txt file in the gpio library
 // Find out later if you need to configure the supported_build_configurations.yaml file
 class LimitSwitch {
  public:
-  LimitSwitch(DigitalIn limitPin, bool activeHigh = 1, bool activeLow = 1);
-
+  LimitSwitch(DigitalIn limitPin, bool ActiveHigh);
+  // Tells you whether the LImit Switch has been pressed or not
+  bool isPressed();
+  // ActiveHighorLow is not  avery descriptive name so you should call it something like "ActiveHigh"
  private:
   DigitalIn m_limitPin;
-  bool m_activeHigh;
-  bool m_activeLow;
+  // Active High is 1 and Active Low is 0
+  bool m_ActiveHigh;
 };
