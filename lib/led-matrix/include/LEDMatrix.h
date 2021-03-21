@@ -11,9 +11,6 @@ class LEDMatrix {
   DigitalOut m_GChannel;
   DigitalOut m_BChannel;
 
-  HWBRIDGE::LEDMATRIX::color m_flashing_color;
-  HWBRIDGE::LEDMATRIX::LEDMatrixState m_led_state;
-
   volatile bool m_flashing_red, m_flashing_green, m_flashing_blue;
   volatile bool m_continue_flashing;
 
@@ -27,12 +24,6 @@ class LEDMatrix {
   // Turn off all the LEDs. Call setColor(0,0,0).
   void setColor(bool R, bool G, bool B);
 
-  // Start flashing() thread.
-  void setFlashColor(bool R, bool G, bool B);
-
-  // Stop flashing() thread and call setColor().
-  void setSolidColor(bool R, bool G, bool B);
-
  public:
   // Define matrix by the pins it is connected to.
   LEDMatrix(PinName R, PinName G, PinName B);
@@ -42,4 +33,10 @@ class LEDMatrix {
 
   // Set the state of the LEDs.
   void setState(HWBRIDGE::LEDMATRIX::LEDMatrixState state);
+
+  // Start flashing() thread.
+  void setFlashColor(bool R, bool G, bool B);
+
+  // Stop flashing() thread and call setColor().
+  void setSolidColor(bool R, bool G, bool B);
 };

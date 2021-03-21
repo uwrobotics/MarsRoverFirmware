@@ -13,16 +13,25 @@ LEDMatrix::LEDMatrix(PinName R, PinName G, PinName B)
 
 LEDMatrix::~LEDMatrix() {
   setSolidColor(0, 0, 0);
+  m_lightsThread.terminate();
 }
 
 void LEDMatrix::setState(HWBRIDGE::LEDMATRIX::LEDMatrixState state) {
-  m_led_state = state;
-  switch (m_led_state) {
-    case HWBRIDGE::LEDMATRIX::LEDMatrixState::SOLID_RED:  // do I need all the scoping in here
+  switch (state) {
+    case HWBRIDGE::LEDMATRIX::LEDMatrixState::SOLID_RED:
       setSolidColor(1, 0, 0);
       break;
     case HWBRIDGE::LEDMATRIX::LEDMatrixState::SOLID_BLUE:
       setSolidColor(0, 0, 1);
+      break;
+    case HWBRIDGE::LEDMATRIX::LEDMatrixState::SOLID_GREEN:
+      setSolidColor(0, 1, 0);
+      break;
+    case HWBRIDGE::LEDMATRIX::LEDMatrixState::FLASHING_RED:
+      setFlashColor(1, 0, 0);
+      break;
+    case HWBRIDGE::LEDMATRIX::LEDMatrixState::FLASHING_BLUE:
+      setFlashColor(0, 0, 1);
       break;
     case HWBRIDGE::LEDMATRIX::LEDMatrixState::FLASHING_GREEN:
       setFlashColor(0, 1, 0);
@@ -54,9 +63,8 @@ void LEDMatrix::setFlashColor(bool R, bool G, bool B) {
   m_flashing_blue  = B;
 
   if (!m_continue_flashing) {
-    m_lightsThread.start(callback(this, &LEDMatrix::flashing));  // why this
+    m_event_flags.set(START_FLASH);
   }
-  m_event_flags.set(START_FLASH);
 }
 
 void LEDMatrix::setSolidColor(bool R, bool G, bool B) {
