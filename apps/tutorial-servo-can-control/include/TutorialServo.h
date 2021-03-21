@@ -3,24 +3,21 @@
 #include "mbed.h"
 
 class TutorialServo {
+ public:
+  TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1,
+                float maxPulsewidthInMs = 2);
 
-public:
+  void setPositionInDegrees(const float degrees);
 
-TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1, float maxPulsewidthInMs = 2);
+  float getServoRangeInDegrees() const;
 
-void setPositionInDegrees(const float degrees);
+  float getMinPulseWidthInMs() const;
 
-float getServoRangeInDegrees() const;
+  float getMaxPulseWidthInMs() const;
 
-float getMinPulseWidthInMs() const;
-
-float getMaxPulseWidthInMs() const;
-
-private:
-
-	PwmOut m_servoPwmOut;
-	const float m_servoRangeInDegrees;
-	const float m_minPulsewidthInMs;
-	const float m_maxPulsewidthInMs;
-
+ private:
+  PwmOut m_servoPwmOut;
+  const float m_servoRangeInDegrees;
+  const float m_minPulsewidthInMs;
+  const float m_maxPulsewidthInMs;
 };
