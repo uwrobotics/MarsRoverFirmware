@@ -16,10 +16,11 @@ int main() {
 	while(true) {
 		if(can.read(servoMsg)) {
 			float degrees;
+			const float PERCENT_TO_DEG = 3.6;
 			servoMsg.getPayload(degrees);
-			servo1.setPositionInDegrees(degrees);
+
+			servo1.setPositionInDegrees(degrees * PERCENT_TO_DEG);
 		}
 		ThisThread::sleep_for(2ms);
 	}
-
 }

@@ -9,7 +9,16 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 }
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
-	m_servoPwmOut.pulsewidth_ms(1 + degrees/180);
+	if(degrees > m_servoRangeInDegrees) {
+		m_servoPwmOut.pulsewidth_ms(m_maxPulsewidthInMs);
+	}
+	else if(degrees < 0) {
+		m_servoPwmOut.pulsewidth_ms(m_minPulsewidthInMs);
+	}
+	else {
+		m_servoPwmOut.pulsewidth_ms(1 + degrees/m_servoRangeInDegrees);
+	}
+	
 }
 
 float TutorialServo::getServoRangeInDegrees() const {
