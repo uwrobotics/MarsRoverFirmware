@@ -5,6 +5,7 @@
 #include "ContServo.h"
 #include "OpenLoop.h"
 #include "Position.h"
+#include "Velocity.h"
 
 namespace Pan {
 
