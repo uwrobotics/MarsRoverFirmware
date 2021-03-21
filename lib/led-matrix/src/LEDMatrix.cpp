@@ -3,11 +3,7 @@
 #include "mbed.h"
 
 LEDMatrix::LEDMatrix(PinName R, PinName G, PinName B)
-    : m_RChannel(R),
-      m_GChannel(G),
-      m_BChannel(B),
-      m_led_state(HWBRIDGE::LEDMATRIX::LEDMatrixState::OFF),
-      m_continue_flashing(false) {
+    : m_RChannel(R), m_GChannel(G), m_BChannel(B), m_continue_flashing(false) {
   m_lightsThread.start(callback(this, &LEDMatrix::flashing));
 }
 
