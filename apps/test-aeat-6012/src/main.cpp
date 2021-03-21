@@ -52,17 +52,18 @@ int main() {
 
 void encoder_read_blocking(void) {
   printf("\r\n--- AEAT-6012 Blocking Driver Test ---\r\n\r\n");
-  float measurement;
-  encoder.reset();
+  if (!encoder.reset()) {
+    printf("Encoder reset FAILED\r\n");
+  }
 
   while (true) {
     timer.reset();
     timer.start();
 
-    if (encoder.getAngleDeg(measurement)) {
+    if (encoder.update()) {
       timer.stop();
 
-      encoder_angle_deg        = measurement;
+      encoder_angle_deg        = encoder.getAngleDeg();
       encoder_pos_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
     } else {
@@ -71,18 +72,8 @@ void encoder_read_blocking(void) {
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
 
-    timer.reset();
-    timer.start();
-
-    if (encoder.getAngularVelocityDegPerSec(measurement)) {
-      timer.stop();
-
-      encoder_angular_vel_deg_per_sec = measurement;
-      encoder_vel_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
-
-    } else {
-      printf("Encoder read FAILED!\r\n");
-    }
+    encoder_angular_vel_deg_per_sec = encoder.getAngularVelocityDegPerSec();
+    encoder_vel_read_time_us = std::chrono::duration_cast<std::chrono::microseconds>(timer.elapsed_time()).count();
 
     ThisThread::sleep_for(ENCODER_READ_PERIOD);
   }
@@ -90,7 +81,9 @@ void encoder_read_blocking(void) {
 
 void encoder_read_async(void) {
   printf("\r\n--- AEAT-6012 Async Driver Test ---\r\n\r\n");
-  encoder.reset();
+  if (!encoder.reset()) {
+    printf("Encoder reset FAIELD\r\n");
+  }
 
   while (true) {
     timer.reset();

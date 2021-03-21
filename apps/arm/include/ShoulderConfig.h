@@ -34,14 +34,14 @@ static Controller::Velocity vel(motor, encoder, std::nullopt, velPID, PA04MAXDEG
                                 LIM_SHLDR_UP);
 static Controller::Position pos(motor, encoder, std::nullopt, posPID, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
                                 LIM_SHLDR_UP);
-static Controller::Current cur(motor, encoder, std::nullopt, curPID, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
-                               LIM_SHLDR_UP);
+// static Controller::Current cur(motor, encoder, std::nullopt, curPID, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
+//                               LIM_SHLDR_UP);
 static Controller::OpenLoop open(motor, encoder, std::nullopt, PA04MAXDEGPERSEC, PA04MAXCURRENT, LIM_SHLDR_DN,
                                  LIM_SHLDR_UP);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &vel},
                                            {HWBRIDGE::CONTROL::Mode::POSITION, &pos},
-                                           {HWBRIDGE::CONTROL::Mode::CURRENT, &cur},
+                                           //{HWBRIDGE::CONTROL::Mode::CURRENT, &cur},
                                            {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &open}};
 }  // namespace Internal
 

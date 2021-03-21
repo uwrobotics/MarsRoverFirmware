@@ -3,6 +3,8 @@
 #include "Encoder.h"
 #include "QEI.h"
 
+// younes todo update pololu structure once yehia merges in his stuff maybe
+
 namespace Encoder {
 class Pololu37D final : public Encoder {
  public:
@@ -17,9 +19,20 @@ class Pololu37D final : public Encoder {
   Pololu37D(Pololu37D &&) = delete;
   ~Pololu37D()            = default;
 
-  bool getAngleDeg(float &angle) override;
-  bool getAngularVelocityDegPerSec(float &speed) override;
-  bool reset() override;
+  // see todo at the top
+  [[nodiscard]] bool update() override {
+    return false;
+  }
+  float getAngleDeg() override {
+    return 0;
+  }
+  float getAngularVelocityDegPerSec() override {
+    return 0;
+  }
+
+  bool getAngleDeg(float &angle);
+  bool getAngularVelocityDegPerSec(float &speed);
+  [[nodiscard]] bool reset() override;
 
  private:
   GPIO::QEI m_QEI;

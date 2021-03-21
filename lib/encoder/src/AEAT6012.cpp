@@ -95,18 +95,19 @@ bool AEAT6012::read(void) {
   }
 }
 
-bool AEAT6012::getAngleDeg(float &angle) {
+bool AEAT6012::update() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  bool success = read();
-  angle        = m_position_deg;
-  return success;
+  return read();
 }
 
-bool AEAT6012::getAngularVelocityDegPerSec(float &speed) {
+float AEAT6012::getAngleDeg() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  bool success = read();
-  speed        = m_angular_velocity_deg_per_sec;
-  return success;
+  return m_position_deg;
+}
+
+float AEAT6012::getAngularVelocityDegPerSec() {
+  std::scoped_lock<Mutex> lock(m_mutex);
+  return m_angular_velocity_deg_per_sec;
 }
 
 bool AEAT6012::reset(void) {

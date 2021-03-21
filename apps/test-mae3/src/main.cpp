@@ -47,12 +47,10 @@ int main() {
     }
 
     if (printTimer.elapsed_time() >= 50ms) {
+      MBED_ASSERT_WARN(encoder.update())
       printTimer.reset();
-      float angle = 0, speed = 0;
-      MBED_ASSERT_WARN(encoder.getAngleDeg(angle));
-      MBED_ASSERT_WARN(encoder.getAngularVelocityDegPerSec(speed));
 
-      printf("Angle: %f, Angular Velocity :%f\r\n", angle, speed);
+      printf("Angle: %f, Angular Velocity :%f\r\n", encoder.getAngleDeg(), encoder.getAngularVelocityDegPerSec());
     }
   }
 }

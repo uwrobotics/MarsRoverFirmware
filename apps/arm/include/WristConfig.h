@@ -48,8 +48,8 @@ static Controller::Velocity leftVel(leftMotor, leftEncoder, std::nullopt, leftVe
                                     POLOLUMAXCURRENT, NC, NC);
 static Controller::Position leftPos(leftMotor, leftEncoder, std::nullopt, leftPosPID, POLOLUMAXDEGPERSEC,
                                     POLOLUMAXCURRENT, NC, NC);
-static Controller::Current leftCur(leftMotor, leftEncoder, std::nullopt, leftCurPID, POLOLUMAXDEGPERSEC,
-                                   POLOLUMAXCURRENT, NC, NC);
+// static Controller::Current leftCur(leftMotor, leftEncoder, std::nullopt, leftCurPID, POLOLUMAXDEGPERSEC,
+//                                   POLOLUMAXCURRENT, NC, NC);
 static Controller::OpenLoop leftOpen(leftMotor, leftEncoder, std::nullopt, POLOLUMAXDEGPERSEC, POLOLUMAXCURRENT, NC,
                                      NC);
 
@@ -57,18 +57,18 @@ static Controller::Velocity rightVel(rightMotor, rightEncoder, std::nullopt, rig
                                      POLOLUMAXCURRENT, NC, NC);
 static Controller::Position rightPos(rightMotor, rightEncoder, std::nullopt, rightPosPID, POLOLUMAXDEGPERSEC,
                                      POLOLUMAXCURRENT, NC, NC);
-static Controller::Current rightCur(rightMotor, rightEncoder, std::nullopt, rightCurPID, POLOLUMAXDEGPERSEC,
-                                    POLOLUMAXCURRENT, NC, NC);
+// static Controller::Current rightCur(rightMotor, rightEncoder, std::nullopt, rightCurPID, POLOLUMAXDEGPERSEC,
+//                                    POLOLUMAXCURRENT, NC, NC);
 static Controller::OpenLoop rightOpen(rightMotor, rightEncoder, std::nullopt, POLOLUMAXDEGPERSEC, POLOLUMAXCURRENT, NC,
                                       NC);
 
 static const Controller::ControlMap leftLut  = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &leftVel},
                                                {HWBRIDGE::CONTROL::Mode::POSITION, &leftPos},
-                                               {HWBRIDGE::CONTROL::Mode::CURRENT, &leftCur},
+                                               // {HWBRIDGE::CONTROL::Mode::CURRENT, &leftCur},
                                                {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &leftOpen}};
 static const Controller::ControlMap rightLut = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &rightVel},
                                                 {HWBRIDGE::CONTROL::Mode::POSITION, &rightPos},
-                                                {HWBRIDGE::CONTROL::Mode::CURRENT, &rightCur},
+                                                // {HWBRIDGE::CONTROL::Mode::CURRENT, &rightCur},
                                                 {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &rightOpen}};
 }  // namespace Internal
 
