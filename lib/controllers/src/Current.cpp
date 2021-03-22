@@ -7,9 +7,7 @@ Current::Current(Actuator::Actuator &actuator, Encoder::Encoder &encoder, Sensor
                  bool ignoreDegPerSecChecks, bool ignoreCurrentChecks, bool ignoreLimitSwitchChecks)
     : ActuatorController(actuator, encoder, currentSensor, maxDegPerSec, maxCurrent, lowerLimit, upperLimit,
                          ignoreDegPerSecChecks, ignoreCurrentChecks, ignoreLimitSwitchChecks),
-      m_pid(pid) {
-  //m_currentSensor.value() = currentSensor;
-}
+      m_pid(pid) {}
 
 bool Current::update() {
   /* Proceed even if encoder read fails, but report */

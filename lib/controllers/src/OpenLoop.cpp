@@ -24,7 +24,7 @@ bool OpenLoop::update() {
   bool enc_update_success = m_encoder.update();
   bool cs_update_success  = true;
   bool stop_required      = false;
-  if(m_currentSensor.has_value()) {
+  if (m_currentSensor.has_value()) {
     cs_update_success = m_currentSensor.value().get().update();
   }
   if (shouldStop()) {
