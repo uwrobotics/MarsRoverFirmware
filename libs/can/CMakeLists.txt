@@ -17,21 +17,13 @@ target_link_libraries(CANBuffer
         mbed-os
         )
 
-add_library(CANSignal INTERFACE)
-target_include_directories(CANMsg INTERFACE include)
-target_link_libraries(CANSignal
-        INTERFACE
-        uwrt-mars-rover-hw-bridge
-        LookupTable
-        )
-
 add_library(CANAutogenWrapper STATIC)
 target_sources(CANAutogenWrapper PRIVATE src/CANAutogenWrapper.cpp)
 target_include_directories(CANAutogenWrapper PUBLIC include)
 target_link_libraries(CANAutogenWrapper
         PRIVATE
         uwrt-mars-rover-hw-bridge
-        CANSignal
+        LookupTable
         )
 target_set_mbed_dependency(CANAutogenWrapper)
 
@@ -44,6 +36,5 @@ target_link_libraries(CANBus
         PRIVATE
         uwrt-mars-rover-hw-bridge
         CANMsg
-        CANSignal
         CANAutogenWrapper
         )

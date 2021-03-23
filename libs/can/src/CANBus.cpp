@@ -1,17 +1,16 @@
 #include "CANBus.h"
 
-CANBus::CANBus(PinName rd, PinName td, CANMsg::CANMsgMap *rxMsgMap, CANMsg::CANMsgMap *txMsgMap,
-               CANMsg::CANMsgHandlerMap *rxMsgHandlerMap, CANSignal::CANSignalMap *txSignalMap, uint32_t freqency_hz)
+CANBus::CANBus(PinName rd, PinName td, CANSignalMap *rxSignalMap, CANSignalMap *txSignalMap,
+               CANMsgIDList *rxOneShotMsgIDs, uint32_t freqency_hz)
     : CAN(rd, td, freqency_hz),
       m_rxPostmanThread(RX_POSTMAN_THREAD_PRIORITY),
-      m_rxProcessorThread(RX_PROCESSOR_THREAD_PRIORITY),
+      m_rxClientThread(RX_CLIENT_THREAD_PRIORITY),
       m_txProcessorThread(TX_PROCESSOR_THREAD_PRIORITY),
-      m_rxMsgMap(rxMsgMap),
-      m_txMsgMap(txMsgMap),
-      m_rxMsgHandlerMap(rxMsgHandlerMap),
-      m_txSignalMap(txSignalMap) {
+      m_rxSignalMap(rxSignalMap),
+      m_txSignalMap(txSignalMap),
+      m_rxOneShotMsgIDs(rxOneShotMsgIDs) {
   m_rxPostmanThread.start(callback(&m_rxEventQueue, &EventQueue::dispatch_forever));
-  m_rxProcessorThread.start(callback(this, &CANBus::rxProcessor));
+  m_rxClientThread.start(callback(this, &CANBus::rxClient));
   m_txProcessorThread.start(callback(this, &CANBus::txProcessor));
   this->attach(callback(this, &CANBus::rxISR), CANBus::RxIrq);
 }
@@ -34,47 +33,61 @@ void CANBus::rxPostman(void) {
   can_irq_set(&_can, IRQ_RX, true);
 }
 
-void CANBus::rxProcessor(void) {
-  CANMsg *mail = nullptr;
+void CANBus::rxClient(void) {
+  while (true) {
+    CANMsg *mail = nullptr;
 
-  do {
-    mail = m_rxMailbox.try_get();  // TODO: try_get_for was not working. Investigate why and use it
-    ThisThread::sleep_for(1ms);
-  } while (mail == nullptr);
+    do {
+      mail = m_rxMailbox.try_get();  // TODO: try_get_for was not working. Investigate why and use it
+      ThisThread::sleep_for(1ms);
+    } while (mail == nullptr);
 
-  MBED_ASSERT(mail != nullptr);
-  m_rxMsgHandlerMap->at(mail->getID())(*mail);
-  MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
+    MBED_ASSERT(mail != nullptr);
+
+    HWBRIDGE::CANMsgID_t msgID = (HWBRIDGE::CANMsgID_t)mail->getID();
+    CANMsgData_t msgData;
+    mail->getPayload(msgData);
+
+    // If message is one-shot, process message
+    if (m_rxOneShotMsgIDs->find(msgID) != m_rxOneShotMsgIDs->end()) {
+      // TODO: process one-shot msg
+    }
+
+    // Otherwise message is streamed
+    // Extract message signals
+    unpackCANMsg(msgData.raw, msgID, m_rxSignalMap);
+
+    MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
+  }
 }
 
 void CANBus::txProcessor(void) {
-  CANMsg *mail = nullptr;
+  while (true) {
+    CANMsg *mail = nullptr;
 
-  // Send all one-shots messages that were queued
-  while ((mail = m_txMailboxOneShot.try_get()) != nullptr) {
-    this->write(*mail);
-    ThisThread::sleep_for(TX_INTERDELAY);
-  }
+    // Send all one-shots messages that were queued
+    while ((mail = m_txMailboxOneShot.try_get()) != nullptr) {
+      this->write(*mail);
+      ThisThread::sleep_for(TX_INTERDELAY);
+    }
 
-  // Send all streamed messages
-  // for (auto it = m_txMsgMap->begin(); it != m_txMsgMap->end(); it++) {
-  //   this->write(it->second);
-  //   ThisThread::sleep_for(TX_INTERDELAY);
-  // }
+    // Send all streamed messages
+    for (auto it = m_txSignalMap->begin(); it != m_txSignalMap->end(); it++) {
+      HWBRIDGE::CANMsgID_t msgID = it->first;
 
-  // Send all streamed messages
-  // For each message in signal map
-  for (auto it = m_txSignalMap->begin(); it != m_txSignalMap->end(); it++) {
-    uint16_t msgID = it->first;
+      // TODO: does it have to be 8 bytes?
+      CANMsgData_t msgData = {0};
+      packCANMsg(msgData.raw, msgID, m_txSignalMap);
 
-    uint8_t raw[8] = {0};
-    packCANMsg(raw, msgID, &(it->second));
+      // Send message
+      CANMsg msg;
+      msg.setID((HWBRIDGE::CANID)msgID);
+      msg.setPayload(msgData);
+      this->write(msg);
+      ThisThread::sleep_for(TX_INTERDELAY);
+    }
 
-    // Send message
-    CANMsg msg;
-    msg.setID((HWBRIDGE::CANID)msgID);
-    msg.setPayload(raw);
-    this->write(msg);
+    ThisThread::sleep_for(TX_PERIOD);
   }
 }
 
@@ -87,15 +100,13 @@ bool CANBus::postMessageOneShot(CANMsg *msg) {
   return (mail != nullptr);
 }
 
-void CANBus::postMessageStreamed(CANMsg *msg) {
-  m_txMsgMap->at(msg->getID()) = *msg;
-}
-
-bool CANBus::updateSignal(double value, CAN_SIGNAL_NAME signalName, uint16_t msgID) {
+bool CANBus::updateSignal(HWBRIDGE::CANSIGNALNAME signalName, uint16_t msgID, double value) {
   // Find signal in message
-  for (CANSignal &signal : (*m_txSignalMap).at(msgID).value()) {
-    if (signal.getName() == signalName) {
-      signal.setValue(value);
+  if (m_txSignalMap->find(msgID) != m_txSignalMap->end()) {
+    CANSignalLUT *signals = &(m_txSignalMap->at(msgID));
+
+    if (signals->find(signalName) != signals->end()) {
+      (*signals)[signalName] = value;
       return true;
     }
   }

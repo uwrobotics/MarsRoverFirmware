@@ -9,7 +9,6 @@ class CANMsg : public CANMessage {
   using CAN_Message::id;
 
  public:
-  using CANMsgMap     = Utility::LookupTable<HWBRIDGE::CANID, CANMsg>;
   using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
   using CANMsgHandlerMap =
       Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler,
