@@ -40,13 +40,7 @@ class AEAT6012 final : public Encoder {
   // Asynchronous API for triggering encoder read
   // Invokes user callback once read transaction is complete
   // Returns true if SPI read successfully started, false if SPI peripheral is busy
-  bool readAsync(callback_ptr callback);
-
-  // For async use - returns stored absolute position in degrees (without invoking an encoder read)
-  float getAngleDegNoTrigger(void);
-
-  // For async use - returns stored angular velocity in degrees / second (without invoking an encoder read)
-  float getAngularVelocityDegPerSecNoTrigger(void);
+  bool update(callback_ptr callback);
 
  private:
   static constexpr uint32_t FREQUENCY_HZ              = 1000000;  // 1MHz (max frequency given by datasheet)
