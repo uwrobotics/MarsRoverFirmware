@@ -10,7 +10,7 @@ int main() {
   Sensor::AdafruitSTEMMA sensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
   while (1) {
-    MBED_ASSERT_WARN(sensor.reset());
+    MBED_ASSERT(sensor.reset());
 
     ThisThread::sleep_for(500ms);
 
@@ -22,7 +22,7 @@ int main() {
 
     printf("\r\nReading Moisture...\r\n");  // read moisture from sensor, reading of 65534 indicates
     // unsuccessful initialization
-    MBED_ASSERT_WARN(sensor.update());
+    MBED_ASSERT(sensor.update());
     printf("Moisture: %f \r\n", sensor.read());
 
     ThisThread::sleep_for(100ms);
