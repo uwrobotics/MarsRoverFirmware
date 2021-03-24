@@ -47,7 +47,7 @@ int main() {
 
     if (printTimer.elapsed_time() >= 50ms) {
       printTimer.reset();
-      Utility::Logger::printf(
+      printf(
           "Avg PW: %+f, \tAvg Prd: %+f, \tRaw Duty: %+f, \tAvg Duty: %+f, \tAvg Duty Velo: %+f, \tAvg Ang Velo: "
           "%+f\r\n",
           pwmIn.avgPulseWidth().count(), pwmIn.avgPeriod().count(), pwmIn.dutyCycle(), pwmIn.avgDutyCycle(),

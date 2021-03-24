@@ -32,11 +32,11 @@ static Controller::Position pos(motor, encoder, std::nullopt, posPID, MAX_DEG_PE
 static Controller::OpenLoop open(motor, encoder, std::nullopt, MAX_DEG_PER_SEC, MAX_CURRENT, LIM_SW_ELVTR_DN,
                                  LIM_SW_ELVTR_UP);
 
-static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::Velocity, &vel},
-                                           {HWBRIDGE::CONTROL::Mode::Position, &pos},
-                                           {HWBRIDGE::CONTROL::Mode::OpenLoop, &open}};
+static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &vel},
+                                           {HWBRIDGE::CONTROL::Mode::POSITION, &pos},
+                                           {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &open}};
 }  // namespace Internal
 
-static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OpenLoop);
+static Controller::ActuatorControllerManager manager(Internal::lut, HWBRIDGE::CONTROL::Mode::OPEN_LOOP);
 
 }  // namespace Elevator

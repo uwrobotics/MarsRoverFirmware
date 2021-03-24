@@ -105,9 +105,13 @@ void txCANProcessor() {
 }
 
 int main() {
-  Utility::Logger::printf("\r\n\r\n");
-  Utility::Logger::printf("SCIENCE APP STARTED!\r\n");
-  Utility::Logger::printf("====================\r\n");
+  printf("\r\n\r\n");
+  printf("SCIENCE APP STARTED!\r\n");
+  printf("====================\r\n");
+
+  // CAN filter
+  can.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_SCIENCE_RX, CANStandard,
+                HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
 
   rxCANProcessorThread.start(rxCANProcessor);
   txCANProcessorThread.start(txCANProcessor);
