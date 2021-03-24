@@ -1,14 +1,14 @@
 #include "CANBus.h"
 
-CANBus::CANBus(PinName rd, PinName td, CANSignalMap *rxSignalMap, CANSignalMap *txSignalMap,
-               CANMsgIDList *rxOneShotMsgIDs, uint32_t freqency_hz)
+CANBus::CANBus(PinName rd, PinName td, HWBRIDGE::CANMsgMap *rxStreamedMsgMap, HWBRIDGE::CANMsgMap *txStreamedMsgMap,
+               const CANMsg::CANMsgHandlerMap *rxOneShotMsgHandler, uint32_t freqency_hz)
     : CAN(rd, td, freqency_hz),
       m_rxPostmanThread(RX_POSTMAN_THREAD_PRIORITY),
       m_rxClientThread(RX_CLIENT_THREAD_PRIORITY),
       m_txProcessorThread(TX_PROCESSOR_THREAD_PRIORITY),
-      m_rxSignalMap(rxSignalMap),
-      m_txSignalMap(txSignalMap),
-      m_rxOneShotMsgIDs(rxOneShotMsgIDs) {
+      m_rxStreamedMsgMap(rxStreamedMsgMap),
+      m_txStreamedMsgMap(txStreamedMsgMap),
+      m_rxOneShotMsgHandler(rxOneShotMsgHandler) {
   m_rxPostmanThread.start(callback(&m_rxEventQueue, &EventQueue::dispatch_forever));
   m_rxClientThread.start(callback(this, &CANBus::rxClient));
   m_txProcessorThread.start(callback(this, &CANBus::txProcessor));
@@ -44,20 +44,23 @@ void CANBus::rxClient(void) {
 
     MBED_ASSERT(mail != nullptr);
 
+    // Extract message ID and payload
     HWBRIDGE::CANMsgID_t msgID = (HWBRIDGE::CANMsgID_t)mail->getID();
-    CANMsgData_t msgData;
+    HWBRIDGE::CANMsgData_t msgData;
     mail->getPayload(msgData);
 
+    MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
+
     // If message is one-shot, process message
-    if (m_rxOneShotMsgIDs->find(msgID) != m_rxOneShotMsgIDs->end()) {
-      // TODO: process one-shot msg
+    if (m_rxOneShotMsgHandler->find((HWBRIDGE::CANID)msgID) != m_rxOneShotMsgHandler->end()) {
+      CANMsg msg;
+      msg.setID((HWBRIDGE::CANID)msgID);
+      msg.setPayload(msgData);
+      m_rxOneShotMsgHandler->at((HWBRIDGE::CANID)msgID)(msg);
     }
 
-    // Otherwise message is streamed
-    // Extract message signals
-    unpackCANMsg(msgData.raw, msgID, m_rxSignalMap);
-
-    MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
+    // Otherwise message is streamed - extract message signals and put in RX message map
+    HWBRIDGE::unpackCANMsg(msgData.raw, msgID, m_rxStreamedMsgMap);
   }
 }
 
@@ -72,12 +75,12 @@ void CANBus::txProcessor(void) {
     }
 
     // Send all streamed messages
-    for (auto it = m_txSignalMap->begin(); it != m_txSignalMap->end(); it++) {
+    for (auto it = m_txStreamedMsgMap->begin(); it != m_txStreamedMsgMap->end(); it++) {
       HWBRIDGE::CANMsgID_t msgID = it->first;
 
       // TODO: does it have to be 8 bytes?
-      CANMsgData_t msgData = {0};
-      packCANMsg(msgData.raw, msgID, m_txSignalMap);
+      HWBRIDGE::CANMsgData_t msgData = {0};
+      HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txStreamedMsgMap);
 
       // Send message
       CANMsg msg;
@@ -100,17 +103,8 @@ bool CANBus::postMessageOneShot(CANMsg *msg) {
   return (mail != nullptr);
 }
 
-bool CANBus::updateSignal(HWBRIDGE::CANSIGNALNAME signalName, uint16_t msgID, double value) {
-  // Find signal in message
-  if (m_txSignalMap->find(msgID) != m_txSignalMap->end()) {
-    CANSignalLUT *signals = &(m_txSignalMap->at(msgID));
-
-    if (signals->find(signalName) != signals->end()) {
-      (*signals)[signalName] = value;
-      return true;
-    }
-  }
-  return false;
+bool CANBus::updateSignal(HWBRIDGE::CANMsgID_t msgID, HWBRIDGE::CANSIGNALNAME signalName, double value) {
+  return m_txStreamedMsgMap->setSignalValue(msgID, signalName, value);
 }
 
 can_t *CANBus::getHandle() {
