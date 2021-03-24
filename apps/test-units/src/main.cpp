@@ -17,36 +17,41 @@ using namespace units::mass;
 
 int main() {
 
-    // Testing angular velocity in degrees per second and angle in degrees
+    while(true) {
 
-    degrees_per_second_t speed = degree_t(5)/second_t(1.0); // creates an angular velocity type object with velocity of 5 degrees/second
+        // Testing angular velocity in degrees per second and angle in degrees
 
-    // Multiplying 5 degrees/sec by 5 seconds yields 25 degrees
-    // Not explicitly declaring it as degree_t would assume it as radians, which is the SI unit
-    degree_t degreesMoved = speed * second_t(5); 
+        degrees_per_second_t speed = degree_t(5)/second_t(1.0); // creates an angular velocity type object with velocity of 5 degrees/second
 
-    // Printing both the angular velocity and the degrees subtended: 
-    Utility::logger << speed << std::endl;
-    Utility::logger << degreesMoved << std::endl;
+        // Multiplying 5 degrees/sec by 5 seconds yields 25 degrees
+        // Not explicitly declaring it as degree_t would assume it as radians, which is the SI unit
+        degree_t degreesMoved = speed * second_t(5); 
 
-    radian_t angleInRad = radian_t(2*M_PI); // Create angle object in radians
-    degree_t angleInDeg = degree_t(angleInRad); // Can be cast to degrees
+        // Printing both the angular velocity and the degrees subtended: 
+        std::cout << speed << std::endl;
+        std::cout << degreesMoved << std::endl;
 
-    Utility::logger << angleInRad << std::endl; // prints 6.28319 rad
-    Utility::logger << angleInDeg << std::endl; // prints 360 degrees
+        radian_t angleInRad = radian_t(2*M_PI); // Create angle object in radians
+        degree_t angleInDeg = degree_t(angleInRad); // Can be cast to degrees
 
-    // Testing current in Amperes
+        std::cout << angleInRad << std::endl; // prints 6.28319 rad
+        std::cout << angleInDeg << std::endl; // prints 360 degrees
 
-    ampere_t currentIn = ampere_t(3); // Creating 3A current
-    ohm_t resistance = ohm_t(4); // resistance through the load
-    auto voltageThrough = currentIn * resistance; // automatically casted to voltage since V = IR
+        // Testing current in Amperes
 
-    Utility::logger << voltageThrough << std::endl; // prints a voltage object
+        ampere_t currentIn = ampere_t(3); // Creating 3A current
+        ohm_t resistance = ohm_t(4); // resistance through the load
+        auto voltageThrough = currentIn * resistance; // automatically casted to voltage since V = IR
 
-    // Testing force in Newtons
+        std::cout << voltageThrough << std::endl; // prints a voltage object
 
-    newton_t forceIn = newton_t(5); // Create a 5 newton force
-    kilogram_t massOfObject = kilogram_t(10); // applied on a 10 kg object
-    auto accelerationIn = forceIn/massOfObject; // automatically casted to m/s^2 (acceleration)
-    Utility::logger << accelerationIn << std::endl; 
-} 
+        // Testing force in Newtons
+
+        newton_t forceIn = newton_t(5); // Create a 5 newton force
+        kilogram_t massOfObject = kilogram_t(10); // applied on a 10 kg object
+        auto accelerationIn = forceIn/massOfObject; // automatically casted to m/s^2 (acceleration)
+        std::cout << accelerationIn << std::endl; 
+
+        ThisThread::sleep_for(1s);
+        }
+    } 
