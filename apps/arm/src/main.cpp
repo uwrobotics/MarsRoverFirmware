@@ -74,6 +74,10 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   return MBED_SUCCESS;
 }
 
+// TODO: Add CAN handler for enabling/disabling current checks.
+// TODO: Add CAN handler for enabling/disabling rpm checks
+// TODO: Add CAN handler for enabling/disabling current checks
+
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::CONTROL::PID::TuningApiPayload data;
   msg.getPayload(data);
@@ -240,9 +244,9 @@ Thread rxCANProcessorThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
 
 int main() {
-  Utility::Logger::printf("\r\n\r\n");
-  Utility::Logger::printf("ARM APPLICATION STARTED\r\n");
-  Utility::Logger::printf("=======================\r\n");
+  printf("\r\n\r\n");
+  printf("ARM APPLICATION STARTED\r\n");
+  printf("=======================\r\n");
 
   // CAN init stuff
   can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_ARM_RX, CANStandard,

@@ -56,9 +56,13 @@ void rxCANProcessor() {
 }
 
 int main() {
-  Utility::Logger::printf("\n\n");
-  Utility::Logger::printf("GIMBAL APPLICATION STARTED\n");
-  Utility::Logger::printf("=======================\n");
+  printf("\r\n\r\n");
+  printf("GIMBAL APPLICATION STARTED\r\n");
+  printf("=======================\r\n");
+
+  // CAN filter
+  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_GIMBAL_RX, CANStandard,
+                 HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
 
   rxCANProcessorThread.start(rxCANProcessor);
 
