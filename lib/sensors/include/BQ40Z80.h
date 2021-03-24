@@ -4,7 +4,6 @@
 
 /*
  * Will not be using the Sensor class as this Chip is much more complex than most sensors
- *
  * This chip contains many different readings and configuration which is not able to be handled with the sensor parent class
  */
 
@@ -157,13 +156,6 @@ typedef struct dataflash {
 class BQ40Z80 {
  private:
   /**
-   * @param m_I2C
-   * mbed I2C pin for SMBus communication
-   * is there an SMBus library which we can use instead?
-   */
-  I2C m_I2c;
-
-  /**
    * @param m_address
    * I2C address of chip
    */
@@ -212,7 +204,7 @@ class BQ40Z80 {
    * @param[in] I2C_SDA_Pin  pinname for SDA pin
    * @param[in] I2C_SCL_Pin  pinname for SCL pin
    */
-  BQ40Z80(PinName I2C_SDA_Pin, PinName I2C_SCL_Pin, uint16_t addr);
+  BQ40Z80(PinName sda, PinName scl, uint16_t addr);
 
   /**
    * @brief Distructor for BMS class

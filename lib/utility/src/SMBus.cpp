@@ -49,12 +49,11 @@
 
 #include "SMBus.h"
 
-SMBus::SMBus(PinName sda, PinName scl, uint16_t address)
+SMBus::SMBus(PinName sda, PinName scl, uint16_t address) : m_i2c(sda, scl)
 {
 	m_address = address;
 }
 
-SMBus::~SMBus(){}
 
 int SMBus::read_word(const uint8_t cmd_code, uint16_t &data)
 {

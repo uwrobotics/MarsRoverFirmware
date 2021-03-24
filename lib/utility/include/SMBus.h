@@ -59,7 +59,7 @@ public:
 	uint16_t m_address;
 
 	SMBus(PinName sda, PinName scl, uint16_t address);
-	~SMBus() override;
+	~SMBus()  = 0;
 
 	/**
 	 * @brief Sends a block write command.
