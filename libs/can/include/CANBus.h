@@ -1,26 +1,26 @@
 #pragma once
 
-#include <unordered_set>
-
-#include "CANAutogenWrapper.h"
 #include "CANMsg.h"
 #include "hw_bridge.h"
 #include "mbed.h"
 
 class CANBus : public CAN {
  public:
-  using CANMsgIDList = const std::unordered_set<HWBRIDGE::CANMsgID_t>;
-
   // Initialize CAN bus interface TODO: add filter here
   CANBus(PinName rd, PinName td, HWBRIDGE::CANMsgMap *rxStreamedMsgMap, HWBRIDGE::CANMsgMap *txStreamedMsgMap,
-         const CANMsg::CANMsgHandlerMap *rxOneShotMsgHandler,
+         const CANMsg::CANMsgHandlerMap *rxOneShotMsgHandler, uint32_t filterID = 0, uint32_t filterMask = 0,
          uint32_t freqency_hz = HWBRIDGE::ROVER_CANBUS_FREQUENCY_HZ);
 
   // Post one shot message to be sent
   bool postMessageOneShot(CANMsg *msg);
 
   // Update a TX CAN signal
-  bool updateSignal(HWBRIDGE::CANMsgID_t msgID, HWBRIDGE::CANSIGNALNAME signalName, double value);
+  bool updateStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
+                            HWBRIDGE::CANSignalValue_t signalValue);
+
+  // Read a RX CAN signal
+  bool readStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
+                          HWBRIDGE::CANSignalValue_t &signalValue);
 
   can_t *getHandle();
 

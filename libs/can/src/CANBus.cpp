@@ -1,7 +1,8 @@
 #include "CANBus.h"
 
 CANBus::CANBus(PinName rd, PinName td, HWBRIDGE::CANMsgMap *rxStreamedMsgMap, HWBRIDGE::CANMsgMap *txStreamedMsgMap,
-               const CANMsg::CANMsgHandlerMap *rxOneShotMsgHandler, uint32_t freqency_hz)
+               const CANMsg::CANMsgHandlerMap *rxOneShotMsgHandler, uint32_t filterID, uint32_t filterMask,
+               uint32_t freqency_hz)
     : CAN(rd, td, freqency_hz),
       m_rxPostmanThread(RX_POSTMAN_THREAD_PRIORITY),
       m_rxClientThread(RX_CLIENT_THREAD_PRIORITY),
@@ -9,6 +10,7 @@ CANBus::CANBus(PinName rd, PinName td, HWBRIDGE::CANMsgMap *rxStreamedMsgMap, HW
       m_rxStreamedMsgMap(rxStreamedMsgMap),
       m_txStreamedMsgMap(txStreamedMsgMap),
       m_rxOneShotMsgHandler(rxOneShotMsgHandler) {
+  this->filter(filterID, filterMask, CANStandard);
   m_rxPostmanThread.start(callback(&m_rxEventQueue, &EventQueue::dispatch_forever));
   m_rxClientThread.start(callback(this, &CANBus::rxClient));
   m_txProcessorThread.start(callback(this, &CANBus::txProcessor));
@@ -24,11 +26,14 @@ void CANBus::rxPostman(void) {
   CANMsg msg;
   // this loop is needed to avoid missing msg received between turning off the IRQ and turning it back on
   while (this->read(msg)) {
-    // TODO: Handle mail related errors better
-    CANMsg *mail = m_rxMailbox.try_alloc_for(1ms);
-    MBED_ASSERT(mail != nullptr);
-    *mail = msg;
-    m_rxMailbox.put(mail);
+    CANMsg *mail = m_rxMailbox.try_alloc();  // no wait
+
+    if (mail != nullptr) {
+      *mail = msg;
+      MBED_ASSERT(m_rxMailbox.put(mail) == osOK);
+    } else {
+      MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_BUFFER_FULL), "CAN RX mailbox full");
+    }
   }
   can_irq_set(&_can, IRQ_RX, true);
 }
@@ -42,25 +47,26 @@ void CANBus::rxClient(void) {
       ThisThread::sleep_for(1ms);
     } while (mail == nullptr);
 
-    MBED_ASSERT(mail != nullptr);
-
     // Extract message ID and payload
-    HWBRIDGE::CANMsgID_t msgID = (HWBRIDGE::CANMsgID_t)mail->getID();
+    HWBRIDGE::CANID msgID = mail->getID();
     HWBRIDGE::CANMsgData_t msgData;
     mail->getPayload(msgData);
 
     MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
 
     // If message is one-shot, process message
-    if (m_rxOneShotMsgHandler->find((HWBRIDGE::CANID)msgID) != m_rxOneShotMsgHandler->end()) {
+    if (m_rxOneShotMsgHandler->find(msgID) != m_rxOneShotMsgHandler->end()) {
       CANMsg msg;
-      msg.setID((HWBRIDGE::CANID)msgID);
+      msg.setID(msgID);
       msg.setPayload(msgData);
-      m_rxOneShotMsgHandler->at((HWBRIDGE::CANID)msgID)(msg);
+      m_rxOneShotMsgHandler->at(msgID)(msg);
     }
 
     // Otherwise message is streamed - extract message signals and put in RX message map
-    HWBRIDGE::unpackCANMsg(msgData.raw, msgID, m_rxStreamedMsgMap);
+    if (!HWBRIDGE::unpackCANMsg(msgData.raw, msgID, m_rxStreamedMsgMap)) {
+      MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                   "CAN RX message unpacking failed");
+    }
   }
 }
 
@@ -70,24 +76,30 @@ void CANBus::txProcessor(void) {
 
     // Send all one-shots messages that were queued
     while ((mail = m_txMailboxOneShot.try_get()) != nullptr) {
-      this->write(*mail);
+      if (!this->write(*mail)) {
+        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_WRITE_FAILED), "CAN TX write failed");
+      }
       ThisThread::sleep_for(TX_INTERDELAY);
     }
 
     // Send all streamed messages
     for (auto it = m_txStreamedMsgMap->begin(); it != m_txStreamedMsgMap->end(); it++) {
-      HWBRIDGE::CANMsgID_t msgID = it->first;
+      HWBRIDGE::CANID msgID = it->first;
 
-      // TODO: does it have to be 8 bytes?
+      // TODO: figure out how to set msg payload to correct size
       HWBRIDGE::CANMsgData_t msgData = {0};
-      HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txStreamedMsgMap);
-
-      // Send message
-      CANMsg msg;
-      msg.setID((HWBRIDGE::CANID)msgID);
-      msg.setPayload(msgData);
-      this->write(msg);
-      ThisThread::sleep_for(TX_INTERDELAY);
+      size_t len                     = 0;
+      if (HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txStreamedMsgMap, len)) {
+        // Send message
+        CANMsg msg;
+        msg.setID(msgID);
+        msg.setPayload(msgData);
+        this->write(msg);
+        ThisThread::sleep_for(TX_INTERDELAY);
+      } else {
+        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                     "CAN RX message packing failed");
+      }
     }
 
     ThisThread::sleep_for(TX_PERIOD);
@@ -95,16 +107,26 @@ void CANBus::txProcessor(void) {
 }
 
 bool CANBus::postMessageOneShot(CANMsg *msg) {
-  CANMsg *mail = m_txMailboxOneShot.try_alloc_for(1ms);
-  if (mail) {
-    *mail = *msg;
-    m_txMailboxOneShot.put(mail);
+  bool success = false;
+  if (msg) {
+    CANMsg *mail = m_txMailboxOneShot.try_alloc_for(1ms);
+    if (mail) {
+      *mail = *msg;
+      MBED_ASSERT(m_txMailboxOneShot.put(mail) == osOK);
+      success = true;
+    }
   }
-  return (mail != nullptr);
+  return success;
 }
 
-bool CANBus::updateSignal(HWBRIDGE::CANMsgID_t msgID, HWBRIDGE::CANSIGNALNAME signalName, double value) {
-  return m_txStreamedMsgMap->setSignalValue(msgID, signalName, value);
+bool CANBus::updateStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
+                                  HWBRIDGE::CANSignalValue_t signalValue) {
+  return m_txStreamedMsgMap->setSignalValue(msgID, signalName, signalValue);
+}
+
+bool CANBus::readStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
+                                HWBRIDGE::CANSignalValue_t &signalValue) {
+  return m_rxStreamedMsgMap->getSignalValue(msgID, signalName, signalValue);
 }
 
 can_t *CANBus::getHandle() {

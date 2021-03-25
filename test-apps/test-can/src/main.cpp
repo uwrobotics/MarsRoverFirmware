@@ -3,8 +3,8 @@
 #include "Logger.h"
 #include "hw_bridge.h"
 
-CANBus can(CAN1_RX, CAN1_TX, &TestCAN::rxStreamedMsgMap, &TestCAN::txStreamedMsgMap, &TestCAN::rxOneShotMsgHandler,
-           HWBRIDGE::ROVER_CANBUS_FREQUENCY_HZ);
+CANBus can(CAN1_RX, CAN1_TX, &TestCANConfig::rxStreamedMsgMap, &TestCANConfig::txStreamedMsgMap,
+           &TestCANConfig::rxOneShotMsgHandler, HWBRIDGE::ROVER_CANBUS_FREQUENCY_HZ);
 
 int main() {
   printf("CAN test\r\n");
