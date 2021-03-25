@@ -1,16 +1,17 @@
+#include "SMBus.h"
 #include "math.h"
 #include "mbed.h"
-#include "SMBus.h"
 
 /*
  * Will not be using the Sensor class as this Chip is much more complex than most sensors
- * This chip contains many different readings and configuration which is not able to be handled with the sensor parent class
+ * This chip contains many different readings and configuration which is not able to be handled with the sensor parent
+ * class
  */
 
 namespace BQ40Z80 {
-#define SBS_MANUFACTURER_ACCESS 0x00
+#define SBS_MANUFACTURER_ACCESS       0x00
 #define SBS_MANUFACTURER_BLOCK_ACCESS 0x44
-#define MAC_DATA_BUF_SIZE 32 
+#define MAC_DATA_BUF_SIZE             32
 
 constexpr MAX_NUM_CELLS = 6;
 
@@ -54,7 +55,7 @@ typedef enum SBS_MA_COMMAND_CODES {
   STATE_OF_HEALTH,
   DA_STATUS_3 = 0X007B,
 
-} SBS_MA_CMD; 
+} SBS_MA_CMD;
 
 // below are command codes for BMS SMBus communication
 typedef enum SBS_COMMAND_CODES {
@@ -162,40 +163,40 @@ class BQ40Z80 {
   uint16_t m_address;
 
   /**
-   * @param m_smbus 
+   * @param m_smbus
    * smbus interface
    */
-   SMBus m_smbus;
+  SMBus m_smbus;
 
   /**
    * keys to send to unseal BQ40Z80
-   * default is 0x0414, 0x3672 
+   * default is 0x0414, 0x3672
    */
-   uint16_t m_keys[2];
+  uint16_t m_keys[2];
 
-   float m_cell_voltages[MAX_NUM_CELLS];
+  float m_cell_voltages[MAX_NUM_CELLS];
 
-   float m_cell_currents[MAX_NUM_CELLS];
+  float m_cell_currents[MAX_NUM_CELLS];
 
-   float m_cell_powers[MAX_NUM_CELLS];
+  float m_cell_powers[MAX_NUM_CELLS];
 
-   float m_total_power;
+  float m_total_power;
 
-   float m_avg_power;
+  float m_avg_power;
 
-   float m_firmware_version;
+  float m_firmware_version;
 
-   float m_state_of_health;
-   
-   float m_cycle_count;
-             
-   float m_device_type;
+  float m_state_of_health;
 
-   float m_remaining_capacity;
+  float m_cycle_count;
 
-   float m_full_charge_capacity;
+  float m_device_type;
 
-   float m_temp_1;
+  float m_remaining_capacity;
+
+  float m_full_charge_capacity;
+
+  float m_temp_1;
 
  public:
   /**
@@ -211,7 +212,7 @@ class BQ40Z80 {
    * Not sure if a customer destructor is needed
    */
   ~BQ40Z80() = default;
-  
+
   int getAllCellStatus();
 
   int getTemperatures();
@@ -227,17 +228,17 @@ class BQ40Z80 {
   // will send manufacturere access command 0x44 then the data sent is the query for the data command(little endian)
   int manufacturer_write(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length);
 
-  //handled in BQ studio?
+  // handled in BQ studio?
   int setUndervoltageProtection(float avgCurrent);
 
   int flushLifetimeData();
 
   int readLifeTimeData();
 
-  int setShutdownMode();
+  // int setShutdownMode();
 
   int getDeviceType(uint32_t &data);
- 
+
   int getFirmwareVersion(uint32_t &data);
 
   int getHardwareVersion(uint32_t &data);
@@ -246,46 +247,46 @@ class BQ40Z80 {
 
   int exitEmergencyFETShutdown();
 
-//MANUFACTURER ACCESS CMDS
-  //TODO want to set FET toggles? or should chip handle that?
+  // MANUFACTURER ACCESS CMDS
+  // TODO want to set FET toggles? or should chip handle that?
 
-  //TODO lifetime data handlers eg. delete, speed up, flush
-  
-  //TODO safety Alert/status retrieval
-  
-  //TODO charging status retrieval
+  // TODO lifetime data handlers eg. delete, speed up, flush
 
-  //TODO Guaging status retrieval
+  // TODO safety Alert/status retrieval
 
-  //TODO Alarm setting for various things EG. capacity
+  // TODO charging status retrieval
 
-//NORMAL CMDS
-  int getCurrent(uint32_t & data);
+  // TODO Guaging status retrieval
 
-  int getBatteryMode(uint16_t & data);
-  
+  // TODO Alarm setting for various things EG. capacity
+
+  // NORMAL CMDS
+  int getCurrent(uint32_t &data);
+
+  int getBatteryMode(uint16_t &data);
+
   int getBatteryStatus(uint16_t &data);
 
-  int getVoltage(uint32_t & data);
+  int getVoltage(uint32_t &data);
 
-  int getAvgCurrent(uint32_t & data);
+  int getAvgCurrent(uint32_t &data);
 
-  int getTimeToEmpty(uint32_t & data);
+  int getTimeToEmpty(uint32_t &data);
 
-  int getAvgTimeToEmpty(uint32_t & data);
+  int getAvgTimeToEmpty(uint32_t &data);
 
-  int getRemainingCapacity(uint32_t & data);
+  int getRemainingCapacity(uint32_t &data);
 
-  int getMaxError(uint32_t & data);
+  int getMaxError(uint32_t &data);
 
-  int getTemp(uint32_t & data);
+  int getTemp(uint32_t &data);
 
-  //SOC = state of charge
-  int getRelativeSOC(uint32_t & data);
+  // SOC = state of charge
+  int getRelativeSOC(uint32_t &data);
 
-  int getAbsSOC(uint32_t & data);
+  int getAbsSOC(uint32_t &data);
 
-//DATAFLASH CMDS
+  // DATAFLASH CMDS
   int readDataFlash(const uint16_t address, uint32_t &data, const unsigned length);
 
   int writeDataFlash(const uint16_t address, uint32_t &data, const unsigned length);

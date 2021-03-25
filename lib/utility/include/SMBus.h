@@ -39,68 +39,68 @@
  * @author Bazooka Joe <BazookaJoe1900@gmail.com>
  */
 
-//Modified by Felix Wong for UW robotics firmware team
+// Modified by Felix Wong for UW robotics firmware team
 
-#include <string.h>
-#include "mbed.h"
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define SMBUS_PEC_POLYNOMIAL	0x07	///< Polynomial for calculating PEC
+#include "mbed.h"
 
-namespace SMBus{
+#define SMBUS_PEC_POLYNOMIAL 0x07  ///< Polynomial for calculating PEC
 
-class SMBus 
-{
-public:
-	static constexpr uint8_t MAX_BLOCK_LEN = 34;
+namespace SMBus {
 
-	I2C m_i2c;
-	uint16_t m_address;
+class SMBus {
+ public:
+  static constexpr uint8_t MAX_BLOCK_LEN = 34;
 
-	SMBus(PinName sda, PinName scl, uint16_t address);
-	~SMBus()  = 0;
+  I2C m_i2c;
+  uint16_t m_address;
 
-	/**
-	 * @brief Sends a block write command.
-	 * @param cmd_code The command code.
-	 * @param data The data to be written.
-	 * @param length The number of bytes being written. Maximum is SMBus::MAX_BLOCK_LEN.
-	 * @return Returns 0 on success, -errno on failure.
-	 */
-	int block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec);
+  SMBus(PinName sda, PinName scl, uint16_t address);
+  ~SMBus() = 0;
 
-	/**
-	 * @brief Sends a block read command.
-	 * @param cmd_code The command code.
-	 * @param data The returned data.
-	 * @param length The number of bytes being read. Maximum is SMBus::MAX_BLOCK_LEN.
-	 * @return Returns 0 on success, -errno on failure.
-	 */
-	int block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec);
+  /**
+   * @brief Sends a block write command.
+   * @param cmd_code The command code.
+   * @param data The data to be written.
+   * @param length The number of bytes being written. Maximum is SMBus::MAX_BLOCK_LEN.
+   * @return Returns 0 on success, -errno on failure.
+   */
+  int block_write(const uint8_t cmd_code, const uint32_t &data, uint8_t byte_count, const bool use_pec);
 
-	/**
-	 * @brief Sends a read word command.
-	 * @param cmd_code The command code.
-	 * @param data The 2 bytes of returned data plus a 1 byte CRC if used.
-	 * @return Returns 0 on success, -errno on failure.
-	 */
-	int read_word(const uint8_t cmd_code, uint16_t &data);
+  /**
+   * @brief Sends a block read command.
+   * @param cmd_code The command code.
+   * @param data The returned data.
+   * @param length The number of bytes being read. Maximum is SMBus::MAX_BLOCK_LEN.
+   * @return Returns 0 on success, -errno on failure.
+   */
+  int block_read(const uint8_t cmd_code, uint32_t &data, const uint8_t length, const bool use_pec);
 
-	/**
-	 * @brief Sends a write word command.
-	 * @param cmd_code The command code.
-	 * @param data The 2 bytes of data to be transfered.
-	 * @return Returns 0 on success, -errno on failure.
-	 */
-	int write_word(const uint8_t cmd_code, uint16_t data);
+  /**
+   * @brief Sends a read word command.
+   * @param cmd_code The command code.
+   * @param data The 2 bytes of returned data plus a 1 byte CRC if used.
+   * @return Returns 0 on success, -errno on failure.
+   */
+  int read_word(const uint8_t cmd_code, uint16_t &data);
 
-	/**
-	 * @brief Calculates the PEC from the data.
-	 * @param buffer The buffer that stores the data to perform the CRC over.
-	 * @param length The number of bytes being written.
-	 * @return Returns 0 on success, -errno on failure.
-	 */
-	uint8_t get_pec(uint8_t *buf, uint8_t length);
+  /**
+   * @brief Sends a write word command.
+   * @param cmd_code The command code.
+   * @param data The 2 bytes of data to be transfered.
+   * @return Returns 0 on success, -errno on failure.
+   */
+  int write_word(const uint8_t cmd_code, uint16_t data);
+
+  /**
+   * @brief Calculates the PEC from the data.
+   * @param buffer The buffer that stores the data to perform the CRC over.
+   * @param length The number of bytes being written.
+   * @return Returns 0 on success, -errno on failure.
+   */
+  uint8_t get_pec(uint8_t *buf, uint8_t length);
 };
-}// namespace smbus
+}  // namespace SMBus
