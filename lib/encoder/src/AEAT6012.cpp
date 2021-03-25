@@ -7,7 +7,7 @@ AEAT6012::AEAT6012(const Config &config)
       m_angular_velocity_deg_per_sec(0),
       m_position_raw(0),
       m_offset_deg(config.offset_deg),
-      m_spi(NC, config.spi_mosi, config.spi_clk),
+      m_spi(NC, config.spi_miso, config.spi_clk),
       m_cs(config.cs) {
   m_spi.format(12, 2);
   m_spi.frequency(FREQUENCY_HZ);

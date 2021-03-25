@@ -177,10 +177,10 @@ typedef enum {
   MTR_DIR_CENTFGE = PC_4,
 
   /**** Limit Switch Pins ****/
-  LIM_SW_CENTFGE_DN = PC_15,
-  LIM_SW_CENTFGE_UP = PC_14,
-  LIM_SW_ELVTR_DN   = PC_13,
-  LIM_SW_ELVTR_UP   = PB_9,
+  LIM_SW_CENTFGE_DN = PB_8,
+  LIM_SW_CENTFGE_UP = PC_13,
+  LIM_SW_ELVTR_DN   = PC_14,
+  LIM_SW_ELVTR_UP   = PC_15,
 
   /**** Encoder Pins ****/
   ENC_A_LIFT       = PB_6,
