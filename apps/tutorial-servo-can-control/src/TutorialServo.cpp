@@ -16,7 +16,8 @@ void TutorialServo::setPositionInDegrees(const float degrees) {
   } else if (degrees < 0) {
     m_servoPwmOut.pulsewidth_ms(m_minPulsewidthInMs);
   } else {
-    m_servoPwmOut.pulsewidth_ms(1 + degrees / m_servoRangeInDegrees);
+    m_servoPwmOut.pulsewidth_ms(m_minPulsewidthInMs +
+                                ((m_maxPulsewidthInMs - m_minPulsewidthInMs) / m_servoRangeInDegrees) * degrees);
   }
 }
 

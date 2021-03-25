@@ -15,7 +15,7 @@ int main() {
   while (true) {
     if (can.read(servoMsg)) {
       float degrees;
-      const float PERCENT_TO_DEG = 3.6;
+      const float PERCENT_TO_DEG = 180;
       servoMsg.getPayload(degrees);
 
       servo1.setPositionInDegrees(degrees * PERCENT_TO_DEG);
