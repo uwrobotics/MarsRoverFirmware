@@ -27,8 +27,8 @@ jobs:
       - name: Set Build Matrix Output
         id: set-matrix
         run: | # Runs script once first to ensure no silent failures
-          ./build_configurations_helper.py print-ci-json
-          echo "::set-output name=matrix::`./build_configurations_helper.py print-ci-json`"
+          ./scripts/build_configurations_helper.py print-ci-json
+          echo "::set-output name=matrix::`./scripts/build_configurations_helper.py print-ci-json`"
 
   build:
     needs: setup-build-matrix
@@ -70,7 +70,7 @@ jobs:
           arm-none-eabi-gcc --version
 
       - name: Run CMake (bash)
-        uses: lukka/run-cmake@v3.2
+        uses: lukka/run-cmake@v3.3
         env: ${{matrix.env}}
         with:
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'

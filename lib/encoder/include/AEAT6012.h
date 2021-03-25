@@ -17,7 +17,7 @@ class AEAT6012 : public Encoder {
 
   typedef struct {
     PinName spi_clk;
-    PinName spi_mosi;
+    PinName spi_miso;
     PinName cs;
     float offset_deg;
   } Config;
