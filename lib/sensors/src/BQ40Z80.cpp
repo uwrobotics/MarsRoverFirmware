@@ -1,9 +1,8 @@
-#pragma once
 #include "BQ40Z80.h"
 
 namespace BQ40Z80 {
 
-int BQ40Z80::BQ40Z80(PinName sda, PinName scl, uint16_t addr) {
+int BQ40Z80::BQ40Z80(PinName sda, PinName scl, uint8_t addr) {
   m_keys[0] = 0x0414;
   m_keys[1] = 0x3672;
   m_address = addr;

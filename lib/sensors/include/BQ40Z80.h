@@ -13,7 +13,7 @@ namespace BQ40Z80 {
 #define SBS_MANUFACTURER_BLOCK_ACCESS 0x44
 #define MAC_DATA_BUF_SIZE             32
 
-constexpr MAX_NUM_CELLS = 6;
+constexpr int MAX_NUM_CELLS = 6;
 
 typedef enum SBS_MA_COMMAND_CODES {
   DEVICE_TYPE = 0x0001,
@@ -51,8 +51,8 @@ typedef enum SBS_MA_COMMAND_CODES {
   GUAGING_STATUS_1,
   GUAGING_STATUS_2,
   GUAGING_STATUS_3,
-  CB_STATUS,
-  STATE_OF_HEALTH,
+  CB_STATUS_MA,
+  STATE_OF_HEALTH_MA,
   DA_STATUS_3 = 0X007B,
 
 } SBS_MA_CMD;
@@ -105,7 +105,7 @@ typedef enum SBS_COMMAND_CODES {
   GPIO_WRITE,
   BTP_DISCHARGE_SET,
   BTP_CHARGE_SET,
-  STATE_OF_HEALTH = 0x4F,
+  STATE_OF_HEALTH_DESIGN = 0x4F,
   SAFETY_ALERT    = 0x50,
   SAFETY_STATUS,
   PF_ALERT,
@@ -145,8 +145,8 @@ typedef enum SBS_COMMAND_CODES {
   CURRENT_LONG,
 } SBS_CMD;
 
-typedef struct dataflash {
-  ENABLE_PROTECTIONS_a = 0x4BBE,
+typedef enum struct dataflash {
+  ENABLE_PROTECTIONS_A = 0x4BBE,
 } BQ_DATAFLSH;
 
 /**
@@ -166,7 +166,7 @@ class BQ40Z80 {
    * @param m_smbus
    * smbus interface
    */
-  SMBus m_smbus;
+  SMBus::SMBus m_smbus;
 
   /**
    * keys to send to unseal BQ40Z80
@@ -291,3 +291,5 @@ class BQ40Z80 {
 
   int writeDataFlash(const uint16_t address, uint32_t &data, const unsigned length);
 };
+
+}// namespace BQ40Z80
