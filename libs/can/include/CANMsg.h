@@ -70,6 +70,14 @@ class CANMsg : public CANMessage {
     this->len              = sizeof(T);
   }
 
+  /** Set the payload data with custom length
+   */
+  template <class T>
+  void setPayload(const T value, size_t length) {
+    setPayload(value);
+    len = length;
+  }
+
   /** Get the payload data
    */
   template <class T>

@@ -1,19 +1,21 @@
 #pragma once
 
+#include "CANInterface.h"
 #include "CANMsg.h"
 #include "hw_bridge.h"
 
-namespace TestCANConfig {
+static mbed_error_status_t handle_test_msg_one_shot(CANMsg& msg);
+
+namespace CANConfig {
 
 using namespace HWBRIDGE;
 
-static mbed_error_status_t handle_switch_can_bus(CANMsg& msg);
-
 static CANMsgMap rxStreamedMsgMap = {
     // Msg 1
-    {COMMON_SWITCH_CAN_BUS,
+    {COMMON_TEST_MESSAGE2,
      {
-         {COMMON_CAN_BUS_ID, UWRT_MARS_ROVER_CAN_COMMON_SWITCH_CAN_BUS_COMMON_CAN_BUS_ID_SNA_CHOICE},
+         {COMMON_TEST_SIGNAL2, UWRT_MARS_ROVER_CAN_COMMON_TEST_MESSAGE2_COMMON_TEST_SIGNAL2_TEST_VALUE_2_CHOICE},
+         {COMMON_TEST_SIGNAL3, UWRT_MARS_ROVER_CAN_COMMON_TEST_MESSAGE2_COMMON_TEST_SIGNAL3_SNA_CHOICE},
      }},
 
     // Msg 2
@@ -21,20 +23,30 @@ static CANMsgMap rxStreamedMsgMap = {
 
 static CANMsgMap txStreamedMsgMap = {
     // Msg 1
-    {COMMON_SWITCH_CAN_BUS,
+    {COMMON_TEST_MESSAGE2,
      {
-         {COMMON_CAN_BUS_ID, UWRT_MARS_ROVER_CAN_COMMON_SWITCH_CAN_BUS_COMMON_CAN_BUS_ID_SNA_CHOICE},
+         {COMMON_TEST_SIGNAL2, UWRT_MARS_ROVER_CAN_COMMON_TEST_MESSAGE2_COMMON_TEST_SIGNAL2_TEST_VALUE_2_CHOICE},
+         {COMMON_TEST_SIGNAL3, UWRT_MARS_ROVER_CAN_COMMON_TEST_MESSAGE2_COMMON_TEST_SIGNAL3_SNA_CHOICE},
      }},
 
     // Msg 2
 };
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
-    {COMMON_SWITCH_CAN_BUS, &handle_switch_can_bus},
+    {COMMON_TEST_MESSAGE1, &handle_test_msg_one_shot},
 };
 
-mbed_error_status_t handle_switch_can_bus(CANMsg& msg) {
-  return MBED_ERROR_CODE_INVALID_ARGUMENT;
-}
+CANInterface::Config config = {
+    // CAN bus pins
+    .can1_RX = CAN2_RX,  // FOR TESTING, swap CAN1 and CAN2
+    .can1_TX = CAN2_TX,
+    .can2_RX = CAN1_RX,
+    .can2_TX = CAN1_TX,
 
-}  // namespace TestCANConfig
+    // Message maps and handlers
+    .rxStreamedMsgMap    = &rxStreamedMsgMap,
+    .txStreamedMsgMap    = &txStreamedMsgMap,
+    .rxOneShotMsgHandler = &rxOneShotMsgHandler,
+};
+
+}  // namespace CANConfig
