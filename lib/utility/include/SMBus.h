@@ -59,7 +59,7 @@ class SMBus {
   uint16_t m_address;
 
   SMBus(PinName sda, PinName scl, uint16_t address);
-  ~SMBus() = 0;
+  ~SMBus() = default;
 
   /**
    * @brief Sends a block write command.
@@ -68,7 +68,7 @@ class SMBus {
    * @param length The number of bytes being written. Maximum is SMBus::MAX_BLOCK_LEN.
    * @return Returns 0 on success, -errno on failure.
    */
-  int block_write(const uint8_t cmd_code, const uint32_t &data, uint8_t byte_count, const bool use_pec);
+  int block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec);
 
   /**
    * @brief Sends a block read command.
@@ -77,7 +77,7 @@ class SMBus {
    * @param length The number of bytes being read. Maximum is SMBus::MAX_BLOCK_LEN.
    * @return Returns 0 on success, -errno on failure.
    */
-  int block_read(const uint8_t cmd_code, uint32_t &data, const uint8_t length, const bool use_pec);
+  int block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec);
 
   /**
    * @brief Sends a read word command.
@@ -93,7 +93,7 @@ class SMBus {
    * @param data The 2 bytes of data to be transfered.
    * @return Returns 0 on success, -errno on failure.
    */
-  int write_word(const uint8_t cmd_code, uint16_t data);
+  int write_word(const uint8_t cmd_code, const uint16_t data);
 
   /**
    * @brief Calculates the PEC from the data.
