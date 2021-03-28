@@ -4,7 +4,6 @@
 Encoder::AEAT6012 encoder({SPI_SCK, SPI_MISO, SPI_CS, 0});
 
 Mutex print_mutex;
-Semaphore data_ready_semaphore;
 
 void print(const std::string &str);  // thread safe print
 
@@ -38,7 +37,7 @@ void Updater() {
       std::string str = "Time taken to update encoder: " + std::to_string(timer.elapsed_time().count()) + "us\r\n";
       print(str);
     } else {
-      MBED_ASSERT(encoder.update(callback));  // doesnt make sense to time this.
+      MBED_ASSERT(encoder.update(nullptr));  // doesnt make sense to time this.
     }
     ThisThread::sleep_for(PERIOD);
   }
@@ -46,26 +45,14 @@ void Updater() {
 
 void Reader() {
   while (true) {
-    if constexpr (USE_BLOCKING_TEST) {
-      std::string str;
-      str = "Angle: " + std::to_string(encoder.getAngleDeg()) +
-            ", Angular Velocity: " + std::to_string(encoder.getAngularVelocityDegPerSec()) + "\r\n";
-      print(str);
-      ThisThread::sleep_for(PERIOD);
-    } else {
-      data_ready_semaphore.acquire();
-      std::string msg = "Angle: " + std::to_string(encoder.getAngleDeg()) +
-                        ", Angular Velocity: " + std::to_string(encoder.getAngularVelocityDegPerSec()) + "\r\n";
-      print(msg);
-    }
+    std::string str = "Angle: " + std::to_string(encoder.getAngleDeg()) +
+                      ", Angular Velocity: " + std::to_string(encoder.getAngularVelocityDegPerSec()) + "\r\n";
+    print(str);
+    ThisThread::sleep_for(PERIOD);
   }
 }
 
 void print(const std::string &str) {
   std::unique_lock<Mutex> lock(print_mutex);
   printf("%s", str.c_str());
-}
-
-void callback() {
-  MBED_ASSERT(data_ready_semaphore.release() == osOK);
 }

@@ -202,7 +202,9 @@ void AEAT6012::privCallback(int event) {
   m_position_raw = raw_data;
 
   // User callback
-  m_callback();
+  if (m_callback != nullptr) {
+    m_callback();
+  }
 }
 
 float AEAT6012::rawToDegrees(uint16_t raw) {
