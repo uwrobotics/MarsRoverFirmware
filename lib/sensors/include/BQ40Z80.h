@@ -40,6 +40,8 @@ typedef enum SBS_MA_COMMAND_CODES {
   FUSE,
   LED_DISPLAY_ENABLE,
 
+  LIFETIME_DATA_FLUSH = 0x002E,
+
   LIFETIME_BLK_1 = 0X0060,
   LIFETIME_BLK_2,
   LIFETIME_BLK_3,
@@ -145,9 +147,10 @@ typedef enum SBS_COMMAND_CODES {
   CURRENT_LONG,
 } SBS_CMD;
 
-typedef enum struct dataflash {
+typedef enum {
   ENABLE_PROTECTIONS_A = 0x4BBE,
-} BQ_DATAFLSH;
+} BQ_DATAFLSH_CMD;
+
 
 /**
  * @brief a class to configure and control the Battery Management system
