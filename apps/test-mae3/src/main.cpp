@@ -3,56 +3,48 @@
 
 Encoder::MAE3 encoder({NC, 0});
 
-// Wire the output PWM signal to the PWM input
-// or connect external PWM input to pwmIn pin
-PwmOut pwmOut(NC);
+Mutex mutex;
 
-Timer timer;
-Timer printTimer;
+constexpr auto PERIOD = 100ms;
 
-DigitalOut led(LED1);
+void Updater();
+void Reader();
+void print(const std::string &str);  // thread safe print
 
 int main() {
-  float inverter = +1;
-  auto period    = 4ms;  // Equivalent to 0.5kHz frequency
-  float duty     = 0.1;
+  Thread updater_thread(osPriorityNormal), reader_thread(osPriorityNormal);
 
-  // Specify PWM period
-  pwmOut.period(std::chrono::duration_cast<std::chrono::duration<float>>(period).count());
+  updater_thread.start(&Updater);
+  reader_thread.start(&Reader);
 
-  // START THE TIMER
-  timer.start();
-  printTimer.start();
+  updater_thread.join();
+  reader_thread.join();
+}
 
+void Updater() {
   while (true) {
-    led = !led;
-
-    // Sweep the output duty cycle at 2%/second (7.2 deg / sec)
-    if (timer.elapsed_time() >= 5ms) {
-      // Set the duty cycle on the pins
-      duty += 0.0001 * inverter;
-      pwmOut.write(duty);
-
-      if (duty <= 0.1) {
-        inverter = 1.0;
-      } else if (duty >= 0.9) {
-        inverter = 0.0;  // Hold at 0.9 duty cycle for 5 seconds
-        if (timer.elapsed_time() >= 5s) {
-          inverter = -1.0;
-          timer.reset();
-        }
-      } else {
-        timer.reset();
-      }
-    }
-
-    if (printTimer.elapsed_time() >= 50ms) {
-      printTimer.reset();
-      float angle = 0, speed = 0;
-      MBED_ASSERT_WARN(encoder.getAngleDeg(angle));
-      MBED_ASSERT_WARN(encoder.getAngularVelocityDegPerSec(speed));
-
-      printf("Angle: %f, Angular Velocity :%f\r\n", angle, speed);
-    }
+    Timer timer;
+    timer.start();
+    MBED_ASSERT(encoder.update());
+    timer.stop();
+    std::string str;
+    str = "Time taken to update encoder: " + std::to_string(timer.elapsed_time().count()) + "us\r\n";
+    print(str);
+    ThisThread::sleep_for(PERIOD);
   }
+}
+
+void Reader() {
+  while (true) {
+    std::string str;
+    str = "Angle: " + std::to_string(encoder.getAngleDeg()) +
+          ", Angular Velocity: " + std::to_string(encoder.getAngularVelocityDegPerSec()) + "\r\n";
+    print(str);
+    ThisThread::sleep_for(PERIOD);
+  }
+}
+
+void print(const std::string &str) {
+  std::unique_lock<Mutex> lock(mutex);
+  printf("%s", str.c_str());
 }

@@ -7,9 +7,10 @@ namespace Sensor {
 class CurrentSensor final : Sensor {
  public:
   CurrentSensor(PinName clk, PinName miso, PinName cs = NC);
-  bool read(float &sensorReading) override;
-  bool alternateRead(float &sensorReading) override;
+  float read() override;
+  float alternateRead() override;
   bool getStatus() const override;
-  bool reset() override;
+  [[nodiscard]] bool reset() override;
+  [[nodiscard]] bool update() override;
 };
 }  // namespace Sensor

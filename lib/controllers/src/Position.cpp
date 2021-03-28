@@ -11,32 +11,34 @@ Position::Position(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
       m_pid(pid) {}
 
 bool Position::update() {
+  /* Proceed even if encoder read fails, but report */
+  bool enc_update_success = m_encoder.update();
+  bool cs_update_success  = true;
+  bool stop_required      = false;
+  if (m_currentSensor.has_value()) {
+    cs_update_success = m_currentSensor.value().get().update();
+  }
   if (shouldStop()) {
+    stop_required = true;
     stop();
   } else {
-    if (float angle = 0; m_encoder.getAngleDeg(angle)) {
-      m_actuator.setValue(m_pid.compute(m_setpoint.load(), angle));
-      return true;
-    }
+    m_actuator.setValue(m_pid.compute(m_setpoint.load(), m_encoder.getAngleDeg()));
   }
-  return false;
+  return enc_update_success && cs_update_success && !stop_required;
 }
 
 void Position::stop() {
   // set sp to current angle
-  float angle = 0;
-  m_encoder.getAngleDeg(angle);  // TODO: Handle failures better
-  m_setpoint.store(angle);
+  m_setpoint.store(m_encoder.getAngleDeg());
   m_actuator.setValue(0);
 }
 
-void Position::reset() {
+bool Position::reset() {
   stop();
-  m_encoder.reset();
-  if (m_currentSensor.has_value()) {
-    m_currentSensor.value().get().reset();
-  }
   m_pid.reset();
+  bool enc_rst_success = m_encoder.reset();
+  bool cs_rst_success  = m_currentSensor.value().get().reset();
+  return enc_rst_success && cs_rst_success;
 }
 
 std::optional<std::reference_wrapper<PID::PID>> Position::getPID() {

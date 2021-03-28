@@ -95,36 +95,29 @@ void txCANProcessor() {
   // Felix TODO: Ensure that each time, we get the right data, call setPayload with new data and send the new data
   while (true) {
     MotionReport report;
-    float angle = 0, speed = 0;
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_ANGLE);
-    Centrifuge::manager.getActiveController()->reportAngleDeg(angle);
-    Centrifuge::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Centrifuge::manager.getActiveController()->reportAngleDeg(),
+              Centrifuge::manager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_ELEVATOR_HEIGHT);
-    Elevator::manager.getActiveController()->reportAngleDeg(angle);
-    Elevator::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Elevator::manager.getActiveController()->reportAngleDeg(),
+              Elevator::manager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
-    // Read moisture returns an unsigned number so it needs to be cast to an int to be handled
     txMsg.setID(HWBRIDGE::CANID::REPORT_MOISTURE_DATA);
-    float moisture = 0;
-    moistureSensor.read(moisture);
-    txMsg.setPayload(moisture);
+    txMsg.setPayload(moistureSensor.read());
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_TEMPERATURE_DATA);
-    float temperature = 0;
-    moistureSensor.alternateRead(temperature);
-    txMsg.setPayload(temperature);
+    moistureSensor.alternateRead();
+    txMsg.setPayload(moistureSensor.alternateRead());
     can.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 

@@ -15,22 +15,28 @@ class AdafruitSTEMMA final : public Sensor {
   AdafruitSTEMMA(AdafruitSTEMMA &&) = delete;
   ~AdafruitSTEMMA()                 = default;
 
-  /*functions to read sensor data
-    primary read -> reads moisture data
-    returns true on success, requires parameter to be passed in to store*/
-  bool read(float &sensorReading) override;
+  /* returns internal humidity value */
+  float read() override;
 
-  /*alternate read -> reads temperature data
-    returns true on success, requires parameter to be passed in to store*/
-  bool alternateRead(float &sensorReading) override;
+  /* returns internal temperature value */
+  float alternateRead() override;
 
-  bool reset() override;
+  [[nodiscard]] bool reset() override;
 
   // reads the HW ID and checks that it is correct
   bool getStatus() const override;
 
+  /* Updates internal humidity and temperature variables after issuing reads */
+  [[nodiscard]] bool update() override;
+
  private:
   mutable I2C m_i2c;
+  mutable Mutex m_mutex;
+
+  bool updateHumidity();
+  bool updateTemperature();
+
+  float m_humidity = 0, m_temperature = 0;
 
   static constexpr int Sensor_I2C_Address =
       0x36 << 1;  // MBED I2C uses 8 bit addressing, so addresses are left shifted by 1 (may need to be shifted by 2)

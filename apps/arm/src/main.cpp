@@ -210,52 +210,45 @@ void txCANProcessor() {
 
   while (true) {
     MotionReport report;
-    float angle = 0, speed = 0;
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_TURNTABLE_MOTION);
-    Turntable::manager.getActiveController()->reportAngleDeg(angle);  // TODO: Add error handling
-    Turntable::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Turntable::manager.getActiveController()->reportAngleDeg(),
+              Turntable::manager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_SHOULDER_MOTION);
-    Elbow::manager.getActiveController()->reportAngleDeg(angle);
-    Elbow::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Elbow::manager.getActiveController()->reportAngleDeg(),
+              Elbow::manager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_ELBOW_MOTION);
-    Elbow::manager.getActiveController()->reportAngleDeg(angle);
-    Elbow::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Elbow::manager.getActiveController()->reportAngleDeg(),
+              Elbow::manager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_LEFT_WRIST_MOTION);
-    Wrist::leftManager.getActiveController()->reportAngleDeg(angle);
-    Wrist::leftManager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Wrist::leftManager.getActiveController()->reportAngleDeg(),
+              Wrist::leftManager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_RIGHT_WRIST_MOTION);
-    Wrist::rightManager.getActiveController()->reportAngleDeg(angle);
-    Wrist::rightManager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Wrist::rightManager.getActiveController()->reportAngleDeg(),
+              Wrist::rightManager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
 
     txMsg.setID(HWBRIDGE::CANID::REPORT_CLAW_MOTION);
-    Claw::manager.getActiveController()->reportAngleDeg(angle);
-    Claw::manager.getActiveController()->reportAngularVelocityDegPerSec(speed);
-    report = {angle, speed};
+    report = {Claw::manager.getActiveController()->reportAngleDeg(),
+              Claw::manager.getActiveController()->reportAngularVelocityDegPerSec()};
     txMsg.setPayload(report);
     can1.write(txMsg);
     ThisThread::sleep_for(txInterdelay);
