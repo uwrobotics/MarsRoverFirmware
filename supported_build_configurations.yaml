@@ -81,3 +81,7 @@ test-pwmin:
 #  - gamepad
 #  - gimbtonomy
 #  - science
+
+test-BQ40Z80:
+  - nucleo
+# Will likely need a new target for rover

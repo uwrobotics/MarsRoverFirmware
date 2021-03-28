@@ -58,7 +58,7 @@ class SMBus {
   I2C m_i2c;
   uint16_t m_address;
 
-  SMBus(PinName sda, PinName scl, uint16_t address);
+  SMBus(PinName sda, PinName scl, uint8_t address);
   ~SMBus() = default;
 
   /**

@@ -50,7 +50,7 @@
 #include "SMBus.h"
 namespace SMBus {
 
-SMBus::SMBus(PinName sda, PinName scl, uint16_t address) : m_i2c(sda, scl) {
+SMBus::SMBus(PinName sda, PinName scl, uint8_t address) : m_i2c(sda, scl) {
   m_address = address;
 }
 

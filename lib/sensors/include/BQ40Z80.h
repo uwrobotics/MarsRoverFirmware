@@ -108,7 +108,7 @@ typedef enum SBS_COMMAND_CODES {
   BTP_DISCHARGE_SET,
   BTP_CHARGE_SET,
   STATE_OF_HEALTH_DESIGN = 0x4F,
-  SAFETY_ALERT    = 0x50,
+  SAFETY_ALERT           = 0x50,
   SAFETY_STATUS,
   PF_ALERT,
   PF_STATUS,
@@ -151,7 +151,6 @@ typedef enum {
   ENABLE_PROTECTIONS_A = 0x4BBE,
 } BQ_DATAFLSH_CMD;
 
-
 /**
  * @brief a class to configure and control the Battery Management system
  * Will be a central hub of data retrieval and control of BMS, also will calculate values to
@@ -177,29 +176,29 @@ class BQ40Z80 {
    */
   uint16_t m_keys[2];
 
-  float m_cell_voltages[MAX_NUM_CELLS];
+  uint16_t m_cell_voltages[MAX_NUM_CELLS];
 
-  float m_cell_currents[MAX_NUM_CELLS];
+  uint16_t m_cell_currents[MAX_NUM_CELLS];
 
-  float m_cell_powers[MAX_NUM_CELLS];
+  uint16_t m_cell_powers[MAX_NUM_CELLS];
 
-  float m_total_power;
+  uint16_t m_total_power;
 
-  float m_avg_power;
+  uint16_t m_avg_power;
 
-  float m_firmware_version;
+  uint64_t m_firmware_version;
 
-  float m_state_of_health;
+  uint16_t m_state_of_health;
 
-  float m_cycle_count;
+  uint16_t m_cycle_count;
 
-  float m_device_type;
+  uint16_t m_device_type;
 
-  float m_remaining_capacity;
+  uint16_t m_remaining_capacity;
 
-  float m_full_charge_capacity;
+  uint16_t m_full_charge_capacity;
 
-  float m_temp_1;
+  uint16_t m_temp_1;
 
  public:
   /**
@@ -208,7 +207,7 @@ class BQ40Z80 {
    * @param[in] I2C_SDA_Pin  pinname for SDA pin
    * @param[in] I2C_SCL_Pin  pinname for SCL pin
    */
-  BQ40Z80(PinName sda, PinName scl, uint16_t addr);
+  BQ40Z80(PinName sda, PinName scl, uint8_t addr);
 
   /**
    * @brief Distructor for BMS class
@@ -226,10 +225,10 @@ class BQ40Z80 {
 
   int unsealFlashing();
 
-  int manufacturer_read(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length);
+  int manufacturer_read(const uint16_t sbs_cmd, void *data, const uint8_t length);
 
   // will send manufacturere access command 0x44 then the data sent is the query for the data command(little endian)
-  int manufacturer_write(const uint16_t sbs_cmd, uint32_t &data, const uint8_t length);
+  int manufacturer_write(const uint16_t sbs_cmd, void *data, const uint8_t length);
 
   // handled in BQ studio?
   int setUndervoltageProtection(float avgCurrent);
@@ -240,11 +239,11 @@ class BQ40Z80 {
 
   // int setShutdownMode();
 
-  int getDeviceType(uint32_t &data);
+  int getDeviceType(uint16_t &data);
 
-  int getFirmwareVersion(uint32_t &data);
+  int getFirmwareVersion(uint64_t &data);
 
-  int getHardwareVersion(uint32_t &data);
+  int getHardwareVersion(uint16_t &data);
 
   int enterEmergencyFETShutdown();
 
@@ -264,35 +263,35 @@ class BQ40Z80 {
   // TODO Alarm setting for various things EG. capacity
 
   // NORMAL CMDS
-  int getCurrent(uint32_t &data);
+  int getCurrent(uint16_t &data);
 
   int getBatteryMode(uint16_t &data);
 
   int getBatteryStatus(uint16_t &data);
 
-  int getVoltage(uint32_t &data);
+  int getVoltage(uint16_t &data);
 
-  int getAvgCurrent(uint32_t &data);
+  int getAvgCurrent(uint16_t &data);
 
-  int getTimeToEmpty(uint32_t &data);
+  int getTimeToEmpty(uint16_t &data);
 
-  int getAvgTimeToEmpty(uint32_t &data);
+  int getAvgTimeToEmpty(uint16_t &data);
 
-  int getRemainingCapacity(uint32_t &data);
+  int getRemainingCapacity(uint16_t &data);
 
-  int getMaxError(uint32_t &data);
+  int getMaxError(uint16_t &data);
 
-  int getTemp(uint32_t &data);
+  int getTemp(uint16_t &data);
 
   // SOC = state of charge
-  int getRelativeSOC(uint32_t &data);
+  int getRelativeSOC(uint16_t &data);
 
-  int getAbsSOC(uint32_t &data);
+  int getAbsoluteSOC(uint16_t &data);
 
   // DATAFLASH CMDS
-  int readDataFlash(const uint16_t address, uint32_t &data, const unsigned length);
+  int readDataFlash(const uint16_t address, void *data, const unsigned length);
 
-  int writeDataFlash(const uint16_t address, uint32_t &data, const unsigned length);
+  int writeDataFlash(const uint16_t address, void *data, const unsigned length);
 };
 
-}// namespace BQ40Z80
+}  // namespace BQ40Z80
