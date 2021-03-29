@@ -15,17 +15,20 @@ int main() {
 
   while (true) {
     // Read RX signals
-    can.readStreamedSignal(HWBRIDGE::COMMON_TEST_MESSAGE2, HWBRIDGE::COMMON_TEST_SIGNAL2, rxSignal2Value);
+    can.readStreamedSignal(HWBRIDGE::CANID::COMMON_TEST_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_TEST_SIGNAL2,
+                           rxSignal2Value);
     printf("RX test signal 2 value: %u\r\n", (uint16_t)rxSignal2Value);
 
-    can.readStreamedSignal(HWBRIDGE::COMMON_TEST_MESSAGE2, HWBRIDGE::COMMON_TEST_SIGNAL3, rxSignal3Value);
+    can.readStreamedSignal(HWBRIDGE::CANID::COMMON_TEST_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_TEST_SIGNAL3,
+                           rxSignal3Value);
     printf("RX test signal 3 value: %.6f\r\n", rxSignal3Value);
 
     // Update TX signals
-    can.updateStreamedSignal(HWBRIDGE::COMMON_TEST_MESSAGE2, HWBRIDGE::COMMON_TEST_SIGNAL2, txSignalValue);
+    can.updateStreamedSignal(HWBRIDGE::CANID::COMMON_TEST_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_TEST_SIGNAL2,
+                             txSignalValue);
     txSignalValue = (txSignalValue + 1) % 4;
 
-    can.updateStreamedSignal(HWBRIDGE::COMMON_TEST_MESSAGE2, HWBRIDGE::COMMON_TEST_SIGNAL3, 5.5f);
+    can.updateStreamedSignal(HWBRIDGE::CANID::COMMON_TEST_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_TEST_SIGNAL3, 5.5f);
 
     ThisThread::sleep_for(1000ms);
   }
@@ -40,7 +43,7 @@ mbed_error_status_t handle_test_msg_one_shot(CANMsg& msg) {
   HWBRIDGE::CANMsgData_t msgData;
   uwrt_mars_rover_can_common_test_message1_pack(msgData.raw, &msgStruct, 1);
 
-  msgACK.setID(HWBRIDGE::COMMON_TEST_MESSAGE1);
+  msgACK.setID(HWBRIDGE::CANID::COMMON_TEST_MESSAGE1);
   msgACK.setPayload(msgData, UWRT_MARS_ROVER_CAN_COMMON_TEST_MESSAGE1_LENGTH);
 
   // Send a one shot back

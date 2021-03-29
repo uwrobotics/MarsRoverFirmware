@@ -61,13 +61,8 @@ void CANInterface::rxClient(void) {
     CANMsg msg = *mail;
     MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
 
-    // If message is one-shot, process message
-    if (m_rxOneShotMsgHandler->find(msg.getID()) != m_rxOneShotMsgHandler->end()) {
-      m_rxOneShotMsgHandler->at(msg.getID())(msg);
-    }
-
-    // Otherwise message is streamed - extract message signals and put in RX message map
-    else {
+    // If message is streamed, extract message signals and put in RX message map
+    if (m_rxStreamedMsgMap->contains(msg.getID())) {
       HWBRIDGE::CANMsgData_t msgData;
       msg.getPayload(msgData);
 
@@ -75,6 +70,17 @@ void CANInterface::rxClient(void) {
         MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
                      "CAN RX message unpacking failed");
       }
+    }
+
+    // Otherwise if message is one-shot, process message
+    else if (m_rxOneShotMsgHandler->at(msg.getID())(msg) == MBED_SUCCESS) {
+      // Don't need to do anything here
+    }
+
+    // Otherwise invalid message was received
+    else {
+      MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                   "Invalid CAN message received");
     }
   }
 }
@@ -96,10 +102,10 @@ void CANInterface::txProcessor(void) {
 
     // Send all streamed messages
     for (auto it = m_txStreamedMsgMap->begin(); it != m_txStreamedMsgMap->end(); it++) {
-      HWBRIDGE::CANID msgID = it->first;
-
+      HWBRIDGE::CANID msgID          = it->first;
       HWBRIDGE::CANMsgData_t msgData = {0};
       size_t len                     = 0;
+
       if (HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txStreamedMsgMap, len)) {
         // Send message
         CANMsg msg;
@@ -139,13 +145,13 @@ bool CANInterface::readStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL
 
 void CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
   switch (canBusID) {
-    case HWBRIDGE::CANBUS1:
+    case HWBRIDGE::CANBUSID::CANBUS1:
       m_activeCANBus = &m_CANBus1;
       m_CANBus1.monitor(false);
       m_CANBus2.monitor(true);
       break;
 
-    case HWBRIDGE::CANBUS2:
+    case HWBRIDGE::CANBUSID::CANBUS2:
       m_activeCANBus = &m_CANBus2;
       m_CANBus1.monitor(true);
       m_CANBus2.monitor(false);
