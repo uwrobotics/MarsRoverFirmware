@@ -176,3 +176,6 @@ add_subdirectory(apps/test-adafruitSTEMMA)
 add_subdirectory(apps/test-pid)
 add_subdirectory(apps/test-pwm)
 add_subdirectory(apps/test-pwmin)
+add_subdirectory(apps/tutorial-servo-pot-control)
+add_subdirectory(apps/tutorial-servo-can-control)
+
