@@ -270,6 +270,7 @@ To download the matching version of LLVM(contains clang-format):
 wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 sudo ./llvm.sh <version number>
+sudo apt install clang-format-<version number>
 ```
 
 For VS Code you will need to specify the path to the clang-format executable. To do this:
