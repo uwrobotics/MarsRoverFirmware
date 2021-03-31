@@ -1,12 +1,15 @@
 #include "AdafruitSTEMMA.h"
 
+#include <mutex>
+
 using namespace Sensor;
 
 AdafruitSTEMMA::AdafruitSTEMMA(PinName sda, PinName scl) : m_i2c(sda, scl) {}
 
 AdafruitSTEMMA::AdafruitSTEMMA(const Config &config) : m_i2c(config.sda, config.scl) {}
 
-bool AdafruitSTEMMA::AdafruitSTEMMA::reset() {
+bool AdafruitSTEMMA::reset() {
+  std::scoped_lock<Mutex> lock(m_mutex);
   char cmd[3];
   cmd[0] = Sensor_Status_Base;  // initialize registers for clearing sensor memory
   cmd[1] = Sensor_Status_Reset;
@@ -17,7 +20,8 @@ bool AdafruitSTEMMA::AdafruitSTEMMA::reset() {
   return true;
 }
 
-bool AdafruitSTEMMA::AdafruitSTEMMA::getStatus() const {
+bool AdafruitSTEMMA::getStatus() const {
+  std::scoped_lock<Mutex> lock(m_mutex);
   char cmd[2];
   cmd[0] = Sensor_Status_Base;
   cmd[1] = Sensor_Status_HW_ID;
@@ -31,9 +35,26 @@ bool AdafruitSTEMMA::AdafruitSTEMMA::getStatus() const {
   return (check[0] == Sensor_HW_ID_Code);  // compare received HW ID Code to correct one
 }
 
+bool AdafruitSTEMMA::update() {
+  std::scoped_lock<Mutex> lock(m_mutex);
+  bool humidity_read_success = updateHumidity();
+  bool temp_read_success     = updateTemperature();
+  return humidity_read_success && temp_read_success;
+}
+
+float AdafruitSTEMMA::read() {
+  std::scoped_lock<Mutex> lock(m_mutex);
+  return m_humidity;
+}
+
+float AdafruitSTEMMA::alternateRead() {
+  std::scoped_lock<Mutex> lock(m_mutex);
+  return m_temperature;
+}
+
 // read moisture reading of device
-bool AdafruitSTEMMA::AdafruitSTEMMA::read(float &sensorReading) {
-  if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
+bool AdafruitSTEMMA::updateHumidity() {
+  if (!(getStatus())) {  // checks if device is initialized, returns false if there is an issue
     return false;
   }
 
@@ -43,7 +64,7 @@ bool AdafruitSTEMMA::AdafruitSTEMMA::read(float &sensorReading) {
 
   char buf[2];
 
-  sensorReading = 65535;
+  float sensorReading = 65535;
 
   uint8_t counter = 2;  // initialize counter to break out of loop if reading isn't working (prevent infinite looping)
 
@@ -58,16 +79,16 @@ bool AdafruitSTEMMA::AdafruitSTEMMA::read(float &sensorReading) {
     counter--;
   } while (sensorReading == 65535 && counter != 0);  // repeat until value has been measured, or until loop has run 10
                                                      // times (breaks out regardless of if read works or not)
-
-  if (sensorReading == 65535) {
-    return false;
+  bool success = sensorReading != 65535;
+  if (success) {
+    m_humidity = sensorReading;
   }
-  return true;
+  return success;
 }
 
 // read temperature of device
-bool AdafruitSTEMMA::AdafruitSTEMMA::alternateRead(float &sensorReading) {
-  if (!(this->getStatus())) {  // checks if device is initialized, returns false if there is an issue
+bool AdafruitSTEMMA::updateTemperature() {
+  if (!(getStatus())) {  // checks if device is initialized, returns false if there is an issue
     return false;
   }
 
@@ -81,10 +102,12 @@ bool AdafruitSTEMMA::AdafruitSTEMMA::alternateRead(float &sensorReading) {
   ThisThread::sleep_for(1s);
   m_i2c.read(Sensor_I2C_Address, buf, 4);  // read temp
 
-  sensorReading = (static_cast<uint32_t>(buf[0]) << 24) |
-                  (static_cast<uint32_t>(buf[1]) << 16) |  // concatenate bytes together
-                  (static_cast<uint32_t>(buf[2]) << 8) | static_cast<uint32_t>(buf[3]);
+  float sensorReading = (static_cast<uint32_t>(buf[0]) << 24) |
+                        (static_cast<uint32_t>(buf[1]) << 16) |  // concatenate bytes together
+                        (static_cast<uint32_t>(buf[2]) << 8) | static_cast<uint32_t>(buf[3]);
   sensorReading = sensorReading * (1.0 / (1UL << 16));
+
+  m_temperature = sensorReading;
 
   return true;
 }

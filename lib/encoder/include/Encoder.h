@@ -5,8 +5,10 @@ class Encoder {
  public:
   virtual ~Encoder(){};
 
-  virtual bool getAngleDeg(float &angle)                 = 0;
-  virtual bool getAngularVelocityDegPerSec(float &speed) = 0;
-  virtual bool reset()                                   = 0;
+  [[nodiscard]] virtual bool update() = 0;
+  [[nodiscard]] virtual bool reset()  = 0;
+
+  virtual float getAngleDeg()                 = 0;
+  virtual float getAngularVelocityDegPerSec() = 0;
 };
 }  // namespace Encoder
