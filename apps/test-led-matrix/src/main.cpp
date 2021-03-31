@@ -2,7 +2,7 @@
 #include "hw_bridge.h"
 
 int main() {
-  printf("####### STARTING #######\r\n");
+  printf("####### STARTING LED MATRIX TEST #######\r\n");
 
   LEDMatrix blinky(PA_0, PA_1, PB_0);
 

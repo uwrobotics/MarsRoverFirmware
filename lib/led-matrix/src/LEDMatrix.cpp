@@ -3,13 +3,19 @@
 #include "mbed.h"
 
 LEDMatrix::LEDMatrix(PinName R, PinName G, PinName B)
-    : m_RChannel(R), m_GChannel(G), m_BChannel(B), m_continue_flashing(false) {
+    : m_RChannel(R),
+      m_GChannel(G),
+      m_BChannel(B),
+      m_flashing_red(false),
+      m_flashing_green(false),
+      m_flashing_blue(false),
+      m_continue_flashing(false) {
   m_lightsThread.start(callback(this, &LEDMatrix::flashing));
 }
 
 LEDMatrix::~LEDMatrix() {
-  setSolidColor(0, 0, 0);
   m_lightsThread.terminate();
+  setSolidColor(0, 0, 0);
 }
 
 void LEDMatrix::setState(HWBRIDGE::LEDMATRIX::LEDMatrixState state) {
@@ -40,7 +46,7 @@ void LEDMatrix::setState(HWBRIDGE::LEDMATRIX::LEDMatrixState state) {
 
 void LEDMatrix::flashing() {  // check https://os.mbed.com/docs/mbed-os/v6.8/apis/thisthread.html
   while (true) {
-    m_event_flags.wait_all(START_FLASH);  // would yield until flag is set
+    m_event_flags.wait_all(START_FLASH);  // yield until flag is set
     m_continue_flashing = true;
 
     while (m_continue_flashing) {

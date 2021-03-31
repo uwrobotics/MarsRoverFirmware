@@ -6,6 +6,22 @@
 #define ENDED_FLASH 2UL  // 10
 
 class LEDMatrix {
+ public:
+  // Define LED matrix colour channels by the pins it is connected to.
+  LEDMatrix(PinName R, PinName G, PinName B);
+
+  // Terminate thread and clear lights.
+  ~LEDMatrix();
+
+  // Set the state of the LEDs.
+  void setState(HWBRIDGE::LEDMATRIX::LEDMatrixState state);
+
+  // Periodically flash the colour given by R, G, B on the LED matrix.
+  void setFlashColor(bool R, bool G, bool B);
+
+  // Set a solid colour given by the R, G, B on the LED matrix.
+  void setSolidColor(bool R, bool G, bool B);
+
  private:
   DigitalOut m_RChannel;
   DigitalOut m_GChannel;
@@ -18,25 +34,9 @@ class LEDMatrix {
   Thread m_lightsThread;
   static constexpr auto PERIOD_DELAY = 500ms;
 
-  // Thread to take care of flashing.
+  // Thread to take care of flashing colours on the LED matrix by setFlashColor().
   void flashing();
 
-  // Turn off all the LEDs. Call setColor(0,0,0).
+  // Set the given R, G, B colour channels.
   void setColor(bool R, bool G, bool B);
-
- public:
-  // Define matrix by the pins it is connected to.
-  LEDMatrix(PinName R, PinName G, PinName B);
-
-  // Clear lights.
-  ~LEDMatrix();
-
-  // Set the state of the LEDs.
-  void setState(HWBRIDGE::LEDMATRIX::LEDMatrixState state);
-
-  // Start flashing() thread.
-  void setFlashColor(bool R, bool G, bool B);
-
-  // Stop flashing() thread and call setColor().
-  void setSolidColor(bool R, bool G, bool B);
 };
