@@ -78,39 +78,43 @@ static mbed_error_status_t setSafetyCheck(CANMsg &msg) {
   HWBRIDGE::CONTROL::SAFETY::SafetyCheckPayload data;
   msg.getPayload(data);
 
-  const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorController *> lut = {
-      {HWBRIDGE::ARM::ActuatorID::TURNTABLE, &Turntable::Internal::cur},
-      {HWBRIDGE::ARM::ActuatorID::SHOULDER, &Shoulder::Internal::cur},
-      {HWBRIDGE::ARM::ActuatorID::ELBOW, &Elbow::Internal::cur},
-      {HWBRIDGE::ARM::ActuatorID::WRISTLEFT, &Wrist::Internal::leftCur},
-      {HWBRIDGE::ARM::ActuatorID::WRISTRIGHT, &Wrist::Internal::rightCur},
-      {HWBRIDGE::ARM::ActuatorID::CLAW, &Claw::Internal::cur}};
+  const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
+      {HWBRIDGE::ARM::ActuatorID::TURNTABLE, &Turntable::manager},
+      {HWBRIDGE::ARM::ActuatorID::SHOULDER, &Shoulder::manager},
+      {HWBRIDGE::ARM::ActuatorID::ELBOW, &Elbow::manager},
+      {HWBRIDGE::ARM::ActuatorID::WRISTLEFT, &Wrist::leftManager},
+      {HWBRIDGE::ARM::ActuatorID::WRISTRIGHT, &Wrist::rightManager},
+      {HWBRIDGE::ARM::ActuatorID::CLAW, &Claw::manager}};
 
   auto act = lut.at(data.actuatorID).value_or(nullptr);
   if (!act) {
     return MBED_ERROR_INVALID_ARGUMENT;
   }
+  auto temp = act->getActiveController();
 
   switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_JOINT_CURRENT_CHECK:
+      // auto temp = act->getActiveController();
       if (data.check) {
-        act->activateCurrentChecks();
+        temp->activateCurrentChecks();
       } else {
-        act->deactivateCurrentChecks();
+        temp->deactivateCurrentChecks();
       }
       break;
     case HWBRIDGE::CANID::SET_JOINT_DEG_PER_SEC_CHECK:
+      // auto temp = act->getActiveController();
       if (data.check) {
-        act->activateDegPerSecChecks();
+        temp->activateDegPerSecChecks();
       } else {
-        act->deactivateDegPerSecChecks();
+        temp->deactivateDegPerSecChecks();
       }
       break;
     case HWBRIDGE::CANID::SET_JOINT_LIMIT_SWITCH:
+      // auto temp = act->getActiveController();
       if (data.check) {
-        act->activateLimitSwitchChecks();
+        temp->activateLimitSwitchChecks();
       } else {
-        act->deactivateLimitSwitchChecks();
+        temp->deactivateLimitSwitchChecks();
       }
       break;
     default:
