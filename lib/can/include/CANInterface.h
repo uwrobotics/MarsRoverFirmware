@@ -18,11 +18,6 @@ class CANInterface {
     HWBRIDGE::CANMsgMap *txStreamedMsgMap;
     const CANMsg::CANMsgHandlerMap *rxOneShotMsgHandler;
 
-    // HW filter
-    HWBRIDGE::CANFILTER filterID = HWBRIDGE::CANFILTER::NO_FILTER;
-    CANFormat filterFormat       = CANStandard;
-    uint16_t filterMask          = 0;
-
     // Bus frequency
     uint32_t frequency_hz = HWBRIDGE::ROVER_CANBUS_FREQUENCY_HZ;
   } Config;
@@ -31,7 +26,7 @@ class CANInterface {
   CANInterface(const Config &config);
 
   // Queue up a one shot message to be sent
-  bool sendOneShotMessage(CANMsg &msg);
+  bool sendOneShotMessage(CANMsg &msg, Kernel::Clock::duration_u32 timeout);
 
   // Update a TX CAN signal
   bool updateStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
@@ -43,6 +38,10 @@ class CANInterface {
 
   // Switch CAN bus
   void switchCANBus(HWBRIDGE::CANBUSID canBusID);
+
+  // Set CAN bus hw filter
+  bool setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANAny,
+                 uint16_t mask = HWBRIDGE::ROVER_CANID_FILTER_MASK, int handle = 0);
 
  private:
   static constexpr osPriority RX_POSTMAN_THREAD_PRIORITY   = osPriorityRealtime;

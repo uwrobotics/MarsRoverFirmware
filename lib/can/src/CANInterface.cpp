@@ -10,10 +10,6 @@ CANInterface::CANInterface(const Config &config)
       m_rxStreamedMsgMap(config.rxStreamedMsgMap),
       m_txStreamedMsgMap(config.txStreamedMsgMap),
       m_rxOneShotMsgHandler(config.rxOneShotMsgHandler) {
-  // Set hw filters
-  m_CANBus1.setFilter(config.filterID, config.filterFormat, config.filterMask);
-  m_CANBus2.setFilter(config.filterID, config.filterFormat, config.filterMask);
-
   // Put CAN bus 2 in silent monitoring mode
   m_CANBus2.monitor(true);
 
@@ -52,35 +48,35 @@ void CANInterface::rxClient(void) {
   while (true) {
     CANMsg *mail = nullptr;
 
-    do {
-      mail = m_rxMailbox.try_get();  // TODO: try_get_for was not working. Investigate why and use it
-      ThisThread::sleep_for(1ms);
-    } while (mail == nullptr);
+    // Wait for a message to arrive
+    mail = m_rxMailbox.try_get_for(Kernel::wait_for_u32_forever);
 
-    // Extract message
-    CANMsg msg = *mail;
-    MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
+    if (mail) {
+      // Extract message
+      CANMsg msg = *mail;
+      MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
 
-    // If message is streamed, extract message signals and put in RX message map
-    if (m_rxStreamedMsgMap->contains(msg.getID())) {
-      HWBRIDGE::CANMsgData_t msgData;
-      msg.getPayload(msgData);
+      // If message is streamed, extract message signals and put in RX message map
+      if (m_rxStreamedMsgMap->contains(msg.getID())) {
+        HWBRIDGE::CANMsgData_t msgData;
+        msg.getPayload(msgData);
 
-      if (!HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxStreamedMsgMap)) {
-        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                     "CAN RX message unpacking failed");
+        if (!HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxStreamedMsgMap)) {
+          MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                       "CAN RX message unpacking failed");
+        }
       }
-    }
 
-    // Otherwise if message is one-shot, process message
-    else if (m_rxOneShotMsgHandler->at(msg.getID())(msg) == MBED_SUCCESS) {
-      // Don't need to do anything here
-    }
+      // Otherwise if message is one-shot, process message
+      else if (m_rxOneShotMsgHandler->at(msg.getID())(msg) == MBED_SUCCESS) {
+        // Don't need to do anything here
+      }
 
-    // Otherwise invalid message was received
-    else {
-      MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                   "Invalid CAN message received");
+      // Otherwise invalid message was received
+      else {
+        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                     "Invalid CAN message received");
+      }
     }
   }
 }
@@ -123,8 +119,8 @@ void CANInterface::txProcessor(void) {
   }
 }
 
-bool CANInterface::sendOneShotMessage(CANMsg &msg) {
-  CANMsg *mail = m_txMailboxOneShot.try_alloc_for(1ms);
+bool CANInterface::sendOneShotMessage(CANMsg &msg, Kernel::Clock::duration_u32 timeout) {
+  CANMsg *mail = m_txMailboxOneShot.try_alloc_for(timeout);
   if (mail) {
     *mail = msg;
     MBED_ASSERT(m_txMailboxOneShot.put(mail) == osOK);
@@ -160,4 +156,11 @@ void CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
     default:
       break;
   }
+}
+
+bool CANInterface::setFilter(HWBRIDGE::CANFILTER filter, CANFormat format, uint16_t mask, int handle) {
+  bool success = true;
+  success &= m_CANBus1.setFilter(filter, format, mask, handle);
+  success &= m_CANBus2.setFilter(filter, format, mask, handle);
+  return success;
 }
