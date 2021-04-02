@@ -1,5 +1,5 @@
 #include "AdafruitSTEMMA.h"
-#include "CANBus.h"
+#include "CANConfig.h"
 #include "CANMsg.h"
 #include "CentrifugeConfig.h"
 #include "CoverConfig.h"
@@ -7,143 +7,168 @@
 #include "ElevatorConfig.h"
 #include "Logger.h"
 
-// TODO: Handle function call failures better
-
-// Felix TODO: Brose through logic and make sure there aren't any silly mistakes.
-
 Sensor::AdafruitSTEMMA moistureSensor(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
 
-CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANInterface can(CANConfig::config);
 
-// CAN Processing Objects
-Mail<CANMsg, 100> mail_box;
-EventQueue event_queue;
-
-static mbed_error_status_t setMotionData(CANMsg &msg) {
-  float motionData;
-  msg.getPayload(motionData);
-
-  switch (msg.getID()) {
-    case HWBRIDGE::CANID::SET_GENEVA_ANGLE:
-      Centrifuge::manager.getActiveController()->setSetPoint(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_SCOOPER_ANGLE:
-      Digger::servo.setValue(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_COVER_ANGLE:
-      Cover::servo.setValue(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT:
-      Elevator::manager.getActiveController()->setSetPoint(motionData);
-      break;
-    default:
-      return MBED_ERROR_INVALID_ARGUMENT;
-  }
-  return MBED_SUCCESS;
+// Convert degrees to radians
+static inline float DEG_TO_RAD(float deg) {
+  return deg * M_PI / 180.0f;
 }
 
-static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_GENEVA_ANGLE, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_SCOOPER_ANGLE, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_COVER_ANGLE, &setMotionData},
-                                                 {HWBRIDGE::CANID::SET_ELEVATOR_HEIGHT, &setMotionData}};
-
-Thread rxCANPostmanThread(osPriorityRealtime);
-Thread rxCANClientThread(osPriorityAboveNormal);
-Thread txCANProcessorThread(osPriorityBelowNormal);
-
-void rxCANClient() {
-  while (true) {
-    CANMsg *mail = nullptr;
-    do {
-      mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
-      ThisThread::sleep_for(1ms);
-    } while (mail == nullptr);
-    MBED_ASSERT(mail != nullptr);
-    canHandlerMap.at(mail->getID())(*mail);
-    MBED_ASSERT(mail_box.free(mail) == osOK);
-  }
-}
-
-// this function is indirectly triggered by an IRQ. It reads a CAN msg and puts in the mail_box
-void rxCANPostman() {
-  CANMsg msg;
-  // this loop is needed to avoid missing msg received between turning off the IRQ and turning it back on
-  while (can.read(msg)) {
-    // TODO: Handle mail related errors better
-    CANMsg *mail = mail_box.try_alloc_for(1ms);
-    MBED_ASSERT(mail != nullptr);
-    *mail = msg;
-    mail_box.put(mail);
-  }
-  can_irq_set(can.getHandle(), IRQ_RX, true);
-}
-
-void rxCANISR() {
-  can_irq_set(can.getHandle(), IRQ_RX, false);
-  event_queue.call(&rxCANPostman);
-}
-
-void txCANProcessor() {
-  constexpr auto txPeriod     = 500ms;
-  constexpr auto txInterdelay = 2ms;
-  CANMsg txMsg;
-
-  struct __attribute__((__packed__)) MotionReport {
-    float position = 0, velocity = 0;
-  };
-
-  // Felix TODO: Ensure that each time, we get the right data, call setPayload with new data and send the new data
-  while (true) {
-    MotionReport report;
-
-    txMsg.setID(HWBRIDGE::CANID::REPORT_GENEVA_ANGLE);
-    report = {Centrifuge::manager.getActiveController()->reportAngleDeg(),
-              Centrifuge::manager.getActiveController()->reportAngularVelocityDegPerSec()};
-    txMsg.setPayload(report);
-    can.write(txMsg);
-    ThisThread::sleep_for(txInterdelay);
-
-    txMsg.setID(HWBRIDGE::CANID::REPORT_ELEVATOR_HEIGHT);
-    report = {Elevator::manager.getActiveController()->reportAngleDeg(),
-              Elevator::manager.getActiveController()->reportAngularVelocityDegPerSec()};
-    txMsg.setPayload(report);
-    can.write(txMsg);
-    ThisThread::sleep_for(txInterdelay);
-
-    txMsg.setID(HWBRIDGE::CANID::REPORT_MOISTURE_DATA);
-    txMsg.setPayload(moistureSensor.read());
-    can.write(txMsg);
-    ThisThread::sleep_for(txInterdelay);
-
-    txMsg.setID(HWBRIDGE::CANID::REPORT_TEMPERATURE_DATA);
-    moistureSensor.alternateRead();
-    txMsg.setPayload(moistureSensor.alternateRead());
-    can.write(txMsg);
-    ThisThread::sleep_for(txInterdelay);
-
-    ThisThread::sleep_for(txPeriod);
-  }
+// Convert radians to degrees
+static inline float RAD_TO_DEG(float rad) {
+  return rad * 180.0f / M_PI;
 }
 
 int main() {
+  HWBRIDGE::CANSignalValue_t genevaSetPoint;
+  HWBRIDGE::CANSignalValue_t elevatorSetPoint;
+  HWBRIDGE::CANSignalValue_t coverPosition;
+  HWBRIDGE::CANSignalValue_t shovelPosition;
+
   printf("\r\n\r\n");
   printf("SCIENCE APP STARTED!\r\n");
   printf("====================\r\n");
 
-  // CAN filter
-  can.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_SCIENCE_RX, CANStandard,
-                HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
-
-  rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
-  rxCANClientThread.start(&rxCANClient);
-  txCANProcessorThread.start(txCANProcessor);
-
-  can.attach(&rxCANISR, CANBus::RxIrq);
+  // Set CAN filters
+  can.setFilter(HWBRIDGE::CANFILTER::SCIENCE_RX_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 0);
+  can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
 
   while (true) {
+    // Process CAN RX signals (TODO: NEED TO HANDLE SNA CASES)
+    switch (Centrifuge::manager.getActiveControlMode()) {
+      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
+      case HWBRIDGE::CONTROL::Mode::POSITION:
+        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
+                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_GENEVA_POSITION, genevaSetPoint);
+        genevaSetPoint = RAD_TO_DEG(genevaSetPoint);
+        break;
+
+      case HWBRIDGE::CONTROL::Mode::VELOCITY:
+        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_ANGULAR_VELOCITY,
+                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_GENEVA_ANGULAR_VELOCITY, genevaSetPoint);
+        genevaSetPoint = RAD_TO_DEG(genevaSetPoint);
+        break;
+
+      default:
+        break;
+    }
+
+    switch (Elevator::manager.getActiveControlMode()) {
+      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
+      case HWBRIDGE::CONTROL::Mode::POSITION:
+        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
+                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_ELEVATOR_POSITION, elevatorSetPoint);
+        elevatorSetPoint = RAD_TO_DEG(elevatorSetPoint);
+        break;
+
+      case HWBRIDGE::CONTROL::Mode::VELOCITY:
+        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_ANGULAR_VELOCITY,
+                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_ELEVATOR_ANGULAR_VELOCITY, elevatorSetPoint);
+        elevatorSetPoint = RAD_TO_DEG(elevatorSetPoint);
+        break;
+
+      default:
+        break;
+    }
+
+    can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::SCIENCE_SET_COVER_POSITION,
+                           coverPosition);
+    coverPosition = RAD_TO_DEG(coverPosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
+                           HWBRIDGE::CANSIGNAL::SCIENCE_SET_SHOVEL_POSITION, shovelPosition);
+    shovelPosition = RAD_TO_DEG(shovelPosition);
+
+    // Update joint set points
+    Centrifuge::manager.getActiveController()->setSetPoint((float)genevaSetPoint);
+    Elevator::manager.getActiveController()->setSetPoint((float)elevatorSetPoint);
+    Cover::servo.setValue((float)coverPosition);
+    Digger::servo.setValue((float)shovelPosition);
+
+    // Compute actuator controls
     Centrifuge::manager.getActiveController()->update();
     Elevator::manager.getActiveController()->update();
 
+    // Update TX signals
+    can.updateStreamedSignal(
+        HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_GENEVA_POSITION,
+        (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(Centrifuge::manager.getActiveController()->reportAngleDeg()));
+    can.updateStreamedSignal(
+        HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_ELEVATOR_POSITION,
+        (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(Elevator::manager.getActiveController()->reportAngleDeg()));
+    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
+                             HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_GENEVA_ANGULAR_VELOCITY,
+                             (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(
+                                 Centrifuge::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
+                             HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_ELEVATOR_ANGULAR_VELOCITY,
+                             (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(
+                                 Elevator::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+
+    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_SENSOR_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_MOISTURE_DATA,
+                             (HWBRIDGE::CANSignalValue_t)moistureSensor.read());
+    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_SENSOR_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_TEMPERATURE_DATA,
+                             (HWBRIDGE::CANSignalValue_t)moistureSensor.alternateRead());
+
+    // TODO: REPORT FAULTS
+
     ThisThread::sleep_for(1ms);
   }
+}
+
+static mbed_error_status_t scienceSetControlMode(CANMsg& msg) {
+  // Error check CAN ID
+  if (msg.getID() != HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE) {
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+
+  bool success = true;
+
+  HWBRIDGE::CONTROL::Mode controlMode;
+  HWBRIDGE::CANMsgData_t msgData;
+  struct uwrt_mars_rover_can_science_set_control_mode_t msgStruct;
+
+  // Unpack CAN data
+  msg.getPayload(msgData);
+  if (uwrt_mars_rover_can_science_set_control_mode_unpack(&msgStruct, msgData.raw,
+                                                          UWRT_MARS_ROVER_CAN_SCIENCE_SET_CONTROL_MODE_LENGTH) == 0) {
+    // Set geneva control mode
+    controlMode =
+        (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_science_set_control_mode_science_geneva_control_mode_decode(
+            msgStruct.science_geneva_control_mode);
+    success &= Centrifuge::manager.switchControlMode(controlMode);
+
+    // Set elevator control mode
+    controlMode =
+        (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_science_set_control_mode_science_elevator_control_mode_decode(
+            msgStruct.science_elevator_control_mode);
+    success &= Elevator::manager.switchControlMode(controlMode);
+
+    if (success) {
+      // Send ACK message back
+      sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_SCIENCE_SET_CONTROL_MODE_ACK);
+    }
+  } else {
+    // Error unpacking!
+    success = false;
+  }
+
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
+}
+
+static void sendACK(HWBRIDGE::SCIENCE_ACK_VALUES ackValue) {
+  struct uwrt_mars_rover_can_science_report_ack_t ackMsgStruct = {
+      .science_ack = (uint8_t)ackValue,
+  };
+
+  HWBRIDGE::CANMsgData_t ackMsgData;
+  uwrt_mars_rover_can_science_report_ack_pack(ackMsgData.raw, &ackMsgStruct,
+                                              UWRT_MARS_ROVER_CAN_SCIENCE_REPORT_ACK_LENGTH);
+
+  CANMsg msgACK;
+  msgACK.setID(HWBRIDGE::CANID::SCIENCE_REPORT_ACK);
+  msgACK.setPayload(ackMsgData, UWRT_MARS_ROVER_CAN_SCIENCE_REPORT_ACK_LENGTH);
+
+  can.sendOneShotMessage(msgACK, 1ms);
 }

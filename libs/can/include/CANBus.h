@@ -18,8 +18,6 @@ class CANBus : public CAN {
 
   can_t *getHandle();
 
-  can_t *getHandle();
-
  private:
   // remove public access to CAN::filter
   using CAN::filter;

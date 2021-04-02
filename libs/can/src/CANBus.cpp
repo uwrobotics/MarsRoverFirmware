@@ -11,7 +11,3 @@ int CANBus::setFilter(HWBRIDGE::CANFILTER canFilter, CANFormat format, uint16_t 
 can_t *CANBus::getHandle() {
   return &_can;
 }
-
-can_t *CANBus::getHandle() {
-  return &_can;
-}

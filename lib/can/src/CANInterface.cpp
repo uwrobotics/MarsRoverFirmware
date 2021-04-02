@@ -68,8 +68,11 @@ void CANInterface::rxClient(void) {
       }
 
       // Otherwise if message is one-shot, process message
-      else if (m_rxOneShotMsgHandler->at(msg.getID())(msg) == MBED_SUCCESS) {
-        // Don't need to do anything here
+      else if (m_rxOneShotMsgHandler->contains(msg.getID())) {
+        if (m_rxOneShotMsgHandler->at(msg.getID())(msg) != MBED_SUCCESS) {
+          MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
+                       "Failed to process CAN message");
+        }
       }
 
       // Otherwise invalid message was received

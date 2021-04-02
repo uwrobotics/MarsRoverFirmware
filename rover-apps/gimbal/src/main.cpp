@@ -1,9 +1,4 @@
-/* mbed Microcontroller Library
- * Copyright (c) 2018 ARM Limited
- * SPDX-License-Identifier: Apache-2.0
- */
-
-#include "CANBus.h"
+#include "CANConfig.h"
 #include "CANMsg.h"
 #include "Logger.h"
 #include "PanConfig.h"
@@ -11,90 +6,122 @@
 #include "PitchConfig.h"
 #include "hw_bridge.h"
 
-// Init. Components
-// CAN Object
-CANBus can1(CAN_RX, CAN_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
-CANMsg rxMsg;
+CANInterface can(CANConfig::config);
 
-// Threads
-Thread rxCANPostmanThread(osPriorityRealtime);
-Thread rxCANClientThread(osPriorityAboveNormal);
-
-// CAN Processing Objects
-Mail<CANMsg, 100> mail_box;
-EventQueue event_queue;
-
-// Incoming message processor
-void rxCANConsumer(CANMsg &rxMsg) {
-  float data = 0;
-  HWBRIDGE::CONTROL::Mode controlMode;
-
-  switch (rxMsg.getID()) {
-    case HWBRIDGE::CANID::SET_PAN_MOTION_DATA:
-      rxMsg.getPayload(data);
-      Pan::manager.getActiveController()->setSetPoint(data);
-      break;
-    case HWBRIDGE::CANID::SET_PITCH_MOTION_DATA:
-      rxMsg.getPayload(data);
-      Pitch::pitchServo.setValue(data);
-      break;
-    case HWBRIDGE::CANID::SET_PAN_CONTROL_MODE:
-      rxMsg.getPayload(controlMode);
-      Pan::manager.switchControlMode(controlMode);
-      break;
-    default:
-      break;
-  }
+// Convert degrees to radians
+static inline float DEG_TO_RAD(float deg) {
+  return deg * M_PI / 180.0f;
 }
 
-void rxCANClient() {
-  while (true) {
-    CANMsg *mail = nullptr;
-    do {
-      mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
-      ThisThread::sleep_for(1ms);
-    } while (mail == nullptr);
-    MBED_ASSERT(mail != nullptr);
-    rxCANConsumer(*mail);
-    MBED_ASSERT(mail_box.free(mail) == osOK);
-  }
-}
-
-// this function is indirectly triggered by an IRQ. It reads a CAN msg and puts in the mail_box
-void rxCANPostman() {
-  CANMsg msg;
-  // this loop is needed to avoid missing msg received between turning off the IRQ and turning it back on
-  while (can1.read(msg)) {
-    // TODO: Handle mail related errors better
-    CANMsg *mail = mail_box.try_alloc_for(1ms);
-    MBED_ASSERT(mail != nullptr);
-    *mail = msg;
-    mail_box.put(mail);
-  }
-  can_irq_set(can1.getHandle(), IRQ_RX, true);
-}
-
-void rxCANISR() {
-  can_irq_set(can1.getHandle(), IRQ_RX, false);
-  event_queue.call(&rxCANPostman);
+// Convert radians to degrees
+static inline float RAD_TO_DEG(float rad) {
+  return rad * 180.0f / M_PI;
 }
 
 int main() {
+  HWBRIDGE::CANSignalValue_t panSetPoint;
+  HWBRIDGE::CANSignalValue_t pitchPosition;
+  HWBRIDGE::CANSignalValue_t rollPosition;
+
   printf("\r\n\r\n");
   printf("GIMBAL APPLICATION STARTED\r\n");
   printf("=======================\r\n");
 
-  // CAN filter
-  can1.setFilter(HWBRIDGE::CANFILTER::ROVER_CANID_FIRST_GIMBAL_RX, CANStandard,
-                 HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK);
-
-  rxCANPostmanThread.start(callback(&event_queue, &EventQueue::dispatch_forever));
-  rxCANClientThread.start(&rxCANClient);
-
-  can1.attach(&rxCANISR, CANBus::RxIrq);
+  // Set CAN filters
+  can.setFilter(HWBRIDGE::CANFILTER::GIMBAL_RX_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 0);
+  can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
 
   while (true) {
+    // Process CAN RX signals (TODO: NEED TO HANDLE SNA CASES)
+    switch (Pan::manager.getActiveControlMode()) {
+      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
+      case HWBRIDGE::CONTROL::Mode::POSITION:
+        can.readStreamedSignal(HWBRIDGE::CANID::GIMBAL_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::GIMBAL_SET_PAN_POSITION,
+                               panSetPoint);
+        panSetPoint = RAD_TO_DEG(panSetPoint);
+        break;
+
+      case HWBRIDGE::CONTROL::Mode::VELOCITY:
+        can.readStreamedSignal(HWBRIDGE::CANID::GIMBAL_SET_JOINT_ANGULAR_VELOCITY,
+                               HWBRIDGE::CANSIGNAL::GIMBAL_SET_PAN_ANGULAR_VELOCITY, panSetPoint);
+        panSetPoint = RAD_TO_DEG(panSetPoint);
+        break;
+
+      default:
+        break;
+    }
+
+    can.readStreamedSignal(HWBRIDGE::CANID::GIMBAL_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::GIMBAL_SET_PITCH_POSITION,
+                           pitchPosition);
+    pitchPosition = RAD_TO_DEG(pitchPosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::GIMBAL_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::GIMBAL_SET_ROLL_POSITION,
+                           rollPosition);
+    rollPosition = RAD_TO_DEG(rollPosition);
+
+    // Update joint set points
+    Pan::manager.getActiveController()->setSetPoint((float)panSetPoint);
+    Pitch::pitchServo.setValue((float)pitchPosition);
+
+    // Compute actuator controls
     Pan::manager.getActiveController()->update();
+
+    // Update TX signals
+    can.updateStreamedSignal(
+        HWBRIDGE::CANID::GIMBAL_REPORT_JOINT_DATA, HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_PAN_POSITION,
+        (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(Pan::manager.getActiveController()->reportAngleDeg()));
+    can.updateStreamedSignal(
+        HWBRIDGE::CANID::GIMBAL_REPORT_JOINT_DATA, HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_PAN_ANGULAR_VELOCITY,
+        (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(Pan::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+
     ThisThread::sleep_for(1ms);
   }
+}
+
+static mbed_error_status_t gimbalSetControlMode(CANMsg& msg) {
+  // Error check CAN ID
+  if (msg.getID() != HWBRIDGE::CANID::GIMBAL_SET_CONTROL_MODE) {
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+
+  bool success = true;
+
+  HWBRIDGE::CONTROL::Mode controlMode;
+  HWBRIDGE::CANMsgData_t msgData;
+  struct uwrt_mars_rover_can_gimbal_set_control_mode_t msgStruct;
+
+  // Unpack CAN data
+  msg.getPayload(msgData);
+  if (uwrt_mars_rover_can_gimbal_set_control_mode_unpack(&msgStruct, msgData.raw,
+                                                         UWRT_MARS_ROVER_CAN_GIMBAL_SET_CONTROL_MODE_LENGTH) == 0) {
+    // Set pan control mode
+    controlMode = (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_gimbal_set_control_mode_gimbal_pan_control_mode_decode(
+        msgStruct.gimbal_pan_control_mode);
+    success &= Pan::manager.switchControlMode(controlMode);
+
+    if (success) {
+      // Send ACK message back
+      sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_ACK_GIMBAL_SET_CONTROL_MODE_ACK);
+    }
+  } else {
+    // Error unpacking!
+    success = false;
+  }
+
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
+}
+
+static void sendACK(HWBRIDGE::GIMBAL_ACK_VALUES ackValue) {
+  struct uwrt_mars_rover_can_gimbal_report_ack_t ackMsgStruct = {
+      .gimbal_ack = (uint8_t)ackValue,
+  };
+
+  HWBRIDGE::CANMsgData_t ackMsgData;
+  uwrt_mars_rover_can_gimbal_report_ack_pack(ackMsgData.raw, &ackMsgStruct,
+                                             UWRT_MARS_ROVER_CAN_GIMBAL_REPORT_ACK_LENGTH);
+
+  CANMsg msgACK;
+  msgACK.setID(HWBRIDGE::CANID::GIMBAL_REPORT_ACK);
+  msgACK.setPayload(ackMsgData, UWRT_MARS_ROVER_CAN_GIMBAL_REPORT_ACK_LENGTH);
+
+  can.sendOneShotMessage(msgACK, 1ms);
 }
