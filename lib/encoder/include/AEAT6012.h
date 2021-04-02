@@ -11,7 +11,7 @@
 
 namespace Encoder {
 
-class AEAT6012 : public Encoder {
+class AEAT6012 final : public Encoder {
  public:
   typedef void (*callback_ptr)(void);
 
@@ -24,27 +24,23 @@ class AEAT6012 : public Encoder {
 
   AEAT6012(const Config &config);
 
-  // Trigger a blocking encoder read and retrieve the absolute position in degrees
-  // Returns whether the read was successful
-  bool getAngleDeg(float &angle) override;
+  // Trigger a blocking encoder read and store a value for angle and velocity
+  // returns whether the read was successful
+  [[nodiscard]] bool update() override;
 
-  // Trigger a blocking encoder read and retrieve the angular velocity in degrees / second
-  // Returns whether the read was successful
-  bool getAngularVelocityDegPerSec(float &speed) override;
+  // Returns the stored angle
+  float getAngleDeg() override;
+
+  // Returns the stored speed
+  float getAngularVelocityDegPerSec() override;
 
   // Reset encoder values and offset
-  bool reset(void) override;
+  [[nodiscard]] bool reset(void) override;
 
   // Asynchronous API for triggering encoder read
   // Invokes user callback once read transaction is complete
   // Returns true if SPI read successfully started, false if SPI peripheral is busy
-  bool readAsync(callback_ptr callback);
-
-  // For async use - returns stored absolute position in degrees (without invoking an encoder read)
-  float getAngleDegNoTrigger(void);
-
-  // For async use - returns stored angular velocity in degrees / second (without invoking an encoder read)
-  float getAngularVelocityDegPerSecNoTrigger(void);
+  bool update(callback_ptr callback);
 
  private:
   static constexpr uint32_t FREQUENCY_HZ              = 1000000;  // 1MHz (max frequency given by datasheet)

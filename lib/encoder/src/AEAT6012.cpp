@@ -95,18 +95,19 @@ bool AEAT6012::read(void) {
   }
 }
 
-bool AEAT6012::getAngleDeg(float &angle) {
+bool AEAT6012::update() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  bool success = read();
-  angle        = m_position_deg;
-  return success;
+  return read();
 }
 
-bool AEAT6012::getAngularVelocityDegPerSec(float &speed) {
+float AEAT6012::getAngleDeg() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  bool success = read();
-  speed        = m_angular_velocity_deg_per_sec;
-  return success;
+  return m_position_deg;
+}
+
+float AEAT6012::getAngularVelocityDegPerSec() {
+  std::scoped_lock<Mutex> lock(m_mutex);
+  return m_angular_velocity_deg_per_sec;
 }
 
 bool AEAT6012::reset(void) {
@@ -121,7 +122,7 @@ bool AEAT6012::reset(void) {
   return success;
 }
 
-bool AEAT6012::readAsync(callback_ptr callback) {
+bool AEAT6012::update(callback_ptr callback) {
   std::scoped_lock<Mutex> lock(m_mutex);
 
   // Set up user callback
@@ -201,17 +202,11 @@ void AEAT6012::privCallback(int event) {
   m_position_raw = raw_data;
 
   // User callback
-  m_callback();
-}
-
-float AEAT6012::getAngleDegNoTrigger(void) {
-  return m_position_deg;
-}
-
-float AEAT6012::getAngularVelocityDegPerSecNoTrigger(void) {
-  return m_angular_velocity_deg_per_sec;
+  if (m_callback != nullptr) {
+    m_callback();
+  }
 }
 
 float AEAT6012::rawToDegrees(uint16_t raw) {
-  return raw / 4096.0 * 360.0;  // 12 bit resolution, 2^12 = 4096
+  return raw / 4096.0f * 360.0f;  // 12 bit resolution, 2^12 = 4096
 }

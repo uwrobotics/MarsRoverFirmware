@@ -11,15 +11,20 @@ Velocity::Velocity(Actuator::Actuator &actuator, Encoder::Encoder &encoder,
       m_pid(pid) {}
 
 bool Velocity::update() {
+  /* Move the motor even if an encoder read fails, but still report it */
+  bool enc_update_success = m_encoder.update();
+  bool cs_update_success  = true;
+  bool stop_required      = false;
+  if (m_currentSensor.has_value()) {
+    cs_update_success = m_currentSensor.value().get().update();
+  }
   if (shouldStop()) {
+    stop_required = true;
     stop();
   } else {
-    if (float speed = 0; m_encoder.getAngularVelocityDegPerSec(speed)) {
-      m_actuator.setValue(m_pid.compute(m_setpoint.load(), speed));
-      return true;
-    }
+    m_actuator.setValue(m_pid.compute(m_setpoint.load(), m_encoder.getAngularVelocityDegPerSec()));
   }
-  return false;
+  return enc_update_success && cs_update_success && !stop_required;
 }
 
 void Velocity::stop() {
@@ -27,13 +32,12 @@ void Velocity::stop() {
   m_actuator.setValue(0);
 }
 
-void Velocity::reset() {
+bool Velocity::reset() {
   stop();
-  m_encoder.reset();
-  if (m_currentSensor.has_value()) {
-    m_currentSensor.value().get().reset();
-  }
   m_pid.reset();
+  bool enc_rst_success = m_encoder.reset();
+  bool cs_rst_success  = m_currentSensor.value().get().reset();
+  return enc_rst_success && cs_rst_success;
 }
 
 std::optional<std::reference_wrapper<PID::PID>> Velocity::getPID() {

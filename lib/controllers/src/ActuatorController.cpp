@@ -50,21 +50,20 @@ void ActuatorController::activateLimitSwitchChecks() {
   m_ignoreLimitSwitchChecks.store(false);
 }
 
-bool ActuatorController::reportAngleDeg(float &angle) {
-  return m_encoder.getAngleDeg(angle);
+float ActuatorController::reportAngleDeg() {
+  return m_encoder.getAngleDeg();
 }
 
-bool ActuatorController::reportAngularVelocityDegPerSec(float &speed) {
-  return m_encoder.getAngularVelocityDegPerSec(speed);
+float ActuatorController::reportAngularVelocityDegPerSec() {
+  return m_encoder.getAngularVelocityDegPerSec();
 }
 
 bool ActuatorController::shouldStop() {
   // this takes advantage of short-circuiting for faster evaluation
-  float speed = 0, current = 0;
-  bool shouldStop = !m_ignoreDegPerSecChecks.load() && m_encoder.getAngularVelocityDegPerSec(speed) &&
-                    std::abs(speed) > m_maxDegPerSec;
+  bool shouldStop =
+      !m_ignoreDegPerSecChecks.load() && std::abs(m_encoder.getAngularVelocityDegPerSec()) > m_maxDegPerSec;
   shouldStop = shouldStop || (!m_ignoreCurrentChecks.load() && m_currentSensor.has_value() &&
-                              m_currentSensor.value().get().read(current) && std::abs(current) > m_maxCurrent);
+                              std::abs(m_currentSensor.value().get().read()) > m_maxCurrent);
   shouldStop = shouldStop || (!m_ignoreLimitSwitchChecks.load() && m_upperLimit.is_connected() && m_upperLimit.read() &&
                               m_setpoint.load() > 0);
   shouldStop = shouldStop || (!m_ignoreLimitSwitchChecks.load() && m_lowerLimit.is_connected() && m_lowerLimit.read() &&

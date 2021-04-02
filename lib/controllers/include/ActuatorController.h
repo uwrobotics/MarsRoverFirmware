@@ -33,12 +33,13 @@ class ActuatorController {
   virtual void activateLimitSwitchChecks() final;
   virtual void deactivateLimitSwitchChecks() final;
 
-  virtual bool reportAngleDeg(float &angle) final;
-  virtual bool reportAngularVelocityDegPerSec(float &speed) final;
+  virtual float reportAngleDeg() final;
+  virtual float reportAngularVelocityDegPerSec() final;
 
   /* functions to be overriden by children */
+  /* TODO: Add finer error reporting (encoder read fail vs current sensor read fail, etc) */
   virtual bool update()                                            = 0;
-  virtual void reset()                                             = 0;
+  virtual bool reset()                                             = 0;
   virtual std::optional<std::reference_wrapper<PID::PID>> getPID() = 0;
   virtual void stop()                                              = 0;
 
