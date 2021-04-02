@@ -9,212 +9,14 @@
 #include "TurntableConfig.h"
 #include "WristConfig.h"
 
-/*** ARM COMMAND HANDLER FUNCTIONS ***/
-/*************************************/
-
-static mbed_error_status_t setControlMode(CANMsg &msg) {
-  HWBRIDGE::CONTROL::Mode controlMode;
-  msg.getPayload(controlMode);
-  bool success;
-
-  switch (msg.getID()) {
-    case HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE:
-      success = Turntable::manager.switchControlMode(controlMode);
-      break;
-    case HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE:
-      success = Shoulder::manager.switchControlMode(controlMode);
-      break;
-    case HWBRIDGE::CANID::SET_ELBOW_CONTROL_MODE:
-      success = Elbow::manager.switchControlMode(controlMode);
-      break;
-    case HWBRIDGE::CANID::SET_LEFT_WRIST_CONTROL_MODE:
-      success = Wrist::leftManager.switchControlMode(controlMode);
-      break;
-    case HWBRIDGE::CANID::SET_RIGHT_WRIST_CONTROL_MODE:
-      success = Wrist::rightManager.switchControlMode(controlMode);
-      break;
-    case HWBRIDGE::CANID::SET_CLAW_CONTROL_MODE:
-      success = Claw::manager.switchControlMode(controlMode);
-      break;
-    default:
-      return MBED_ERROR_INVALID_ARGUMENT;
-  }
-  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
-}
-
-static mbed_error_status_t setMotionData(CANMsg &msg) {
-  float motionData;
-  msg.getPayload(motionData);
-
-  switch (msg.getID()) {
-    case HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA:
-      Turntable::manager.getActiveController()->setSetPoint(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA:
-      Shoulder::manager.getActiveController()->setSetPoint(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_ELBOW_MOTIONDATA:
-      Elbow::manager.getActiveController()->setSetPoint(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_LEFT_WRIST_MOTIONDATA:
-      Wrist::leftManager.getActiveController()->setSetPoint(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_RIGHT_WRIST_MOTIONDATA:
-      Wrist::rightManager.getActiveController()->setSetPoint(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_CLAW_MOTIONDATA:
-      Claw::manager.getActiveController()->setSetPoint(motionData);
-      break;
-    case HWBRIDGE::CANID::SET_TOOL_TIP_MOTIONDATA:
-      Tooltip::clawTooltipServo.setValue(motionData);
-      break;
-    default:
-      return MBED_ERROR_INVALID_ARGUMENT;
-  }
-  return MBED_SUCCESS;
-}
-
-static mbed_error_status_t setSafetyCheck(CANMsg &msg) {
-  HWBRIDGE::CONTROL::SAFETY::SafetyCheckPayload data;
-  msg.getPayload(data);
-
-  const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
-      {HWBRIDGE::ARM::ActuatorID::TURNTABLE, &Turntable::manager},
-      {HWBRIDGE::ARM::ActuatorID::SHOULDER, &Shoulder::manager},
-      {HWBRIDGE::ARM::ActuatorID::ELBOW, &Elbow::manager},
-      {HWBRIDGE::ARM::ActuatorID::WRISTLEFT, &Wrist::leftManager},
-      {HWBRIDGE::ARM::ActuatorID::WRISTRIGHT, &Wrist::rightManager},
-      {HWBRIDGE::ARM::ActuatorID::CLAW, &Claw::manager}};
-
-  auto act = lut.at(data.actuatorID).value_or(nullptr);
-  if (!act) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-  auto temp = act->getActiveController();
-
-  switch (msg.getID()) {
-    case HWBRIDGE::CANID::SET_JOINT_CURRENT_CHECK:
-      data.check ? temp->activateCurrentChecks() : temp->deactivateCurrentChecks();
-      break;
-
-    case HWBRIDGE::CANID::SET_JOINT_DEG_PER_SEC_CHECK:
-      data.check ? temp->activateDegPerSecChecks() : temp->deactivateDegPerSecChecks();
-      break;
-
-    case HWBRIDGE::CANID::SET_JOINT_LIMIT_SWITCH:
-      data.check ? temp->activateLimitSwitchChecks() : temp->deactivateLimitSwitchChecks();
-      break;
-
-    default:
-      return MBED_ERROR_INVALID_ARGUMENT;
-  }
-
-  return MBED_SUCCESS;
-}
-
-static mbed_error_status_t setPIDParameter(CANMsg &msg) {
-  HWBRIDGE::CONTROL::PID::TuningApiPayload data;
-  msg.getPayload(data);
-
-  const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
-      {HWBRIDGE::ARM::ActuatorID::TURNTABLE, &Turntable::manager},
-      {HWBRIDGE::ARM::ActuatorID::SHOULDER, &Shoulder::manager},
-      {HWBRIDGE::ARM::ActuatorID::ELBOW, &Elbow::manager},
-      {HWBRIDGE::ARM::ActuatorID::WRISTLEFT, &Wrist::leftManager},
-      {HWBRIDGE::ARM::ActuatorID::WRISTRIGHT, &Wrist::rightManager},
-      {HWBRIDGE::ARM::ActuatorID::CLAW, &Claw::manager}};
-
-  auto act = lut.at(data.actuatorID).value_or(nullptr);
-  if (!act) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-  bool success;
-
-  switch (msg.getID()) {
-    case HWBRIDGE::CANID::SET_JOINT_PID_DEADZONE:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateDeadzone(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
-      break;
-    case HWBRIDGE::CANID::SET_JOINT_PID_P:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateProportionalGain(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
-      break;
-    case HWBRIDGE::CANID::SET_JOINT_PID_I:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateIntegralGain(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
-      break;
-    case HWBRIDGE::CANID::SET_JOINT_PID_D:
-      if (auto temp = act->getActiveController()->getPID()) {
-        temp.value().get().updateDerivativeGain(data.value);
-        success = true;
-      } else {
-        success = false;
-      }
-      break;
-    default:
-      return MBED_ERROR_INVALID_ARGUMENT;
-  }
-  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
-}
-
-// Handler function mappings
-const static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_TURNTABLE_CONTROL_MODE, &setControlMode},
-                                                       {HWBRIDGE::CANID::SET_SHOULDER_CONTROL_MODE, &setControlMode},
-                                                       {HWBRIDGE::CANID::SET_ELBOW_CONTROL_MODE, &setControlMode},
-                                                       {HWBRIDGE::CANID::SET_LEFT_WRIST_CONTROL_MODE, &setControlMode},
-                                                       {HWBRIDGE::CANID::SET_RIGHT_WRIST_CONTROL_MODE, &setControlMode},
-                                                       {HWBRIDGE::CANID::SET_CLAW_CONTROL_MODE, &setControlMode},
-
-                                                       {HWBRIDGE::CANID::SET_TURNTABLE_MOTIONDATA, &setMotionData},
-                                                       {HWBRIDGE::CANID::SET_SHOULDER_MOTIONDATA, &setMotionData},
-                                                       {HWBRIDGE::CANID::SET_ELBOW_MOTIONDATA, &setMotionData},
-                                                       {HWBRIDGE::CANID::SET_LEFT_WRIST_MOTIONDATA, &setMotionData},
-                                                       {HWBRIDGE::CANID::SET_RIGHT_WRIST_MOTIONDATA, &setMotionData},
-                                                       {HWBRIDGE::CANID::SET_CLAW_MOTIONDATA, &setMotionData},
-                                                       {HWBRIDGE::CANID::SET_TOOL_TIP_MOTIONDATA, &setMotionData},
-
-                                                       {HWBRIDGE::CANID::SET_JOINT_CURRENT_CHECK, &setSafetyCheck},
-                                                       {HWBRIDGE::CANID::SET_JOINT_LIMIT_SWITCH, &setSafetyCheck},
-                                                       {HWBRIDGE::CANID::SET_JOINT_DEG_PER_SEC_CHECK, &setSafetyCheck},
-
-                                                       {HWBRIDGE::CANID::SET_JOINT_PID_DEADZONE, &setPIDParameter},
-                                                       {HWBRIDGE::CANID::SET_JOINT_PID_P, &setPIDParameter},
-                                                       {HWBRIDGE::CANID::SET_JOINT_PID_I, &setPIDParameter},
-                                                       {HWBRIDGE::CANID::SET_JOINT_PID_D, &setPIDParameter}};
+// TODO: Add CAN handler for enabling/disabling current checks.
+// TODO: Add CAN handler for enabling/disabling rpm checks
+// TODO: Add CAN handler for enabling/disabling current checks
 
 /*** ARM CANBus ***/
 /******************/
 
-CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
-
-// CAN Processing Objects
-Mail<CANMsg, 100> mail_box;
-EventQueue event_queue;
-
-void rxCANClient() {
-  while (true) {
-    CANMsg *mail = nullptr;
-    do {
-      mail = mail_box.try_get();  // TODO: try_get_for was not working. Investigate why and use it
-      ThisThread::sleep_for(1ms);
-    } while (mail == nullptr);
-    MBED_ASSERT((mail != nullptr));
-    canHandlerMap.at(mail->getID())(*mail);
-    MBED_ASSERT(mail_box.free(mail) == osOK);
-  }
-}
+CANInterface can(CANConfig::config);
 
 // this function is indirectly triggered by an IRQ. It reads a CAN msg and puts in the mail_box
 void rxCANPostman() {
@@ -222,7 +24,7 @@ void rxCANPostman() {
   // this loop is needed to avoid missing msg received between turning off the IRQ and turning it back on
   while (can1.read(msg)) {
     // TODO: Handle mail related errors better
-    CANMsg *mail = mail_box.try_alloc_for(1ms);
+    CANMsg* mail = mail_box.try_alloc_for(1ms);
     MBED_ASSERT(mail != nullptr);
     *mail = msg;
     mail_box.put(mail);
@@ -300,6 +102,14 @@ Thread rxCANClientThread(osPriorityAboveNormal);
 Thread txCANProcessorThread(osPriorityBelowNormal);
 
 int main() {
+  HWBRIDGE::CANSignalValue_t setTurntablePosition;
+  HWBRIDGE::CANSignalValue_t setShoulderPosition;
+  HWBRIDGE::CANSignalValue_t setElbowPosition;
+  HWBRIDGE::CANSignalValue_t setLeftWristPosition;
+  HWBRIDGE::CANSignalValue_t setRightWristPosition;
+  HWBRIDGE::CANSignalValue_t setClawPosition;
+  HWBRIDGE::CANSignalValue_t setToolTipPosition;
+
   printf("\r\n\r\n");
   printf("ARM APPLICATION STARTED\r\n");
   printf("=======================\r\n");
@@ -315,6 +125,31 @@ int main() {
   can1.attach(&rxCANISR, CANBus::RxIrq);
 
   while (true) {
+    // Process CAN RX signals (TODO: NEED TO HANDLE SNA CASES!!!)
+    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_TURNTABLE_SET_POSITION,
+                           setTurntablePosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SHOULDER_SET_POSITION,
+                           setShoulderPosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_ELBOW_SET_POSITION,
+                           setElbowPosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_LEFT_WRIST_SET_POSITION,
+                           setLeftWristPosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_RIGHT_WRIST_SET_POSITION,
+                           setRightWristPosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_CLAW_SET_POSITION,
+                           setClawPosition);
+    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_TOOL_TIP_SET_POSITION,
+                           setToolTipPosition);
+
+    // Update joint set points
+    Turntable::manager.getActiveController()->setSetPoint((float)setTurntablePosition));
+    Shoulder::manager.getActiveController()->setSetPoint((float)setShoulderPosition);
+    Elbow::manager.getActiveController()->setSetPoint((float)setElbowPosition);
+    Wrist::leftManager.getActiveController()->setSetPoint((float)setLeftWristPosition);
+    Wrist::rightManager.getActiveController()->setSetPoint((float)setRightWristPosition);
+    Claw::manager.getActiveController()->setSetPoint((float)setClawPosition);
+    Tooltip::clawTooltipServo.setValue((float)setToolTipPosition);
+
     // Compute actuator controls
     Turntable::manager.getActiveController()->update();
     Elbow::manager.getActiveController()->update();
@@ -325,4 +160,134 @@ int main() {
 
     ThisThread::sleep_for(1ms);
   }
+}
+
+/*** ARM COMMAND HANDLER FUNCTIONS ***/
+/*************************************/
+
+static mbed_error_status_t armSetControlMode(CANMsg& msg) {
+  // Error check CAN ID
+  if (msg.getID() != HWBRIDGE::CANID::ARM_SET_CONTROL_MODE) {
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+
+  bool success = true;
+
+  HWBRIDGE::CONTROL::MODE controlMode;
+  HWBRIDGE::CANMsgData_t msgData;
+  struct uwrt_mars_rover_can_arm_set_control_mode_t msgStruct;
+
+  // Unpack CAN data
+  msg.getPayload(msgData);
+  if (uwrt_mars_rover_can_arm_set_control_mode_unpack(&msgStruct, msgData.raw,
+                                                      UWRT_MARS_ROVER_CAN_ARM_SET_CONTROL_MODE_LENGTH) == 0) {
+    // Set joint control mode
+    controlMode = (HWBRIDGE::CONTROL::MODE)uwrt_mars_rover_can_arm_set_control_mode_arm_joint_control_mode_decode(
+        msgStruct.arm_joint_control_mode);
+    success &= Turntable::manager.switchControlMode(controlMode);
+
+    // Set shoulder control mode
+    controlMode = (HWBRIDGE::CONTROL::MODE)uwrt_mars_rover_can_arm_set_control_mode_arm_shoulder_control_mode_decode(
+        msgStruct.arm_shoulder_control_mode);
+    success &= Shoulder::manager.switchControlMode(controlMode);
+
+    // Set elbow control mode
+    controlMode = (HWBRIDGE::CONTROL::MODE)uwrt_mars_rover_can_arm_set_control_mode_arm_elbow_control_mode_decode(
+        msgStruct.arm_elbow_control_mode);
+    success &= Elbow::manager.switchControlMode(controlMode);
+
+    // Set left wrist control mode
+    controlMode = (HWBRIDGE::CONTROL::MODE)uwrt_mars_rover_can_arm_set_control_mode_arm_left_wrist_control_mode_decode(
+        msgStruct.arm_left_wrist_control_mode);
+    success &= Wrist::leftManager.switchControlMode(controlMode);
+
+    // Set right wrist control mode
+    controlMode = (HWBRIDGE::CONTROL::MODE)uwrt_mars_rover_can_arm_set_control_mode_arm_right_wrist_control_mode_decode(
+        msgStruct.arm_right_wrist_control_mode);
+    success &= Wrist::rightManager.switchControlMode(controlMode);
+
+    // Set claw control mode
+    controlMode = (HWBRIDGE::CONTROL::MODE)uwrt_mars_rover_can_arm_set_control_mode_arm_claw_control_mode_decode(
+        msgStruct.arm_claw_control_mode);
+    success &= Claw::manager.switchControlMode(controlMode);
+  } else {
+    // Error unpacking!
+    success = false;
+  }
+
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
+}
+
+static mbed_error_status_t armSetJointPIDParams(CANMsg& msg) {
+  // Error check CAN ID
+  if (msg.getID() != HWBRIDGE::CANID::ARM_SET_JOINT_PID_PARAMS) {
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+
+  bool success = true;
+
+  float value;
+  HWBRIDGE::CANMsgData_t msgData;
+  struct uwrt_mars_rover_can_arm_set_joint_pid_params_t msgStruct;
+
+  // Unpack CAN data
+  msg.getPayload(msgData);
+  if (uwrt_mars_rover_can_arm_set_joint_pid_params_unpack(&msgStruct, msgData.raw,
+                                                          UWRT_MARS_ROVER_CAN_ARM_SET_JOINT_PID_PARAMS_LENGTH) == 0) {
+    // Determine joint ID
+    HWBRIDGE::ARM_JOINT_PIDID_VALUES jointID =
+        (HWBRIDGE::ARM_JOINT_PIDID_VALUES)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pidid_decode(
+            msgStruct.arm_joint_pidid);
+
+    const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager*> lut = {
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_TURNTABLE, &Turntable::manager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_SHOULDER & Shoulder::manager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_ELBOW, &Elbow::manager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_LEFT_WRIST, &Wrist::leftManager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_RIGHT_WRIST, &Wrist::rightManager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_CLAW, &Claw::manager}};
+
+    auto act = lut.at(data.actuatorID).value_or(nullptr);
+    if (!act) {
+      return MBED_ERROR_INVALID_ARGUMENT;
+    }
+
+    // Extract PID params
+    float p = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_proportional_gain_decode(
+        msgStruct.arm_joint_pid_proportional_gain);
+    float i = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_integral_gain_decode(
+        msgStruct.arm_joint_pid_integral_gain);
+    float d = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_derivative_gain_decode(
+        msgStruct.arm_joint_pid_derivative_gain);
+    float deadzone = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_deadzone_decode(
+        msgStruct.arm_joint_pid_proportional_gain);
+
+    // Set PID params
+    if (auto pid = act->getActiveController()->getPID()) {
+      if (msgStruct.arm_joint_pid_proportional_gain !=
+          HWBRIDGE::ARM_TURNTABLE_PID_PROPORTIONAL_GAIN_VALUES::ARM_TURNTABLE_PID_PROPORTIONAL_GAIN_SNA) {
+        pid.value().get().updateProportionalGain(p);
+      }
+      if (msgStruct.arm_joint_pid_integral_gain !=
+          HWBRIDGE::ARM_TURNTABLE_PID_INTEGRAL_GAIN_VALUES::ARM_TURNTABLE_PID_INTEGRAL_GAIN_SNA) {
+        pid.value().get().updateIntegralGain(i);
+      }
+      if (msgStruct.arm_joint_pid_derivative_gain !=
+          HWBRIDGE::ARM_TURNTABLE_PID_DERIVATIVE_GAIN_VALUES::ARM_TURNTABLE_PID_DERIVATIVE_GAIN_SNA) {
+        pid.value().get().updateDerivativeGain(d);
+      }
+      if (msgStruct.arm_joint_pid_deadzone !=
+          HWBRIDGE::ARM_TURNTABLE_PID_DEADZONE_VALUES::ARM_TURNTABLE_PID_DEADZONE_SNA) {
+        pid.value().get().updateDeadzone(deadzone);
+      }
+    } else {
+      // PID controller doesn't exist!
+      success = false;
+    }
+  } else {
+    // Error unpacking!
+    success = false;
+  }
+
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }

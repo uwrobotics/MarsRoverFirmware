@@ -12,10 +12,9 @@ using namespace HWBRIDGE;
 
 static CANMsgMap rxStreamedMsgMap = {
     // Msg 1
-    {CANID::COMMON_TEST_MESSAGE2,
+    {CANID::COMMON_DEBUG_MESSAGE1,
      {
-         {CANSIGNAL::COMMON_TEST_SIGNAL2, (CANSignalValue_t)COMMON_TEST_SIGNAL2_VALUES::COMMON_TEST_SIGNAL2_SNA},
-         {CANSIGNAL::COMMON_TEST_SIGNAL3, (CANSignalValue_t)COMMON_TEST_SIGNAL3_VALUES::COMMON_TEST_SIGNAL3_SNA},
+         {CANSIGNAL::COMMON_DEBUG_SIGNAL1, 0},
      }},
 
     // Msg 2
@@ -23,17 +22,16 @@ static CANMsgMap rxStreamedMsgMap = {
 
 static CANMsgMap txStreamedMsgMap = {
     // Msg 1
-    {CANID::COMMON_TEST_MESSAGE2,
+    {CANID::COMMON_DEBUG_MESSAGE1,
      {
-         {CANSIGNAL::COMMON_TEST_SIGNAL2, (CANSignalValue_t)COMMON_TEST_SIGNAL2_VALUES::COMMON_TEST_SIGNAL2_SNA},
-         {CANSIGNAL::COMMON_TEST_SIGNAL3, (CANSignalValue_t)COMMON_TEST_SIGNAL3_VALUES::COMMON_TEST_SIGNAL3_SNA},
+         {CANSIGNAL::COMMON_DEBUG_SIGNAL1, 0},
      }},
 
     // Msg 2
 };
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
-    {CANID::COMMON_TEST_MESSAGE1, &handle_test_msg_one_shot},
+    {CANID::COMMON_DEBUG_MESSAGE2, &handle_test_msg_one_shot},
 };
 
 CANInterface::Config config = {
