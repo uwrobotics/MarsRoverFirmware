@@ -4,7 +4,7 @@
 int main() {
   printf("####### STARTING LED MATRIX TEST #######\r\n");
 
-  LEDMatrix blinky(PA_0, PA_1, PB_0);
+  LEDMatrix blinky(D8, D9, D10);
 
   while (true) {
     blinky.setState(HWBRIDGE::LEDMATRIX::LEDMatrixState::SOLID_RED);

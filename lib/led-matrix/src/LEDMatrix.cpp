@@ -72,7 +72,7 @@ void LEDMatrix::setFlashColor(bool R, bool G, bool B) {
 void LEDMatrix::setSolidColor(bool R, bool G, bool B) {
   if (m_continue_flashing) {
     m_continue_flashing = false;
-    m_event_flags.wait_all(ENDED_FLASH);
+    m_event_flags.wait_all(ENDED_FLASH);  // wait for flashing() while loop to finish
   }
   setColor(R, G, B);
 }
