@@ -36,13 +36,14 @@ static Controller::Velocity vel(motor, encoder, std::nullopt, velPID, POLOLUMADE
                                 LIM_CLAW_OPEN, NC);
 static Controller::Position pos(motor, encoder, std::nullopt, posPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT,
                                 LIM_CLAW_OPEN, NC);
-static Controller::Current cur(motor, encoder, std::nullopt, curPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT, LIM_CLAW_OPEN,
-                               NC);
+// static Controller::Current cur(motor, encoder, std::nullopt, curPID, POLOLUMADEGPERSEC, POLOLUMAXCURRENT,
+// LIM_CLAW_OPEN,
+//                               NC);
 static Controller::OpenLoop open(motor, encoder, std::nullopt, POLOLUMADEGPERSEC, POLOLUMAXCURRENT, LIM_CLAW_OPEN, NC);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::VELOCITY, &vel},
                                            {HWBRIDGE::CONTROL::Mode::POSITION, &pos},
-                                           {HWBRIDGE::CONTROL::Mode::CURRENT, &cur},
+                                           // {HWBRIDGE::CONTROL::Mode::CURRENT, &cur},
                                            {HWBRIDGE::CONTROL::Mode::OPEN_LOOP, &open}};
 }  // namespace Internal
 

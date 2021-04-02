@@ -67,6 +67,9 @@ test-adafruitSTEMMA:
 #  - nucleo
   - science
 
+test-units:
+  - nucleo
+
 test-pid:
   - nucleo
 #  - arm

@@ -8,7 +8,7 @@ class OpenLoop final : public ActuatorController {
   using ActuatorController::ActuatorController;
 
   void stop() override;
-  void reset() override;
+  bool reset() override;
   bool update() override;
 
   std::optional<std::reference_wrapper<PID::PID>> getPID() override;

@@ -5,6 +5,7 @@
 #include "ContServo.h"
 #include "OpenLoop.h"
 #include "Position.h"
+#include "Velocity.h"
 
 namespace Pan {
 
@@ -24,7 +25,7 @@ static Actuator::ContServo servo(SRVO_PWM_YAW, MAX_DEG_PER_SEC, MAX_PULSE, MIN_P
 static Encoder::AEAT6012 encoder({PAN_ENC_SPI_SCK, PAN_ENC_SPI_MISO, PAN_ENC_SPI_CS, 0});
 
 static Controller::Position pos(servo, encoder, std::nullopt, pid, MAX_DEG_PER_SEC, MAX_CURRENT, NC, NC);
-static Controller::Position vel(servo, encoder, std::nullopt, pid, MAX_DEG_PER_SEC, MAX_CURRENT, NC, NC);
+static Controller::Velocity vel(servo, encoder, std::nullopt, pid, MAX_DEG_PER_SEC, MAX_CURRENT, NC, NC);
 static Controller::OpenLoop open(servo, encoder, std::nullopt, MAX_DEG_PER_SEC, MAX_CURRENT, NC, NC);
 
 static const Controller::ControlMap lut = {{HWBRIDGE::CONTROL::Mode::POSITION, &pos},
