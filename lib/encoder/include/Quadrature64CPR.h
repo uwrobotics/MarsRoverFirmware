@@ -23,7 +23,7 @@ class Quadrature64CPR final : public Encoder {
   bool reset() override;
 
  private:
-  void read();
+  void update();
   // tracks the previous angle in degrees reading to calculate speed
   float m_previous_angle_deg;
   // holds the current angle in degrees

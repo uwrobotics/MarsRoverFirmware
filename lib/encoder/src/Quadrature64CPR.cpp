@@ -37,7 +37,7 @@ bool Quadrature64CPR::reset() {
   return true;
 }
 
-void Quadrature64CPR::read() {
+void Quadrature64CPR::update() {
   // time since last measurement in nanoseconds
   m_timer.stop();
   float dt = std::chrono::duration_cast<std::chrono::nanoseconds>(m_timer.elapsed_time()).count();
