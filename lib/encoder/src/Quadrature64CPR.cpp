@@ -8,23 +8,19 @@ Quadrature64CPR::Quadrature64CPR(const Config &config)
     : m_QEI(config.ChannelA, config.ChannelB, config.Index, GPIO::QEI::Encoding::X4_ENCODING),
       m_zeroOffsetDeg(config.offsetDeg) {}
 
-bool Quadrature64CPR::getAngleDeg(float &angle) {
+float Quadrature64CPR::getAngleDeg() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  read();
-  angle = m_current_angle_deg;
-  return true;
+  return m_current_angle_deg;
 }
 
-bool Quadrature64CPR::getAngularVelocityDegPerSec(float &speed) {
+float Quadrature64CPR::getAngularVelocityDegPerSec() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  read();
-  speed = m_anglular_velocity_deg_per_sec;
-  return true;
+  return m_anglular_velocity_deg_per_sec;
 }
 
 bool Quadrature64CPR::reset() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  read();
+  update();
 
   m_zeroOffsetDeg = m_current_angle_deg;
 
@@ -37,7 +33,7 @@ bool Quadrature64CPR::reset() {
   return true;
 }
 
-void Quadrature64CPR::update() {
+bool Quadrature64CPR::update() {
   // time since last measurement in nanoseconds
   m_timer.stop();
   float dt = std::chrono::duration_cast<std::chrono::nanoseconds>(m_timer.elapsed_time()).count();
@@ -56,4 +52,6 @@ void Quadrature64CPR::update() {
     m_anglular_velocity_deg_per_sec = 0;
     // TODO log this as an error considering dt = 0
   }
+
+  return true;
 }
