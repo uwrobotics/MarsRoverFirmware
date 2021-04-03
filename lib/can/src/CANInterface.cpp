@@ -142,23 +142,30 @@ bool CANInterface::readStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL
   return m_rxStreamedMsgMap->getSignalValue(msgID, signalName, signalValue);
 }
 
-void CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
+bool CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
+  bool success = false;
+
   switch (canBusID) {
     case HWBRIDGE::CANBUSID::CANBUS1:
       m_activeCANBus = &m_CANBus1;
       m_CANBus1.monitor(false);
       m_CANBus2.monitor(true);
+      success = true;
       break;
 
     case HWBRIDGE::CANBUSID::CANBUS2:
       m_activeCANBus = &m_CANBus2;
       m_CANBus1.monitor(true);
       m_CANBus2.monitor(false);
+      success = true;
       break;
 
     default:
+      success = false;
       break;
   }
+
+  return success;
 }
 
 bool CANInterface::setFilter(HWBRIDGE::CANFILTER filter, CANFormat format, uint16_t mask, int handle) {

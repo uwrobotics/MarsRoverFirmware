@@ -21,7 +21,6 @@ static inline float RAD_TO_DEG(float rad) {
 int main() {
   HWBRIDGE::CANSignalValue_t panSetPoint;
   HWBRIDGE::CANSignalValue_t pitchPosition;
-  HWBRIDGE::CANSignalValue_t rollPosition;
 
   printf("\r\n\r\n");
   printf("GIMBAL APPLICATION STARTED\r\n");
@@ -32,7 +31,9 @@ int main() {
   can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
 
   while (true) {
-    // Process CAN RX signals (TODO: NEED TO HANDLE SNA CASES)
+    // *** PROCESS CAN RX SIGNALS (TODO: NEED TO HANDLE SNA CASES) ***
+
+    // Determine new pan position
     switch (Pan::manager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
@@ -51,31 +52,33 @@ int main() {
         break;
     }
 
+    // Determine new pitch position
     can.readStreamedSignal(HWBRIDGE::CANID::GIMBAL_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::GIMBAL_SET_PITCH_POSITION,
                            pitchPosition);
     pitchPosition = RAD_TO_DEG(pitchPosition);
-    can.readStreamedSignal(HWBRIDGE::CANID::GIMBAL_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::GIMBAL_SET_ROLL_POSITION,
-                           rollPosition);
-    rollPosition = RAD_TO_DEG(rollPosition);
 
-    // Update joint set points
+    // *** UPDATE JOINT SET POINTS ***
     Pan::manager.getActiveController()->setSetPoint((float)panSetPoint);
     Pitch::pitchServo.setValue((float)pitchPosition);
 
-    // Compute actuator controls
+    // *** COMPUTE ACTUATOR CONTROLS ***
     Pan::manager.getActiveController()->update();
 
-    // Update TX signals
-    can.updateStreamedSignal(
-        HWBRIDGE::CANID::GIMBAL_REPORT_JOINT_DATA, HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_PAN_POSITION,
-        (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(Pan::manager.getActiveController()->reportAngleDeg()));
-    can.updateStreamedSignal(
-        HWBRIDGE::CANID::GIMBAL_REPORT_JOINT_DATA, HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_PAN_ANGULAR_VELOCITY,
-        (HWBRIDGE::CANSignalValue_t)DEG_TO_RAD(Pan::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    // *** UPDATE TX SIGNALS ***
+    can.updateStreamedSignal(HWBRIDGE::CANID::GIMBAL_REPORT_JOINT_DATA, HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_PAN_POSITION,
+                             DEG_TO_RAD(Pan::manager.getActiveController()->reportAngleDeg()));
+
+    can.updateStreamedSignal(HWBRIDGE::CANID::GIMBAL_REPORT_JOINT_DATA,
+                             HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_PAN_ANGULAR_VELOCITY,
+                             DEG_TO_RAD(Pan::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+
+    // TODO: REPORT FAULTS
 
     ThisThread::sleep_for(1ms);
   }
 }
+
+// *** HANDLERS FOR CAN RX ONE-SHOTS ***
 
 static mbed_error_status_t gimbalSetControlMode(CANMsg& msg) {
   // Error check CAN ID
@@ -104,6 +107,101 @@ static mbed_error_status_t gimbalSetControlMode(CANMsg& msg) {
     }
   } else {
     // Error unpacking!
+    success = false;
+  }
+
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
+}
+
+static mbed_error_status_t gimbalSetJointPIDParams(CANMsg& msg) {
+  // Error check CAN ID
+  if (msg.getID() != HWBRIDGE::CANID::GIMBAL_SET_JOINT_PID_PARAMS) {
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+
+  bool success = true;
+
+  HWBRIDGE::CANMsgData_t msgData;
+  struct uwrt_mars_rover_can_gimbal_set_joint_pid_params_t msgStruct;
+
+  // Unpack CAN data
+  msg.getPayload(msgData);
+  if (uwrt_mars_rover_can_gimbal_set_joint_pid_params_unpack(
+          &msgStruct, msgData.raw, UWRT_MARS_ROVER_CAN_GIMBAL_SET_JOINT_PID_PARAMS_LENGTH) == 0) {
+    // Error check joint ID (only allow PID tuning of pan axis)
+    HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES jointID =
+        (HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES)uwrt_mars_rover_can_gimbal_set_joint_pid_params_gimbal_joint_pidid_decode(
+            msgStruct.gimbal_joint_pidid);
+
+    if (jointID != HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES::GIMBAL_JOINT_PIDID_PAN) {
+      return MBED_ERROR_INVALID_ARGUMENT;
+    }
+
+    // Extract PID params
+    float p = (float)uwrt_mars_rover_can_gimbal_set_joint_pid_params_gimbal_joint_pid_proportional_gain_decode(
+        msgStruct.gimbal_joint_pid_proportional_gain);
+    float i = (float)uwrt_mars_rover_can_gimbal_set_joint_pid_params_gimbal_joint_pid_integral_gain_decode(
+        msgStruct.gimbal_joint_pid_integral_gain);
+    float d = (float)uwrt_mars_rover_can_gimbal_set_joint_pid_params_gimbal_joint_pid_derivative_gain_decode(
+        msgStruct.gimbal_joint_pid_derivative_gain);
+    float deadzone = (float)uwrt_mars_rover_can_gimbal_set_joint_pid_params_gimbal_joint_pid_deadzone_decode(
+        msgStruct.gimbal_joint_pid_proportional_gain);
+
+    // Set PID params
+    if (auto pid = Pan::manager.getActiveController()->getPID()) {
+      if (msgStruct.gimbal_joint_pid_proportional_gain !=
+          (uint16_t)HWBRIDGE::GIMBAL_JOINT_PID_PROPORTIONAL_GAIN_VALUES::GIMBAL_JOINT_PID_PROPORTIONAL_GAIN_SNA) {
+        pid.value().get().updateProportionalGain(p);
+      }
+      if (msgStruct.gimbal_joint_pid_integral_gain !=
+          (uint16_t)HWBRIDGE::GIMBAL_JOINT_PID_INTEGRAL_GAIN_VALUES::GIMBAL_JOINT_PID_INTEGRAL_GAIN_SNA) {
+        pid.value().get().updateIntegralGain(i);
+      }
+      if (msgStruct.gimbal_joint_pid_derivative_gain !=
+          (uint16_t)HWBRIDGE::GIMBAL_JOINT_PID_DERIVATIVE_GAIN_VALUES::GIMBAL_JOINT_PID_DERIVATIVE_GAIN_SNA) {
+        pid.value().get().updateDerivativeGain(d);
+      }
+      if (msgStruct.gimbal_joint_pid_deadzone !=
+          (uint16_t)HWBRIDGE::GIMBAL_JOINT_PID_DEADZONE_VALUES::GIMBAL_JOINT_PID_DEADZONE_SNA) {
+        pid.value().get().updateDeadzone(deadzone);
+      }
+
+      // Send ACK message back
+      sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_ACK_GIMBAL_SET_JOINT_PID_PARAMS_ACK);
+
+    } else {
+      // PID controller doesn't exist!
+      success = false;
+    }
+  } else {
+    // Error unpacking!
+    success = false;
+  }
+
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
+}
+
+static mbed_error_status_t commonSwitchCANBus(CANMsg& msg) {
+  // Error check CAN ID
+  if (msg.getID() != HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS) {
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+
+  bool success = true;
+
+  HWBRIDGE::CANMsgData_t msgData;
+  struct uwrt_mars_rover_can_common_switch_can_bus_t msgStruct;
+
+  // Unpack CAN data
+  msg.getPayload(msgData);
+  if (uwrt_mars_rover_can_common_switch_can_bus_unpack(&msgStruct, msgData.raw,
+                                                       UWRT_MARS_ROVER_CAN_COMMON_SWITCH_CAN_BUS_LENGTH) == 0) {
+    success &= can.switchCANBus((HWBRIDGE::CANBUSID)uwrt_mars_rover_can_common_switch_can_bus_common_can_bus_id_decode(
+        msgStruct.common_can_bus_id));
+
+    // Send ACK message back
+    sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_ACK_CAN_BUS_SWITCH_ACK);
+  } else {
     success = false;
   }
 

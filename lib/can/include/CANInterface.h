@@ -37,7 +37,7 @@ class CANInterface {
                           HWBRIDGE::CANSignalValue_t &signalValue);
 
   // Switch CAN bus
-  void switchCANBus(HWBRIDGE::CANBUSID canBusID);
+  bool switchCANBus(HWBRIDGE::CANBUSID canBusID);
 
   // Set CAN bus hw filter
   bool setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANAny,

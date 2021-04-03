@@ -6,6 +6,8 @@
 
 static void sendACK(HWBRIDGE::GIMBAL_ACK_VALUES ackValue);
 static mbed_error_status_t gimbalSetControlMode(CANMsg& msg);
+static mbed_error_status_t gimbalSetJointPIDParams(CANMsg& msg);
+static mbed_error_status_t commonSwitchCANBus(CANMsg& msg);
 
 namespace CANConfig {
 
@@ -14,27 +16,21 @@ using namespace HWBRIDGE;
 static CANMsgMap rxStreamedMsgMap = {
     {CANID::GIMBAL_SET_JOINT_POSITION,
      {
-         {CANSIGNAL::GIMBAL_SET_PAN_POSITION,
-          (CANSignalValue_t)GIMBAL_SET_PAN_POSITION_VALUES::GIMBAL_SET_PAN_POSITION_SNA},
-         {CANSIGNAL::GIMBAL_SET_PITCH_POSITION,
-          (CANSignalValue_t)GIMBAL_SET_PITCH_POSITION_VALUES::GIMBAL_SET_PITCH_POSITION_SNA},
-         {CANSIGNAL::GIMBAL_SET_ROLL_POSITION,
-          (CANSignalValue_t)GIMBAL_SET_ROLL_POSITION_VALUES::GIMBAL_SET_ROLL_POSITION_SNA},
+         {CANSIGNAL::GIMBAL_SET_PAN_POSITION, 0},
+         {CANSIGNAL::GIMBAL_SET_PITCH_POSITION, 0},
+         {CANSIGNAL::GIMBAL_SET_ROLL_POSITION, 0},
      }},
     {CANID::GIMBAL_SET_JOINT_ANGULAR_VELOCITY,
      {
-         {CANSIGNAL::GIMBAL_SET_PAN_ANGULAR_VELOCITY,
-          (CANSignalValue_t)GIMBAL_SET_PAN_ANGULAR_VELOCITY_VALUES::GIMBAL_SET_PAN_ANGULAR_VELOCITY_SNA},
+         {CANSIGNAL::GIMBAL_SET_PAN_ANGULAR_VELOCITY, 0},
      }},
 };
 
 static CANMsgMap txStreamedMsgMap = {
     {CANID::GIMBAL_REPORT_JOINT_DATA,
      {
-         {CANSIGNAL::GIMBAL_REPORT_PAN_POSITION,
-          (CANSignalValue_t)GIMBAL_REPORT_PAN_POSITION_VALUES::GIMBAL_REPORT_PAN_POSITION_SNA},
-         {CANSIGNAL::GIMBAL_REPORT_PAN_ANGULAR_VELOCITY,
-          (CANSignalValue_t)GIMBAL_REPORT_PAN_ANGULAR_VELOCITY_VALUES::GIMBAL_REPORT_PAN_ANGULAR_VELOCITY_SNA},
+         {CANSIGNAL::GIMBAL_REPORT_PAN_POSITION, 0},
+         {CANSIGNAL::GIMBAL_REPORT_PAN_ANGULAR_VELOCITY, 0},
      }},
     {CANID::GIMBAL_REPORT_FAULTS,
      {
@@ -45,6 +41,8 @@ static CANMsgMap txStreamedMsgMap = {
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
     {CANID::GIMBAL_SET_CONTROL_MODE, &gimbalSetControlMode},
+    {CANID::GIMBAL_SET_JOINT_PID_PARAMS, &gimbalSetJointPIDParams},
+    {CANID::COMMON_SWITCH_CAN_BUS, &commonSwitchCANBus},
 };
 
 CANInterface::Config config = {
