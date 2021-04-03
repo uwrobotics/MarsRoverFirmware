@@ -21,9 +21,9 @@ class Quadrature64CPR final : public Encoder {
   float getAngleDeg() override;
   float getAngularVelocityDegPerSec() override;
   bool reset() override;
+  bool update() override;
 
  private:
-  bool update() override;
   // tracks the previous angle in degrees reading to calculate speed
   float m_previous_angle_deg;
   // holds the current angle in degrees
