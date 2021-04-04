@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ActuatorController.h"
+
 namespace Controller {
 
 class Position final : public ActuatorController {
@@ -11,7 +12,7 @@ class Position final : public ActuatorController {
            bool ignoreDegPerSecChecks = false, bool ignoreCurrentChecks = true, bool ignoreLimitSwitchChecks = false);
   void stop() override;
   bool update() override;
-  void reset() override;
+  bool reset() override;
   std::optional<std::reference_wrapper<PID::PID>> getPID() override;
 
  private:

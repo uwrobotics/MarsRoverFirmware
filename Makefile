@@ -18,7 +18,7 @@ APPS_DIR     := $(abspath $(MAKEFILE_DIR)/apps)
 TARGETS_LIST := $(sort $(patsubst $(TARGETS_DIR)/%/,%, $(wildcard $(TARGETS_DIR)/*/)))
 APPS_LIST    := $(sort $(patsubst $(APPS_DIR)/%/,%, $(wildcard $(APPS_DIR)/*/)))
 
-NUMBER_OF_SUPPORTED_CONFIGS := $(shell python3 build_configurations_helper.py count-supported-configs)
+NUMBER_OF_SUPPORTED_CONFIGS := $(shell python3 scripts/build_configurations_helper.py count-supported-configs)
 
 verify_app_target_tuple_is_specified:
 ifeq (,$(findstring $(TARGET), $(TARGETS_LIST)))
@@ -38,7 +38,7 @@ ifeq (,$(findstring $(APP), $(APPS_LIST)))
 endif
 
 verify_app_target_tuple_config: verify_app_target_tuple_is_specified
-	@python3 build_configurations_helper.py verify-config --APP=$(APP) --TARGET=$(TARGET) ; \
+	@python3 scripts/build_configurations_helper.py verify-config --APP=$(APP) --TARGET=$(TARGET) ; \
 	if [ $$? -ne 0 ]; \
 	then \
 		echo "Do you want to try to build anyways? (Y/N)"; \
@@ -60,7 +60,7 @@ build: verify_app_target_tuple_config
 all:
 	@echo Building all $(NUMBER_OF_SUPPORTED_CONFIGS) supported app/target configs with max $(UWRT_FIRMWARE_MAX_JOBS) concurrent jobs
 	@number=0 ; while [ $$number -lt $(NUMBER_OF_SUPPORTED_CONFIGS) ] ; do \
-		i=$$(python3 build_configurations_helper.py print-supported-config $$number) ; \
+		i=$$(python3 scripts/build_configurations_helper.py print-supported-config $$number) ; \
 		make $$i ; \
 		number=$$((number+1)) ; \
 	done

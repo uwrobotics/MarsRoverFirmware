@@ -67,6 +67,9 @@ test-adafruitSTEMMA:
 test-netzer-encoder:
   - nucleo
 
+test-units:
+  - nucleo
+
 test-pid:
   - nucleo
 #  - arm

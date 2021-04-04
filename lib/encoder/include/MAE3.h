@@ -16,14 +16,17 @@ class MAE3 final : public Encoder {
   MAE3(MAE3 &&) = delete;
   ~MAE3()       = default;
 
-  bool getAngleDeg(float &angle) override;
-  bool getAngularVelocityDegPerSec(float &speed) override;
-  bool reset() override;
+  [[nodiscard]] bool update() override;
+  float getAngleDeg() override;
+  float getAngularVelocityDegPerSec() override;
+  [[nodiscard]] bool reset() override;
 
  private:
   GPIO::PwmIn m_pwmIn;
 
   Mutex m_mutex;
+
+  float m_angle{0}, m_speed{0};
 
   static constexpr float m_degreesPerUnit = 360;
   float m_zeroOffsetDeg;
