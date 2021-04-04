@@ -19,6 +19,8 @@ static inline float RAD_TO_DEG(float rad) {
 }
 
 int main() {
+  Utility::logger << "";  // Band-aid fix for logger bug (issue #328)
+
   HWBRIDGE::CANSignalValue_t panSetPoint;
   HWBRIDGE::CANSignalValue_t pitchPosition;
 
@@ -27,8 +29,8 @@ int main() {
   printf("=======================\r\n");
 
   // Set CAN filters
-  can.setFilter(HWBRIDGE::CANFILTER::GIMBAL_RX_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 0);
-  can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
+  can.setFilter(HWBRIDGE::CANFILTER::GIMBAL_RX_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK);
+  can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK);
 
   while (true) {
     // *** PROCESS CAN RX SIGNALS (TODO: NEED TO HANDLE SNA CASES) ***
@@ -73,6 +75,9 @@ int main() {
                              DEG_TO_RAD(Pan::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
     // TODO: REPORT FAULTS
+
+    // Print CAN diagnostics
+    printf("GIMBAL - number of CAN messages received: %lu\r\n", can.getNumMsgsReceived());
 
     ThisThread::sleep_for(1ms);
   }

@@ -9,7 +9,6 @@ int main() {
   Utility::logger << "";  // Band-aid fix for logger bug (issue #328)
   printf("CAN test\r\n");
 
-  // Set hw filter
   can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK);
 
   HWBRIDGE::CANSignalValue_t rxSignal1Value = 0;
@@ -19,7 +18,7 @@ int main() {
     // Read RX signal
     can.readStreamedSignal(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE1, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL1,
                            rxSignal1Value);
-    printf("RX debug signal value: %llu\r\n", (uint64_t)rxSignal1Value);
+    printf("RX debug signal value: %lu\r\n", (uint32_t)rxSignal1Value);
 
     // Update TX signal
     can.updateStreamedSignal(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL2,
@@ -31,22 +30,22 @@ int main() {
   }
 }
 
-// Receive a one-shot message (COMMON_DEBUG_MESSAGE2) and send a one-shot reply back
+// Receive a one-shot message (COMMON_DEBUG_MESSAGE3) and send a one-shot reply back
 mbed_error_status_t handle_test_msg_one_shot(CANMsg& msg) {
   CANMsg msgACK;
 
   // Initialize msg struct
-  struct uwrt_mars_rover_can_common_debug_message2_t msgStruct = {
-      .common_debug_signal2 = (uint8_t)HWBRIDGE::COMMON_DEBUG_SIGNAL2_VALUES::COMMON_DEBUG_SIGNAL2_DEBUG_VALUE_0,
+  struct uwrt_mars_rover_can_common_debug_message3_t msgStruct = {
+      .common_debug_signal3 = (uint8_t)HWBRIDGE::COMMON_DEBUG_SIGNAL3_VALUES::COMMON_DEBUG_SIGNAL3_DEBUG_VALUE_0,
   };
 
   // Pack msg struct contents into raw bytes
   HWBRIDGE::CANMsgData_t msgData;
-  uwrt_mars_rover_can_common_debug_message2_pack(msgData.raw, &msgStruct, 1);
+  uwrt_mars_rover_can_common_debug_message3_pack(msgData.raw, &msgStruct, 1);
 
   // Prepare CANMsg
-  msgACK.setID(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE2);
-  msgACK.setPayload(msgData, UWRT_MARS_ROVER_CAN_COMMON_DEBUG_MESSAGE2_LENGTH);
+  msgACK.setID(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE3);
+  msgACK.setPayload(msgData, UWRT_MARS_ROVER_CAN_COMMON_DEBUG_MESSAGE3_LENGTH);
 
   // Send a one shot back
   can.sendOneShotMessage(msgACK, 1ms);

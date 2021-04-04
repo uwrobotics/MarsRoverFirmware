@@ -9,7 +9,8 @@ CANInterface::CANInterface(const Config &config)
       m_txProcessorThread(TX_PROCESSOR_THREAD_PRIORITY),
       m_rxStreamedMsgMap(config.rxStreamedMsgMap),
       m_txStreamedMsgMap(config.txStreamedMsgMap),
-      m_rxOneShotMsgHandler(config.rxOneShotMsgHandler) {
+      m_rxOneShotMsgHandler(config.rxOneShotMsgHandler),
+      m_numMsgsReceived(0) {
   // Put CAN bus 2 in silent monitoring mode
   m_CANBus2.monitor(true);
 
@@ -49,7 +50,10 @@ void CANInterface::rxClient(void) {
     CANMsg *mail = nullptr;
 
     // Wait for a message to arrive
-    mail = m_rxMailbox.try_get_for(Kernel::wait_for_u32_forever);
+    do {
+      mail = m_rxMailbox.try_get();  // using try_get() because try_get_for() was crashing
+      ThisThread::sleep_for(1ms);
+    } while (mail == nullptr);
 
     if (mail) {
       // Extract message
@@ -57,14 +61,24 @@ void CANInterface::rxClient(void) {
       MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
 
       // If message is streamed, extract message signals and put in RX message map
-      if (m_rxStreamedMsgMap->contains(msg.getID())) {
+      m_rxMutex.lock();
+      bool msgIsStreamed = m_rxStreamedMsgMap->contains(msg.getID());
+      m_rxMutex.unlock();
+
+      if (msgIsStreamed) {
         HWBRIDGE::CANMsgData_t msgData;
         msg.getPayload(msgData);
 
-        if (!HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxStreamedMsgMap)) {
+        m_rxMutex.lock();
+        bool msgUnpacked = HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxStreamedMsgMap);
+        m_rxMutex.unlock();
+
+        if (!msgUnpacked) {
           MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
                        "CAN RX message unpacking failed");
         }
+
+        m_numMsgsReceived++;
       }
 
       // Otherwise if message is one-shot, process message
@@ -73,6 +87,8 @@ void CANInterface::rxClient(void) {
           MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
                        "Failed to process CAN message");
         }
+
+        m_numMsgsReceived++;
       }
 
       // Otherwise invalid message was received
@@ -105,7 +121,11 @@ void CANInterface::txProcessor(void) {
       HWBRIDGE::CANMsgData_t msgData = {0};
       size_t len                     = 0;
 
-      if (HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txStreamedMsgMap, len)) {
+      m_txMutex.lock();
+      bool msgPacked = HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txStreamedMsgMap, len);
+      m_txMutex.unlock();
+
+      if (msgPacked) {
         // Send message
         CANMsg msg;
         msg.setID(msgID);
@@ -134,12 +154,18 @@ bool CANInterface::sendOneShotMessage(CANMsg &msg, Kernel::Clock::duration_u32 t
 
 bool CANInterface::updateStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
                                         HWBRIDGE::CANSignalValue_t signalValue) {
-  return m_txStreamedMsgMap->setSignalValue(msgID, signalName, signalValue);
+  m_txMutex.lock();
+  bool success = m_txStreamedMsgMap->setSignalValue(msgID, signalName, signalValue);
+  m_txMutex.unlock();
+  return success;
 }
 
 bool CANInterface::readStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
                                       HWBRIDGE::CANSignalValue_t &signalValue) {
-  return m_rxStreamedMsgMap->getSignalValue(msgID, signalName, signalValue);
+  m_rxMutex.lock();
+  bool success = m_rxStreamedMsgMap->getSignalValue(msgID, signalName, signalValue);
+  m_rxMutex.unlock();
+  return success;
 }
 
 bool CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
@@ -173,4 +199,8 @@ bool CANInterface::setFilter(HWBRIDGE::CANFILTER filter, CANFormat format, uint1
   success &= m_CANBus1.setFilter(filter, format, mask, handle);
   success &= m_CANBus2.setFilter(filter, format, mask, handle);
   return success;
+}
+
+uint32_t CANInterface::getNumMsgsReceived(void) {
+  return m_numMsgsReceived;
 }

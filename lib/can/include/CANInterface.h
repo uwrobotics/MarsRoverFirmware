@@ -43,6 +43,9 @@ class CANInterface {
   bool setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANAny,
                  uint16_t mask = HWBRIDGE::ROVER_CANID_FILTER_MASK, int handle = 0);
 
+  // For diagnostic purposes
+  uint32_t getNumMsgsReceived(void);
+
  private:
   static constexpr osPriority RX_POSTMAN_THREAD_PRIORITY   = osPriorityRealtime;
   static constexpr osPriority RX_CLIENT_THREAD_PRIORITY    = osPriorityAboveNormal;
@@ -63,6 +66,9 @@ class CANInterface {
   Thread m_rxClientThread;
   Thread m_txProcessorThread;
 
+  Mutex m_rxMutex;
+  Mutex m_txMutex;
+
   Mail<CANMsg, 100> m_rxMailbox;
   Mail<CANMsg, 32> m_txMailboxOneShot;
   EventQueue m_rxEventQueue;
@@ -71,4 +77,6 @@ class CANInterface {
   HWBRIDGE::CANMsgMap *m_txStreamedMsgMap;
 
   const CANMsg::CANMsgHandlerMap *m_rxOneShotMsgHandler;
+
+  uint32_t m_numMsgsReceived;  // For diagnostic purposes
 };

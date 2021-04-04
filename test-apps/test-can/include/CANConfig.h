@@ -22,16 +22,16 @@ static CANMsgMap rxStreamedMsgMap = {
 
 static CANMsgMap txStreamedMsgMap = {
     // Msg 1
-    {CANID::COMMON_DEBUG_MESSAGE1,
+    {CANID::COMMON_DEBUG_MESSAGE2,
      {
-         {CANSIGNAL::COMMON_DEBUG_SIGNAL1, 0},
+         {CANSIGNAL::COMMON_DEBUG_SIGNAL2, 0},
      }},
 
     // Msg 2
 };
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
-    {CANID::COMMON_DEBUG_MESSAGE2, &handle_test_msg_one_shot},
+    {CANID::COMMON_DEBUG_MESSAGE3, &handle_test_msg_one_shot},
 };
 
 CANInterface::Config config = {
