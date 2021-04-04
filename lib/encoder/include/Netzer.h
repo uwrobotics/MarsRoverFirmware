@@ -51,7 +51,7 @@ class Netzer : public Encoder {
   float m_angular_velocity_deg_per_sec;
   uint16_t m_position_raw;
 
-  void spi_callback_debug(int events);
+  void priv_spi_callback(int events);
 
   // Trigger a blocking encoder read
   bool read(void);

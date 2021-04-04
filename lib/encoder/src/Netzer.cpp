@@ -29,7 +29,7 @@ bool Netzer::readAsync(callback_ptr callback) {
   std::scoped_lock<Mutex> lock(m_mutex);
   m_callback = callback;
   // return status
-  int status = m_spi.transfer(tx_buffer, WORDS, rx_buffer, WORDS, event_callback_t(this, &Netzer::spi_callback_debug));
+  int status = m_spi.transfer(tx_buffer, WORDS, rx_buffer, WORDS, event_callback_t(this, &Netzer::priv_spi_callback));
   // status = 0 => SPI transfer started
   // status = -1 => SPI peripheral is busy
   return (status == 0);
@@ -39,7 +39,7 @@ uint16_t Netzer::get_raw_data() {
   return m_raw_data;
 }
 
-void Netzer::spi_callback_debug(int events) {
+void Netzer::priv_spi_callback(int events) {
   angularVelocityEstimation();
   m_callback();
 }
