@@ -43,7 +43,7 @@ class Netzer : public Encoder {
   char rx_buffer[WORDS]       = {0};  // Initialize rx buffer to receive data (16 bits in total)
   uint32_t m_raw_data;                // 32 bit raw data
 
-  SPI m_spi;                // most, miso, sclk (PA_7, PA_6, PA_5)
+  SPI m_spi;                // most, miso, sclk
   callback_ptr m_callback;  // User callback function to be invoked when an encoder read is complete
 
   float m_offset_deg;
