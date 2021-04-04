@@ -99,6 +99,10 @@ static CANMsgMap txStreamedMsgMap = {
          {CANSIGNAL::ARM_CLAW_CURRENT_SENSOR_STATE,
           (CANSignalValue_t)ARM_CLAW_CURRENT_SENSOR_STATE_VALUES::ARM_CLAW_CURRENT_SENSOR_STATE_SNA},
      }},
+    {CANID::ARM_REPORT_DIAGNOSTICS,
+     {
+         {CANSIGNAL::ARM_REPORT_CAN_STATS, 0},
+     }},
 };
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {

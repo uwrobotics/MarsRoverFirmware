@@ -1,10 +1,8 @@
+#!/usr/bin/env python3
 import can
 import time
 import _thread
 
-
-# bus = can.interface.Bus(
-#     bustype='socketcan', channel='can0', bitrate=CAN_BUS_BIT_RATE)
 
 bus = can.ThreadSafeBus(interface='socketcan', channel='can0')
 
@@ -63,6 +61,7 @@ num_msgs_sent_science = 0
 
 
 def roboteq_can_traffic(args):
+    global num_msgs_sent_roboteq
     while True:
         bus.send(tpdo1_msg)
         bus.send(tpdo2_msg)
@@ -73,6 +72,7 @@ def roboteq_can_traffic(args):
 
 
 def arm_can_traffic(args):
+    global num_msgs_sent_arm
     while True:
         bus.send(arm_set_joint_position_msg)
         num_msgs_sent_arm += 1
@@ -80,6 +80,7 @@ def arm_can_traffic(args):
 
 
 def gimbal_can_traffic(args):
+    global num_msgs_sent_gimbal
     while True:
         bus.send(gimbal_set_joint_position_msg)
         num_msgs_sent_gimbal += 1
@@ -87,13 +88,17 @@ def gimbal_can_traffic(args):
 
 
 def science_can_traffic(args):
+    global num_msgs_sent_science
     while True:
-        bus.send(science_set_joint_position)
+        bus.send(science_set_joint_position_msg)
         num_msgs_sent_science += 1
         time.sleep(1/ROVER_CAN_STREAMED_MSGS_FREQUENCY_HZ)
 
 
 def one_shots_can_traffic(args):
+    global num_msgs_sent_arm
+    global num_msgs_sent_gimbal
+    global num_msgs_sent_science
     while True:
         bus.send(arm_set_control_mode_msg)
         bus.send(gimbal_set_control_mode_msg)
@@ -104,12 +109,18 @@ def one_shots_can_traffic(args):
         time.sleep(1/ONE_SHOT_MSGS_FREQUENCY_HZ)
 
 
-def output_diagnostics():
-    print("ROBOTEQ - number of messages sent: " + str(num_msgs_sent_roboteq))
-    print("ARM - number of messages sent: " + str(num_msgs_sent_arm))
-    print("GIMBAL - number of messages sent: " + str(num_msgs_sent_gimbal))
-    print("SCIENCE - number of messages sent: " + str(num_msgs_sent_science))
-    time.sleep(1)  # sleep 1s
+def output_diagnostics(args):
+    global num_msgs_sent_roboteq
+    global num_msgs_sent_arm
+    global num_msgs_sent_gimbal
+    global num_msgs_sent_science
+    while True:
+        print("ROBOTEQ - number of messages sent: " + str(num_msgs_sent_roboteq))
+        print("ARM - number of messages sent: " + str(num_msgs_sent_arm))
+        print("GIMBAL - number of messages sent: " + str(num_msgs_sent_gimbal))
+        print("SCIENCE - number of messages sent: " + str(num_msgs_sent_science))
+        print('====================')
+        time.sleep(2)  # sleep 2s
 
 
 try:

@@ -37,6 +37,10 @@ static CANMsgMap txStreamedMsgMap = {
          {CANSIGNAL::GIMBAL_PAN_ENCODER_STATE,
           (CANSignalValue_t)GIMBAL_PAN_ENCODER_STATE_VALUES::GIMBAL_PAN_ENCODER_STATE_SNA},
      }},
+    {CANID::GIMBAL_REPORT_DIAGNOSTICS,
+     {
+         {CANSIGNAL::GIMBAL_REPORT_CAN_STATS, 0},
+     }},
 };
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {

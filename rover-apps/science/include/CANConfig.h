@@ -49,6 +49,10 @@ static CANMsgMap txStreamedMsgMap = {
          {CANSIGNAL::SCIENCE_MOISTURE_SENSOR_STATE,
           (CANSignalValue_t)SCIENCE_MOISTURE_SENSOR_STATE_VALUES::SCIENCE_MOISTURE_SENSOR_STATE_SNA},
      }},
+    {CANID::SCIENCE_REPORT_DIAGNOSTICS,
+     {
+         {CANSIGNAL::SCIENCE_REPORT_CAN_STATS, 0},
+     }},
 };
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
