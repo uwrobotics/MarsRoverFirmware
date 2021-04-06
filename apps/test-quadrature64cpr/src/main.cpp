@@ -6,10 +6,6 @@
 constexpr Encoder::Quadrature64CPR::Config config = {PA_5, PA_6, NC, 0};
 Encoder::Quadrature64CPR encoder(config);
 
-// Variables for angle and speed
-float theta     = 0;
-float theta_dot = 0;
-
 // Synchronous testing
 void Updater();
 void Reader();
@@ -45,36 +41,20 @@ void Updater() {
       // not sure what this line of code does, will leave it commmented for now
       // MBED_ASSERT(encoder.update(nullptr));
     }
+    ThisThread::sleep_for(PERIOD);
   }
-  ThisThread::sleep_for(PERIOD);
 }
 
 void Reader() {
-  print("Reading...");
-  ThisThread::sleep_for(PERIOD);
+  while (true) {
+    std::string str = "Angle: " + std::to_string(encoder.getAngleDeg()) +
+                      ", Angular Velocity: " + std::to_string(encoder.getAngularVelocityDegPerSec()) + "\r\n";
+    print(str);
+    ThisThread::sleep_for(PERIOD);
+  }
 }
 
 void print(const std::string &str) {
   std::unique_lock<Mutex> lock(print_mutex);
   printf("%s", str.c_str());
 }
-
-  // while (true) {
-  //   // reset the timers
-  //   theta_timer.reset();
-  //   theta_dot_timer.reset();
-  //   // update the encoder
-  //   if (enc.update()){
-  //     // read and print the angle
-  //     theta = enc.getAngleDeg();
-  //     theta_timer.stop();
-  //     printf("Angle reading took: %lluus\tAngle: %.3f\r\n", theta_timer.elapsed_time().count(), theta);
-  //     // read and print the speed
-  //     theta_dot = enc.getAngularVelocityDegPerSec();
-  //     theta_dot_timer.stop();
-  //     printf("Angular speed reading took: %lluus\tSpeed: %.3f\r\n", theta_dot_timer.elapsed_time().count(), theta_dot);
-  //   }else {
-  //     printf("Error updating the encoder\n");
-  //   }
-  //   ThisThread::sleep_for(500ms);
-  // }
