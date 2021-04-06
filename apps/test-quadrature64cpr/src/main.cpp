@@ -4,10 +4,7 @@
 // first pin is yellow wire
 // second pin is white wire
 constexpr Encoder::Quadrature64CPR::Config config = {PA_5, PA_6, NC, 0};
-Encoder::Quadrature64CPR enc(config);
-
-// Timers
-Timer theta_timer, theta_dot_timer;
+Encoder::Quadrature64CPR encoder(config);
 
 // Variables for angle and speed
 float theta     = 0;
@@ -16,6 +13,7 @@ float theta_dot = 0;
 // Synchronous testing
 void Updater();
 void Reader();
+Timer timer
 
 constexpr auto PERIOD            = 500ms;
 constexpr bool USE_BLOCKING_TEST = true;
@@ -35,7 +33,19 @@ int main() {
 }
 
 void Updater() {
-  print("Updating...");
+  while (true) {
+    if constexpr (USE_BLOCKING_TEST) {
+      timer.reset();
+      timer.start();
+      MBED_ASSERT(encoder.update());
+      timer.stop();
+      std::string str = "Time taken to update encoder: " + std::to_string(timer.elapsed_time().count()) + "us\r\n";
+      print(str);
+    } else {
+      // not sure what this line of code does, will leave it commmented for now
+      // MBED_ASSERT(encoder.update(nullptr));
+    }
+  }
   ThisThread::sleep_for(PERIOD);
 }
 
