@@ -1,5 +1,5 @@
-#include "Quadrature64CPR.h"
 #include "Logger.h"
+#include "Quadrature64CPR.h"
 
 // first pin is yellow wire
 // second pin is white wire
