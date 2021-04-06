@@ -13,7 +13,7 @@ float theta_dot = 0;
 // Synchronous testing
 void Updater();
 void Reader();
-Timer timer
+Timer timer;
 
 constexpr auto PERIOD            = 500ms;
 constexpr bool USE_BLOCKING_TEST = true;
