@@ -11,12 +11,10 @@ void Updater();
 void Reader();
 Timer timer;
 
-constexpr auto PERIOD            = 500ms;
-constexpr bool USE_BLOCKING_TEST = true;
+constexpr auto PERIOD = 500ms;
 
 // Print helper function
 void print(const std::string &str);
-Mutex print_mutex;
 
 int main() {
   Thread updater_thread(osPriorityNormal), reader_thread(osPriorityNormal);
@@ -30,17 +28,12 @@ int main() {
 
 void Updater() {
   while (true) {
-    if constexpr (USE_BLOCKING_TEST) {
-      timer.reset();
-      timer.start();
-      MBED_ASSERT(encoder.update());
-      timer.stop();
-      std::string str = "Time taken to update encoder: " + std::to_string(timer.elapsed_time().count()) + "us\r\n";
-      print(str);
-    } else {
-      // not sure what this line of code does, will leave it commmented for now
-      // MBED_ASSERT(encoder.update(nullptr));
-    }
+    timer.reset();
+    timer.start();
+    MBED_ASSERT(encoder.update());
+    timer.stop();
+    std::string str = "Time taken to update encoder: " + std::to_string(timer.elapsed_time().count()) + "us\r\n";
+    printf("%s", str.c_str());
     ThisThread::sleep_for(PERIOD);
   }
 }
@@ -49,12 +42,7 @@ void Reader() {
   while (true) {
     std::string str = "Angle: " + std::to_string(encoder.getAngleDeg()) +
                       ", Angular Velocity: " + std::to_string(encoder.getAngularVelocityDegPerSec()) + "\r\n";
-    print(str);
+    printf("%s", str.c_str());
     ThisThread::sleep_for(PERIOD);
   }
-}
-
-void print(const std::string &str) {
-  std::unique_lock<Mutex> lock(print_mutex);
-  printf("%s", str.c_str());
 }
