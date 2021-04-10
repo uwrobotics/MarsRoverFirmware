@@ -10,10 +10,6 @@
 #include "TurntableConfig.h"
 #include "WristConfig.h"
 
-// TODO: Add CAN handler for enabling/disabling current checks.
-// TODO: Add CAN handler for enabling/disabling rpm checks
-// TODO: Add CAN handler for enabling/disabling current checks
-
 CANInterface can(CANConfig::config);
 
 // Convert degrees to radians

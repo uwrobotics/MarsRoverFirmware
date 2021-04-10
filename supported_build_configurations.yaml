@@ -97,3 +97,10 @@ test-quadrature64cpr:
 
 test-watchdog:
   - UWRT_NUCLEO
+
+test-stress-can:
+  - ARM_REV2
+  - GIMBAL_REV2
+  - PDB_REV2
+  - SCIENCE_REV2
+  - UWRT_NUCLEO
