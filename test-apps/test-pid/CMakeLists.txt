@@ -1,0 +1,5 @@
+add_executable(test-pid)
+target_sources(test-pid PRIVATE src/main.cpp)
+target_include_directories(test-pid PUBLIC include)
+target_link_libraries(test-pid PRIVATE PID Logger)
+mbed_set_post_build(test-pid)

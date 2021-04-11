@@ -1,5 +1,11 @@
-add_executable(pdb.${TARGET}-board.elf)
-target_sources(pdb.${TARGET}-board.elf PRIVATE src/main.cpp)
-target_include_directories(pdb.${TARGET}-board.elf PUBLIC include)
-target_link_libraries(pdb.${TARGET}-board.elf PRIVATE uwrt-mars-rover-hw-bridge CANMsg CANBus Logger)
-target_set_firmware_properties(pdb.${TARGET}-board.elf)
+add_executable(pdb)
+target_sources(pdb PRIVATE src/main.cpp)
+target_include_directories(pdb PUBLIC include)
+target_link_libraries(pdb
+        PRIVATE
+        CANBus
+        CANMsg
+        Logger
+        uwrt-mars-rover-hw-bridge
+        )
+mbed_set_post_build(pdb)

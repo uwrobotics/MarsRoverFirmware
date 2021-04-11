@@ -1,25 +1,26 @@
-add_executable(gimbal.${TARGET}-board.elf)
-target_sources(gimbal.${TARGET}-board.elf PRIVATE src/main.cpp)
-target_include_directories(gimbal.${TARGET}-board.elf PUBLIC include)
-target_link_libraries(gimbal.${TARGET}-board.elf PRIVATE 
+add_executable(gimbal)
+target_sources(gimbal PRIVATE src/main.cpp)
+target_include_directories(gimbal PUBLIC include)
+target_link_libraries(gimbal
         PRIVATE
-#Control
+        #Control
         OpenLoopController
         PositionController
         VelocityController
         CurrentController
         ActuatorControllerManager
-#Motors
+        #Motors
         LimServo
         ContServo
-#Encoders
-	EncoderAEAT6012
-#CAN
+        #Encoders
+        EncoderAEAT6012
+        #CAN
         CANBus
         CANMsg
-#Sensor
+        #Sensor
         CurrentSensor
-#Other
-        Logger 
-        uwrt-mars-rover-hw-bridge)
-target_set_firmware_properties(gimbal.${TARGET}-board.elf)
+        #Other
+        Logger
+        uwrt-mars-rover-hw-bridge
+        )
+mbed_set_post_build(gimbal)

@@ -1,27 +1,28 @@
-add_executable(arm.${TARGET}-board.elf)
-target_sources(arm.${TARGET}-board.elf PRIVATE src/main.cpp)
-target_include_directories(arm.${TARGET}-board.elf PUBLIC include)
-target_link_libraries(arm.${TARGET}-board.elf
+add_executable(arm)
+target_sources(arm PRIVATE src/main.cpp)
+target_include_directories(arm PUBLIC include)
+target_link_libraries(arm
         PRIVATE
-#Control
+        #Control
         OpenLoopController
         PositionController
         VelocityController
         CurrentController
         ActuatorControllerManager
-#Motors
+        #Motors
         LimServo
         DCMotor
-#Encoders
+        #Encoders
         EncoderAEAT6012
         EncoderMAE3
         EncoderPololu37D
-#CAN
+        #CAN
         CANBus
         CANMsg
-#Sensor
+        #Sensor
         CurrentSensor
-#Other
+        #Other
         uwrt-mars-rover-hw-bridge
-        Logger)
-target_set_firmware_properties(arm.${TARGET}-board.elf)
+        Logger
+        )
+mbed_set_post_build(arm)

@@ -1,0 +1,65 @@
+{
+    "ARM_REV2": {
+        "inherits": [
+            "UWRT_STM32F446xE"
+        ],
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL|USE_PLL_HSI",
+            "hse_value": "25000000U"
+        }
+    },
+    "GAMEPAD_REV1": {
+        "inherits": [
+            "UWRT_STM32F446xE"
+        ],
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL|USE_PLL_HSI",
+            "hse_value": "25000000U"
+        }
+    },
+    "GIMBAL_REV2": {
+        "inherits": [
+            "UWRT_STM32F446xE"
+        ],
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL|USE_PLL_HSI",
+            "hse_value": "25000000U"
+        }
+    },
+    "PDB_REV1": {
+        "inherits": [
+            "UWRT_STM32F446xE"
+        ],
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL|USE_PLL_HSI",
+            "hse_value": "25000000U"
+        }
+    },
+    "SCIENCE_REV2": {
+        "inherits": [
+            "UWRT_STM32F446xE"
+        ],
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL|USE_PLL_HSI",
+            "hse_value": "25000000U"
+        }
+    },
+    "UWRT_STM32F446xE": {
+        "inherits": [
+            "MCU_STM32F446xE"
+        ],
+        "config": {
+            "hse_value": {
+                "help": "HSE default value is 8MHz in stm32f4xx_hal_conf.h",
+                "value": "8000000U",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "public": false
+    },
+    "UWRT_NUCLEO": {
+        "inherits": [
+            "NUCLEO_F446RE"
+        ]
+    }
+}
