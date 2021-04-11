@@ -46,6 +46,8 @@ class CANInterface {
   // For diagnostic purposes
   uint32_t getNumStreamedMsgsReceived(void);
   uint32_t getNumOneShotMsgsReceived(void);
+  uint32_t getNumStreamedMsgsSent(void);
+  uint32_t getNumOneShotMsgsSent(void);
 
  private:
   static constexpr osPriority RX_POSTMAN_THREAD_PRIORITY   = osPriorityRealtime;
@@ -82,4 +84,6 @@ class CANInterface {
   // For diagnostic purposes
   uint32_t m_numStreamedMsgsReceived;
   uint32_t m_numOneShotMsgsReceived;
+  uint32_t m_numStreamedMsgsSent;
+  uint32_t m_numOneShotMsgsSent;
 };

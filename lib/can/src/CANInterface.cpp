@@ -11,7 +11,9 @@ CANInterface::CANInterface(const Config &config)
       m_txStreamedMsgMap(config.txStreamedMsgMap),
       m_rxOneShotMsgHandler(config.rxOneShotMsgHandler),
       m_numStreamedMsgsReceived(0),
-      m_numOneShotMsgsReceived(0) {
+      m_numOneShotMsgsReceived(0),
+      m_numStreamedMsgsSent(0),
+      m_numOneShotMsgsSent(0) {
   // Put CAN bus 2 in silent monitoring mode
   m_CANBus2.monitor(true);
 
@@ -131,6 +133,9 @@ void CANInterface::txProcessor(void) {
           msg.setID(msgID);
           msg.setPayload(msgData, len);
           m_activeCANBus->write(msg);
+
+          m_numStreamedMsgsSent++;
+
           ThisThread::sleep_for(TX_INTERDELAY);
         } else {
           MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
@@ -148,6 +153,7 @@ bool CANInterface::sendOneShotMessage(CANMsg &msg, Kernel::Clock::duration_u32 t
   if (mail) {
     *mail = msg;
     MBED_ASSERT(m_txMailboxOneShot.put(mail) == osOK);
+    m_numOneShotMsgsSent++;
     return true;
   }
   return false;
@@ -207,5 +213,13 @@ uint32_t CANInterface::getNumStreamedMsgsReceived(void) {
 }
 
 uint32_t CANInterface::getNumOneShotMsgsReceived(void) {
-  return m_numStreamedMsgsReceived;
+  return m_numOneShotMsgsReceived;
+}
+
+uint32_t CANInterface::getNumStreamedMsgsSent(void) {
+  return m_numStreamedMsgsSent;
+}
+
+uint32_t CANInterface::getNumOneShotMsgsSent(void) {
+  return m_numOneShotMsgsSent;
 }
