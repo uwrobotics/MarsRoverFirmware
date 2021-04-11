@@ -313,8 +313,8 @@ typedef enum {
   STDIO_UART_RX = NC,
 #endif
 
-  CONSOLE_TX = NC,
-  CONSOLE_RX = STDIO_UART_RX,
+  USBTX = NC,
+  USBRX = STDIO_UART_RX,
 
 } PinName;
 

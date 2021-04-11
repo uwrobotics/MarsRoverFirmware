@@ -191,8 +191,8 @@ typedef enum {
   CAN_TX = CAN1_TX,
   CAN_RX = CAN1_RX,
 
-  CONSOLE_TX = STDIO_UART_TX,
-  CONSOLE_RX = STDIO_UART_RX,
+  USBTX = STDIO_UART_TX,
+  USBRX = STDIO_UART_RX,
 
   /**** OSCILLATOR pins ****/
   RCC_OSC32_IN  = PC_14,
