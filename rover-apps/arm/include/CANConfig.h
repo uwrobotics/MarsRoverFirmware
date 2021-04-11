@@ -101,7 +101,8 @@ static CANMsgMap txStreamedMsgMap = {
      }},
     {CANID::ARM_REPORT_DIAGNOSTICS,
      {
-         {CANSIGNAL::ARM_REPORT_CAN_STATS, 0},
+         {CANSIGNAL::ARM_REPORT_NUM_STREAMED_MSGS_RECEIVED, 0},
+         {CANSIGNAL::ARM_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED, 0},
      }},
 };
 

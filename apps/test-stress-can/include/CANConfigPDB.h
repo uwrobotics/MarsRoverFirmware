@@ -4,9 +4,10 @@
 #include "CANMsg.h"
 #include "hw_bridge.h"
 
-const HWBRIDGE::CANFILTER targetCANIDFilter          = HWBRIDGE::CANFILTER::NO_MESSAGES;
-const HWBRIDGE::CANID targetReportDiagnosticsCANID   = HWBRIDGE::CANID::PDB_REPORT_DIAGNOSTICS;
-const HWBRIDGE::CANSIGNAL targetReportCANStatsSignal = HWBRIDGE::CANSIGNAL::PDB_REPORT_CAN_STATS;
+const HWBRIDGE::CANFILTER targetCANIDFilter             = HWBRIDGE::CANFILTER::NO_MESSAGES;
+const HWBRIDGE::CANID targetReportDiagnosticsCANID      = HWBRIDGE::CANID::PDB_REPORT_DIAGNOSTICS;
+const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal = HWBRIDGE::CANSIGNAL::PDB_REPORT_NUM_STREAMED_MSGS_RECEIVED;
+const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal = HWBRIDGE::CANSIGNAL::PDB_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
 
 static mbed_error_status_t oneShotHandler(CANMsg& msg);
 
@@ -36,7 +37,8 @@ static CANMsgMap txStreamedMsgMap = {
      }},
     {CANID::PDB_REPORT_DIAGNOSTICS,
      {
-         {CANSIGNAL::PDB_REPORT_CAN_STATS, 0},
+         {CANSIGNAL::PDB_REPORT_NUM_STREAMED_MSGS_RECEIVED, 0},
+         {CANSIGNAL::PDB_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED, 0},
      }},
 };
 

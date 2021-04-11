@@ -264,13 +264,7 @@ int main() {
 
     // TODO: REPORT FAULTS
 
-    // Report CAN diagnostics
-    uint32_t numMsgsReceived = can.getNumMsgsReceived();
-
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_DIAGNOSTICS, HWBRIDGE::CANSIGNAL::ARM_REPORT_CAN_STATS,
-                             numMsgsReceived);
-
-    printf("ARM - number of CAN messages received: %lu\r\n", numMsgsReceived);
+    // TODO: REPORT CAN DIAGNOSTICS
 
     ThisThread::sleep_for(1ms);
   }

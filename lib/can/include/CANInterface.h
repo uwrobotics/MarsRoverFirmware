@@ -44,7 +44,8 @@ class CANInterface {
                  uint16_t mask = HWBRIDGE::ROVER_CANID_FILTER_MASK, int handle = 0);
 
   // For diagnostic purposes
-  uint32_t getNumMsgsReceived(void);
+  uint32_t getNumStreamedMsgsReceived(void);
+  uint32_t getNumOneShotMsgsReceived(void);
 
  private:
   static constexpr osPriority RX_POSTMAN_THREAD_PRIORITY   = osPriorityRealtime;
@@ -78,5 +79,7 @@ class CANInterface {
 
   const CANMsg::CANMsgHandlerMap *m_rxOneShotMsgHandler;
 
-  uint32_t m_numMsgsReceived;  // For diagnostic purposes
+  // For diagnostic purposes
+  uint32_t m_numStreamedMsgsReceived;
+  uint32_t m_numOneShotMsgsReceived;
 };

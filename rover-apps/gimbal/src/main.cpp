@@ -76,13 +76,7 @@ int main() {
 
     // TODO: REPORT FAULTS
 
-    // Report CAN diagnostics
-    uint32_t numMsgsReceived = can.getNumMsgsReceived();
-
-    can.updateStreamedSignal(HWBRIDGE::CANID::GIMBAL_REPORT_DIAGNOSTICS, HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_CAN_STATS,
-                             numMsgsReceived);
-
-    printf("GIMBAL - number of CAN messages received: %lu\r\n", numMsgsReceived);
+    // TODO: REPORT CAN DIAGNOSTICS
 
     ThisThread::sleep_for(1ms);
   }

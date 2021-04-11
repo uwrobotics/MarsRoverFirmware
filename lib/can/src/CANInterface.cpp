@@ -10,7 +10,8 @@ CANInterface::CANInterface(const Config &config)
       m_rxStreamedMsgMap(config.rxStreamedMsgMap),
       m_txStreamedMsgMap(config.txStreamedMsgMap),
       m_rxOneShotMsgHandler(config.rxOneShotMsgHandler),
-      m_numMsgsReceived(0) {
+      m_numStreamedMsgsReceived(0),
+      m_numOneShotMsgsReceived(0) {
   // Put CAN bus 2 in silent monitoring mode
   m_CANBus2.monitor(true);
 
@@ -77,7 +78,7 @@ void CANInterface::rxClient(void) {
           MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
                        "CAN RX message unpacking failed");
         }
-        m_numMsgsReceived++;
+        m_numStreamedMsgsReceived++;
       }
 
       // Otherwise if message is one-shot, process message
@@ -86,7 +87,7 @@ void CANInterface::rxClient(void) {
           MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
                        "Failed to process CAN message");
         }
-        m_numMsgsReceived++;
+        m_numOneShotMsgsReceived++;
       }
 
       // Otherwise invalid message was received
@@ -201,6 +202,10 @@ bool CANInterface::setFilter(HWBRIDGE::CANFILTER filter, CANFormat format, uint1
   return success;
 }
 
-uint32_t CANInterface::getNumMsgsReceived(void) {
-  return m_numMsgsReceived;
+uint32_t CANInterface::getNumStreamedMsgsReceived(void) {
+  return m_numStreamedMsgsReceived;
+}
+
+uint32_t CANInterface::getNumOneShotMsgsReceived(void) {
+  return m_numStreamedMsgsReceived;
 }

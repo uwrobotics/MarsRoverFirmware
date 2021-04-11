@@ -16,9 +16,14 @@ int main() {
 
   while (true) {
     // Report CAN diagnostics
-    uint32_t numMsgsReceived = can.getNumMsgsReceived();
-    can.updateStreamedSignal(targetReportDiagnosticsCANID, targetReportCANStatsSignal, numMsgsReceived);
-    printf("Number of CAN messages received: %lu\r\n", numMsgsReceived);
+    uint32_t numStreamedMsgsReceived = can.getNumStreamedMsgsReceived();
+    uint32_t numOneShotMsgsReceived  = can.getNumOneShotMsgsReceived();
+
+    can.updateStreamedSignal(targetReportDiagnosticsCANID, targetReportNumStreamedSignal, numStreamedMsgsReceived);
+    can.updateStreamedSignal(targetReportDiagnosticsCANID, targetReportNumOneShotsSignal, numOneShotMsgsReceived);
+
+    printf("Number of streamed CAN messages received: %lu\r\n", numStreamedMsgsReceived);
+    printf("Number of one-shot CAN messages received: %lu\r\n", numOneShotMsgsReceived);
 
     ThisThread::sleep_for(1ms);
   }
