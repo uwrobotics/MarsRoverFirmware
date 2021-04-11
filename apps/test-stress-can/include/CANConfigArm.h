@@ -116,10 +116,10 @@ const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
 
 CANInterface::Config config = {
     // CAN bus pins
-    .can1_RX = CAN1_RX,
-    .can1_TX = CAN1_TX,
-    .can2_RX = CAN2_RX,
-    .can2_TX = CAN2_TX,
+    .can1_RX = CAN2_RX,
+    .can1_TX = CAN2_TX,
+    .can2_RX = CAN1_RX,
+    .can2_TX = CAN1_TX,
 
     // Message maps and handlers
     .rxStreamedMsgMap    = &rxStreamedMsgMap,

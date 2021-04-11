@@ -1,4 +1,4 @@
-#include "CANConfigPDB.h"
+#include "CANConfigArm.h"
 #include "Logger.h"
 
 CANInterface can(CANConfig::config);

@@ -9,7 +9,7 @@ bus = can.ThreadSafeBus(interface='socketcan', channel='can0')
 
 ROBOTEQ_MSGS_FREQUENCY_HZ = 200
 ROVER_CAN_STREAMED_MSGS_FREQUENCY_HZ = 100
-ONE_SHOT_MSGS_FREQUENCY_HZ = 1000
+ONE_SHOT_MSGS_FREQUENCY_HZ = 1
 CAN_BUS_BIT_RATE = 1000000
 
 # CAN IDs
@@ -55,9 +55,12 @@ science_set_control_mode_msg = can.Message(
 
 # diagnostics
 num_msgs_sent_roboteq = 0
-num_msgs_sent_arm = 0
-num_msgs_sent_gimbal = 0
-num_msgs_sent_science = 0
+num_streamed_sent_arm = 0
+num_one_shots_sent_arm = 0
+num_streamed_sent_gimbal = 0
+num_one_shots_sent_gimbal = 0
+num_streamed_sent_science = 0
+num_one_shots_sent_science = 0
 
 
 def roboteq_can_traffic(args):
@@ -72,53 +75,59 @@ def roboteq_can_traffic(args):
 
 
 def arm_can_traffic(args):
-    global num_msgs_sent_arm
+    global num_streamed_sent_arm
     while True:
         bus.send(arm_set_joint_position_msg)
-        num_msgs_sent_arm += 1
+        num_streamed_sent_arm += 1
         time.sleep(1/ROVER_CAN_STREAMED_MSGS_FREQUENCY_HZ)
 
 
 def gimbal_can_traffic(args):
-    global num_msgs_sent_gimbal
+    global num_streamed_sent_gimbal
     while True:
         bus.send(gimbal_set_joint_position_msg)
-        num_msgs_sent_gimbal += 1
+        num_streamed_sent_gimbal += 1
         time.sleep(1/ROVER_CAN_STREAMED_MSGS_FREQUENCY_HZ)
 
 
 def science_can_traffic(args):
-    global num_msgs_sent_science
+    global num_streamed_sent_science
     while True:
         bus.send(science_set_joint_position_msg)
-        num_msgs_sent_science += 1
+        num_streamed_sent_science += 1
         time.sleep(1/ROVER_CAN_STREAMED_MSGS_FREQUENCY_HZ)
 
 
 def one_shots_can_traffic(args):
-    global num_msgs_sent_arm
-    global num_msgs_sent_gimbal
-    global num_msgs_sent_science
+    global num_one_shots_sent_arm
+    global num_one_shots_sent_gimbal
+    global num_one_shots_sent_science
     while True:
         bus.send(arm_set_control_mode_msg)
         bus.send(gimbal_set_control_mode_msg)
         bus.send(science_set_control_mode_msg)
-        num_msgs_sent_arm += 1
-        num_msgs_sent_gimbal += 1
-        num_msgs_sent_science += 1
+        num_one_shots_sent_arm += 1
+        num_one_shots_sent_gimbal += 1
+        num_one_shots_sent_science += 1
         time.sleep(1/ONE_SHOT_MSGS_FREQUENCY_HZ)
 
 
 def output_diagnostics(args):
     global num_msgs_sent_roboteq
-    global num_msgs_sent_arm
-    global num_msgs_sent_gimbal
-    global num_msgs_sent_science
+    global num_streamed_sent_arm
+    global num_one_shots_sent_arm
+    global num_streamed_sent_gimbal
+    global num_one_shots_sent_gimbal
+    global num_streamed_sent_science
+    global num_one_shots_sent_science
     while True:
         print("ROBOTEQ - number of messages sent: " + str(num_msgs_sent_roboteq))
-        print("ARM - number of messages sent: " + str(num_msgs_sent_arm))
-        print("GIMBAL - number of messages sent: " + str(num_msgs_sent_gimbal))
-        print("SCIENCE - number of messages sent: " + str(num_msgs_sent_science))
+        print("ARM - number of streamed messages sent: " + str(num_streamed_sent_arm))
+        print("ARM - number of one-shot messages sent: " + str(num_one_shots_sent_arm))
+        print("GIMBAL - number of streamed messages sent: " + str(num_streamed_sent_gimbal))
+        print("GIMBAL - number of one-shot messages sent: " + str(num_one_shots_sent_gimbal))
+        print("SCIENCE - number of streamed messages sent: " + str(num_streamed_sent_science))
+        print("SCIENCE - number of one-shot messages sent: " + str(num_one_shots_sent_science))
         print('====================')
         time.sleep(2)  # sleep 2s
 
