@@ -65,7 +65,7 @@ test-adafruitSTEMMA:
   #  - UWRT_NUCLEO
 
 test-units:
-  - nucleo
+  - UWRT_NUCLEO
 
 test-pid:
   #  - ARM_REV2

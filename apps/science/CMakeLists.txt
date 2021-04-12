@@ -25,6 +25,7 @@ target_link_libraries(science
         #Other
         uwrt-mars-rover-hw-bridge
         Logger
+        mbed-events
         )
 mbed_set_post_build(science)
 

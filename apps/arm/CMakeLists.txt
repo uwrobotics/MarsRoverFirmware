@@ -24,5 +24,8 @@ target_link_libraries(arm
         #Other
         uwrt-mars-rover-hw-bridge
         Logger
+        #Mbed
+        mbed-os
+        mbed-events
         )
 mbed_set_post_build(arm)

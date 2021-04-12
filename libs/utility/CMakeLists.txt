@@ -6,5 +6,5 @@ target_link_libraries(Logger PUBLIC mbed-os)
 add_library(LookupTable INTERFACE)
 target_include_directories(LookupTable INTERFACE include)
 
-add_library(units INTERFACE)
-target_include_directories(units INTERFACE include)
+add_library(Units INTERFACE)
+target_include_directories(Units INTERFACE include)

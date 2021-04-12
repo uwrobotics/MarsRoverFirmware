@@ -52,6 +52,7 @@ add_subdirectory(${TARGETS_DIR}/TARGET_UWRT_NUCLEO)
 # Include mbed-os and disable warnings from within mbed-os
 add_subdirectory(${MBED_PATH})
 target_compile_options(mbed-os INTERFACE -w) # Disable all warnings from mbed-os core code
+target_compile_options(mbed-events PRIVATE -w) # Disable all warnings from mbed-os events code
 target_compile_options(mbed-mbedtls PRIVATE -w) # Bug in mbed causes warning due to missing string.h include in error.c
 target_compile_options(mbed-nanostack-libservice PRIVATE -Wno-vla)
 

@@ -22,5 +22,6 @@ target_link_libraries(gimbal
         #Other
         Logger
         uwrt-mars-rover-hw-bridge
+        mbed-events
         )
 mbed_set_post_build(gimbal)
