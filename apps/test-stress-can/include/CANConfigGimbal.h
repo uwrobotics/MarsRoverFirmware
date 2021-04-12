@@ -9,13 +9,14 @@ const HWBRIDGE::CANID targetReportDiagnosticsCANID      = HWBRIDGE::CANID::GIMBA
 const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal = HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_STREAMED_MSGS_RECEIVED;
 const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal = HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
 
-static mbed_error_status_t oneShotHandler(CANMsg& msg);
+static mbed_error_status_t oneShotHandler(void);
 
 namespace CANConfig {
 
 using namespace HWBRIDGE;
 
-static CANMsgMap rxStreamedMsgMap = {
+static CANMsgMap rxMsgMap = {
+    // Streamed messages
     {CANID::GIMBAL_SET_JOINT_POSITION,
      {
          {CANSIGNAL::GIMBAL_SET_PAN_POSITION, 0},
@@ -26,9 +27,32 @@ static CANMsgMap rxStreamedMsgMap = {
      {
          {CANSIGNAL::GIMBAL_SET_PAN_ANGULAR_VELOCITY, 0},
      }},
+
+    // One-shot messages
+    {CANID::GIMBAL_SET_CONTROL_MODE,
+     {
+         {CANSIGNAL::GIMBAL_PAN_CONTROL_MODE,
+          (CANSignalValue_t)GIMBAL_PAN_CONTROL_MODE_VALUES::GIMBAL_PAN_CONTROL_MODE_SNA},
+     }},
+    {CANID::GIMBAL_SET_JOINT_PID_PARAMS,
+     {
+         {CANSIGNAL::GIMBAL_JOINT_PIDID, (CANSignalValue_t)GIMBAL_JOINT_PIDID_VALUES::GIMBAL_JOINT_PIDID_SNA},
+         {CANSIGNAL::GIMBAL_JOINT_PID_PROPORTIONAL_GAIN,
+          (CANSignalValue_t)GIMBAL_JOINT_PID_PROPORTIONAL_GAIN_VALUES::GIMBAL_JOINT_PID_PROPORTIONAL_GAIN_SNA},
+         {CANSIGNAL::GIMBAL_JOINT_PID_INTEGRAL_GAIN,
+          (CANSignalValue_t)GIMBAL_JOINT_PID_INTEGRAL_GAIN_VALUES::GIMBAL_JOINT_PID_INTEGRAL_GAIN_SNA},
+         {CANSIGNAL::GIMBAL_JOINT_PID_DERIVATIVE_GAIN,
+          (CANSignalValue_t)GIMBAL_JOINT_PID_DERIVATIVE_GAIN_VALUES::GIMBAL_JOINT_PID_DERIVATIVE_GAIN_SNA},
+         {CANSIGNAL::GIMBAL_JOINT_PID_DEADZONE,
+          (CANSignalValue_t)GIMBAL_JOINT_PID_DEADZONE_VALUES::GIMBAL_JOINT_PID_DEADZONE_SNA},
+     }},
+    {CANID::COMMON_SWITCH_CAN_BUS,
+     {
+         {CANSIGNAL::COMMON_CAN_BUS_ID, (CANSignalValue_t)COMMON_CAN_BUS_ID_VALUES::COMMON_CAN_BUS_ID_SNA},
+     }},
 };
 
-static CANMsgMap txStreamedMsgMap = {
+static CANMsgMap txMsgMap = {
     {CANID::GIMBAL_REPORT_JOINT_DATA,
      {
          {CANSIGNAL::GIMBAL_REPORT_PAN_POSITION, 0},
@@ -60,8 +84,8 @@ CANInterface::Config config = {
     .can2_TX = CAN2_TX,
 
     // Message maps and handlers
-    .rxStreamedMsgMap    = &rxStreamedMsgMap,
-    .txStreamedMsgMap    = &txStreamedMsgMap,
+    .rxMsgMap            = &rxMsgMap,
+    .txMsgMap            = &txMsgMap,
     .rxOneShotMsgHandler = &rxOneShotMsgHandler,
 };
 

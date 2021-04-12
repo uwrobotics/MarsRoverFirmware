@@ -1,4 +1,4 @@
-#include "CANConfigArm.h"
+#include "CANConfigArm.h"  // Include the header for the board you want to simulate
 #include "Logger.h"
 
 CANInterface can(CANConfig::config);
@@ -21,8 +21,8 @@ int main() {
     uint32_t numStreamedMsgsSent     = can.getNumStreamedMsgsSent();
     uint32_t numOneShotMsgsSent      = can.getNumOneShotMsgsSent();
 
-    can.updateStreamedSignal(targetReportDiagnosticsCANID, targetReportNumStreamedSignal, numStreamedMsgsReceived);
-    can.updateStreamedSignal(targetReportDiagnosticsCANID, targetReportNumOneShotsSignal, numOneShotMsgsReceived);
+    can.setTXSignalValue(targetReportDiagnosticsCANID, targetReportNumStreamedSignal, numStreamedMsgsReceived);
+    can.setTXSignalValue(targetReportDiagnosticsCANID, targetReportNumOneShotsSignal, numOneShotMsgsReceived);
 
     printf("Number of streamed CAN messages received: %lu\r\n", numStreamedMsgsReceived);
     printf("Number of one-shot CAN messages received: %lu\r\n", numOneShotMsgsReceived);
@@ -34,6 +34,6 @@ int main() {
   }
 }
 
-static mbed_error_status_t oneShotHandler(CANMsg& msg) {
+static mbed_error_status_t oneShotHandler(void) {
   return MBED_SUCCESS;
 }

@@ -8,14 +8,14 @@ class CANMsg : public CANMessage {
  private:
   using CAN_Message::id;
 
-  static mbed_error_status_t defaultCANMsgHandler(CANMsg &msg) {
+  static mbed_error_status_t defaultCANMsgHandler(void) {
     MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_APPLICATION, MBED_ERROR_CODE_INVALID_ARGUMENT),
                  "Invalid key to CANMsgHandlerMap");
     return MBED_ERROR_CODE_INVALID_ARGUMENT;
   }
 
  public:
-  using CANMsgHandler    = mbed_error_status_t (*)(CANMsg &);
+  using CANMsgHandler    = mbed_error_status_t (*)(void);
   using CANMsgHandlerMap = Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, &defaultCANMsgHandler>;
 
   template <class T>

@@ -11,13 +11,14 @@ const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal =
 const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal =
     HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
 
-static mbed_error_status_t oneShotHandler(CANMsg& msg);
+static mbed_error_status_t oneShotHandler(void);
 
 namespace CANConfig {
 
 using namespace HWBRIDGE;
 
-static CANMsgMap rxStreamedMsgMap = {
+static CANMsgMap rxMsgMap = {
+    // Streamed messages
     {CANID::SCIENCE_SET_JOINT_POSITION,
      {
          {CANSIGNAL::SCIENCE_SET_GENEVA_POSITION, 0},
@@ -29,9 +30,34 @@ static CANMsgMap rxStreamedMsgMap = {
      {
          {CANSIGNAL::SCIENCE_SET_GENEVA_ANGULAR_VELOCITY, 0},
      }},
+
+    // One-shot messages
+    {CANID::SCIENCE_SET_CONTROL_MODE,
+     {
+         {CANSIGNAL::SCIENCE_GENEVA_CONTROL_MODE,
+          (CANSignalValue_t)SCIENCE_GENEVA_CONTROL_MODE_VALUES::SCIENCE_GENEVA_CONTROL_MODE_SNA},
+         {CANSIGNAL::SCIENCE_ELEVATOR_CONTROL_MODE,
+          (CANSignalValue_t)SCIENCE_ELEVATOR_CONTROL_MODE_VALUES::SCIENCE_ELEVATOR_CONTROL_MODE_SNA},
+     }},
+    {CANID::SCIENCE_SET_JOINT_PID_PARAMS,
+     {
+         {CANSIGNAL::SCIENCE_JOINT_PIDID, (CANSignalValue_t)SCIENCE_JOINT_PIDID_VALUES::SCIENCE_JOINT_PIDID_SNA},
+         {CANSIGNAL::SCIENCE_JOINT_PID_PROPORTIONAL_GAIN,
+          (CANSignalValue_t)SCIENCE_JOINT_PID_PROPORTIONAL_GAIN_VALUES::SCIENCE_JOINT_PID_PROPORTIONAL_GAIN_SNA},
+         {CANSIGNAL::SCIENCE_JOINT_PID_INTEGRAL_GAIN,
+          (CANSignalValue_t)SCIENCE_JOINT_PID_INTEGRAL_GAIN_VALUES::SCIENCE_JOINT_PID_INTEGRAL_GAIN_SNA},
+         {CANSIGNAL::SCIENCE_JOINT_PID_DERIVATIVE_GAIN,
+          (CANSignalValue_t)SCIENCE_JOINT_PID_DERIVATIVE_GAIN_VALUES::SCIENCE_JOINT_PID_DERIVATIVE_GAIN_SNA},
+         {CANSIGNAL::SCIENCE_JOINT_PID_DEADZONE,
+          (CANSignalValue_t)SCIENCE_JOINT_PID_DEADZONE_VALUES::SCIENCE_JOINT_PID_DEADZONE_SNA},
+     }},
+    {CANID::COMMON_SWITCH_CAN_BUS,
+     {
+         {CANSIGNAL::COMMON_CAN_BUS_ID, (CANSignalValue_t)COMMON_CAN_BUS_ID_VALUES::COMMON_CAN_BUS_ID_SNA},
+     }},
 };
 
-static CANMsgMap txStreamedMsgMap = {
+static CANMsgMap txMsgMap = {
     {CANID::SCIENCE_REPORT_JOINT_DATA,
      {
          {CANSIGNAL::SCIENCE_REPORT_GENEVA_POSITION, 0},
@@ -74,8 +100,8 @@ CANInterface::Config config = {
     .can2_TX = CAN2_TX,
 
     // Message maps and handlers
-    .rxStreamedMsgMap    = &rxStreamedMsgMap,
-    .txStreamedMsgMap    = &txStreamedMsgMap,
+    .rxMsgMap            = &rxMsgMap,
+    .txMsgMap            = &txMsgMap,
     .rxOneShotMsgHandler = &rxOneShotMsgHandler,
 };
 

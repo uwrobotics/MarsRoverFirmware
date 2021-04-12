@@ -14,8 +14,8 @@ class CANInterface {
     PinName can2_TX;
 
     // Message maps and handlers
-    HWBRIDGE::CANMsgMap *rxStreamedMsgMap;
-    HWBRIDGE::CANMsgMap *txStreamedMsgMap;
+    HWBRIDGE::CANMsgMap *rxMsgMap;
+    HWBRIDGE::CANMsgMap *txMsgMap;
     const CANMsg::CANMsgHandlerMap *rxOneShotMsgHandler;
 
     // Bus frequency
@@ -29,12 +29,10 @@ class CANInterface {
   bool sendOneShotMessage(CANMsg &msg, Kernel::Clock::duration_u32 timeout);
 
   // Update a TX CAN signal
-  bool updateStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
-                            HWBRIDGE::CANSignalValue_t signalValue);
+  bool setTXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t signalValue);
 
   // Read a RX CAN signal
-  bool readStreamedSignal(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName,
-                          HWBRIDGE::CANSignalValue_t &signalValue);
+  bool getRXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t &signalValue);
 
   // Switch CAN bus
   bool switchCANBus(HWBRIDGE::CANBUSID canBusID);
@@ -76,8 +74,8 @@ class CANInterface {
   Mail<CANMsg, 32> m_txMailboxOneShot;
   EventQueue m_rxEventQueue;
 
-  HWBRIDGE::CANMsgMap *m_rxStreamedMsgMap;
-  HWBRIDGE::CANMsgMap *m_txStreamedMsgMap;
+  HWBRIDGE::CANMsgMap *m_rxMsgMap;
+  HWBRIDGE::CANMsgMap *m_txMsgMap;
 
   const CANMsg::CANMsgHandlerMap *m_rxOneShotMsgHandler;
 

@@ -44,14 +44,14 @@ int main() {
     switch (Centrifuge::manager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
-                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_GENEVA_POSITION, genevaSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
+                             HWBRIDGE::CANSIGNAL::SCIENCE_SET_GENEVA_POSITION, genevaSetPoint);
         genevaSetPoint = RAD_TO_DEG(genevaSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_GENEVA_ANGULAR_VELOCITY, genevaSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::SCIENCE_SET_GENEVA_ANGULAR_VELOCITY, genevaSetPoint);
         genevaSetPoint = RAD_TO_DEG(genevaSetPoint);
         break;
 
@@ -63,14 +63,14 @@ int main() {
     switch (Elevator::manager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
-                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_ELEVATOR_POSITION, elevatorSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
+                             HWBRIDGE::CANSIGNAL::SCIENCE_SET_ELEVATOR_POSITION, elevatorSetPoint);
         elevatorSetPoint = RAD_TO_DEG(elevatorSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::SCIENCE_SET_ELEVATOR_ANGULAR_VELOCITY, elevatorSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::SCIENCE_SET_ELEVATOR_ANGULAR_VELOCITY, elevatorSetPoint);
         elevatorSetPoint = RAD_TO_DEG(elevatorSetPoint);
         break;
 
@@ -79,13 +79,13 @@ int main() {
     }
 
     // Determine new cover position
-    can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::SCIENCE_SET_COVER_POSITION,
-                           coverPosition);
+    can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::SCIENCE_SET_COVER_POSITION,
+                         coverPosition);
     coverPosition = RAD_TO_DEG(coverPosition);
 
     // Determine new shovel position
-    can.readStreamedSignal(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION,
-                           HWBRIDGE::CANSIGNAL::SCIENCE_SET_SHOVEL_POSITION, shovelPosition);
+    can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::SCIENCE_SET_SHOVEL_POSITION,
+                         shovelPosition);
     shovelPosition = RAD_TO_DEG(shovelPosition);
 
     // *** UPDATE JOINT SET POINTS ***
@@ -101,29 +101,29 @@ int main() {
     // *** UPDATE TX SIGNALS ***
 
     // Joint position
-    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
-                             HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_GENEVA_POSITION,
-                             DEG_TO_RAD(Centrifuge::manager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
+                         HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_GENEVA_POSITION,
+                         DEG_TO_RAD(Centrifuge::manager.getActiveController()->reportAngleDeg()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
-                             HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_ELEVATOR_POSITION,
-                             DEG_TO_RAD(Elevator::manager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
+                         HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_ELEVATOR_POSITION,
+                         DEG_TO_RAD(Elevator::manager.getActiveController()->reportAngleDeg()));
 
     // Joint angular velocity
-    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
-                             HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_GENEVA_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Centrifuge::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
+                         HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_GENEVA_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Centrifuge::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
-                             HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_ELEVATOR_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Elevator::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_JOINT_DATA,
+                         HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_ELEVATOR_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Elevator::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
     // Sensor data
-    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_SENSOR_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_MOISTURE_DATA,
-                             moistureSensor.read());
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_SENSOR_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_MOISTURE_DATA,
+                         moistureSensor.read());
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::SCIENCE_REPORT_SENSOR_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_TEMPERATURE_DATA,
-                             moistureSensor.alternateRead());
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_SENSOR_DATA, HWBRIDGE::CANSIGNAL::SCIENCE_TEMPERATURE_DATA,
+                         moistureSensor.alternateRead());
 
     // TODO: REPORT FAULTS
 
@@ -135,68 +135,50 @@ int main() {
 
 // *** HANDLERS FOR CAN RX ONE-SHOTS ***
 
-static mbed_error_status_t scienceSetControlMode(CANMsg& msg) {
-  // Error check CAN ID
-  if (msg.getID() != HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-
+static mbed_error_status_t scienceSetControlMode(void) {
   bool success = true;
+  HWBRIDGE::CANSignalValue_t controlMode;
 
-  HWBRIDGE::CONTROL::Mode controlMode;
-  HWBRIDGE::CANMsgData_t msgData;
-  struct uwrt_mars_rover_can_science_set_control_mode_t msgStruct;
+  // Set geneva mechanism control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE,
+                                  HWBRIDGE::CANSIGNAL::SCIENCE_GENEVA_CONTROL_MODE, controlMode) &&
+             Centrifuge::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-  // Unpack CAN data
-  msg.getPayload(msgData);
-  if (uwrt_mars_rover_can_science_set_control_mode_unpack(&msgStruct, msgData.raw,
-                                                          UWRT_MARS_ROVER_CAN_SCIENCE_SET_CONTROL_MODE_LENGTH) == 0) {
-    // Set geneva control mode
-    controlMode =
-        (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_science_set_control_mode_science_geneva_control_mode_decode(
-            msgStruct.science_geneva_control_mode);
-    success &= Centrifuge::manager.switchControlMode(controlMode);
+  // Set elevator control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE,
+                                  HWBRIDGE::CANSIGNAL::SCIENCE_ELEVATOR_CONTROL_MODE, controlMode) &&
+             Elevator::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-    // Set elevator control mode
-    controlMode =
-        (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_science_set_control_mode_science_elevator_control_mode_decode(
-            msgStruct.science_elevator_control_mode);
-    success &= Elevator::manager.switchControlMode(controlMode);
-
-    if (success) {
-      // Send ACK message back
-      sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_SCIENCE_SET_CONTROL_MODE_ACK);
-    }
-  } else {
-    // Error unpacking!
-    success = false;
+  if (success) {
+    // Send ACK message back
+    sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_SCIENCE_SET_CONTROL_MODE_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-static mbed_error_status_t scienceSetJointPIDParams(CANMsg& msg) {
-  // Error check CAN ID
-  if (msg.getID() != HWBRIDGE::CANID::SCIENCE_SET_JOINT_PID_PARAMS) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-
+static mbed_error_status_t scienceSetJointPIDParams(void) {
   bool success = true;
 
-  HWBRIDGE::CANMsgData_t msgData;
-  struct uwrt_mars_rover_can_science_set_joint_pid_params_t msgStruct;
+  HWBRIDGE::CANSignalValue_t jointID;
+  HWBRIDGE::CANSignalValue_t p, i, d, deadzone;
 
-  // Unpack CAN data
-  msg.getPayload(msgData);
-  if (uwrt_mars_rover_can_science_set_joint_pid_params_unpack(
-          &msgStruct, msgData.raw, UWRT_MARS_ROVER_CAN_SCIENCE_SET_JOINT_PID_PARAMS_LENGTH) == 0) {
-    // Error check joint ID
-    HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES jointID = (HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES)
-        uwrt_mars_rover_can_science_set_joint_pid_params_science_joint_pidid_decode(msgStruct.science_joint_pidid);
+  // Extract signal values
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::SCIENCE_JOINT_PIDID, jointID);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::SCIENCE_JOINT_PID_PROPORTIONAL_GAIN, p);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::SCIENCE_JOINT_PID_INTEGRAL_GAIN, i);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::SCIENCE_JOINT_PID_DERIVATIVE_GAIN, d);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::SCIENCE_JOINT_PID_DEADZONE, deadzone);
 
+  if (success) {
     Controller::ActuatorControllerManager* act;
 
-    switch (jointID) {
+    switch ((HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES)jointID) {
       case HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES::SCIENCE_JOINT_PIDID_GENEVA:
         act = &Centrifuge::manager;
         break;
@@ -209,72 +191,35 @@ static mbed_error_status_t scienceSetJointPIDParams(CANMsg& msg) {
         return MBED_ERROR_INVALID_ARGUMENT;
     }
 
-    // Extract PID params
-    float p = (float)uwrt_mars_rover_can_science_set_joint_pid_params_science_joint_pid_proportional_gain_decode(
-        msgStruct.science_joint_pid_proportional_gain);
-    float i = (float)uwrt_mars_rover_can_science_set_joint_pid_params_science_joint_pid_integral_gain_decode(
-        msgStruct.science_joint_pid_integral_gain);
-    float d = (float)uwrt_mars_rover_can_science_set_joint_pid_params_science_joint_pid_derivative_gain_decode(
-        msgStruct.science_joint_pid_derivative_gain);
-    float deadzone = (float)uwrt_mars_rover_can_science_set_joint_pid_params_science_joint_pid_deadzone_decode(
-        msgStruct.science_joint_pid_proportional_gain);
-
     // Set PID params
     if (auto pid = act->getActiveController()->getPID()) {
-      if (msgStruct.science_joint_pid_proportional_gain !=
-          (uint16_t)HWBRIDGE::SCIENCE_JOINT_PID_PROPORTIONAL_GAIN_VALUES::SCIENCE_JOINT_PID_PROPORTIONAL_GAIN_SNA) {
-        pid.value().get().updateProportionalGain(p);
-      }
-      if (msgStruct.science_joint_pid_integral_gain !=
-          (uint16_t)HWBRIDGE::SCIENCE_JOINT_PID_INTEGRAL_GAIN_VALUES::SCIENCE_JOINT_PID_INTEGRAL_GAIN_SNA) {
-        pid.value().get().updateIntegralGain(i);
-      }
-      if (msgStruct.science_joint_pid_derivative_gain !=
-          (uint16_t)HWBRIDGE::SCIENCE_JOINT_PID_DERIVATIVE_GAIN_VALUES::SCIENCE_JOINT_PID_DERIVATIVE_GAIN_SNA) {
-        pid.value().get().updateDerivativeGain(d);
-      }
-      if (msgStruct.science_joint_pid_deadzone !=
-          (uint16_t)HWBRIDGE::SCIENCE_JOINT_PID_DEADZONE_VALUES::SCIENCE_JOINT_PID_DEADZONE_SNA) {
-        pid.value().get().updateDeadzone(deadzone);
-      }
+      pid.value().get().updateProportionalGain(p);
+      pid.value().get().updateIntegralGain(i);
+      pid.value().get().updateDerivativeGain(d);
+      pid.value().get().updateDeadzone(deadzone);
 
       // Send ACK message back
       sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_SCIENCE_SET_JOINT_PID_PARAMS_ACK);
-
     } else {
       // PID controller doesn't exist!
       success = false;
     }
-  } else {
-    // Error unpacking!
-    success = false;
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-static mbed_error_status_t commonSwitchCANBus(CANMsg& msg) {
-  // Error check CAN ID
-  if (msg.getID() != HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-
+static mbed_error_status_t commonSwitchCANBus(void) {
   bool success = true;
+  HWBRIDGE::CANSignalValue_t canBusID;
 
-  HWBRIDGE::CANMsgData_t msgData;
-  struct uwrt_mars_rover_can_common_switch_can_bus_t msgStruct;
+  success &=
+      can.getRXSignalValue(HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS, HWBRIDGE::CANSIGNAL::COMMON_CAN_BUS_ID, canBusID) &&
+      can.switchCANBus((HWBRIDGE::CANBUSID)canBusID);
 
-  // Unpack CAN data
-  msg.getPayload(msgData);
-  if (uwrt_mars_rover_can_common_switch_can_bus_unpack(&msgStruct, msgData.raw,
-                                                       UWRT_MARS_ROVER_CAN_COMMON_SWITCH_CAN_BUS_LENGTH) == 0) {
-    success &= can.switchCANBus((HWBRIDGE::CANBUSID)uwrt_mars_rover_can_common_switch_can_bus_common_can_bus_id_decode(
-        msgStruct.common_can_bus_id));
-
+  if (success) {
     // Send ACK message back
     sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_CAN_BUS_SWITCH_ACK);
-  } else {
-    success = false;
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;

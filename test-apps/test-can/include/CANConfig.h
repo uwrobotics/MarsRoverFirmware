@@ -4,13 +4,13 @@
 #include "CANMsg.h"
 #include "hw_bridge.h"
 
-static mbed_error_status_t handle_test_msg_one_shot(CANMsg& msg);
+static mbed_error_status_t handle_test_msg_one_shot(void);
 
 namespace CANConfig {
 
 using namespace HWBRIDGE;
 
-static CANMsgMap rxStreamedMsgMap = {
+static CANMsgMap rxMsgMap = {
     // Msg 1
     {CANID::COMMON_DEBUG_MESSAGE1,
      {
@@ -18,9 +18,13 @@ static CANMsgMap rxStreamedMsgMap = {
      }},
 
     // Msg 2
+    {CANID::COMMON_DEBUG_MESSAGE3,
+     {
+         {CANSIGNAL::COMMON_DEBUG_SIGNAL3, 0},
+     }},
 };
 
-static CANMsgMap txStreamedMsgMap = {
+static CANMsgMap txMsgMap = {
     // Msg 1
     {CANID::COMMON_DEBUG_MESSAGE2,
      {
@@ -36,14 +40,14 @@ const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
 
 CANInterface::Config config = {
     // CAN bus pins
-    .can1_RX = CAN2_RX,  // FOR TESTING, swap CAN1 and CAN2
-    .can1_TX = CAN2_TX,
-    .can2_RX = CAN1_RX,
-    .can2_TX = CAN1_TX,
+    .can1_RX = CAN1_RX,
+    .can1_TX = CAN1_TX,
+    .can2_RX = CAN2_RX,
+    .can2_TX = CAN2_TX,
 
     // Message maps and handlers
-    .rxStreamedMsgMap    = &rxStreamedMsgMap,
-    .txStreamedMsgMap    = &txStreamedMsgMap,
+    .rxMsgMap            = &rxMsgMap,
+    .txMsgMap            = &txMsgMap,
     .rxOneShotMsgHandler = &rxOneShotMsgHandler,
 };
 

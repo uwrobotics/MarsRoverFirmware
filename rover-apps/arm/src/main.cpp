@@ -48,20 +48,20 @@ int main() {
     switch (Turntable::manager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_POSITION,
-                               turntableSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_POSITION,
+                             turntableSetPoint);
         turntableSetPoint = RAD_TO_DEG(turntableSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_ANGULAR_VELOCITY, turntableSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_ANGULAR_VELOCITY, turntableSetPoint);
         turntableSetPoint = RAD_TO_DEG(turntableSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_CURRENT,
-                               turntableSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_CURRENT,
+                             turntableSetPoint);
         break;
 
       default:
@@ -72,20 +72,20 @@ int main() {
     switch (Shoulder::manager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_POSITION,
-                               shoulderSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_POSITION,
+                             shoulderSetPoint);
         shoulderSetPoint = RAD_TO_DEG(shoulderSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_ANGULAR_VELOCITY, shoulderSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_ANGULAR_VELOCITY, shoulderSetPoint);
         shoulderSetPoint = RAD_TO_DEG(shoulderSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_CURRENT,
-                               shoulderSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_CURRENT,
+                             shoulderSetPoint);
         break;
 
       default:
@@ -96,20 +96,20 @@ int main() {
     switch (Elbow::manager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_POSITION,
-                               elbowSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_POSITION,
+                             elbowSetPoint);
         elbowSetPoint = RAD_TO_DEG(elbowSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_ANGULAR_VELOCITY, elbowSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_ANGULAR_VELOCITY, elbowSetPoint);
         elbowSetPoint = RAD_TO_DEG(elbowSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_CURRENT,
-                               elbowSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_CURRENT,
+                             elbowSetPoint);
         break;
 
       default:
@@ -120,20 +120,20 @@ int main() {
     switch (Wrist::leftManager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_POSITION, leftWristSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_POSITION,
+                             leftWristSetPoint);
         leftWristSetPoint = RAD_TO_DEG(leftWristSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_ANGULAR_VELOCITY, leftWristSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_ANGULAR_VELOCITY, leftWristSetPoint);
         leftWristSetPoint = RAD_TO_DEG(leftWristSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_CURRENT,
-                               leftWristSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_CURRENT,
+                             leftWristSetPoint);
         break;
 
       default:
@@ -144,20 +144,20 @@ int main() {
     switch (Wrist::rightManager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_POSITION, rightWristSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_POSITION,
+                             rightWristSetPoint);
         rightWristSetPoint = RAD_TO_DEG(rightWristSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_ANGULAR_VELOCITY, rightWristSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_ANGULAR_VELOCITY, rightWristSetPoint);
         rightWristSetPoint = RAD_TO_DEG(rightWristSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_CURRENT,
-                               rightWristSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_CURRENT,
+                             rightWristSetPoint);
         break;
 
       default:
@@ -168,20 +168,20 @@ int main() {
     switch (Claw::manager.getActiveControlMode()) {
       case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
       case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_CLAW_POSITION,
-                               clawSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_CLAW_POSITION,
+                             clawSetPoint);
         clawSetPoint = RAD_TO_DEG(clawSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                               HWBRIDGE::CANSIGNAL::ARM_SET_CLAW_ANGULAR_VELOCITY, clawSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
+                             HWBRIDGE::CANSIGNAL::ARM_SET_CLAW_ANGULAR_VELOCITY, clawSetPoint);
         clawSetPoint = RAD_TO_DEG(clawSetPoint);
         break;
 
       case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_CLAW_CURRENT,
-                               clawSetPoint);
+        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_CLAW_CURRENT,
+                             clawSetPoint);
         break;
 
       default:
@@ -189,8 +189,8 @@ int main() {
     }
 
     // Determine new tool tip position
-    can.readStreamedSignal(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_TOOL_TIP_POSITION,
-                           toolTipPosition);
+    can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_TOOL_TIP_POSITION,
+                         toolTipPosition);
     toolTipPosition = RAD_TO_DEG(toolTipPosition);
 
     // *** UPDATE JOINT SET POINTS ***
@@ -213,52 +213,50 @@ int main() {
     // *** UPDATE TX SIGNALS ***
 
     // Joint position
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_POSITION,
-                             DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_POSITION,
+                         DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngleDeg()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_SHOULDER_POSITION,
-                             DEG_TO_RAD(Shoulder::manager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_SHOULDER_POSITION,
+                         DEG_TO_RAD(Shoulder::manager.getActiveController()->reportAngleDeg()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_ELBOW_POSITION,
-                             DEG_TO_RAD(Elbow::manager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_ELBOW_POSITION,
+                         DEG_TO_RAD(Elbow::manager.getActiveController()->reportAngleDeg()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_LEFT_WRIST_POSITION,
-                             DEG_TO_RAD(Wrist::leftManager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_LEFT_WRIST_POSITION,
+                         DEG_TO_RAD(Wrist::leftManager.getActiveController()->reportAngleDeg()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_RIGHT_WRIST_POSITION,
-                             DEG_TO_RAD(Wrist::rightManager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_RIGHT_WRIST_POSITION,
+                         DEG_TO_RAD(Wrist::rightManager.getActiveController()->reportAngleDeg()));
 
     // Joint angular velocity
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_CLAW_POSITION,
-                             DEG_TO_RAD(Claw::manager.getActiveController()->reportAngleDeg()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_CLAW_POSITION,
+                         DEG_TO_RAD(Claw::manager.getActiveController()->reportAngleDeg()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_SHOULDER_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Shoulder::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_SHOULDER_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Shoulder::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_ELBOW_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Elbow::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_ELBOW_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Elbow::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_LEFT_WRIST_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Wrist::leftManager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_LEFT_WRIST_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Wrist::leftManager.getActiveController()->reportAngularVelocityDegPerSec()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_RIGHT_WRIST_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Wrist::rightManager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_RIGHT_WRIST_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Wrist::rightManager.getActiveController()->reportAngularVelocityDegPerSec()));
 
-    can.updateStreamedSignal(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_REPORT_CLAW_ANGULAR_VELOCITY,
-                             DEG_TO_RAD(Claw::manager.getActiveController()->reportAngularVelocityDegPerSec()));
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_CLAW_ANGULAR_VELOCITY,
+                         DEG_TO_RAD(Claw::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
     // TODO: REPORT CURRENT READINGS
 
@@ -272,84 +270,67 @@ int main() {
 
 // *** HANDLERS FOR CAN RX ONE-SHOTS ***
 
-static mbed_error_status_t armSetControlMode(CANMsg& msg) {
-  // Error check CAN ID
-  if (msg.getID() != HWBRIDGE::CANID::ARM_SET_CONTROL_MODE) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-
+static mbed_error_status_t armSetControlMode(void) {
   bool success = true;
+  HWBRIDGE::CANSignalValue_t controlMode;
 
-  HWBRIDGE::CONTROL::Mode controlMode;
-  HWBRIDGE::CANMsgData_t msgData;
-  struct uwrt_mars_rover_can_arm_set_control_mode_t msgStruct;
+  // Set turntable control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE,
+                                  HWBRIDGE::CANSIGNAL::ARM_TURNTABLE_CONTROL_MODE, controlMode) &&
+             Turntable::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-  // Unpack CAN data
-  msg.getPayload(msgData);
-  if (uwrt_mars_rover_can_arm_set_control_mode_unpack(&msgStruct, msgData.raw,
-                                                      UWRT_MARS_ROVER_CAN_ARM_SET_CONTROL_MODE_LENGTH) == 0) {
-    // Set turntable control mode
-    controlMode = (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_arm_set_control_mode_arm_turntable_control_mode_decode(
-        msgStruct.arm_turntable_control_mode);
-    success &= Turntable::manager.switchControlMode(controlMode);
+  // Set shoulder control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_SHOULDER_CONTROL_MODE,
+                                  controlMode) &&
+             Shoulder::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-    // Set shoulder control mode
-    controlMode = (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_arm_set_control_mode_arm_shoulder_control_mode_decode(
-        msgStruct.arm_shoulder_control_mode);
-    success &= Shoulder::manager.switchControlMode(controlMode);
+  // Set elbow control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_ELBOW_CONTROL_MODE,
+                                  controlMode) &&
+             Elbow::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-    // Set elbow control mode
-    controlMode = (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_arm_set_control_mode_arm_elbow_control_mode_decode(
-        msgStruct.arm_elbow_control_mode);
-    success &= Elbow::manager.switchControlMode(controlMode);
+  // Set left wrist control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE,
+                                  HWBRIDGE::CANSIGNAL::ARM_LEFT_WRIST_CONTROL_MODE, controlMode) &&
+             Wrist::leftManager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-    // Set left wrist control mode
-    controlMode = (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_arm_set_control_mode_arm_left_wrist_control_mode_decode(
-        msgStruct.arm_left_wrist_control_mode);
-    success &= Wrist::leftManager.switchControlMode(controlMode);
+  // Set right wrist control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE,
+                                  HWBRIDGE::CANSIGNAL::ARM_RIGHT_WRIST_CONTROL_MODE, controlMode) &&
+             Wrist::rightManager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-    // Set right wrist control mode
-    controlMode = (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_arm_set_control_mode_arm_right_wrist_control_mode_decode(
-        msgStruct.arm_right_wrist_control_mode);
-    success &= Wrist::rightManager.switchControlMode(controlMode);
+  // Set claw control mode
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_CLAW_CONTROL_MODE,
+                                  controlMode) &&
+             Claw::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
 
-    // Set claw control mode
-    controlMode = (HWBRIDGE::CONTROL::Mode)uwrt_mars_rover_can_arm_set_control_mode_arm_claw_control_mode_decode(
-        msgStruct.arm_claw_control_mode);
-    success &= Claw::manager.switchControlMode(controlMode);
-
-    if (success) {
-      // Send ACK message back
-      sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_ACK_ARM_SET_CONTROL_MODE_ACK);
-    }
-  } else {
-    // Error unpacking!
-    success = false;
+  if (success) {
+    // Send ACK message back
+    sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_ACK_ARM_SET_CONTROL_MODE_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-static mbed_error_status_t armSetJointPIDParams(CANMsg& msg) {
-  // Error check CAN ID
-  if (msg.getID() != HWBRIDGE::CANID::ARM_SET_JOINT_PID_PARAMS) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-
+static mbed_error_status_t armSetJointPIDParams(void) {
   bool success = true;
 
-  HWBRIDGE::CANMsgData_t msgData;
-  struct uwrt_mars_rover_can_arm_set_joint_pid_params_t msgStruct;
+  HWBRIDGE::CANSignalValue_t jointID;
+  HWBRIDGE::CANSignalValue_t p, i, d, deadzone;
 
-  // Unpack CAN data
-  msg.getPayload(msgData);
-  if (uwrt_mars_rover_can_arm_set_joint_pid_params_unpack(&msgStruct, msgData.raw,
-                                                          UWRT_MARS_ROVER_CAN_ARM_SET_JOINT_PID_PARAMS_LENGTH) == 0) {
-    // Determine joint ID
-    HWBRIDGE::ARM_JOINT_PIDID_VALUES jointID =
-        (HWBRIDGE::ARM_JOINT_PIDID_VALUES)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pidid_decode(
-            msgStruct.arm_joint_pidid);
+  // Extract signal values
+  success &=
+      can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_PID_PARAMS, HWBRIDGE::CANSIGNAL::ARM_JOINT_PIDID, jointID);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::ARM_JOINT_PID_PROPORTIONAL_GAIN, p);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::ARM_JOINT_PID_INTEGRAL_GAIN, i);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::ARM_JOINT_PID_DERIVATIVE_GAIN, d);
+  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_PID_PARAMS,
+                                  HWBRIDGE::CANSIGNAL::ARM_JOINT_PID_DEADZONE, deadzone);
 
+  if (success) {
     const Utility::LookupTable<HWBRIDGE::ARM_JOINT_PIDID_VALUES, Controller::ActuatorControllerManager*> lut = {
         {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_TURNTABLE, &Turntable::manager},
         {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_SHOULDER, &Shoulder::manager},
@@ -358,39 +339,17 @@ static mbed_error_status_t armSetJointPIDParams(CANMsg& msg) {
         {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_RIGHT_WRIST, &Wrist::rightManager},
         {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_CLAW, &Claw::manager}};
 
-    auto act = lut.at(jointID).value_or(nullptr);
+    auto act = lut.at((HWBRIDGE::ARM_JOINT_PIDID_VALUES)jointID).value_or(nullptr);
     if (!act) {
       return MBED_ERROR_INVALID_ARGUMENT;
     }
 
-    // Extract PID params
-    float p = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_proportional_gain_decode(
-        msgStruct.arm_joint_pid_proportional_gain);
-    float i = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_integral_gain_decode(
-        msgStruct.arm_joint_pid_integral_gain);
-    float d = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_derivative_gain_decode(
-        msgStruct.arm_joint_pid_derivative_gain);
-    float deadzone = (float)uwrt_mars_rover_can_arm_set_joint_pid_params_arm_joint_pid_deadzone_decode(
-        msgStruct.arm_joint_pid_proportional_gain);
-
     // Set PID params
     if (auto pid = act->getActiveController()->getPID()) {
-      if (msgStruct.arm_joint_pid_proportional_gain !=
-          (uint16_t)HWBRIDGE::ARM_JOINT_PID_PROPORTIONAL_GAIN_VALUES::ARM_JOINT_PID_PROPORTIONAL_GAIN_SNA) {
-        pid.value().get().updateProportionalGain(p);
-      }
-      if (msgStruct.arm_joint_pid_integral_gain !=
-          (uint16_t)HWBRIDGE::ARM_JOINT_PID_INTEGRAL_GAIN_VALUES::ARM_JOINT_PID_INTEGRAL_GAIN_SNA) {
-        pid.value().get().updateIntegralGain(i);
-      }
-      if (msgStruct.arm_joint_pid_derivative_gain !=
-          (uint16_t)HWBRIDGE::ARM_JOINT_PID_DERIVATIVE_GAIN_VALUES::ARM_JOINT_PID_DERIVATIVE_GAIN_SNA) {
-        pid.value().get().updateDerivativeGain(d);
-      }
-      if (msgStruct.arm_joint_pid_deadzone !=
-          (uint16_t)HWBRIDGE::ARM_JOINT_PID_DEADZONE_VALUES::ARM_JOINT_PID_DEADZONE_SNA) {
-        pid.value().get().updateDeadzone(deadzone);
-      }
+      pid.value().get().updateProportionalGain(p);
+      pid.value().get().updateIntegralGain(i);
+      pid.value().get().updateDerivativeGain(d);
+      pid.value().get().updateDeadzone(deadzone);
 
       // Send ACK message back
       sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_ACK_ARM_SET_JOINT_PID_PARAMS_ACK);
@@ -399,36 +358,22 @@ static mbed_error_status_t armSetJointPIDParams(CANMsg& msg) {
       // PID controller doesn't exist!
       success = false;
     }
-  } else {
-    // Error unpacking!
-    success = false;
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-static mbed_error_status_t commonSwitchCANBus(CANMsg& msg) {
-  // Error check CAN ID
-  if (msg.getID() != HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS) {
-    return MBED_ERROR_INVALID_ARGUMENT;
-  }
-
+static mbed_error_status_t commonSwitchCANBus(void) {
   bool success = true;
+  HWBRIDGE::CANSignalValue_t canBusID;
 
-  HWBRIDGE::CANMsgData_t msgData;
-  struct uwrt_mars_rover_can_common_switch_can_bus_t msgStruct;
+  success &=
+      can.getRXSignalValue(HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS, HWBRIDGE::CANSIGNAL::COMMON_CAN_BUS_ID, canBusID) &&
+      can.switchCANBus((HWBRIDGE::CANBUSID)canBusID);
 
-  // Unpack CAN data
-  msg.getPayload(msgData);
-  if (uwrt_mars_rover_can_common_switch_can_bus_unpack(&msgStruct, msgData.raw,
-                                                       UWRT_MARS_ROVER_CAN_COMMON_SWITCH_CAN_BUS_LENGTH) == 0) {
-    success &= can.switchCANBus((HWBRIDGE::CANBUSID)uwrt_mars_rover_can_common_switch_can_bus_common_can_bus_id_decode(
-        msgStruct.common_can_bus_id));
-
+  if (success) {
     // Send ACK message back
     sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_ACK_CAN_BUS_SWITCH_ACK);
-  } else {
-    success = false;
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;

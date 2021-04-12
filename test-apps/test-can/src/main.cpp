@@ -16,13 +16,13 @@ int main() {
 
   while (true) {
     // Read RX signal
-    can.readStreamedSignal(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE1, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL1,
-                           rxSignal1Value);
+    can.getRXSignalValue(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE1, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL1,
+                         rxSignal1Value);
     printf("RX debug signal value: %lu\r\n", (uint32_t)rxSignal1Value);
 
     // Update TX signal
-    can.updateStreamedSignal(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL2,
-                             txSignal1Value);
+    can.setTXSignalValue(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL2,
+                         txSignal1Value);
     printf("TX test signal 2 value: %u\r\n", (uint16_t)txSignal1Value);
     txSignal1Value = ((uint16_t)txSignal1Value + 1) % 8;
 
@@ -31,7 +31,7 @@ int main() {
 }
 
 // Receive a one-shot message (COMMON_DEBUG_MESSAGE3) and send a one-shot reply back
-mbed_error_status_t handle_test_msg_one_shot(CANMsg& msg) {
+mbed_error_status_t handle_test_msg_one_shot(void) {
   CANMsg msgACK;
 
   // Initialize msg struct

@@ -14,8 +14,8 @@ CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVER_CANBUS_FREQUENCY_HZ);
 void rxCANProcessor();
 void txCANProcessor();
 
-static mbed_error_status_t setLEDMatrix(
-    CANMsg &msg);  // simple switch statement that calls a different function based on contents of CAN msg
+// simple switch statement that calls a different function based on contents of CAN msg
+static mbed_error_status_t setLEDMatrix(void);
 
 const static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::PDB_SET_LED_MATRIX, &setLEDMatrix}};
 
@@ -32,7 +32,7 @@ void rxCANProcessor() {
   CANMsg rxMsg;
   while (true) {
     if (can1.read(rxMsg)) {
-      canHandlerMap.at(rxMsg.getID())(rxMsg);
+      canHandlerMap.at(rxMsg.getID())();
     }
     ThisThread::sleep_for(2ms);
   }
@@ -46,6 +46,6 @@ void txCANProcessor() {
   }
 }
 
-static mbed_error_status_t setLEDMatrix(CANMsg &msg) {
+static mbed_error_status_t setLEDMatrix(void) {
   return MBED_ERROR_INVALID_ARGUMENT;
 }

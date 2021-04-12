@@ -9,13 +9,14 @@ const HWBRIDGE::CANID targetReportDiagnosticsCANID      = HWBRIDGE::CANID::ARM_R
 const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal = HWBRIDGE::CANSIGNAL::ARM_REPORT_NUM_STREAMED_MSGS_RECEIVED;
 const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal = HWBRIDGE::CANSIGNAL::ARM_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
 
-static mbed_error_status_t oneShotHandler(CANMsg& msg);
+static mbed_error_status_t oneShotHandler(void);
 
 namespace CANConfig {
 
 using namespace HWBRIDGE;
 
-static CANMsgMap rxStreamedMsgMap = {
+static CANMsgMap rxMsgMap = {
+    // Streamed messages
     {CANID::ARM_SET_JOINT_POSITION,
      {
          {CANSIGNAL::ARM_SET_TURNTABLE_POSITION, 0},
@@ -44,9 +45,41 @@ static CANMsgMap rxStreamedMsgMap = {
          {CANSIGNAL::ARM_SET_RIGHT_WRIST_CURRENT, 0},
          {CANSIGNAL::ARM_SET_CLAW_CURRENT, 0},
      }},
+
+    // One-shot messages
+    {CANID::ARM_SET_CONTROL_MODE,
+     {
+         {CANSIGNAL::ARM_TURNTABLE_CONTROL_MODE,
+          (CANSignalValue_t)ARM_TURNTABLE_CONTROL_MODE_VALUES::ARM_TURNTABLE_CONTROL_MODE_SNA},
+         {CANSIGNAL::ARM_SHOULDER_CONTROL_MODE,
+          (CANSignalValue_t)ARM_SHOULDER_CONTROL_MODE_VALUES::ARM_SHOULDER_CONTROL_MODE_SNA},
+         {CANSIGNAL::ARM_ELBOW_CONTROL_MODE,
+          (CANSignalValue_t)ARM_ELBOW_CONTROL_MODE_VALUES::ARM_ELBOW_CONTROL_MODE_SNA},
+         {CANSIGNAL::ARM_LEFT_WRIST_CONTROL_MODE,
+          (CANSignalValue_t)ARM_LEFT_WRIST_CONTROL_MODE_VALUES::ARM_LEFT_WRIST_CONTROL_MODE_SNA},
+         {CANSIGNAL::ARM_RIGHT_WRIST_CONTROL_MODE,
+          (CANSignalValue_t)ARM_RIGHT_WRIST_CONTROL_MODE_VALUES::ARM_RIGHT_WRIST_CONTROL_MODE_SNA},
+         {CANSIGNAL::ARM_CLAW_CONTROL_MODE, (CANSignalValue_t)ARM_CLAW_CONTROL_MODE_VALUES::ARM_CLAW_CONTROL_MODE_SNA},
+     }},
+    {CANID::ARM_SET_JOINT_PID_PARAMS,
+     {
+         {CANSIGNAL::ARM_JOINT_PIDID, (CANSignalValue_t)ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_SNA},
+         {CANSIGNAL::ARM_JOINT_PID_PROPORTIONAL_GAIN,
+          (CANSignalValue_t)ARM_JOINT_PID_PROPORTIONAL_GAIN_VALUES::ARM_JOINT_PID_PROPORTIONAL_GAIN_SNA},
+         {CANSIGNAL::ARM_JOINT_PID_INTEGRAL_GAIN,
+          (CANSignalValue_t)ARM_JOINT_PID_INTEGRAL_GAIN_VALUES::ARM_JOINT_PID_INTEGRAL_GAIN_SNA},
+         {CANSIGNAL::ARM_JOINT_PID_DERIVATIVE_GAIN,
+          (CANSignalValue_t)ARM_JOINT_PID_DERIVATIVE_GAIN_VALUES::ARM_JOINT_PID_DERIVATIVE_GAIN_SNA},
+         {CANSIGNAL::ARM_JOINT_PID_DEADZONE,
+          (CANSignalValue_t)ARM_JOINT_PID_DEADZONE_VALUES::ARM_JOINT_PID_DEADZONE_SNA},
+     }},
+    {CANID::COMMON_SWITCH_CAN_BUS,
+     {
+         {CANSIGNAL::COMMON_CAN_BUS_ID, (CANSignalValue_t)COMMON_CAN_BUS_ID_VALUES::COMMON_CAN_BUS_ID_SNA},
+     }},
 };
 
-static CANMsgMap txStreamedMsgMap = {
+static CANMsgMap txMsgMap = {
     {CANID::ARM_REPORT_JOINT_POSITION,
      {
          {CANSIGNAL::ARM_REPORT_TURNTABLE_POSITION, 0},
@@ -122,8 +155,8 @@ CANInterface::Config config = {
     .can2_TX = CAN2_TX,
 
     // Message maps and handlers
-    .rxStreamedMsgMap    = &rxStreamedMsgMap,
-    .txStreamedMsgMap    = &txStreamedMsgMap,
+    .rxMsgMap            = &rxMsgMap,
+    .txMsgMap            = &txMsgMap,
     .rxOneShotMsgHandler = &rxOneShotMsgHandler,
 };
 

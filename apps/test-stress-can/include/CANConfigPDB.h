@@ -9,13 +9,25 @@ const HWBRIDGE::CANID targetReportDiagnosticsCANID      = HWBRIDGE::CANID::PDB_R
 const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal = HWBRIDGE::CANSIGNAL::PDB_REPORT_NUM_STREAMED_MSGS_RECEIVED;
 const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal = HWBRIDGE::CANSIGNAL::PDB_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
 
-static mbed_error_status_t oneShotHandler(CANMsg& msg);
+static mbed_error_status_t oneShotHandler(void);
 
 namespace CANConfig {
 
 using namespace HWBRIDGE;
 
-static CANMsgMap txStreamedMsgMap = {
+static CANMsgMap rxMsgMap = {
+    // One-shot messages
+    {CANID::PDB_SET_LED_MATRIX,
+     {
+         {CANSIGNAL::PDB_LED_MATRIX_STATE, (CANSignalValue_t)PDB_LED_MATRIX_STATE_VALUES::PDB_LED_MATRIX_STATE_SNA},
+     }},
+    {CANID::COMMON_SWITCH_CAN_BUS,
+     {
+         {CANSIGNAL::COMMON_CAN_BUS_ID, (CANSignalValue_t)COMMON_CAN_BUS_ID_VALUES::COMMON_CAN_BUS_ID_SNA},
+     }},
+};
+
+static CANMsgMap txMsgMap = {
     {CANID::PDB_REPORT_SENSOR_DATA,
      {
          {CANSIGNAL::PDB_ULTRASONIC_SENSOR1_DATA, 0},
@@ -55,8 +67,8 @@ CANInterface::Config config = {
     .can2_TX = CAN2_TX,
 
     // Message maps and handlers
-    .rxStreamedMsgMap    = nullptr,
-    .txStreamedMsgMap    = &txStreamedMsgMap,
+    .rxMsgMap            = &rxMsgMap,
+    .txMsgMap            = &txMsgMap,
     .rxOneShotMsgHandler = &rxOneShotMsgHandler,
 };
 
