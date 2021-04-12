@@ -127,6 +127,7 @@
  * Includes
  */
 #include "QEI.h"
+
 #include "mbed.h"
 
 using namespace GPIO;

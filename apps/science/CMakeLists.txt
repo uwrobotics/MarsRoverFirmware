@@ -1,7 +1,7 @@
 add_executable(science)
 target_sources(science PRIVATE src/main.cpp)
 target_include_directories(science PUBLIC include)
-target_link_libraries(science 
+target_link_libraries(science
         PRIVATE
         #Control
         OpenLoopController
