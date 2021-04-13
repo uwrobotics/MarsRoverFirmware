@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# This script maintains compatibility with Python 3.6.9 (default for Ubuntu 18.04)
 import argparse
 import json
 import yaml

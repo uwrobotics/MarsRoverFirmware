@@ -1,4 +1,4 @@
-name: clang-format
+name: cancel-superceeded-jobs
 
 on: [ push, pull_request ]
 
@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Superceded Jobs
-        uses: styfle/cancel-workflow-action@0.9.0
+        uses: styfle/cancel-workflow-action@0.9
         with:
           workflow_id: build.yaml, clang-format.yaml
           access_token: ${{ github.token }}

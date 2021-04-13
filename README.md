@@ -33,8 +33,7 @@ This repository contains:
     - Update package lists: `sudo apt update`
     - Install Ninja: `sudo apt install ninja-build`
     - Install ccache: `sudo apt install ccache`
-    - Install mbed-tools: `python3 -m pip install mbed-tools`
-      - To upgrade mbed-tools: `python3 -m pip install mbed-tools --upgrade`
+    - Install mbed-tools and other python requirements: `pip3 install -r scripts/requirements.txt`
     - `sudo apt install screen can-utils` for serial and CAN interfacing
     - Install/update ARM GCC toolchain:
         ```
