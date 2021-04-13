@@ -108,7 +108,7 @@ add_app_subdirectory(${TEST_APPS_DIR}/test-lookup-table)
 add_app_subdirectory(${TEST_APPS_DIR}/test-pid)
 add_app_subdirectory(${TEST_APPS_DIR}/test-pwm)
 add_app_subdirectory(${TEST_APPS_DIR}/test-pwmin)
-add_subdirectory(${TEST_APPS_DIR}//test-units)
+add_app_subdirectory(${TEST_APPS_DIR}//test-units)
 
 # Ensure APP was specified
 if ("$ENV{APP}" STREQUAL "")

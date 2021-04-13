@@ -75,10 +75,19 @@ jobs:
 
       - name: Print Toolchain Versions
         run: |
+          echo "Make Version:"
           make --version
+          echo
+          echo "Mbed Tools Version:"
           mbed-tools --version
+          echo
+          echo "CMake Version:"
           cmake --version
+          echo
+          echo "Ninja Version:"
           ninja --version
+          echo
+          echo "ARM GCC Version:"
           arm-none-eabi-gcc --version
 
       - name: Run Make

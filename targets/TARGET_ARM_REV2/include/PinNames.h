@@ -314,7 +314,7 @@ typedef enum {
 #endif
 
   USBTX = NC,
-  USBRX = STDIO_UART_RX,
+  USBRX = NC,
 
 } PinName;
 
