@@ -39,10 +39,10 @@ This repository contains:
     - Install/update ARM GCC toolchain:
         ```
         sudo apt autoremove gcc-arm-none-eabi
-        wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
-        sudo tar -xvf gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -C /opt/
-        echo "PATH=\$PATH:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin" >> ~/.bashrc
-        export PATH=$PATH:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin 
+        wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
+        sudo tar -xvf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 -C /opt/
+        echo "PATH=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin:\$PATH" >> ~/.bashrc
+        export PATH=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin:$PATH 
         ```
         **Note:** If you are not using Ubuntu 20.04 and/or bash you may need to modify this script's paths/files.
     - Install CMake:
@@ -74,8 +74,10 @@ This repository contains:
     Open a new Command Prompt / Terminal window and run the following commands:
     ```shell script
     make --version                    # Should be v3.8.x or newer
-    arm-none-eabi-gcc --version       # Should be v9.3.x or newer
-    cmake --version                   # Should be v3.15.7 or newer
+    mbed-tools --version              # Should be v7.3.3 or newer
+    cmake --version                   # Should be v3.20.0 or newer
+    ninja --version                   # Should be v1.10.0 or newer
+    arm-none-eabi-gcc --version       # Should be v10.2.1 or newer
     ```
 
 3. Download source code
