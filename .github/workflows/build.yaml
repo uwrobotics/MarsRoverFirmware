@@ -50,7 +50,7 @@ jobs:
         run: echo "${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin" >> $GITHUB_PATH
 
       - name: Load Cached Arm Toolchain
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         id: toolchain-cache
         with:
           path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
