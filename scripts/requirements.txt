@@ -1,2 +1,2 @@
-PyYAML~=4.2b1
+PyYAML~=5.1
 mbed-tools~=7.3.3

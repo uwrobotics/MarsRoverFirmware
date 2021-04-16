@@ -45,7 +45,7 @@ add_compile_options(-fdiagnostics-color)
 add_subdirectory(${TARGETS_DIR}/TARGET_ARM_REV2)
 add_subdirectory(${TARGETS_DIR}/TARGET_GAMEPAD_REV1)
 add_subdirectory(${TARGETS_DIR}/TARGET_GIMBAL_REV2)
-add_subdirectory(${TARGETS_DIR}/TARGET_PDB_REV1)
+add_subdirectory(${TARGETS_DIR}/TARGET_PDB_REV2)
 add_subdirectory(${TARGETS_DIR}/TARGET_SCIENCE_REV2)
 add_subdirectory(${TARGETS_DIR}/TARGET_UWRT_NUCLEO)
 
