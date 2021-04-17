@@ -104,7 +104,6 @@ int BQ40Z80::getTemperatures() {
 int BQ40Z80::getStartupInfo() {
   int status;
 
-  // TODO change to Manufacturere access
   status = manufacturer_read(SBS_MA_CMD::FIRMWARE_VERSION, &m_firmware_version, sizeof(m_firmware_version));
 
   status = manufacturer_read(SBS_MA_CMD::STATE_OF_HEALTH_MA, &m_state_of_health, sizeof(m_state_of_health));
@@ -158,7 +157,6 @@ int BQ40Z80::getDeviceType(uint16_t &data) {
   return manufacturer_read(SBS_MA_CMD::DEVICE_TYPE, &data, sizeof(data));
 }
 
-// may need to be uint64_t?
 int BQ40Z80::getFirmwareVersion(uint64_t &data) {
   return manufacturer_read(SBS_MA_CMD::FIRMWARE_VERSION, &data, sizeof(data));
 }
