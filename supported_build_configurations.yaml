@@ -11,7 +11,7 @@ gimbal:
   - GIMBAL_REV2
 
 pdb:
-  - PDB_REV1
+  - PDB_REV2
 
 science:
   - SCIENCE_REV2
@@ -33,7 +33,7 @@ test-blinky:
   - ARM_REV2
   - GAMEPAD_REV1
   - GIMBAL_REV2
-  - PDB_REV1
+  - PDB_REV2
   - SCIENCE_REV2
   - UWRT_NUCLEO
 
@@ -53,7 +53,7 @@ test-mae3:
 
 test-logger:
   - GIMBAL_REV2
-  - PDB_REV1
+  - PDB_REV2
   - SCIENCE_REV2
   - UWRT_NUCLEO
 
@@ -76,7 +76,7 @@ test-pid:
 test-pwm:
   - ARM_REV2
   - GIMBAL_REV2
-  - PDB_REV1
+  - PDB_REV2
   - SCIENCE_REV2
   - UWRT_NUCLEO
 
