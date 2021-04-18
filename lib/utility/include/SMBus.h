@@ -51,14 +51,48 @@
 
 namespace SMBus {
 
+/**
+ * @brief
+ *
+ * Wrapper for SMBus protocol communication. Uses the Mbed os I2C interface
+ * to communicate with SMBus over I2C pins
+ */
 class SMBus {
  public:
+  /**
+   * @brief
+   *
+   * @param MAX_BLOCK_LEN
+   * Max length of SMBus block
+   */
   static constexpr uint8_t MAX_BLOCK_LEN = 34;
 
+  /**
+   * @brief
+   *
+   * @param m_i2c
+   * Mbed os I2C class variable
+   */
   I2C m_i2c;
+
+  /**
+   * @brief
+   *
+   * @param m_address
+   * SMBus address of device
+   */
   uint16_t m_address;
 
+  /**
+   * @brief
+   *
+   * Constructor
+   * @param sda Data line pin
+   * @param scl Clock pin
+   * @param address SMBus address
+   */
   SMBus(PinName sda, PinName scl, uint8_t address);
+
   ~SMBus() = default;
 
   /**
