@@ -26,7 +26,7 @@
             "hse_value": "25000000U"
         }
     },
-    "PDB_REV1": {
+    "PDB_REV2": {
         "inherits": [
             "UWRT_STM32F446xE"
         ],
