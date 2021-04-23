@@ -13,9 +13,6 @@ Timer timer;
 
 constexpr auto PERIOD = 500ms;
 
-// Print helper function
-void print(const std::string &str);
-
 int main() {
   Thread updater_thread(osPriorityNormal), reader_thread(osPriorityNormal);
 
