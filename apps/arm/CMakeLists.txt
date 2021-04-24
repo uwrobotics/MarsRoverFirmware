@@ -15,7 +15,7 @@ target_link_libraries(arm.${TARGET}-board.elf
 #Encoders
         EncoderAEAT6012
         EncoderMAE3
-        EncoderPololu37D
+        Quadrature64CPR
 #CAN
         CANBus
         CANMsg

@@ -8,8 +8,8 @@
 #include "LookupTable.h"
 #include "OpenLoop.h"
 #include "PID.h"
-#include "Pololu37D.h"
 #include "Position.h"
+#include "Quadrature64CPR.h"
 #include "Velocity.h"
 #include "hw_bridge.h"
 
@@ -17,7 +17,7 @@ namespace Claw {
 
 namespace Internal {
 
-static Encoder::Pololu37D encoder({ENC_QUAD_CLAW_A, ENC_QUAD_CLAW_B, NC, 0, GPIO::QEI::Encoding::X2_ENCODING});
+static Encoder::Quadrature64CPR encoder({ENC_QUAD_CLAW_A, ENC_QUAD_CLAW_B, NC, 0});
 
 static Actuator::DCMotor motor(MTR_PWM_TRNTBL, MTR_DIR_TRNTBL, false);
 

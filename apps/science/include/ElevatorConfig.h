@@ -6,8 +6,8 @@
 #include "DCMotor.h"
 #include "LookupTable.h"
 #include "OpenLoop.h"
-#include "Pololu37D.h"
 #include "Position.h"
+#include "Quadrature64CPR.h"
 #include "Velocity.h"
 #include "hw_bridge.h"
 
@@ -17,7 +17,7 @@ namespace Internal {
 static Actuator::DCMotor motor(MTR_PWM_ELVTR, MTR_DIR_ELVTR, false);
 
 // channela, channelb, index, offset deg, qei encoding
-static Encoder::Pololu37D encoder({ENC_A_LIFT, ENC_B_LIFT, NC, 0});
+static Encoder::Quadrature64CPR encoder({ENC_A_LIFT, ENC_B_LIFT, NC, 0});
 
 static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
