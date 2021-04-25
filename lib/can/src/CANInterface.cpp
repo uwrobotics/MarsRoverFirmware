@@ -13,7 +13,9 @@ CANInterface::CANInterface(const Config &config)
       m_numStreamedMsgsReceived(0),
       m_numOneShotMsgsReceived(0),
       m_numStreamedMsgsSent(0),
-      m_numOneShotMsgsSent(0) {
+      m_numOneShotMsgsSent(0),
+      m_numCANRXFaults(0),
+      m_numCANTXFaults(0) {
   // Put CAN bus 2 in silent monitoring mode
   m_CANBus2.monitor(true);
 
@@ -43,6 +45,7 @@ void CANInterface::rxPostman(void) {
       MBED_ASSERT(m_rxMailbox.put(mail) == osOK);
     } else {
       MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_BUFFER_FULL), "CAN RX mailbox full");
+      m_numCANRXFaults++;
     }
   }
   can_irq_set(m_activeCANBus->getHandle(), IRQ_RX, true);
@@ -84,6 +87,7 @@ void CANInterface::rxClient(void) {
           if (m_rxOneShotMsgHandler->at(msg.getID())() != MBED_SUCCESS) {
             MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
                          "Failed to process CAN message");
+            m_numCANRXFaults++;
           }
           m_numOneShotMsgsReceived++;
         }
@@ -94,6 +98,7 @@ void CANInterface::rxClient(void) {
       } else {
         MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
                      "CAN RX message unpacking failed");
+        m_numCANRXFaults++;
       }
     }
 
@@ -101,6 +106,7 @@ void CANInterface::rxClient(void) {
     else {
       MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
                    "Invalid CAN message received");
+      m_numCANRXFaults++;
     }
   }
 }
@@ -115,6 +121,7 @@ void CANInterface::txProcessor(void) {
     while ((mail = m_txMailboxOneShot.try_get()) != nullptr) {
       if (!m_activeCANBus->write(*mail)) {
         MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_WRITE_FAILED), "CAN TX write failed");
+        m_numCANTXFaults++;
       }
       MBED_ASSERT(m_txMailboxOneShot.free(mail) == osOK);
       ThisThread::sleep_for(TX_INTERDELAY);
@@ -143,7 +150,8 @@ void CANInterface::txProcessor(void) {
           ThisThread::sleep_for(TX_INTERDELAY);
         } else {
           MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                       "CAN RX message packing failed");
+                       "CAN TX message packing failed");
+          m_numCANTXFaults++;
         }
       }
     }
@@ -207,8 +215,10 @@ bool CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
 
 bool CANInterface::setFilter(HWBRIDGE::CANFILTER filter, CANFormat format, uint16_t mask, int handle) {
   bool success = true;
-  success &= m_CANBus1.setFilter(filter, format, mask, handle);
-  success &= m_CANBus2.setFilter(filter, format, mask, handle);
+  if (handle >= 0 && handle < 14) {
+    success &= m_CANBus1.setFilter(filter, format, mask, handle);       // CAN1 filter banks: 0-13
+    success &= m_CANBus2.setFilter(filter, format, mask, handle + 14);  // CAN2 filter banks: 14-27
+  }
   return success;
 }
 
@@ -226,4 +236,12 @@ uint32_t CANInterface::getNumStreamedMsgsSent(void) {
 
 uint32_t CANInterface::getNumOneShotMsgsSent(void) {
   return m_numOneShotMsgsSent;
+}
+
+uint16_t CANInterface::getNumCANRXFaults(void) {
+  return m_numCANRXFaults;
+}
+
+uint16_t CANInterface::getNumCANTXFaults(void) {
+  return m_numCANTXFaults;
 }

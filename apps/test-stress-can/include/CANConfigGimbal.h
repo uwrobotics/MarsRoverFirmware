@@ -8,8 +8,12 @@ const HWBRIDGE::CANFILTER targetCANIDFilter             = HWBRIDGE::CANFILTER::G
 const HWBRIDGE::CANID targetReportDiagnosticsCANID      = HWBRIDGE::CANID::GIMBAL_REPORT_DIAGNOSTICS;
 const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal = HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_STREAMED_MSGS_RECEIVED;
 const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal = HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
+const HWBRIDGE::CANID targetReportFaultsCANID           = HWBRIDGE::CANID::GIMBAL_REPORT_FAULTS;
+const HWBRIDGE::CANSIGNAL targetNumCANRXFaultsSignal    = HWBRIDGE::CANSIGNAL::GIMBAL_NUM_CANRX_FAULTS;
+const HWBRIDGE::CANSIGNAL targetNumCANTXFaultsSignal    = HWBRIDGE::CANSIGNAL::GIMBAL_NUM_CANTX_FAULTS;
 
 static mbed_error_status_t oneShotHandler(void);
+static mbed_error_status_t switchCANBus(void);
 
 namespace CANConfig {
 
@@ -62,6 +66,8 @@ static CANMsgMap txMsgMap = {
      {
          {CANSIGNAL::GIMBAL_PAN_ENCODER_STATE,
           (CANSignalValue_t)GIMBAL_PAN_ENCODER_STATE_VALUES::GIMBAL_PAN_ENCODER_STATE_SNA},
+         {CANSIGNAL::GIMBAL_NUM_CANRX_FAULTS, 0},
+         {CANSIGNAL::GIMBAL_NUM_CANTX_FAULTS, 0},
      }},
     {CANID::GIMBAL_REPORT_DIAGNOSTICS,
      {
@@ -73,7 +79,7 @@ static CANMsgMap txMsgMap = {
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
     {CANID::GIMBAL_SET_CONTROL_MODE, &oneShotHandler},
     {CANID::GIMBAL_SET_JOINT_PID_PARAMS, &oneShotHandler},
-    {CANID::COMMON_SWITCH_CAN_BUS, &oneShotHandler},
+    {CANID::COMMON_SWITCH_CAN_BUS, &switchCANBus},
 };
 
 CANInterface::Config config = {

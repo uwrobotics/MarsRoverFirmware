@@ -10,8 +10,12 @@ const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal =
     HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_NUM_STREAMED_MSGS_RECEIVED;
 const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal =
     HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
+const HWBRIDGE::CANID targetReportFaultsCANID        = HWBRIDGE::CANID::SCIENCE_REPORT_FAULTS;
+const HWBRIDGE::CANSIGNAL targetNumCANRXFaultsSignal = HWBRIDGE::CANSIGNAL::SCIENCE_NUM_CANRX_FAULTS;
+const HWBRIDGE::CANSIGNAL targetNumCANTXFaultsSignal = HWBRIDGE::CANSIGNAL::SCIENCE_NUM_CANTX_FAULTS;
 
 static mbed_error_status_t oneShotHandler(void);
+static mbed_error_status_t switchCANBus(void);
 
 namespace CANConfig {
 
@@ -78,6 +82,8 @@ static CANMsgMap txMsgMap = {
           (CANSignalValue_t)SCIENCE_ELEVATOR_ENCODER_STATE_VALUES::SCIENCE_ELEVATOR_ENCODER_STATE_SNA},
          {CANSIGNAL::SCIENCE_MOISTURE_SENSOR_STATE,
           (CANSignalValue_t)SCIENCE_MOISTURE_SENSOR_STATE_VALUES::SCIENCE_MOISTURE_SENSOR_STATE_SNA},
+         {CANSIGNAL::SCIENCE_NUM_CANRX_FAULTS, 0},
+         {CANSIGNAL::SCIENCE_NUM_CANTX_FAULTS, 0},
      }},
     {CANID::SCIENCE_REPORT_DIAGNOSTICS,
      {
@@ -89,7 +95,7 @@ static CANMsgMap txMsgMap = {
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
     {CANID::SCIENCE_SET_CONTROL_MODE, &oneShotHandler},
     {CANID::SCIENCE_SET_JOINT_PID_PARAMS, &oneShotHandler},
-    {CANID::COMMON_SWITCH_CAN_BUS, &oneShotHandler},
+    {CANID::COMMON_SWITCH_CAN_BUS, &switchCANBus},
 };
 
 CANInterface::Config config = {

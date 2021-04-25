@@ -38,7 +38,7 @@ class CANInterface {
   bool switchCANBus(HWBRIDGE::CANBUSID canBusID);
 
   // Set CAN bus hw filter
-  bool setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANAny,
+  bool setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANStandard,
                  uint16_t mask = HWBRIDGE::ROVER_CANID_FILTER_MASK, int handle = 0);
 
   // For diagnostic purposes
@@ -46,6 +46,9 @@ class CANInterface {
   uint32_t getNumOneShotMsgsReceived(void);
   uint32_t getNumStreamedMsgsSent(void);
   uint32_t getNumOneShotMsgsSent(void);
+
+  uint16_t getNumCANRXFaults(void);
+  uint16_t getNumCANTXFaults(void);
 
  private:
   static constexpr osPriority RX_POSTMAN_THREAD_PRIORITY   = osPriorityRealtime;
@@ -84,4 +87,7 @@ class CANInterface {
   uint32_t m_numOneShotMsgsReceived;
   uint32_t m_numStreamedMsgsSent;
   uint32_t m_numOneShotMsgsSent;
+
+  uint16_t m_numCANRXFaults;
+  uint16_t m_numCANTXFaults;
 };
