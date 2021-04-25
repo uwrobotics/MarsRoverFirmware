@@ -5,10 +5,11 @@ namespace GPIO {
 class LimitSwitch {
  public:
   LimitSwitch(DigitalIn limitPin, bool ActiveHigh = 1);
-  // Tells you whether the LImit Switch has been pressed or not
+  // Tells you whether the Limit Switch has been pressed or not
   bool isPressed();
 
-  // Use operator overloading to overload bool operator
+  // Overloaded bool operator
+  bool operator bool();
 
  private:
   DigitalIn m_limitPin;
