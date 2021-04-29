@@ -7,11 +7,11 @@ target_include_directories(EncoderMAE3 PUBLIC include)
 target_link_libraries(EncoderMAE3 PRIVATE PwmIn Encoder)
 target_set_mbed_dependency(EncoderMAE3)
 
-add_library(EncoderPololu37D STATIC)
-target_sources(EncoderPololu37D PRIVATE src/Pololu37D.cpp)
-target_include_directories(EncoderPololu37D PUBLIC include)
-target_link_libraries(EncoderPololu37D PRIVATE QEI Encoder)
-target_set_mbed_dependency(EncoderPololu37D)
+add_library(Quadrature64CPR STATIC)
+target_sources(Quadrature64CPR PRIVATE src/Quadrature64CPR.cpp)
+target_include_directories(Quadrature64CPR PUBLIC include)
+target_link_libraries(Quadrature64CPR PRIVATE QEI Encoder)
+target_set_mbed_dependency(Quadrature64CPR)
 
 
 add_library(EncoderAEAT6012 STATIC)

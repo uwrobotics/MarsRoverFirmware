@@ -89,3 +89,7 @@ test-pwmin:
 #  - gamepad
 #  - gimbal
 #  - science
+
+test-quadrature64cpr:
+  - nucleo
+  
