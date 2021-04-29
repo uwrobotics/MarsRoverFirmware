@@ -25,7 +25,7 @@ bool Netzer::read(void) {
   }
 }
 
-bool Netzer::readAsync(callback_ptr callback) {
+bool Netzer::update(callback_ptr callback) {
   std::scoped_lock<Mutex> lock(m_mutex);
   m_callback = callback;
   // return status
@@ -33,10 +33,6 @@ bool Netzer::readAsync(callback_ptr callback) {
   // status = 0 => SPI transfer started
   // status = -1 => SPI peripheral is busy
   return (status == 0);
-}
-
-uint16_t Netzer::get_raw_data() {
-  return m_raw_data;
 }
 
 void Netzer::priv_spi_callback(int events) {
@@ -56,30 +52,25 @@ bool Netzer::reset(void) {
   return success;
 }
 
-bool Netzer::getAngleDeg(float &angle) {
+bool Netzer::update() {
   std::scoped_lock<Mutex> lock(m_mutex);
-  bool success = read();
-  angle        = m_position_deg;
-  return success;
+  return read();
 }
 
-bool Netzer::getAngularVelocityDegPerSec(float &speed) {
-  std::scoped_lock<Mutex> lock(m_mutex);
-  bool success = read();
-  speed        = m_angular_velocity_deg_per_sec;
-  return success;
-}
-
-float Netzer::getAngleDegAsync(void) {
+float Netzer::getAngleDeg(void) {
   return m_position_deg;
 }
 
-float Netzer::getAngularVelocityDegPerSecAsync(void) {
+float Netzer::getAngularVelocityDegPerSec(void) {
   return m_angular_velocity_deg_per_sec;
 }
 
-float Netzer::rawAbsToDegrees(uint16_t raw) {
-  return raw / 65536.0 * 360.0;  // 16 bit resolution, 2^16 = 65536
+float Netzer::rawAbsToDegrees(uint32_t raw) {
+  return raw / 131072.0 * 360.0;  // 17 bit resolution, 2^17 = 131072
+}
+
+uint32_t Netzer::getRawData() {
+  return m_raw_data;
 }
 
 // Wrapper function  (taken from AEAT6012 estimator, maybe we can
@@ -99,13 +90,10 @@ void Netzer::angularVelocityEstimation(void) {
   //   1. Direction is positive if cur_pos > prev_pos, negative if cur_pos < prev_pos
   //   2. Direction is positive if cur_pos < prev_pos, negative if cur_pos > prev_pos
 
-  // Not sure if I'm handling the payload correctly
-  uint32_t raw_data = ((static_cast<uint32_t>(rx_buffer[0]) << 24) | (static_cast<uint32_t>(rx_buffer[1]) << 16)) |
-                      ((static_cast<uint32_t>(rx_buffer[0]) << 8) | (static_cast<uint32_t>(rx_buffer[0])));
+  m_raw_data            = ((((rx_buffer[0] << 16) | rx_buffer[1]) >> 2) & 0x0FFFFFFF);
+  uint32_t raw_position = (m_raw_data >> 8) & 0x1FFFF;
 
-  m_raw_data = (uint16_t)((raw_data << 8) >> 8);
-
-  float curr_pos = rawAbsToDegrees(m_raw_data) - m_offset_deg;
+  float curr_pos = rawAbsToDegrees(raw_position) - m_offset_deg;
   if (curr_pos < 0) {
     curr_pos += 360;
   }
@@ -140,5 +128,5 @@ void Netzer::angularVelocityEstimation(void) {
 
   // Update position data
   m_position_deg = curr_pos;
-  m_position_raw = raw_data;
+  m_position_raw = raw_position;
 }

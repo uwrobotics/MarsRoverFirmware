@@ -15,23 +15,24 @@ class Netzer : public Encoder {
  public:
   typedef void (*callback_ptr)(void);
   Netzer(PinName mosi, PinName miso, PinName sclk, callback_ptr callback, float offset_deg);
-  uint16_t get_raw_data();
 
-  // Blocking Reads
-  bool getAngleDeg(float &angle) override;
-  bool getAngularVelocityDegPerSec(float &speed) override;
+  // Return member variables
+  float getAngleDeg() override;
+  float getAngularVelocityDegPerSec() override;
+  uint32_t getRawData();
 
   bool readAsync(callback_ptr callback);
-
-  // Return stored values (for use after calling readAsync)
-  float getAngleDegAsync(void);
-  float getAngularVelocityDegPerSecAsync(void);
 
   // Estimator function
   void angularVelocityEstimation(void);
 
+  // Async update
+  bool update(callback_ptr callback);
+  // Blocking update
+  [[nodiscard]] bool update() override;
+
   // Reset encoder values and offset
-  bool reset() override;
+  [[nodiscard]] bool reset(void) override;
 
  private:
   static constexpr uint32_t DEFAULT_FREQUENCY_HZ      = 20000;  // frequency given by datasheet
@@ -56,7 +57,7 @@ class Netzer : public Encoder {
   // Trigger a blocking encoder read
   bool read(void);
 
-  float rawAbsToDegrees(uint16_t raw);
+  float rawAbsToDegrees(uint32_t raw);
 
   Timer m_timer;
   Mutex m_mutex;
