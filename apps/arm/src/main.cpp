@@ -94,29 +94,17 @@ static mbed_error_status_t setSafetyCheck(CANMsg &msg) {
 
   switch (msg.getID()) {
     case HWBRIDGE::CANID::SET_JOINT_CURRENT_CHECK:
-      // auto temp = act->getActiveController();
-      if (data.check) {
-        temp->activateCurrentChecks();
-      } else {
-        temp->deactivateCurrentChecks();
-      }
+      data.check ? temp->activateCurrentChecks() : temp->deactivateCurrentChecks();
       break;
+
     case HWBRIDGE::CANID::SET_JOINT_DEG_PER_SEC_CHECK:
-      // auto temp = act->getActiveController();
-      if (data.check) {
-        temp->activateDegPerSecChecks();
-      } else {
-        temp->deactivateDegPerSecChecks();
-      }
+      data.check ? temp->activateDegPerSecChecks() : temp->deactivateDegPerSecChecks();
       break;
+
     case HWBRIDGE::CANID::SET_JOINT_LIMIT_SWITCH:
-      // auto temp = act->getActiveController();
-      if (data.check) {
-        temp->activateLimitSwitchChecks();
-      } else {
-        temp->deactivateLimitSwitchChecks();
-      }
+      data.check ? temp->activateLimitSwitchChecks() : temp->deactivateLimitSwitchChecks();
       break;
+
     default:
       return MBED_ERROR_INVALID_ARGUMENT;
   }
