@@ -16,15 +16,16 @@ CANInterface::CANInterface(const Config &config)
       m_numOneShotMsgsSent(0),
       m_numCANRXFaults(0),
       m_numCANTXFaults(0) {
-  // Put CAN bus 2 in silent monitoring mode
+  // Put CAN bus 2 in silent monitoring mode, also disable CAN 2 RX interrupts
   m_CANBus2.monitor(true);
+  can_irq_set(m_CANBus2.getHandle(), IRQ_RX, false);
 
   // Processing threads
   m_rxPostmanThread.start(callback(&m_rxEventQueue, &EventQueue::dispatch_forever));
   m_rxClientThread.start(callback(this, &CANInterface::rxClient));
   m_txProcessorThread.start(callback(this, &CANInterface::txProcessor));
 
-  // RX IRQ
+  // RX ISR
   m_CANBus1.attach(callback(this, &CANInterface::rxISR), CAN::RxIrq);
   m_CANBus2.attach(callback(this, &CANInterface::rxISR), CAN::RxIrq);
 }
@@ -87,7 +88,6 @@ void CANInterface::rxClient(void) {
           if (m_rxOneShotMsgHandler->at(msg.getID())() != MBED_SUCCESS) {
             MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
                          "Failed to process CAN message");
-            m_numCANRXFaults++;
           }
           m_numOneShotMsgsReceived++;
         }
@@ -192,16 +192,30 @@ bool CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
 
   switch (canBusID) {
     case HWBRIDGE::CANBUSID::CANBUS1:
-      m_activeCANBus = &m_CANBus1;
-      m_CANBus1.monitor(false);
-      m_CANBus2.monitor(true);
+      if (m_activeCANBus != &m_CANBus1) {
+        // Disable CAN 2
+        can_irq_set(m_CANBus2.getHandle(), IRQ_RX, false);
+        m_CANBus2.monitor(true);
+
+        // Enable CAN 1
+        m_activeCANBus = &m_CANBus1;
+        can_irq_set(m_CANBus1.getHandle(), IRQ_RX, true);
+        m_CANBus1.monitor(false);
+      }
       success = true;
       break;
 
     case HWBRIDGE::CANBUSID::CANBUS2:
-      m_activeCANBus = &m_CANBus2;
-      m_CANBus1.monitor(true);
-      m_CANBus2.monitor(false);
+      if (m_activeCANBus != &m_CANBus2) {
+        // Disable CAN 1
+        can_irq_set(m_CANBus1.getHandle(), IRQ_RX, false);
+        m_CANBus1.monitor(true);
+
+        // Enable CAN 2
+        m_activeCANBus = &m_CANBus2;
+        can_irq_set(m_CANBus2.getHandle(), IRQ_RX, true);
+        m_CANBus2.monitor(false);
+      }
       success = true;
       break;
 
@@ -216,8 +230,8 @@ bool CANInterface::switchCANBus(HWBRIDGE::CANBUSID canBusID) {
 bool CANInterface::setFilter(HWBRIDGE::CANFILTER filter, CANFormat format, uint16_t mask, int handle) {
   bool success = true;
   if (handle >= 0 && handle < 14) {
-    success &= m_CANBus1.setFilter(filter, format, mask, handle);       // CAN1 filter banks: 0-13
-    success &= m_CANBus2.setFilter(filter, format, mask, handle + 14);  // CAN2 filter banks: 14-27
+    success &= m_CANBus1.setFilter(filter, format, mask, handle);       // CAN 1 filter banks: 0-13
+    success &= m_CANBus2.setFilter(filter, format, mask, handle + 14);  // CAN 2 filter banks: 14-27
   }
   return success;
 }

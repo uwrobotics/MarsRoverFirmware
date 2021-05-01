@@ -40,7 +40,7 @@ int main() {
     printf("CAN RX faults: %u\r\n", numCANRXFaults);
     printf("CAN TX faults: %u\r\n\r\n", numCANTXFaults);
 
-    ThisThread::sleep_for(1ms);
+    ThisThread::sleep_for(100ms);
   }
 }
 
@@ -55,5 +55,5 @@ static mbed_error_status_t switchCANBus(void) {
       can.getRXSignalValue(HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS, HWBRIDGE::CANSIGNAL::COMMON_CAN_BUS_ID, canBusID) &&
       can.switchCANBus((HWBRIDGE::CANBUSID)canBusID);
 
-  return success;
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
