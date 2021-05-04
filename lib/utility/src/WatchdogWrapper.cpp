@@ -1,6 +1,10 @@
 
 #include "WatchdogWrapper.h"
 
+#include <string>
+
+#include "Logger.h"
+#include "ResetReason.h"
 #include "mbed.h"
 
 namespace Utility {
@@ -12,6 +16,14 @@ void WatchdogWrapper::startWatchdog(std::chrono::milliseconds countdown_ms /*= 5
   watchdog.start(countdown_uint32);
   Thread pet_thread;
   pet_thread.start(callback(WatchdogWrapper::petWatchdog, &pet_ms));
+}
+
+void WatchdogWrapper::logResetReason() {
+  const reset_reason_t reason = ResetReason::get();
+  if (reason == RESET_REASON_WATCHDOG) {
+    time_t seconds = time(NULL);
+    Utility::logger << "Reset Reason: Watchog Timer - " << ctime(&seconds) << "\r\n";
+  }
 }
 
 void WatchdogWrapper::petWatchdog(std::chrono::milliseconds *pet_ms) {

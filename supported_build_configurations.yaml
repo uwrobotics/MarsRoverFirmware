@@ -90,3 +90,5 @@ test-pwmin:
 test-quadrature64cpr:
   - nucleo
   
+test-watchdog:
+  - nucleo
