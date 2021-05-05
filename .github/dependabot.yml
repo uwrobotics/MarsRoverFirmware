@@ -10,10 +10,8 @@ updates:
       separator: "/"
     assignees:
       - "wmmc88"
-      - "younesr1"
     reviewers:
       - "wmmc88"
-      - "younesr1"
 
   - package-ecosystem: "gitsubmodule"
     directory: "/"
@@ -23,7 +21,5 @@ updates:
       separator: "/"
     assignees:
       - "wmmc88"
-      - "younesr1"
     reviewers:
       - "wmmc88"
-      - "younesr1"
