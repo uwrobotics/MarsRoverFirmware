@@ -54,7 +54,10 @@ test-mae3:
 
 test-led-matrix:
   - UWRT_NUCLEO
-  
+
+test-limit-switch:
+  - UWRT_NUCLEO
+
 test-logger:
   - GIMBAL_REV2
   - PDB_REV2

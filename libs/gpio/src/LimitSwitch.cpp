@@ -6,15 +6,15 @@ LimitSwitch::LimitSwitch(DigitalIn limitPin, bool ActiveHigh) : m_limitPin(limit
 
 bool LimitSwitch::isPressed() {
   // Make sure Pin is connected before checking if it's an active high or active low
-  if (bool(limitPin)) {
+  if (bool(m_limitPin)) {
     if (!m_ActiveHigh) {
-      return !limitPin.read();
+      return !m_limitPin.read();
     }
-    return limitPin.read();
+    return m_limitPin.read();
   }
   return false;
 }
 
-bool operator bool() {
-  return limitPin.is_connected();
+LimitSwitch::operator bool() {
+  return m_limitPin.is_connected();
 }

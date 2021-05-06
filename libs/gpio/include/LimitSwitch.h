@@ -9,10 +9,11 @@ class LimitSwitch {
   bool isPressed();
 
   // Overloaded bool operator
-  bool operator bool();
+  operator bool();
 
- private:
   DigitalIn m_limitPin;
+  
+ private:
   // Active High is 1 and Active Low is 0
   bool m_ActiveHigh;
 };
