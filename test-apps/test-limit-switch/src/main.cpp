@@ -24,7 +24,7 @@ int main() {
     }
   }
   // test for NC pin
-  while (!hSwitch.m_limitPin.is_connected()) {
+  while (!hSwitch) {
      printf("Pin is not conneceted \n");
   }
 }
