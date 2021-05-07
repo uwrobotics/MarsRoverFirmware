@@ -1,4 +1,5 @@
 #pragma once
+#include "mbed.h"
 
 namespace Utility {
 
@@ -9,5 +10,6 @@ class WatchdogWrapper {
 
  private:
   static void petWatchdog(std::chrono::milliseconds *pet_ms);
+  static Thread pet_thread;
 };
 }  // namespace Utility

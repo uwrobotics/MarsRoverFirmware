@@ -1,20 +1,19 @@
 
 #include "WatchdogWrapper.h"
 
-#include <string>
-
 #include "Logger.h"
 #include "ResetReason.h"
 #include "mbed.h"
 
 namespace Utility {
 
+Thread WatchdogWrapper::pet_thread;
+
 void WatchdogWrapper::startWatchdog(std::chrono::milliseconds countdown_ms /*= 5000ms*/,
                                     std::chrono::milliseconds pet_ms /*= 1000ms*/) {
   uint32_t countdown_uint32 = countdown_ms.count();
   Watchdog &watchdog        = Watchdog::get_instance();
   watchdog.start(countdown_uint32);
-  Thread pet_thread;
   pet_thread.start(callback(WatchdogWrapper::petWatchdog, &pet_ms));
 }
 
