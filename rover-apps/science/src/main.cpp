@@ -38,7 +38,7 @@ int main() {
   can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
 
   while (true) {
-    // *** PROCESS CAN RX SIGNALS (TODO: NEED TO HANDLE SNA CASES) ***
+    // *** PROCESS CAN RX SIGNALS ***
 
     // Determine new geneva mechanism position
     switch (Centrifuge::manager.getActiveControlMode()) {
@@ -126,8 +126,18 @@ int main() {
                          moistureSensor.alternateRead());
 
     // TODO: REPORT FAULTS
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::SCIENCE_NUM_CANRX_FAULTS,
+                         can.getNumCANRXFaults());
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::SCIENCE_NUM_CANTX_FAULTS,
+                         can.getNumCANTXFaults());
 
-    // TODO: REPORT CAN DIAGNOSTICS
+    // Report diagnostics
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_DIAGNOSTICS,
+                         HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_NUM_STREAMED_MSGS_RECEIVED,
+                         can.getNumStreamedMsgsReceived());
+    can.setTXSignalValue(HWBRIDGE::CANID::SCIENCE_REPORT_DIAGNOSTICS,
+                         HWBRIDGE::CANSIGNAL::SCIENCE_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED,
+                         can.getNumOneShotMsgsReceived());
 
     ThisThread::sleep_for(1ms);
   }
@@ -140,14 +150,24 @@ static mbed_error_status_t scienceSetControlMode(void) {
   HWBRIDGE::CANSignalValue_t controlMode;
 
   // Set geneva mechanism control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE,
-                                  HWBRIDGE::CANSIGNAL::SCIENCE_GENEVA_CONTROL_MODE, controlMode) &&
-             Centrifuge::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::SCIENCE_GENEVA_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Centrifuge::manager.getActiveControlMode()) {
+      success &= Centrifuge::manager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   // Set elevator control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE,
-                                  HWBRIDGE::CANSIGNAL::SCIENCE_ELEVATOR_CONTROL_MODE, controlMode) &&
-             Elevator::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::SCIENCE_SET_CONTROL_MODE,
+                           HWBRIDGE::CANSIGNAL::SCIENCE_ELEVATOR_CONTROL_MODE, controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Elevator::manager.getActiveControlMode()) {
+      success &= Elevator::manager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   if (success) {
     // Send ACK message back
@@ -178,7 +198,7 @@ static mbed_error_status_t scienceSetJointPIDParams(void) {
   if (success) {
     Controller::ActuatorControllerManager* act;
 
-    switch ((HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES)jointID) {
+    switch (static_cast<HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES>(jointID)) {
       case HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES::SCIENCE_JOINT_PIDID_GENEVA:
         act = &Centrifuge::manager;
         break;
@@ -215,7 +235,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
   success &=
       can.getRXSignalValue(HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS, HWBRIDGE::CANSIGNAL::COMMON_CAN_BUS_ID, canBusID) &&
-      can.switchCANBus((HWBRIDGE::CANBUSID)canBusID);
+      can.switchCANBus(static_cast<HWBRIDGE::CANBUSID>(canBusID));
 
   if (success) {
     // Send ACK message back
@@ -227,7 +247,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
 static void sendACK(HWBRIDGE::SCIENCE_ACK_VALUES ackValue) {
   struct uwrt_mars_rover_can_science_report_ack_t ackMsgStruct = {
-      .science_ack = (uint8_t)ackValue,
+      .science_ack = static_cast<uint8_t>(ackValue),
   };
 
   HWBRIDGE::CANMsgData_t ackMsgData;

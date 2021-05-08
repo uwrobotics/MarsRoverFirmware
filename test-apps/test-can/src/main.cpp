@@ -18,13 +18,13 @@ int main() {
     // Read RX signal
     can.getRXSignalValue(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE1, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL1,
                          rxSignal1Value);
-    printf("RX debug signal value: %lu\r\n", (uint32_t)rxSignal1Value);
+    printf("RX debug signal value: %lu\r\n", static_cast<uint32_t>(rxSignal1Value));
 
     // Update TX signal
     can.setTXSignalValue(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL2,
                          txSignal1Value);
-    printf("TX test signal 2 value: %u\r\n", (uint16_t)txSignal1Value);
-    txSignal1Value = ((uint16_t)txSignal1Value + 1) % 8;
+    printf("TX test signal 2 value: %u\r\n", static_cast<uint16_t>(txSignal1Value));
+    txSignal1Value = (static_cast<uint16_t>(txSignal1Value) + 1) % 8;
 
     ThisThread::sleep_for(1000ms);
   }
@@ -36,7 +36,8 @@ mbed_error_status_t handle_test_msg_one_shot(void) {
 
   // Initialize msg struct
   struct uwrt_mars_rover_can_common_debug_message3_t msgStruct = {
-      .common_debug_signal3 = (uint8_t)HWBRIDGE::COMMON_DEBUG_SIGNAL3_VALUES::COMMON_DEBUG_SIGNAL3_DEBUG_VALUE_0,
+      .common_debug_signal3 =
+          static_cast<uint8_t>(HWBRIDGE::COMMON_DEBUG_SIGNAL3_VALUES::COMMON_DEBUG_SIGNAL3_DEBUG_VALUE_0),
   };
 
   // Pack msg struct contents into raw bytes

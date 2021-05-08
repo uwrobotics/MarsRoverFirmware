@@ -42,7 +42,7 @@ int main() {
   can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
 
   while (true) {
-    // *** PROCESS CAN RX SIGNALS (TODO: NEED TO HANDLE SNA CASES) ***
+    // *** PROCESS CAN RX SIGNALS ***
 
     // Determine new turntable set point
     switch (Turntable::manager.getActiveControlMode()) {
@@ -194,13 +194,13 @@ int main() {
     toolTipPosition = RAD_TO_DEG(toolTipPosition);
 
     // *** UPDATE JOINT SET POINTS ***
-    Turntable::manager.getActiveController()->setSetPoint((float)turntableSetPoint);
-    Shoulder::manager.getActiveController()->setSetPoint((float)shoulderSetPoint);
-    Elbow::manager.getActiveController()->setSetPoint((float)elbowSetPoint);
-    Wrist::leftManager.getActiveController()->setSetPoint((float)leftWristSetPoint);
-    Wrist::rightManager.getActiveController()->setSetPoint((float)rightWristSetPoint);
-    Claw::manager.getActiveController()->setSetPoint((float)clawSetPoint);
-    Tooltip::clawTooltipServo.setValue((float)toolTipPosition);
+    Turntable::manager.getActiveController()->setSetPoint(static_cast<float>(turntableSetPoint));
+    Shoulder::manager.getActiveController()->setSetPoint(static_cast<float>(shoulderSetPoint));
+    Elbow::manager.getActiveController()->setSetPoint(static_cast<float>(elbowSetPoint));
+    Wrist::leftManager.getActiveController()->setSetPoint(static_cast<float>(leftWristSetPoint));
+    Wrist::rightManager.getActiveController()->setSetPoint(static_cast<float>(rightWristSetPoint));
+    Claw::manager.getActiveController()->setSetPoint(static_cast<float>(clawSetPoint));
+    Tooltip::clawTooltipServo.setValue(static_cast<float>(toolTipPosition));
 
     // *** COMPUTE ACTUATOR CONTROLS ***
     Turntable::manager.getActiveController()->update();
@@ -261,8 +261,16 @@ int main() {
     // TODO: REPORT CURRENT READINGS
 
     // TODO: REPORT FAULTS
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::ARM_NUM_CANRX_FAULTS,
+                         can.getNumCANRXFaults());
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::ARM_NUM_CANTX_FAULTS,
+                         can.getNumCANTXFaults());
 
-    // TODO: REPORT CAN DIAGNOSTICS
+    // Report diagnostics
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_DIAGNOSTICS,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_NUM_STREAMED_MSGS_RECEIVED, can.getNumStreamedMsgsReceived());
+    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_DIAGNOSTICS,
+                         HWBRIDGE::CANSIGNAL::ARM_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED, can.getNumOneShotMsgsReceived());
 
     ThisThread::sleep_for(1ms);
   }
@@ -275,34 +283,64 @@ static mbed_error_status_t armSetControlMode(void) {
   HWBRIDGE::CANSignalValue_t controlMode;
 
   // Set turntable control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE,
-                                  HWBRIDGE::CANSIGNAL::ARM_TURNTABLE_CONTROL_MODE, controlMode) &&
-             Turntable::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_TURNTABLE_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Turntable::manager.getActiveControlMode()) {
+      success &= Turntable::manager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   // Set shoulder control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_SHOULDER_CONTROL_MODE,
-                                  controlMode) &&
-             Shoulder::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_SHOULDER_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Shoulder::manager.getActiveControlMode()) {
+      success &= Shoulder::manager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   // Set elbow control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_ELBOW_CONTROL_MODE,
-                                  controlMode) &&
-             Elbow::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_ELBOW_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Elbow::manager.getActiveControlMode()) {
+      success &= Elbow::manager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   // Set left wrist control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE,
-                                  HWBRIDGE::CANSIGNAL::ARM_LEFT_WRIST_CONTROL_MODE, controlMode) &&
-             Wrist::leftManager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_LEFT_WRIST_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Wrist::leftManager.getActiveControlMode()) {
+      success &= Wrist::leftManager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   // Set right wrist control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE,
-                                  HWBRIDGE::CANSIGNAL::ARM_RIGHT_WRIST_CONTROL_MODE, controlMode) &&
-             Wrist::rightManager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_RIGHT_WRIST_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Wrist::rightManager.getActiveControlMode()) {
+      success &= Wrist::rightManager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   // Set claw control mode
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_CLAW_CONTROL_MODE,
-                                  controlMode) &&
-             Claw::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::ARM_CLAW_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Claw::manager.getActiveControlMode()) {
+      success &= Claw::manager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   if (success) {
     // Send ACK message back
@@ -339,7 +377,7 @@ static mbed_error_status_t armSetJointPIDParams(void) {
         {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_RIGHT_WRIST, &Wrist::rightManager},
         {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_CLAW, &Claw::manager}};
 
-    auto act = lut.at((HWBRIDGE::ARM_JOINT_PIDID_VALUES)jointID).value_or(nullptr);
+    auto act = lut.at(static_cast<HWBRIDGE::ARM_JOINT_PIDID_VALUES>(jointID)).value_or(nullptr);
     if (!act) {
       return MBED_ERROR_INVALID_ARGUMENT;
     }
@@ -369,7 +407,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
   success &=
       can.getRXSignalValue(HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS, HWBRIDGE::CANSIGNAL::COMMON_CAN_BUS_ID, canBusID) &&
-      can.switchCANBus((HWBRIDGE::CANBUSID)canBusID);
+      can.switchCANBus(static_cast<HWBRIDGE::CANBUSID>(canBusID));
 
   if (success) {
     // Send ACK message back
@@ -381,7 +419,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
 static void sendACK(HWBRIDGE::ARM_ACK_VALUES ackValue) {
   struct uwrt_mars_rover_can_arm_report_ack_t ackMsgStruct = {
-      .arm_ack = (uint8_t)ackValue,
+      .arm_ack = static_cast<uint8_t>(ackValue),
   };
 
   HWBRIDGE::CANMsgData_t ackMsgData;

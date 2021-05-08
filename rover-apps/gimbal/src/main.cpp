@@ -33,7 +33,7 @@ int main() {
   can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
 
   while (true) {
-    // *** PROCESS CAN RX SIGNALS (TODO: NEED TO HANDLE SNA CASES) ***
+    // *** PROCESS CAN RX SIGNALS ***
 
     // Determine new pan position
     switch (Pan::manager.getActiveControlMode()) {
@@ -75,8 +75,18 @@ int main() {
                          DEG_TO_RAD(Pan::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 
     // TODO: REPORT FAULTS
+    can.setTXSignalValue(HWBRIDGE::CANID::GIMBAL_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::GIMBAL_NUM_CANRX_FAULTS,
+                         can.getNumCANRXFaults());
+    can.setTXSignalValue(HWBRIDGE::CANID::GIMBAL_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::GIMBAL_NUM_CANTX_FAULTS,
+                         can.getNumCANTXFaults());
 
-    // TODO: REPORT CAN DIAGNOSTICS
+    // Report diagnostics
+    can.setTXSignalValue(HWBRIDGE::CANID::GIMBAL_REPORT_DIAGNOSTICS,
+                         HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_STREAMED_MSGS_RECEIVED,
+                         can.getNumStreamedMsgsReceived());
+    can.setTXSignalValue(HWBRIDGE::CANID::GIMBAL_REPORT_DIAGNOSTICS,
+                         HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED,
+                         can.getNumOneShotMsgsReceived());
 
     ThisThread::sleep_for(1ms);
   }
@@ -88,9 +98,14 @@ static mbed_error_status_t gimbalSetControlMode(void) {
   bool success = true;
   HWBRIDGE::CANSignalValue_t controlMode;
 
-  success &= can.getRXSignalValue(HWBRIDGE::CANID::GIMBAL_SET_CONTROL_MODE,
-                                  HWBRIDGE::CANSIGNAL::GIMBAL_PAN_CONTROL_MODE, controlMode) &&
-             Pan::manager.switchControlMode((HWBRIDGE::CONTROL::Mode)controlMode);
+  if (can.getRXSignalValue(HWBRIDGE::CANID::GIMBAL_SET_CONTROL_MODE, HWBRIDGE::CANSIGNAL::GIMBAL_PAN_CONTROL_MODE,
+                           controlMode)) {
+    if (static_cast<HWBRIDGE::CONTROL::Mode>(controlMode) != Pan::manager.getActiveControlMode()) {
+      success &= Pan::manager.switchControlMode(static_cast<HWBRIDGE::CONTROL::Mode>(controlMode));
+    }
+  } else {
+    success = false;
+  }
 
   if (success) {
     // Send ACK message back
@@ -118,7 +133,8 @@ static mbed_error_status_t gimbalSetJointPIDParams(void) {
   success &= can.getRXSignalValue(HWBRIDGE::CANID::GIMBAL_SET_JOINT_PID_PARAMS,
                                   HWBRIDGE::CANSIGNAL::GIMBAL_JOINT_PID_DEADZONE, deadzone);
 
-  if ((HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES)jointID != HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES::GIMBAL_JOINT_PIDID_PAN) {
+  if (static_cast<HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES>(jointID) !=
+      HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES::GIMBAL_JOINT_PIDID_PAN) {
     return MBED_ERROR_INVALID_ARGUMENT;
   }
 
@@ -148,7 +164,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
   success &=
       can.getRXSignalValue(HWBRIDGE::CANID::COMMON_SWITCH_CAN_BUS, HWBRIDGE::CANSIGNAL::COMMON_CAN_BUS_ID, canBusID) &&
-      can.switchCANBus((HWBRIDGE::CANBUSID)canBusID);
+      can.switchCANBus(static_cast<HWBRIDGE::CANBUSID>(canBusID));
 
   if (success) {
     // Send ACK message back
@@ -160,7 +176,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
 static void sendACK(HWBRIDGE::GIMBAL_ACK_VALUES ackValue) {
   struct uwrt_mars_rover_can_gimbal_report_ack_t ackMsgStruct = {
-      .gimbal_ack = (uint8_t)ackValue,
+      .gimbal_ack = static_cast<uint8_t>(ackValue),
   };
 
   HWBRIDGE::CANMsgData_t ackMsgData;
