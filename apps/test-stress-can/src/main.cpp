@@ -1,4 +1,4 @@
-#include "CANConfigPDB.h"  // Include the header for the board you want to simulate
+#include "CANConfigArm.h"  // Include the header for the board you want to simulate
 #include "Logger.h"
 
 CANInterface can(CANConfig::config);

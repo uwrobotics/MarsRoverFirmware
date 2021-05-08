@@ -171,7 +171,7 @@ static mbed_error_status_t scienceSetControlMode(void) {
 
   if (success) {
     // Send ACK message back
-    sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_SCIENCE_SET_CONTROL_MODE_ACK);
+    sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_SET_CONTROL_MODE_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
@@ -199,11 +199,11 @@ static mbed_error_status_t scienceSetJointPIDParams(void) {
     Controller::ActuatorControllerManager* act;
 
     switch (static_cast<HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES>(jointID)) {
-      case HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES::SCIENCE_JOINT_PIDID_GENEVA:
+      case HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES::GENEVA:
         act = &Centrifuge::manager;
         break;
 
-      case HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES::SCIENCE_JOINT_PIDID_ELEVATOR:
+      case HWBRIDGE::SCIENCE_JOINT_PIDID_VALUES::ELEVATOR:
         act = &Elevator::manager;
         break;
 
@@ -219,7 +219,7 @@ static mbed_error_status_t scienceSetJointPIDParams(void) {
       pid.value().get().updateDeadzone(deadzone);
 
       // Send ACK message back
-      sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_SCIENCE_SET_JOINT_PID_PARAMS_ACK);
+      sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_SET_JOINT_PID_PARAMS_ACK);
     } else {
       // PID controller doesn't exist!
       success = false;
@@ -239,7 +239,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
   if (success) {
     // Send ACK message back
-    sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::SCIENCE_ACK_CAN_BUS_SWITCH_ACK);
+    sendACK(HWBRIDGE::SCIENCE_ACK_VALUES::CAN_BUS_SWITCH_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;

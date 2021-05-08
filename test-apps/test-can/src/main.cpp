@@ -36,8 +36,7 @@ mbed_error_status_t handle_test_msg_one_shot(void) {
 
   // Initialize msg struct
   struct uwrt_mars_rover_can_common_debug_message3_t msgStruct = {
-      .common_debug_signal3 =
-          static_cast<uint8_t>(HWBRIDGE::COMMON_DEBUG_SIGNAL3_VALUES::COMMON_DEBUG_SIGNAL3_DEBUG_VALUE_0),
+      .common_debug_signal3 = static_cast<uint8_t>(HWBRIDGE::COMMON_DEBUG_SIGNAL3_VALUES::DEBUG_VALUE_0),
   };
 
   // Pack msg struct contents into raw bytes

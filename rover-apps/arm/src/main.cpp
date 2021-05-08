@@ -344,7 +344,7 @@ static mbed_error_status_t armSetControlMode(void) {
 
   if (success) {
     // Send ACK message back
-    sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_ACK_ARM_SET_CONTROL_MODE_ACK);
+    sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_SET_CONTROL_MODE_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
@@ -369,13 +369,13 @@ static mbed_error_status_t armSetJointPIDParams(void) {
                                   HWBRIDGE::CANSIGNAL::ARM_JOINT_PID_DEADZONE, deadzone);
 
   if (success) {
-    const Utility::LookupTable<HWBRIDGE::ARM_JOINT_PIDID_VALUES, Controller::ActuatorControllerManager*> lut = {
-        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_TURNTABLE, &Turntable::manager},
-        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_SHOULDER, &Shoulder::manager},
-        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_ELBOW, &Elbow::manager},
-        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_LEFT_WRIST, &Wrist::leftManager},
-        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_RIGHT_WRIST, &Wrist::rightManager},
-        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ARM_JOINT_PIDID_CLAW, &Claw::manager}};
+    const Utility::LookupTable<HWBRIDGE::ARM_JOINT_PIDID_VALUES, Controller::ActuatorControllerManager *> lut = {
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::TURNTABLE, &Turntable::manager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::SHOULDER, &Shoulder::manager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::ELBOW, &Elbow::manager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::LEFT_WRIST, &Wrist::leftManager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::RIGHT_WRIST, &Wrist::rightManager},
+        {HWBRIDGE::ARM_JOINT_PIDID_VALUES::CLAW, &Claw::manager}};
 
     auto act = lut.at(static_cast<HWBRIDGE::ARM_JOINT_PIDID_VALUES>(jointID)).value_or(nullptr);
     if (!act) {
@@ -390,10 +390,62 @@ static mbed_error_status_t armSetJointPIDParams(void) {
       pid.value().get().updateDeadzone(deadzone);
 
       // Send ACK message back
-      sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_ACK_ARM_SET_JOINT_PID_PARAMS_ACK);
+      sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_SET_JOINT_PID_PARAMS_ACK);
 
     } else {
       // PID controller doesn't exist!
+      success = false;
+    }
+  }
+
+  return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
+}
+
+static mbed_error_status_t armSetSafetyCheck(void) {
+  bool success = true;
+  HWBRIDGE::CANSignalValue_t jointID;
+  HWBRIDGE::CANSignalValue_t safetyCheck;
+
+  // Get joint ID to apply safety checks to
+  success = can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_SAFETY_CHECK,
+                                 HWBRIDGE::CANSIGNAL::ARM_SAFETY_CHECK_JOINT_ID, jointID);
+
+  if (success) {
+    const Utility::LookupTable<HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES, Controller::ActuatorControllerManager *>
+        lut = {{HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES::TURNTABLE, &Turntable::manager},
+               {HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES::SHOULDER, &Shoulder::manager},
+               {HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES::ELBOW, &Elbow::manager},
+               {HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES::LEFT_WRIST, &Wrist::leftManager},
+               {HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES::RIGHT_WRIST, &Wrist::rightManager},
+               {HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES::CLAW, &Claw::manager}};
+
+    auto act = lut.at(static_cast<HWBRIDGE::ARM_SAFETY_CHECK_JOINT_ID_VALUES>(jointID)).value_or(nullptr);
+    if (!act) {
+      return MBED_ERROR_INVALID_ARGUMENT;
+    }
+    auto temp = act->getActiveController();
+
+    // Current check
+    if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_SAFETY_CHECK, HWBRIDGE::CANSIGNAL::ARM_JOINT_CURRENT_CHECK,
+                             safetyCheck)) {
+      static_cast<bool>(safetyCheck) ? temp->activateCurrentChecks() : temp->deactivateCurrentChecks();
+    } else {
+      success = false;
+    }
+
+    // Angular velocity check
+    if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_SAFETY_CHECK,
+                             HWBRIDGE::CANSIGNAL::ARM_JOINT_ANGULAR_VELOCITY_CHECK, safetyCheck)) {
+      static_cast<bool>(safetyCheck) ? temp->activateDegPerSecChecks() : temp->deactivateDegPerSecChecks();
+    } else {
+      success = false;
+    }
+
+    // Limit switch check
+    if (can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_SAFETY_CHECK,
+                             HWBRIDGE::CANSIGNAL::ARM_JOINT_LIMIT_SWITCH_CHECK, safetyCheck)) {
+      static_cast<bool>(safetyCheck) ? temp->activateLimitSwitchChecks() : temp->deactivateLimitSwitchChecks();
+    } else {
       success = false;
     }
   }
@@ -411,7 +463,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
   if (success) {
     // Send ACK message back
-    sendACK(HWBRIDGE::ARM_ACK_VALUES::ARM_ACK_CAN_BUS_SWITCH_ACK);
+    sendACK(HWBRIDGE::ARM_ACK_VALUES::CAN_BUS_SWITCH_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;

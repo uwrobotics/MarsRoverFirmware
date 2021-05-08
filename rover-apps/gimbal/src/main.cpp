@@ -109,7 +109,7 @@ static mbed_error_status_t gimbalSetControlMode(void) {
 
   if (success) {
     // Send ACK message back
-    sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_ACK_GIMBAL_SET_CONTROL_MODE_ACK);
+    sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_SET_CONTROL_MODE_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
@@ -133,8 +133,7 @@ static mbed_error_status_t gimbalSetJointPIDParams(void) {
   success &= can.getRXSignalValue(HWBRIDGE::CANID::GIMBAL_SET_JOINT_PID_PARAMS,
                                   HWBRIDGE::CANSIGNAL::GIMBAL_JOINT_PID_DEADZONE, deadzone);
 
-  if (static_cast<HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES>(jointID) !=
-      HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES::GIMBAL_JOINT_PIDID_PAN) {
+  if (static_cast<HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES>(jointID) != HWBRIDGE::GIMBAL_JOINT_PIDID_VALUES::PAN) {
     return MBED_ERROR_INVALID_ARGUMENT;
   }
 
@@ -147,7 +146,7 @@ static mbed_error_status_t gimbalSetJointPIDParams(void) {
       pid.value().get().updateDeadzone(deadzone);
 
       // Send ACK message back
-      sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_ACK_GIMBAL_SET_JOINT_PID_PARAMS_ACK);
+      sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_SET_JOINT_PID_PARAMS_ACK);
 
     } else {
       // PID controller doesn't exist!
@@ -168,7 +167,7 @@ static mbed_error_status_t commonSwitchCANBus(void) {
 
   if (success) {
     // Send ACK message back
-    sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::GIMBAL_ACK_CAN_BUS_SWITCH_ACK);
+    sendACK(HWBRIDGE::GIMBAL_ACK_VALUES::CAN_BUS_SWITCH_ACK);
   }
 
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
