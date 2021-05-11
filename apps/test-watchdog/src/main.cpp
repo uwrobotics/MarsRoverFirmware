@@ -1,4 +1,3 @@
-
 #include "WatchdogWrapper.h"
 #include "mbed.h"
 
@@ -8,6 +7,6 @@ std::chrono::milliseconds pet_ms       = 200ms;
 int main() {
   Utility::WatchdogWrapper::logResetReason();
   Utility::WatchdogWrapper::startWatchdog(countdown_ms, pet_ms);
-  ThisThread::sleep_for(1000ms);
+  ThisThread::sleep_for(2000ms);
   MBED_ASSERT(false);
 }

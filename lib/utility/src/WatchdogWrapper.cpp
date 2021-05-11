@@ -1,4 +1,3 @@
-
 #include "WatchdogWrapper.h"
 
 #include "Logger.h"
@@ -21,7 +20,9 @@ void WatchdogWrapper::logResetReason() {
   const reset_reason_t reason = ResetReason::get();
   if (reason == RESET_REASON_WATCHDOG) {
     time_t seconds = time(NULL);
-    Utility::logger << "Reset Reason: Watchog Timer - " << ctime(&seconds) << "\r\n";
+    // Ideally we would want an accurate time and date for the timestamp, but without a reference point
+    // the best we can do is the time since the microcontroller was powered on
+    Utility::logger << "Reset Reason: Watchog Timer - Timestamp: " << ctime(&seconds) << " seconds since power on\r\n";
   }
 }
 
