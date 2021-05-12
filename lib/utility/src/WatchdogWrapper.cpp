@@ -22,7 +22,7 @@ void WatchdogWrapper::logResetReason() {
     time_t seconds = time(NULL);
     // Ideally we would want an accurate time and date for the timestamp, but without a reference point
     // the best we can do is the time since the microcontroller was powered on
-    Utility::logger << "Reset Reason: Watchog Timer - Timestamp: " << ctime(&seconds) << " seconds since power on\r\n";
+    Utility::logger << "Reset Reason: Watchog Timer - Timestamp: " << seconds << " seconds since power on\r\n";
   }
 }
 
