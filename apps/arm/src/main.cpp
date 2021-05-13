@@ -74,9 +74,43 @@ static mbed_error_status_t setMotionData(CANMsg &msg) {
   return MBED_SUCCESS;
 }
 
-// TODO: Add CAN handler for enabling/disabling current checks.
-// TODO: Add CAN handler for enabling/disabling rpm checks
-// TODO: Add CAN handler for enabling/disabling current checks
+static mbed_error_status_t setSafetyCheck(CANMsg &msg) {
+  HWBRIDGE::CONTROL::SAFETY::SafetyCheckPayload data;
+  msg.getPayload(data);
+
+  const Utility::LookupTable<HWBRIDGE::ARM::ActuatorID, Controller::ActuatorControllerManager *> lut = {
+      {HWBRIDGE::ARM::ActuatorID::TURNTABLE, &Turntable::manager},
+      {HWBRIDGE::ARM::ActuatorID::SHOULDER, &Shoulder::manager},
+      {HWBRIDGE::ARM::ActuatorID::ELBOW, &Elbow::manager},
+      {HWBRIDGE::ARM::ActuatorID::WRISTLEFT, &Wrist::leftManager},
+      {HWBRIDGE::ARM::ActuatorID::WRISTRIGHT, &Wrist::rightManager},
+      {HWBRIDGE::ARM::ActuatorID::CLAW, &Claw::manager}};
+
+  auto act = lut.at(data.actuatorID).value_or(nullptr);
+  if (!act) {
+    return MBED_ERROR_INVALID_ARGUMENT;
+  }
+  auto temp = act->getActiveController();
+
+  switch (msg.getID()) {
+    case HWBRIDGE::CANID::SET_JOINT_CURRENT_CHECK:
+      data.check ? temp->activateCurrentChecks() : temp->deactivateCurrentChecks();
+      break;
+
+    case HWBRIDGE::CANID::SET_JOINT_DEG_PER_SEC_CHECK:
+      data.check ? temp->activateDegPerSecChecks() : temp->deactivateDegPerSecChecks();
+      break;
+
+    case HWBRIDGE::CANID::SET_JOINT_LIMIT_SWITCH:
+      data.check ? temp->activateLimitSwitchChecks() : temp->deactivateLimitSwitchChecks();
+      break;
+
+    default:
+      return MBED_ERROR_INVALID_ARGUMENT;
+  }
+
+  return MBED_SUCCESS;
+}
 
 static mbed_error_status_t setPIDParameter(CANMsg &msg) {
   HWBRIDGE::CONTROL::PID::TuningApiPayload data;
@@ -150,6 +184,10 @@ const static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::SET_TUR
                                                        {HWBRIDGE::CANID::SET_RIGHT_WRIST_MOTIONDATA, &setMotionData},
                                                        {HWBRIDGE::CANID::SET_CLAW_MOTIONDATA, &setMotionData},
                                                        {HWBRIDGE::CANID::SET_TOOL_TIP_MOTIONDATA, &setMotionData},
+
+                                                       {HWBRIDGE::CANID::SET_JOINT_CURRENT_CHECK, &setSafetyCheck},
+                                                       {HWBRIDGE::CANID::SET_JOINT_LIMIT_SWITCH, &setSafetyCheck},
+                                                       {HWBRIDGE::CANID::SET_JOINT_DEG_PER_SEC_CHECK, &setSafetyCheck},
 
                                                        {HWBRIDGE::CANID::SET_JOINT_PID_DEADZONE, &setPIDParameter},
                                                        {HWBRIDGE::CANID::SET_JOINT_PID_P, &setPIDParameter},
