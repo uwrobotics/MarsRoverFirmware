@@ -1,6 +1,6 @@
 #pragma once
 
-namespace GPIO {
+namespace GPIO {  
 
 class LimitSwitch {
  public:
