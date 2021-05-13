@@ -1,11 +1,14 @@
 #include "ActuatorController.h"
+#include "units.h"
 
 using namespace Controller;
+using namespace units::current;
+using namespace units::angular_velocity;
 
 ActuatorController::ActuatorController(
     Actuator::Actuator &actuator, Encoder::Encoder &encoder,
-    const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor, float maxDegPerSec,
-    float maxCurrent, PinName lowerLimit, PinName upperLimit, bool ignoreDegPerSecChecks, bool ignoreCurrentChecks,
+    const std::optional<std::reference_wrapper<Sensor::CurrentSensor> const> &currentSensor, degrees_per_second_t maxDegPerSec,
+    ampere_t maxCurrent, PinName lowerLimit, PinName upperLimit, bool ignoreDegPerSecChecks, bool ignoreCurrentChecks,
     bool ignoreLimitSwitchChecks)
     : m_ignoreDegPerSecChecks(ignoreDegPerSecChecks),
       m_ignoreCurrentChecks(ignoreCurrentChecks),

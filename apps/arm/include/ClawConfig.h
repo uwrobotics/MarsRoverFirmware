@@ -12,6 +12,9 @@
 #include "Position.h"
 #include "Velocity.h"
 #include "hw_bridge.h"
+#include "units.h"
+
+using namespace units::current;
 
 namespace Claw {
 
@@ -28,7 +31,7 @@ static PID::PID velPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID posPID({1, 0, 0, -1, 1, 0, false, false});
 static PID::PID curPID({1, 0, 0, -1, 1, 0, false, false});
 
-constexpr float POLOLUMAXCURRENT = 3;
+constexpr ampere_t POLOLUMAXCURRENT = ampere_t(3);
 constexpr float POLOLUMADEGPERSEC =
     std::numeric_limits<float>::infinity();  // TODO: figure out MAXDEGPERSEC of motors (1680?);
 

@@ -23,5 +23,6 @@ target_link_libraries(arm.${TARGET}-board.elf
         CurrentSensor
 #Other
         uwrt-mars-rover-hw-bridge
-        Logger)
+        Logger
+        units)
 target_set_firmware_properties(arm.${TARGET}-board.elf)

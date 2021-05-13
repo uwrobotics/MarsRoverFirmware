@@ -154,6 +154,7 @@ add_subdirectory(targets/${TARGET})
 
 # Add HW Bridge
 add_subdirectory(uwrt-mars-rover-hw-bridge)
+add_subdirectory(units)
 
 # Include Rover App CMakeLists
 add_subdirectory(apps/arm)
