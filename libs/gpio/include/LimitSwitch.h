@@ -1,6 +1,6 @@
 #pragma once
 
-namespace GPIO {  
+namespace GPIO {
 
 class LimitSwitch {
  public:
@@ -12,7 +12,7 @@ class LimitSwitch {
   operator bool();
 
   DigitalIn m_limitPin;
-  
+
  private:
   // Active High is 1 and Active Low is 0
   bool m_ActiveHigh;
