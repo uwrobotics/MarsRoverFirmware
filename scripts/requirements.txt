@@ -1,2 +1,4 @@
+-r ../mbed-os/requirements.txt
+
 PyYAML~=5.1
 mbed-tools~=7.3.3
