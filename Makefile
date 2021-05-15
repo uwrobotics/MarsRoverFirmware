@@ -21,15 +21,15 @@ endif
 
 # PATHS
 MAKEFILE_DIR  := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-APPS_DIR      := $(abspath $(MAKEFILE_DIR)/apps)
-TEST_APPS_DIR := $(abspath $(MAKEFILE_DIR)/test-apps)
+ROVER_APPS_DIR      := $(abspath $(MAKEFILE_DIR)/rover-apps)
+TEST_ROVER_APPS_DIR := $(abspath $(MAKEFILE_DIR)/test-apps)
 TARGETS_DIR   := $(abspath $(MAKEFILE_DIR)/targets)
 
 CUSTOM_TARGETS_JSON := $(abspath $(TARGETS_DIR)/custom_targets.json)
 
 # APP and TARGET lists
-APPS_LIST := $(sort $(patsubst $(APPS_DIR)/%/,%, $(wildcard $(APPS_DIR)/*/)))
-APPS_LIST += $(sort $(patsubst $(TEST_APPS_DIR)/%/,%, $(wildcard $(TEST_APPS_DIR)/*/)))
+APPS_LIST := $(sort $(patsubst $(ROVER_APPS_DIR)/%/,%, $(wildcard $(ROVER_APPS_DIR)/*/)))
+APPS_LIST += $(sort $(patsubst $(TEST_ROVER_APPS_DIR)/%/,%, $(wildcard $(TEST_ROVER_APPS_DIR)/*/)))
 
 TARGETS_LIST := $(sort $(patsubst $(TARGETS_DIR)/TARGET_%/,%, $(wildcard $(TARGETS_DIR)/TARGET_*/)))
 
@@ -41,7 +41,7 @@ ifeq (,$(findstring $(APP), $(APPS_LIST)))
 ifeq (,$(APP))
 	$(warning APP is not set)
 else
-	$(warning $(APP) is not an app within the $(APPS_DIR) folder)
+	$(warning $(APP) is not an app within the $(ROVER_APPS_DIR) folder)
 endif
 
 	$(warning Using APP=app_name, select one of the following detected apps:)
