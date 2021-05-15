@@ -71,7 +71,7 @@ jobs:
       - name: Install Mbed-Tools
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install mbed-tools
+          python3 -m pip install -r scripts/requirements.txt
 
       - name: Print Toolchain Versions
         run: |
