@@ -87,3 +87,9 @@ test-pwmin:
   #  - SCIENCE_REV2
   - UWRT_NUCLEO
 
+
+test-quadrature64cpr:
+  - UWRT_NUCLEO
+
+test-watchdog:
+  - UWRT_NUCLEO

@@ -10,11 +10,9 @@ updates:
       separator: "/"
     assignees:
       - "wmmc88"
-      - "younesr1"
       - "cindyli-13"
     reviewers:
       - "wmmc88"
-      - "younesr1"
       - "cindyli-13"
 
   - package-ecosystem: "gitsubmodule"
@@ -25,11 +23,9 @@ updates:
       separator: "/"
     assignees:
       - "wmmc88"
-      - "younesr1"
       - "cindyli-13"
     reviewers:
       - "wmmc88"
-      - "younesr1"
       - "cindyli-13"
 
   - package-ecosystem: "pip"
@@ -40,10 +36,8 @@ updates:
       separator: "/"
     assignees:
       - "wmmc88"
-      - "younesr1"
       - "cindyli-13"
     reviewers:
       - "wmmc88"
-      - "younesr1"
       - "cindyli-13"
 

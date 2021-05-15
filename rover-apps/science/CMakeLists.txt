@@ -15,7 +15,7 @@ target_link_libraries(science
         #Encoders
         EncoderAEAT6012
         EncoderMAE3
-        EncoderPololu37D
+        Quadrature64CPR
         #CAN
         CANBus
         CANMsg
