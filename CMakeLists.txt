@@ -15,7 +15,7 @@ set(MBED_CONFIG_PATH ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "")
 # For convenience, define useful variables
 set(TARGETS_DIR ${ROOT_DIR}/targets)
 set(LIBS_DIR ${ROOT_DIR}/libs)
-set(APPS_DIR ${ROOT_DIR}/apps)
+set(ROVER_APPS_DIR ${ROOT_DIR}/rover-apps)
 set(TEST_APPS_DIR ${ROOT_DIR}/test-apps)
 
 # Prevent in-source builds
@@ -88,11 +88,11 @@ function(add_app_subdirectory APP_SUBDIRECTORY)
 endfunction()
 
 ## Include Rover Apps
-add_app_subdirectory(${APPS_DIR}/arm)
-add_app_subdirectory(${APPS_DIR}/gamepad)
-add_app_subdirectory(${APPS_DIR}/gimbal)
-add_app_subdirectory(${APPS_DIR}/pdb)
-add_app_subdirectory(${APPS_DIR}/science)
+add_app_subdirectory(${ROVER_APPS_DIR}/arm)
+add_app_subdirectory(${ROVER_APPS_DIR}/gamepad)
+add_app_subdirectory(${ROVER_APPS_DIR}/gimbal)
+add_app_subdirectory(${ROVER_APPS_DIR}/pdb)
+add_app_subdirectory(${ROVER_APPS_DIR}/science)
 
 # Include Test Apps
 add_app_subdirectory(${TEST_APPS_DIR}/test-actuator-controller)
