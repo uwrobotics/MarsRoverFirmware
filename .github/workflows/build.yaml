@@ -68,11 +68,6 @@ jobs:
       - name: Install CMake & Ninja (auto-caches)
         uses: lukka/get-cmake@latest
 
-      - name: Install Mbed-Tools
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r scripts/requirements.txt
-
       - name: Print Toolchain Versions
         run: |
           echo "Make Version:"
