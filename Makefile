@@ -7,33 +7,58 @@
 # Phony Targets
 .PHONY := build verify_app_target_tuple_config verify_app_target_tuple_is_specified clean all
 
-# Environment Options
-UWRT_FIRMWARE_MAX_JOBS ?= $(nproc)
+# Options
+CLEAN ?=
+BUILD_PROFILE ?= develop
+
+MBED_TOOLS_FLAGS :=
+ifneq (,$(CLEAN))
+	MBED_TOOLS_FLAGS += --clean
+endif
+ifneq (,$(BUILD_PROFILE))
+	MBED_TOOLS_FLAGS += --profile $(BUILD_PROFILE)
+endif
 
 # PATHS
-MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-TARGETS_DIR  := $(abspath $(MAKEFILE_DIR)/targets)
-APPS_DIR     := $(abspath $(MAKEFILE_DIR)/apps)
+MAKEFILE_DIR  := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+ROVER_APPS_DIR      := $(abspath $(MAKEFILE_DIR)/rover-apps)
+TEST_ROVER_APPS_DIR := $(abspath $(MAKEFILE_DIR)/test-apps)
+TARGETS_DIR   := $(abspath $(MAKEFILE_DIR)/targets)
 
-TARGETS_LIST := $(sort $(patsubst $(TARGETS_DIR)/%/,%, $(wildcard $(TARGETS_DIR)/*/)))
-APPS_LIST    := $(sort $(patsubst $(APPS_DIR)/%/,%, $(wildcard $(APPS_DIR)/*/)))
+CUSTOM_TARGETS_JSON := $(abspath $(TARGETS_DIR)/custom_targets.json)
+
+# APP and TARGET lists
+APPS_LIST := $(sort $(patsubst $(ROVER_APPS_DIR)/%/,%, $(wildcard $(ROVER_APPS_DIR)/*/)))
+APPS_LIST += $(sort $(patsubst $(TEST_ROVER_APPS_DIR)/%/,%, $(wildcard $(TEST_ROVER_APPS_DIR)/*/)))
+
+TARGETS_LIST := $(sort $(patsubst $(TARGETS_DIR)/TARGET_%/,%, $(wildcard $(TARGETS_DIR)/TARGET_*/)))
 
 NUMBER_OF_SUPPORTED_CONFIGS := $(shell python3 scripts/build_configurations_helper.py count-supported-configs)
 
 verify_app_target_tuple_is_specified:
-ifeq (,$(findstring $(TARGET), $(TARGETS_LIST)))
-	$(info)
-	$(info TARGET is not set or $(TARGET) is not a target within the $(TARGETS_DIR) folder)
-	$(info)
-	$(info Using TARGET=board_name, select one of the following detected board targets:)
-	$(foreach TARGET_NAME,$(TARGETS_LIST),$(info $(TARGET_NAME)))
+ifeq (,$(findstring $(APP), $(APPS_LIST)))
+
+ifeq (,$(APP))
+	$(warning APP is not set)
+else
+	$(warning $(APP) is not an app within the $(ROVER_APPS_DIR) folder)
+endif
+
+	$(warning Using APP=app_name, select one of the following detected apps:)
+	$(foreach APP_NAME,$(APPS_LIST),$(warning $(APP_NAME)))
 	$(error )
 endif
-ifeq (,$(findstring $(APP), $(APPS_LIST)))
-	$(info APP is not set or $(APP) is not a target within the $(APPS_DIR) folder)
-	$(info )
-	$(info Using APP=app_name, select one of the following detected apps:)
-	$(foreach APP_NAME,$(APPS_LIST),$(info $(APP_NAME)))
+
+ifeq (,$(findstring $(TARGET), $(TARGETS_LIST)))
+
+ifeq (,$(TARGET))
+	$(warning TARGET is not set)
+else
+	$(warning $(TARGET) is not a target within the $(TARGETS_DIR) folder)
+endif
+
+	$(warning Using TARGET=board_name, select one of the following detected board targets:)
+	$(foreach TARGET_NAME,$(TARGETS_LIST),$(warning $(TARGET_NAME)))
 	$(error )
 endif
 
@@ -50,23 +75,22 @@ verify_app_target_tuple_config: verify_app_target_tuple_is_specified
 	fi
 
 build: verify_app_target_tuple_config
-	@mkdir -p build-$(TARGET)-board
-	@cmake -S $(MAKEFILE_DIR) -B build-$(TARGET)-board -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$(MAKEFILE_DIR)/toolchain.cmake -DAPP=$(APP) -DTARGET=$(TARGET)
-	@echo Building $(APP) app for $(TARGET) board with max $(UWRT_FIRMWARE_MAX_JOBS) concurrent jobs
-	@cmake --build build-$(TARGET)-board --target $(APP).$(TARGET)-board.elf --parallel $(UWRT_FIRMWARE_MAX_JOBS)
-
-
+	@echo Building $(APP) app for $(TARGET) board with $(BUILD_PROFILE) profile
+	APP=$(APP); mbed-tools compile --toolchain GCC_ARM --mbed-target $(TARGET) --custom-targets-json $(CUSTOM_TARGETS_JSON) $(MBED_TOOLS_FLAGS)
 
 all:
-	@echo Building all $(NUMBER_OF_SUPPORTED_CONFIGS) supported app/target configs with max $(UWRT_FIRMWARE_MAX_JOBS) concurrent jobs
-	@number=0 ; while [ $$number -lt $(NUMBER_OF_SUPPORTED_CONFIGS) ] ; do \
-		i=$$(python3 scripts/build_configurations_helper.py print-supported-config $$number) ; \
-		make $$i ; \
-		number=$$((number+1)) ; \
-	done
-
+	@echo Building all $(NUMBER_OF_SUPPORTED_CONFIGS) supported app/target configs
+	@n=0; \
+	success=0; \
+	while [ $${n} -lt $(NUMBER_OF_SUPPORTED_CONFIGS) ] && [ $${success} -eq 0 ]; do \
+		make $$(python3 scripts/build_configurations_helper.py print-supported-config $${n}); \
+		success=$${?}; \
+		n=`expr $$n + 1`; \
+	done; \
+	exit $${success};
+	@echo Successfully built all $(NUMBER_OF_SUPPORTED_CONFIGS) supported app/target configs
 
 clean:
 	@echo "Deleting all build files"
-	rm -rf build-*-board
+	rm -rf cmake_build
 

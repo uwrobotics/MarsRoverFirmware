@@ -97,9 +97,9 @@ class StreamManager:
 
         """
         if (line.startswith(b'type target_trace data ') and
-            line.endswith(b'\r\n')
-            ):
-            itm_bytes = int(line[23:-2], 16).to_bytes(len(line[23:-2])//2,
+                line.endswith(b'\r\n')
+        ):
+            itm_bytes = int(line[23:-2], 16).to_bytes(len(line[23:-2]) // 2,
                                                       byteorder='big')
             self.parse_itm_bytes(itm_bytes)
 
@@ -121,7 +121,7 @@ class StreamManager:
                 bstring = bstring[1:]
                 continue
 
-            payload_size = 2**(header & 0x03 - 1)
+            payload_size = 2 ** (header & 0x03 - 1)
             stream_id = header >> 3
 
             if payload_size >= len(bstring):
@@ -129,10 +129,10 @@ class StreamManager:
                 return
 
             if stream_id in self.streams:
-                s = bstring[1:payload_size+1].decode('ascii')
+                s = bstring[1:payload_size + 1].decode('ascii')
                 self.streams[stream_id].add_chars(s)
 
-            bstring = bstring[payload_size+1:]
+            bstring = bstring[payload_size + 1:]
 
 
 #### Main program ####

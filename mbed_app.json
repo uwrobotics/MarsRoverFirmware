@@ -1,0 +1,10 @@
+{
+    "target_overrides": {
+        "*": {
+            "platform.default-serial-baud-rate": 115200,
+            "platform.stdio-baud-rate": 115200,
+            "platform.stdio-buffered-serial": true,
+            "target.default-adc-vref": "3.3f"
+        }
+    }
+}
