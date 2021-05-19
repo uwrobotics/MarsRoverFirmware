@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# This script maintains compatibility with Python 3.6.9 (default for Ubuntu 18.04)
 import argparse
 import json
 import yaml
@@ -11,7 +10,7 @@ def print_supported_configs_json(args):
 
         build_configs_dict = {'env': []}
         for app in build_configs_yaml:
-            if build_configs_yaml[app]: # Allow app with no supported board targets
+            if build_configs_yaml[app]:  # Allow app with no supported board targets
                 for target in build_configs_yaml[app]:
                     build_configs_dict['env'].append({'APP': app, 'TARGET': target})
 

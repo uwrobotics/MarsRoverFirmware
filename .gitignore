@@ -1,7 +1,5 @@
 # Build output
-build-*-board
-*.o
-*.d
+cmake_build/
 
 # MacOS pollution
 *.DS_store

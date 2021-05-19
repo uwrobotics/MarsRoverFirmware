@@ -2,96 +2,97 @@
 
 # Rover Apps
 arm:
-  - arm
+  - ARM_REV2
 
 gamepad:
-  - gamepad
+  - GAMEPAD_REV1
 
 gimbal:
-  - gimbal
+  - GIMBAL_REV2
 
 pdb:
-  - pdb
+  - PDB_REV2
 
 science:
-  - science
+  - SCIENCE_REV2
 
 # Test Apps
 test-aeat-6012:
-  - nucleo
+  - UWRT_NUCLEO
 
 test-aeat-8800:
-  - nucleo
+  - UWRT_NUCLEO
 
 test-actuator-controller:
-  - nucleo
-  - arm
-  - gimbal
-  - science
+  - ARM_REV2
+  - GIMBAL_REV2
+  - SCIENCE_REV2
+  - UWRT_NUCLEO
 
 test-blinky:
-  - nucleo
-  - arm
-  - gamepad
-  - gimbal
-  - pdb
-  - science
+  - ARM_REV2
+  - GAMEPAD_REV1
+  - GIMBAL_REV2
+  - PDB_REV2
+  - SCIENCE_REV2
+  - UWRT_NUCLEO
 
 test-blockingneo:
-  - nucleo
+  - UWRT_NUCLEO
 
 test-can:
-  - nucleo
-  - arm
-  - gimbal
-#  - science
+  - ARM_REV2
+  - GIMBAL_REV2
+  #  - SCIENCE_REV2
+  - UWRT_NUCLEO
 
 test-mae3:
-  - nucleo
-#  - gimbal
-#  - science
+  #  - GIMBAL_REV2
+  #  - SCIENCE_REV2
+  - UWRT_NUCLEO
 
 test-led-matrix:
   - nucleo
   
 test-logger:
-  - gimbal
-  - nucleo
-  - pdb
-  - science
+  - GIMBAL_REV2
+  - PDB_REV2
+  - SCIENCE_REV2
+  - UWRT_NUCLEO
 
 test-lookup-table:
-  - nucleo
+  - UWRT_NUCLEO
 
 test-adafruitSTEMMA:
-#  - nucleo
-  - science
+  - SCIENCE_REV2
+  #  - UWRT_NUCLEO
 
 test-units:
-  - nucleo
+  - UWRT_NUCLEO
 
 test-pid:
-  - nucleo
-#  - arm
-#  - gimbal
-#  - science
+  #  - ARM_REV2
+  #  - GIMBAL_REV2
+  #  - SCIENCE_REV2
+  - UWRT_NUCLEO
 
 test-pwm:
-  - nucleo
-  - arm
-  - gimbal
-  - pdb
-  - science
+  - ARM_REV2
+  - GIMBAL_REV2
+  - PDB_REV2
+  - SCIENCE_REV2
+  - UWRT_NUCLEO
 
 test-pwmin:
-  - nucleo
-  - arm
-#  - gamepad
-#  - gimbal
-#  - science
+  - ARM_REV2
+  #  - GAMEPAD_REV1
+  #  - GIMBAL_REV2
+  #  - SCIENCE_REV2
+  - UWRT_NUCLEO
+
 
 test-quadrature64cpr:
-  - nucleo
-  
+  - UWRT_NUCLEO
+
 test-watchdog:
-  - nucleo
+  - UWRT_NUCLEO

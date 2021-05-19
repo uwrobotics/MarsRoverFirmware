@@ -1,183 +1,143 @@
-cmake_minimum_required(VERSION 3.15.7)
+cmake_minimum_required(VERSION 3.19.5)
 
-project(MarsRoverFirmware)
+# Activate ccache
+find_program(CCACHE "ccache")
+if (CCACHE)
+    set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE})
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+endif ()
 
+# Path Variables
+set(ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
+set(MBED_PATH ${ROOT_DIR}/mbed-os CACHE INTERNAL "")
+set(MBED_CONFIG_PATH ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "")
+
+# For convenience, define useful variables
+set(TARGETS_DIR ${ROOT_DIR}/targets)
+set(LIBS_DIR ${ROOT_DIR}/libs)
+set(ROVER_APPS_DIR ${ROOT_DIR}/rover-apps)
+set(TEST_APPS_DIR ${ROOT_DIR}/test-apps)
+
+# Prevent in-source builds
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
-enable_language(C ASM)
-
-set(CMAKE_C_STANDARD 11)
+# Force C++ version (hack until https://github.com/ARMmbed/mbed-tools/issues/261 is fixed)
 set(CMAKE_CXX_STANDARD 20)
-
-set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Processor and Memory Settings
-set(PROCESSOR_FLAGS
-        -mcpu=cortex-m4
-        -mthumb
-        -mfpu=fpv4-sp-d16
-        -mfloat-abi=hard
-        )
-set(MEMORY_DEFINITIONS
-        MBED_ROM_START=0x8000000
-        MBED_ROM_SIZE=0x80000
-        MBED_RAM_START=0x20000000
-        MBED_RAM_SIZE=0x20000
-        MBED_BOOT_STACK_SIZE=1024
-        )
-set(MEMORY_DEFINITIONS_FOR_LINKER ${MEMORY_DEFINITIONS})
-list(TRANSFORM MEMORY_DEFINITIONS_FOR_LINKER PREPEND -D)
-
-# Linker Script, Flags, Targets
-set(LINKER_FLAGS
-        -specs=nosys.specs
-        LINKER:--gc-sections
-        LINKER:--wrap=main
-        LINKER:--wrap=__malloc_r
-        LINKER:--wrap=__free_r
-        LINKER:--wrap=__realloc_r
-        LINKER:--wrap=__memalign_r
-        LINKER:--wrap=__calloc_r
-        LINKER:--wrap=exit
-        LINKER:--wrap=atexit
-        LINKER:-n
-        )
-set(LINKER_SYS_LIBS
-        LINKER:--start-group
-        -lstdc++
-        -lsupc++
-        -lm
-        -lc
-        -lgcc
-        -lnosys
-        LINKER:--end-group
-        )
-set(LINKER_SCRIPT_SOURCE_PATH "${CMAKE_SOURCE_DIR}/mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TOOLCHAIN_GCC_ARM/STM32F446XE.ld")
-set(LINKER_SCRIPT_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/STM32F446XE.out.ld")
-add_custom_command(OUTPUT ${LINKER_SCRIPT_OUTPUT_PATH}
-        COMMAND ${CMAKE_CPP} -E -P ${PROCESSOR_FLAGS} ${MEMORY_DEFINITIONS_FOR_LINKER} ${LINKER_SCRIPT_SOURCE_PATH} -o ${LINKER_SCRIPT_OUTPUT_PATH}
-        MAIN_DEPENDENCY ${LINKER_SCRIPT_SOURCE_PATH}
-        COMMENT "Preprocessing linker script"
-        )
-add_custom_target(linker-script DEPENDS ${LINKER_SCRIPT_OUTPUT_PATH})
-add_link_options(-T${LINKER_SCRIPT_OUTPUT_PATH} ${LINKER_FLAGS} ${PROCESSOR_FLAGS} ${MEMORY_DEFINITIONS_FOR_LINKER} ${LINKER_SYS_LIBS})
-
-# use objcopy to create .bin files out of ELF files
-function(target_bin_from_elf TARGET-NAME)
-    string(REPLACE ".elf" "" BASE-TARGET-NAME ${TARGET-NAME})
-    add_custom_command(TARGET ${TARGET-NAME}
-            POST_BUILD
-            COMMAND ${CMAKE_OBJCOPY} -O binary ${TARGET-NAME} ${BASE-TARGET-NAME}.bin
-            COMMENT "Generating bin from elf")
-    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${BASE-TARGET-NAME}.bin)
-endfunction()
-
-# link against mbed and precompile headers
-function(target_set_mbed_dependency TARGET-NAME)
-    target_link_libraries(${TARGET-NAME} PRIVATE mbed-os)
-    target_precompile_headers(${TARGET-NAME} REUSE_FROM mbed-os)
-endfunction()
-
-# link against mbed and setup linker script
-function(target_set_firmware_properties TARGET-NAME)
-    target_set_mbed_dependency(${TARGET-NAME})
-
-    set_target_properties(${TARGET-NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT_OUTPUT_PATH})
-    add_dependencies(${TARGET-NAME} linker-script)
-
-    target_bin_from_elf(${TARGET-NAME})
-endfunction()
-
-# Global Settings
-set(COMPILE_FLAGS
-        -MMD
-        -MP
-
-        -O3
-        -g
-
-        -Wall
-        -Wextra
+# Force extra compile options (hack until https://github.com/ARMmbed/mbed-tools/issues/261 is fixed)
+add_compile_options(
         -Wpedantic
         -Wvla
-        -Werror
+        -Werror)
 
-        -Wno-unused-parameter
-        -Wno-missing-field-initializers
+# Generate compile commands database for other tools to use
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
-        -ffunction-sections
-        -fdata-sections
-        -fomit-frame-pointer
-        -funsigned-char
+# Include mbed os cmake logic
+include(${MBED_PATH}/tools/cmake/app.cmake)
 
-        -fno-exceptions
-        -fno-delete-null-pointer-checks
+# Force colored output from compiler
+add_compile_options(-fdiagnostics-color)
 
-        -fstack-protector-strong
+# Include custom targets
+add_subdirectory(${TARGETS_DIR}/TARGET_ARM_REV2)
+add_subdirectory(${TARGETS_DIR}/TARGET_GAMEPAD_REV1)
+add_subdirectory(${TARGETS_DIR}/TARGET_GIMBAL_REV2)
+add_subdirectory(${TARGETS_DIR}/TARGET_PDB_REV2)
+add_subdirectory(${TARGETS_DIR}/TARGET_SCIENCE_REV2)
+add_subdirectory(${TARGETS_DIR}/TARGET_UWRT_NUCLEO)
 
-        $<$<COMPILE_LANGUAGE:ASM>:-xassembler-with-cpp>
-        $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-        )
-add_compile_options(${PROCESSOR_FLAGS} ${COMPILE_FLAGS})
+# Include mbed-os and disable warnings from within mbed-os
+add_subdirectory(${MBED_PATH})
+target_compile_options(mbed-os INTERFACE -w) # Disable all warnings from mbed-os core code
+target_compile_options(mbed-events PRIVATE -w) # Disable all warnings from mbed-os events code
+target_compile_options(mbed-mbedtls PRIVATE -w) # Bug in mbed causes warning due to missing string.h include in error.c
+target_compile_options(mbed-nanostack-libservice PRIVATE -Wno-vla)
 
-# Include mbed-os
-include(mbed-os.cmake)
-
-# Include library CMakeLists
-add_subdirectory(lib/actuators)
-add_subdirectory(lib/can)
-add_subdirectory(lib/encoder)
-add_subdirectory(lib/gamepad)
-add_subdirectory(lib/gpio)
-add_subdirectory(lib/controllers)
-add_subdirectory(lib/led-matrix)
-add_subdirectory(lib/neopixel)
-add_subdirectory(lib/pid)
-add_subdirectory(lib/sensors)
-add_subdirectory(lib/utility)
-
-if (NOT DEFINED APP)
-    message(FATAL_ERROR "APP variable not set in CACHE. Please invoke CMake with \"-DAPP=<app-name>\"")
-elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/apps/${APP}")
-    message(FATAL_ERROR "${APP} app does not exist in the apps folder")
-endif ()
-if (NOT DEFINED TARGET)
-    message(FATAL_ERROR "TARGET variable not set in CACHE. Please invoke CMake with \"-DTARGET=<target-name>\"")
-elseif (NOT EXISTS "${CMAKE_SOURCE_DIR}/targets/${TARGET}")
-    message(FATAL_ERROR "${TARGET} target does not exist in the targets folder")
-endif ()
-message(STATUS "Configuring and generating build for ${APP} app on ${TARGET} target")
-
-# Add CMakeList for target-specific files
-add_subdirectory(targets/${TARGET})
+# Project Name
+project(MarsRoverFirmware LANGUAGES C CXX ASM)
 
 # Add HW Bridge
 add_subdirectory(uwrt-mars-rover-hw-bridge)
 
-# Include Rover App CMakeLists
-add_subdirectory(apps/arm)
-add_subdirectory(apps/gamepad)
-add_subdirectory(apps/gimbal)
-add_subdirectory(apps/pdb)
-add_subdirectory(apps/science)
+# Include libraries
+add_subdirectory(${LIBS_DIR}/actuators)
+add_subdirectory(${LIBS_DIR}/can)
+add_subdirectory(${LIBS_DIR}/encoder)
+add_subdirectory(${LIBS_DIR}/gamepad)
+add_subdirectory(${LIBS_DIR}/gpio)
+add_subdirectory(${LIBS_DIR}/controllers)
+add_subdirectory(${LIBS_DIR}/neopixel)
+add_subdirectory(${LIBS_DIR}/pid)
+add_subdirectory(${LIBS_DIR}/sensors)
+add_subdirectory(${LIBS_DIR}/utility)
 
-# Include Test App CMakeLists
-add_subdirectory(apps/test-actuator-controller)
-add_subdirectory(apps/test-aeat-6012)
-add_subdirectory(apps/test-aeat-8800)
-add_subdirectory(apps/test-blinky)
-add_subdirectory(apps/test-blockingneo)
-add_subdirectory(apps/test-can)
-add_subdirectory(apps/test-mae3)
-add_subdirectory(apps/test-led-matrix)
-add_subdirectory(apps/test-logger)
-add_subdirectory(apps/test-lookup-table)
-add_subdirectory(apps/test-adafruitSTEMMA)
-add_subdirectory(apps/test-pid)
-add_subdirectory(apps/test-pwm)
-add_subdirectory(apps/test-pwmin)
-add_subdirectory(apps/test-quadrature64cpr)
-add_subdirectory(apps/test-units)
-add_subdirectory(apps/test-watchdog)
+# Only add subdirectory of requested APP
+function(add_app_subdirectory APP_SUBDIRECTORY)
+    string(FIND ${APP_SUBDIRECTORY} / INDEX REVERSE)
+    math(EXPR INDEX "${INDEX} + 1")
+    string(SUBSTRING ${APP_SUBDIRECTORY} ${INDEX} -1 APP_NAME)
+
+    if ("${APP_NAME}" STREQUAL "")
+        message(FATAL_ERROR "add_app_subdirectory could not extract an app name from ${APP_SUBDIRECTORY}")
+    elseif ("$ENV{APP}" STREQUAL ${APP_NAME})
+        add_subdirectory(${APP_SUBDIRECTORY})
+    endif ()
+endfunction()
+
+## Include Rover Apps
+add_app_subdirectory(${ROVER_APPS_DIR}/arm)
+add_app_subdirectory(${ROVER_APPS_DIR}/gamepad)
+add_app_subdirectory(${ROVER_APPS_DIR}/gimbal)
+add_app_subdirectory(${ROVER_APPS_DIR}/pdb)
+add_app_subdirectory(${ROVER_APPS_DIR}/science)
+
+# Include Test Apps
+add_app_subdirectory(${TEST_APPS_DIR}/test-actuator-controller)
+add_app_subdirectory(${TEST_APPS_DIR}/test-adafruitSTEMMA)
+add_app_subdirectory(${TEST_APPS_DIR}/test-aeat-6012)
+add_app_subdirectory(${TEST_APPS_DIR}/test-aeat-8800)
+add_app_subdirectory(${TEST_APPS_DIR}/test-blinky)
+add_app_subdirectory(${TEST_APPS_DIR}/test-blockingneo)
+add_app_subdirectory(${TEST_APPS_DIR}/test-can)
+add_app_subdirectory(${TEST_APPS_DIR}/test-mae3)
+add_app_subdirectory(${TEST_APPS_DIR}/test-logger)
+add_app_subdirectory(${TEST_APPS_DIR}/test-lookup-table)
+add_app_subdirectory(${TEST_APPS_DIR}/test-pid)
+add_app_subdirectory(${TEST_APPS_DIR}/test-pwm)
+add_app_subdirectory(${TEST_APPS_DIR}/test-pwmin)
+add_app_subdirectory(${TEST_APPS_DIR}/test-quadrature64cpr)
+add_app_subdirectory(${TEST_APPS_DIR}/test-units)
+add_app_subdirectory(${TEST_APPS_DIR}/test-watchdog)
+
+# Ensure APP was specified
+if ("$ENV{APP}" STREQUAL "")
+    message(FATAL_ERROR "APP was not specified")
+endif()
+
+# Ensure that a target exists for the specified APP
+# https://stackoverflow.com/a/62311397/10173605
+function(get_all_targets var)
+    set(targets)
+    get_all_targets_recursive(targets ${CMAKE_CURRENT_SOURCE_DIR})
+    set(${var} ${targets} PARENT_SCOPE)
+endfunction()
+
+macro(get_all_targets_recursive targets dir)
+    get_property(subdirectories DIRECTORY ${dir} PROPERTY SUBDIRECTORIES)
+    foreach (subdir ${subdirectories})
+        get_all_targets_recursive(${targets} ${subdir})
+    endforeach ()
+
+    get_property(current_targets DIRECTORY ${dir} PROPERTY BUILDSYSTEM_TARGETS)
+    list(APPEND ${targets} ${current_targets})
+endmacro()
+
+get_all_targets(ALL_BUILDSYSTEM_TARGETS)
+if ("$ENV{APP}" IN_LIST ALL_BUILDSYSTEM_TARGETS)
+    message(STATUS "$ENV{APP} app is being built")
+else ()
+    message(FATAL_ERROR "$ENV{APP} app is not an app target found in ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+endif ()

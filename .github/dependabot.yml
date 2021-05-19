@@ -5,21 +5,39 @@ updates:
     # default location of `.github/workflows`
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     pull-request-branch-name:
       separator: "/"
     assignees:
       - "wmmc88"
+      - "cindyli-13"
     reviewers:
       - "wmmc88"
+      - "cindyli-13"
 
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     pull-request-branch-name:
       separator: "/"
     assignees:
       - "wmmc88"
+      - "cindyli-13"
     reviewers:
       - "wmmc88"
+      - "cindyli-13"
+
+  - package-ecosystem: "pip"
+    directory: "/scripts"
+    schedule:
+      interval: "weekly"
+    pull-request-branch-name:
+      separator: "/"
+    assignees:
+      - "wmmc88"
+      - "cindyli-13"
+    reviewers:
+      - "wmmc88"
+      - "cindyli-13"
+

@@ -11,18 +11,18 @@ defaults:
     shell: bash
 
 env:
-  ARM_TOOLS_URL: https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
-  ARM_TOOLS_DIR: gcc-arm-none-eabi-9-2020-q2-update
+  ARM_TOOLS_URL: https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
+  ARM_TOOLS_DIR: gcc-arm-none-eabi-10-2020-q4-major
 
 jobs:
   setup-build-matrix:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2
 
       - name: Set Build Matrix Output
         id: set-matrix
@@ -32,14 +32,14 @@ jobs:
 
   build:
     needs: setup-build-matrix
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix: ${{fromJson(needs.setup-build-matrix.outputs.matrix)}}
       fail-fast: false
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2
         with:
           submodules: 'recursive'
 
@@ -49,8 +49,13 @@ jobs:
       - name: Update Path with Toolchain
         run: echo "${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin" >> $GITHUB_PATH
 
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v2
+        with:
+          path: "scripts/requirements.txt"
+
       - name: Load Cached Arm Toolchain
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2
         id: toolchain-cache
         with:
           path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
@@ -60,23 +65,28 @@ jobs:
         if: steps.toolchain-cache.outputs.cache-hit != 'true'
         run: wget $ARM_TOOLS_URL -O /tmp/arm-tools.tar.gz && tar -xvf /tmp/arm-tools.tar.gz -C ${{ env.HOME }}
 
-      - name: Setup CMake (auto-caches)
+      - name: Install CMake & Ninja (auto-caches)
         uses: lukka/get-cmake@latest
 
       - name: Print Toolchain Versions
         run: |
-          cmake --version
+          echo "Make Version:"
           make --version
+          echo
+          echo "Mbed Tools Version:"
+          mbed-tools --version
+          echo
+          echo "CMake Version:"
+          cmake --version
+          echo
+          echo "Ninja Version:"
+          ninja --version
+          echo
+          echo "ARM GCC Version:"
           arm-none-eabi-gcc --version
 
-      - name: Run CMake (bash)
-        uses: lukka/run-cmake@v3.3
+      - name: Run Make
         env: ${{matrix.env}}
-        with:
-          cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeAppendedArgs: '-G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/toolchain.cmake -DAPP=${{ env.APP }} -DTARGET=${{ env.TARGET }}'
-          buildDirectory: '${{ github.workspace }}/build/'
-          buildWithCMakeArgs: '--target ${{ env.APP }}.${{ env.TARGET }}-board.elf --clean-first -- -j$(nproc)'
-          useShell: bash
-          cmakeGenerator: "Unix Makefiles" # This setting doesn't do anything in CMakeListsTxtAdvanced mode. This is only to show valid debug info in Github Actions
+        run: |
+          CLEAN=1; make APP=${{ env.APP }} TARGET=${{ env.TARGET }}
+

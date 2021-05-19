@@ -1,5 +1,0 @@
-add_executable(test-adafruitSTEMMA.${TARGET}-board.elf)
-target_sources(test-adafruitSTEMMA.${TARGET}-board.elf PRIVATE src/main.cpp)
-target_include_directories(test-adafruitSTEMMA.${TARGET}-board.elf PUBLIC include)
-target_link_libraries(test-adafruitSTEMMA.${TARGET}-board.elf PRIVATE AdafruitSTEMMA uwrt-mars-rover-hw-bridge Logger)
-target_set_firmware_properties(test-adafruitSTEMMA.${TARGET}-board.elf)
