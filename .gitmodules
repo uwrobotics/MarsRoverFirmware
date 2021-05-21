@@ -1,6 +1,7 @@
 [submodule "mbed-os"]
     path = mbed-os
     url = https://github.com/uwrobotics/mbed-os.git
+    branch = uwrt
 
 [submodule "uwrt-mars-rover-hw-bridge"]
     path = uwrt-mars-rover-hw-bridge
