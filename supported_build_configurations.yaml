@@ -51,6 +51,9 @@ test-mae3:
   #  - SCIENCE_REV2
   - UWRT_NUCLEO
 
+test-led-matrix:
+  - UWRT_NUCLEO
+  
 test-logger:
   - GIMBAL_REV2
   - PDB_REV2
