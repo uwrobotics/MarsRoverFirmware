@@ -1,4 +1,5 @@
 #include "mbed.h"
+#include "CANMsg.h"
 #include "TutorialServo.h"
 
 PinName servoPin(PA_1);
@@ -11,12 +12,12 @@ int main(){
     float output_degree;
 
     can.frequency(1000000); // set CAN bit rate to 1Mbps
-    CANMessage rxMsg;
+    CANMsg rxMsg;
 
     // loop
     while(1){
         if (can.read(rxMsg)) {
-            rec_can = rxMsg.data[0];
+            rxMsg.getPayload(rec_can);
             output_degree = rec_can * (servo_out.getServoRangeInDegrees());
             servo_out.setPositionInDegrees(output_degree);
         }

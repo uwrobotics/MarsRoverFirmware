@@ -2,13 +2,18 @@
 #include "mbed.h"
 
 TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs, float maxPulsewidthInMs)
-    : m_servoPwmOut(servoPin), m_servoRangeInDegrees(servoRangeInDegrees), m_minPulsewidthInMs(minPulsewidthInMs), m_maxPulsewidthInMs(maxPulsewidthInMs) 
-    {}
+    : m_servoPwmOut(servoPin), m_servoRangeInDegrees(servoRangeInDegrees), m_minPulsewidthInMs(minPulsewidthInMs), m_maxPulsewidthInMs(maxPulsewidthInMs) {
+        m_servoPwmOut.period_ms(20);
+    }
        
 // Set servo position (ex. 45 deg)
 void TutorialServo::setPositionInDegrees(const float degrees) {
-    m_servoPwmOut.period_ms(20);
-    m_servoPwmOut.pulsewidth_ms(m_minPulsewidthInMs + degrees/m_servoRangeInDegrees);
+    if (degrees <= m_servoRangeInDegrees && degrees>=0){
+        float degree_to_second = (degrees/m_servoRangeInDegrees)*(m_maxPulsewidthInMs-m_minPulsewidthInMs)*0.001;
+        m_servoPwmOut.pulsewidth(m_minPulsewidthInMs + degree_to_second);
+    }else{
+        error("Invalid input degree");
+    }
 }
 
 // Get the servo range in degrees (ex: 90 deg)
