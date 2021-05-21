@@ -2,7 +2,6 @@
 #include "hw_bridge.h"
 #include "mbed.h"
 
-
 class LEDMatrix {
  public:
   // Define LED matrix colour channels by the pins it is connected to.
