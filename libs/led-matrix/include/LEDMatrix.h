@@ -25,8 +25,8 @@ class LEDMatrix {
   DigitalOut m_BChannel;
 
   // Flags
-  constexpr static uint32_t START_FLASH = 1UL;  // 01
-  constexpr static uint32_t ENDED_FLASH = 2UL;  // 10
+  constexpr static uint32_t START_FLASH = (1U << 0);  // 01
+  constexpr static uint32_t ENDED_FLASH = (1U << 1);  // 10
 
   volatile bool m_flashing_red, m_flashing_green, m_flashing_blue;
   volatile bool m_continue_flashing;
