@@ -52,7 +52,7 @@ test-mae3:
   - UWRT_NUCLEO
 
 test-led-matrix:
-  - nucleo
+  - UWRT_NUCLEO
   
 test-logger:
   - GIMBAL_REV2

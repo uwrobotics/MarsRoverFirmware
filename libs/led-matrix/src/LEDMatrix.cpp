@@ -1,7 +1,5 @@
 #include "LEDMatrix.h"
 
-#include "mbed.h"
-
 LEDMatrix::LEDMatrix(PinName R, PinName G, PinName B)
     : m_RChannel(R),
       m_GChannel(G),

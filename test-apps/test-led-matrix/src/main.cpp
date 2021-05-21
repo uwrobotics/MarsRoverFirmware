@@ -1,5 +1,6 @@
 #include "LEDMatrix.h"
 #include "hw_bridge.h"
+#include "mbed.h"
 
 int main() {
   printf("####### STARTING LED MATRIX TEST #######\r\n");
