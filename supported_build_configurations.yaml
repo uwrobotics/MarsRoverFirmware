@@ -92,3 +92,7 @@ test-quadrature64cpr:
   
 test-watchdog:
   - nucleo
+
+
+tutorial-servo-pot-control:
+- nucleo
