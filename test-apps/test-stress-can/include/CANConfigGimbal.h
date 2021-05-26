@@ -4,10 +4,16 @@
 #include "CANMsg.h"
 #include "hw_bridge.h"
 
-static void sendACK(HWBRIDGE::GIMBAL_ACK_VALUES ackValue);
-static mbed_error_status_t gimbalSetControlMode(void);
-static mbed_error_status_t gimbalSetJointPIDParams(void);
-static mbed_error_status_t commonSwitchCANBus(void);
+const HWBRIDGE::CANFILTER targetCANIDFilter             = HWBRIDGE::CANFILTER::GIMBAL_RX_FILTER;
+const HWBRIDGE::CANID targetReportDiagnosticsCANID      = HWBRIDGE::CANID::GIMBAL_REPORT_DIAGNOSTICS;
+const HWBRIDGE::CANSIGNAL targetReportNumStreamedSignal = HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_STREAMED_MSGS_RECEIVED;
+const HWBRIDGE::CANSIGNAL targetReportNumOneShotsSignal = HWBRIDGE::CANSIGNAL::GIMBAL_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED;
+const HWBRIDGE::CANID targetReportFaultsCANID           = HWBRIDGE::CANID::GIMBAL_REPORT_FAULTS;
+const HWBRIDGE::CANSIGNAL targetNumCANRXFaultsSignal    = HWBRIDGE::CANSIGNAL::GIMBAL_NUM_CANRX_FAULTS;
+const HWBRIDGE::CANSIGNAL targetNumCANTXFaultsSignal    = HWBRIDGE::CANSIGNAL::GIMBAL_NUM_CANTX_FAULTS;
+
+static mbed_error_status_t oneShotHandler(void);
+static mbed_error_status_t switchCANBus(void);
 
 namespace CANConfig {
 
@@ -66,9 +72,9 @@ static CANMsgMap txMsgMap = {
 };
 
 const static CANMsg::CANMsgHandlerMap rxOneShotMsgHandler = {
-    {CANID::GIMBAL_SET_CONTROL_MODE, &gimbalSetControlMode},
-    {CANID::GIMBAL_SET_JOINT_PID_PARAMS, &gimbalSetJointPIDParams},
-    {CANID::COMMON_SWITCH_CAN_BUS, &commonSwitchCANBus},
+    {CANID::GIMBAL_SET_CONTROL_MODE, &oneShotHandler},
+    {CANID::GIMBAL_SET_JOINT_PID_PARAMS, &oneShotHandler},
+    {CANID::COMMON_SWITCH_CAN_BUS, &switchCANBus},
 };
 
 CANInterface::Config config = {
