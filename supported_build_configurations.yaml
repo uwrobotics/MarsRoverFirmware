@@ -96,3 +96,9 @@ test-quadrature64cpr:
 
 test-watchdog:
   - UWRT_NUCLEO
+
+test-tutorial-servo-pot-control:
+  - UWRT_NUCLEO
+
+test-tutorial-servo-can-control:
+  - UWRT_NUCLEO

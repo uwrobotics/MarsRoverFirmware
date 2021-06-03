@@ -113,6 +113,9 @@ add_app_subdirectory(${TEST_APPS_DIR}/test-pwmin)
 add_app_subdirectory(${TEST_APPS_DIR}/test-quadrature64cpr)
 add_app_subdirectory(${TEST_APPS_DIR}/test-units)
 add_app_subdirectory(${TEST_APPS_DIR}/test-watchdog)
+add_app_subdirectory(${TEST_APPS_DIR}/test-tutorial-servo-pot-control)
+add_app_subdirectory(${TEST_APPS_DIR}/test-tutorial_servo_can_control)
+
 
 # Ensure APP was specified
 if ("$ENV{APP}" STREQUAL "")
