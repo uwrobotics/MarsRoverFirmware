@@ -19,17 +19,17 @@ float TutorialServo::getMaxPulseWidthInMs( ) const{
 
 void TutorialServo::setPositionInDegrees(const float degrees){
     if (degrees < 0){
-        printf("Out of Range. Setting to min");
+        /*Out of Range. Setting to min*/
         m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
         return;
     }
     else if(degrees > m_servoRangeInDegrees){
-        printf("Out of Range. Setting to max");
+        /*Out of Range. Setting to max*/
         m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs);
         return;
     }
     float slope = (m_maxPulsewidthInMs - m_minPulsewidthInMs)/m_servoRangeInDegrees;
-    float pulse = m_minPulsewidthInMs + degrees*slope;
+    float pulse = (m_minPulsewidthInMs + degrees*slope) * 0.001;
     printf("Setting to %d",degrees);
     m_servoPwmOut.pulsewidth(pulse);
     return;
