@@ -7,7 +7,7 @@ CAN can(PB_8, PB_9);
 
 int main(){
 
-    CANMessage msg;    
+    CANMsg msg;    
     while (true) {
         if(can.read(msg)){
             float msg_data{0.0};
