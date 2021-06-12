@@ -12,7 +12,7 @@ class LimitSwitch {
   operator bool();
 
   DigitalIn m_limitPin;
-
+  DigitalIn isConnected();
  private:
   // Active High is 1 and Active Low is 0
   bool m_ActiveHigh;
