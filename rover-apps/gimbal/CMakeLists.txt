@@ -1,6 +1,6 @@
 add_executable(gimbal)
-target_sources(gimbal PRIVATE src/main.cpp)
-target_include_directories(gimbal PUBLIC include)
+target_sources(gimbal PRIVATE ../common/src/main.cpp)
+target_include_directories(gimbal PUBLIC include ../common/include)
 target_link_libraries(gimbal
         PRIVATE
         #Control
