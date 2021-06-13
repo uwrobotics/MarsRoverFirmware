@@ -21,8 +21,20 @@ add_library(CANBus STATIC)
 target_sources(CANBus PRIVATE src/CANBus.cpp)
 target_include_directories(CANBus PUBLIC include)
 target_link_libraries(CANBus
-        PUBLIC
-        mbed-os
         PRIVATE
         uwrt-mars-rover-hw-bridge
+        mbed-os
+        )
+
+add_library(CANInterface STATIC)
+target_sources(CANInterface PRIVATE src/CANInterface.cpp)
+target_include_directories(CANInterface PUBLIC include)
+target_link_libraries(CANInterface
+        PUBLIC
+        mbed-os
+        mbed-events
+        PRIVATE
+        uwrt-mars-rover-hw-bridge
+        CANBus
+        CANMsg
         )

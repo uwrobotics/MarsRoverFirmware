@@ -69,6 +69,10 @@ class LookupTable {
     return m_map.empty();
   }
 
+  bool contains(const Key &key) const {
+    return m_map.contains(key);
+  }
+
   const_iterator find(const Key &key) const {
     return m_map.find(key);
   }

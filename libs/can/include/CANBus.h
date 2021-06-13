@@ -14,7 +14,7 @@ class CANBus : public CAN {
   /* Filter out incoming CAN msgs
    */
   int setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANAny,
-                uint16_t mask = HWBRIDGE::ROVERCONFIG::ROVER_CANID_FILTER_MASK, int handle = 0);
+                uint16_t mask = HWBRIDGE::ROVER_CANID_FILTER_MASK, int handle = 0);
 
   can_t *getHandle();
 

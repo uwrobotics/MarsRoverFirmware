@@ -15,7 +15,7 @@ target_link_libraries(gimbal
         #Encoders
         EncoderAEAT6012
         #CAN
-        CANBus
+        CANInterface
         CANMsg
         #Sensor
         CurrentSensor

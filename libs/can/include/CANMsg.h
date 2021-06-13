@@ -8,11 +8,15 @@ class CANMsg : public CANMessage {
  private:
   using CAN_Message::id;
 
+  static mbed_error_status_t defaultCANMsgHandler(void) {
+    MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_APPLICATION, MBED_ERROR_CODE_INVALID_ARGUMENT),
+                 "Invalid key to CANMsgHandlerMap");
+    return MBED_ERROR_CODE_INVALID_ARGUMENT;
+  }
+
  public:
-  using CANMsgHandler = mbed_error_status_t (*)(CANMsg &);
-  using CANMsgHandlerMap =
-      Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler,
-                           +[](CANMsg &) -> mbed_error_status_t { return MBED_ERROR_CODE_INVALID_ARGUMENT; }>;
+  using CANMsgHandler    = mbed_error_status_t (*)(void);
+  using CANMsgHandlerMap = Utility::LookupTable<HWBRIDGE::CANID, CANMsg::CANMsgHandler, &defaultCANMsgHandler>;
 
   template <class T>
   union CANPayload {
@@ -64,6 +68,14 @@ class CANMsg : public CANMessage {
     CANPayload<T> *payload = (CANPayload<T> *)&data;
     payload->value         = value;
     this->len              = sizeof(T);
+  }
+
+  /** Set the payload data with custom length
+   */
+  template <class T>
+  void setPayload(const T value, size_t length) {
+    setPayload(value);
+    len = length;
   }
 
   /** Get the payload data

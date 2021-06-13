@@ -9,16 +9,15 @@ AnalogIn railBattery(RAIL_BATTERY_ANLG_IN), rail5V(RAIL_5V_ANLG_IN), rail17V(RAI
     rail24V(RAIL_24V_ANLG_IN);  // add voltage range (as percentage) to hw bridge also allocate can id for reporting if
                                 // outside range
 
-CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
+CANBus can1(CAN1_RX, CAN1_TX, HWBRIDGE::ROVER_CANBUS_FREQUENCY_HZ);
 
 void rxCANProcessor();
 void txCANProcessor();
 
-static mbed_error_status_t setLEDMatrix(
-    CANMsg &msg);  // simple switch statement that calls a different function based on contents of CAN msg
+// simple switch statement that calls a different function based on contents of CAN msg
+static mbed_error_status_t setLEDMatrix(void);
 
-const static CANMsg::CANMsgHandlerMap canHandlerMap = {
-    {HWBRIDGE::CANID::NEOPIXEL_SET, &setLEDMatrix}};  // rename NEOPIXEL_SET to LEDMATRIX_SET
+const static CANMsg::CANMsgHandlerMap canHandlerMap = {{HWBRIDGE::CANID::PDB_SET_LED_MATRIX, &setLEDMatrix}};
 
 int main() {
   Thread rxCANProcessorThread(osPriorityAboveNormal);
@@ -33,7 +32,7 @@ void rxCANProcessor() {
   CANMsg rxMsg;
   while (true) {
     if (can1.read(rxMsg)) {
-      canHandlerMap.at(rxMsg.getID())(rxMsg);
+      canHandlerMap.at(rxMsg.getID())();
     }
     ThisThread::sleep_for(2ms);
   }
@@ -47,6 +46,6 @@ void txCANProcessor() {
   }
 }
 
-static mbed_error_status_t setLEDMatrix(CANMsg &msg) {
+static mbed_error_status_t setLEDMatrix(void) {
   return MBED_ERROR_INVALID_ARGUMENT;
 }

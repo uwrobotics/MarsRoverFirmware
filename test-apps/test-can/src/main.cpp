@@ -1,71 +1,56 @@
-#include "CANBus.h"
-#include "CANMsg.h"
+#include "CANConfig.h"
+#include "CANInterface.h"
 #include "Logger.h"
 #include "hw_bridge.h"
-#include "mbed.h"
 
-CANBus can(CAN1_RX, CAN1_TX, HWBRIDGE::ROVERCONFIG::ROVER_CANBUS_FREQUENCY);
-CANMsg rxMsg;
-CANMsg txMsg;
-DigitalOut ledTX(LED1);
-DigitalOut ledRX(LED2);
-Timer timer;
-uint8_t counter = 0;
+CANInterface can(CANConfig::config);
 
-constexpr uint16_t TX_ID = 0x100;
-constexpr uint16_t RX_ID = 0x101;
+int main() {
+  Utility::logger << "";  // Band-aid fix for logger bug (issue #328)
+  printf("CAN test\r\n");
 
-/**
- * @brief   Prints CAN msg to PC's serial terminal
- * @note
- * @param   CANMsg to print
- * @retval
- */
-void printMsg(CANMsg& msg) {
-  printf("  ID      = 0x%.3x\r\n", static_cast<uint16_t>(msg.getID()));
-  printf("  Type    = %d\r\n", msg.type);
-  printf("  Format  = %d\r\n", msg.format);
-  printf("  Length  = %d\r\n", msg.len);
-  printf("  Data    =");
-  for (int i = 0; i < msg.len; i++) printf(" 0x%.2X", msg.data[i]);
-  printf("\r\n");
+  can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK);
+
+  HWBRIDGE::CANSignalValue_t rxSignal1Value = 0;
+  HWBRIDGE::CANSignalValue_t txSignal1Value = 0;
+
+  while (true) {
+    // Read RX signal
+    can.getRXSignalValue(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE1, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL1,
+                         rxSignal1Value);
+    printf("RX debug signal value: %lu\r\n", static_cast<uint32_t>(rxSignal1Value));
+
+    // Update TX signal
+    can.setTXSignalValue(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE2, HWBRIDGE::CANSIGNAL::COMMON_DEBUG_SIGNAL2,
+                         txSignal1Value);
+    printf("TX test signal 2 value: %u\r\n", static_cast<uint16_t>(txSignal1Value));
+    txSignal1Value = (static_cast<uint16_t>(txSignal1Value) + 1) % 8;
+
+    ThisThread::sleep_for(1000ms);
+  }
 }
 
-int main(void) {
-  ledTX = 0;      // set transmit LED off
-  ledRX = 0;      // set recieve LED off
-  timer.start();  // start timer
-  printf("CAN_Hello\r\n");
+// Receive a one-shot message (COMMON_DEBUG_MESSAGE3) and send a one-shot reply back
+mbed_error_status_t handle_test_msg_one_shot(void) {
+  CANMsg msgACK;
 
-  while (1) {
-    if (timer.elapsed_time() >= 1s) {                    // check for timeout
-      timer.reset();                                     // reset timer
-      counter++;                                         // increment counter
-      txMsg.clear();                                     // clear Tx message storage
-      txMsg.setID(static_cast<HWBRIDGE::CANID>(TX_ID));  // set ID
-      txMsg.setPayload(counter);                         // copy counter value to CAN msg payload
-      if (can.write(txMsg)) {                            // transmit message
-        printf("-------------------------------------\r\n");
-        printf("CAN message sent\r\n");
-        printMsg(txMsg);
-        printf("  counter = %d\r\n", counter);
-        ledTX = !ledTX;
-      } else
-        printf("Transmission error\r\n");
-    }
+  // Initialize msg struct
+  struct uwrt_mars_rover_can_common_debug_message3_t msgStruct = {
+      .common_debug_signal3 = static_cast<uint8_t>(HWBRIDGE::COMMON_DEBUG_SIGNAL3_VALUES::DEBUG_VALUE_0),
+  };
 
-    if (can.read(rxMsg)) {
-      ledRX = !ledRX;  // turn the LED on
-      printf("-------------------------------------\r\n");
-      printf("CAN message received\r\n");
-      printMsg(rxMsg);
+  // Pack msg struct contents into raw bytes
+  HWBRIDGE::CANMsgData_t msgData;
+  uwrt_mars_rover_can_common_debug_message3_pack(msgData.raw, &msgStruct, 1);
 
-      // Filtering performed by software:
-      if (rxMsg.getID() == static_cast<HWBRIDGE::CANID>(RX_ID)) {
-        rxMsg.getPayload(counter);  // extract data from the received CAN message
-        printf("  counter = %d\r\n", counter);
-        timer.start();  // transmission lag
-      }
-    }
-  }
+  // Prepare CANMsg
+  msgACK.setID(HWBRIDGE::CANID::COMMON_DEBUG_MESSAGE3);
+  msgACK.setPayload(msgData, UWRT_MARS_ROVER_CAN_COMMON_DEBUG_MESSAGE3_LENGTH);
+
+  // Send a one shot back
+  can.sendOneShotMessage(msgACK, 1ms);
+
+  printf("One-shot reply sent\r\n");
+
+  return MBED_SUCCESS;
 }

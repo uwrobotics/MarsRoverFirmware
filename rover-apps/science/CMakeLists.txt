@@ -17,7 +17,7 @@ target_link_libraries(science
         EncoderMAE3
         Quadrature64CPR
         #CAN
-        CANBus
+        CANInterface
         CANMsg
         #Sensor
         CurrentSensor
