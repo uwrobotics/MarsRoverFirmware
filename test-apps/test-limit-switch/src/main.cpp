@@ -5,7 +5,7 @@
 DigitalIn Pin(PA_0);
 GPIO::LimitSwitch hSwitch(Pin);
 GPIO::LimitSwitch lSwitch(Pin, 0);
-GPIO::LimitSwitch ncSwitch(NC); 
+GPIO::LimitSwitch ncSwitch(NC);
 
 int main() {
   // Check to see if limit switch is pressed

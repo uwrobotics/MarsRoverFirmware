@@ -15,6 +15,6 @@ LimitSwitch::operator bool() {
   return m_limitPin.isPressed();
 }
 
-LimitSwitch::isConnected(){
+LimitSwitch::isConnected() {
   return m_limitPin.is_connected();
 }
