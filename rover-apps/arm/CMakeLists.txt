@@ -1,6 +1,6 @@
 add_executable(arm)
-target_sources(arm PRIVATE src/main.cpp)
-target_include_directories(arm PUBLIC include)
+target_sources(arm PRIVATE ../common/src/main.cpp)
+target_include_directories(arm PUBLIC include ../common/include)
 target_link_libraries(arm
         PRIVATE
         #Control
