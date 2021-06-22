@@ -10,5 +10,4 @@ WatchdogModule gimbal_watchdog;
 std::vector<Module*> gModules = {
     // put modules here
     &gimbal_watchdog,
-}
-;
+};
