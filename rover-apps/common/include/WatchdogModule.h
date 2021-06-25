@@ -3,6 +3,7 @@
 #include "Module.h"
 #include "mbed.h"
 
+namespace Module {
 class WatchdogModule final : public Module {
  public:
   /* Initiates the watchdog with a countdown
@@ -25,3 +26,4 @@ class WatchdogModule final : public Module {
  private:
   std::chrono::milliseconds countdown_ms; /*max timeout of the watchdog*/
 };
+}  // namespace Module

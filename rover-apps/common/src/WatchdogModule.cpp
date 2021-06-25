@@ -4,6 +4,8 @@
 #include "WatchdogWrapper.h"
 #include "mbed.h"
 
+using namespace Module;
+
 WatchdogModule::WatchdogModule(std::chrono::milliseconds countdown) : countdown_ms(countdown) {
   Utility::WatchdogWrapper::startWatchdog(countdown_ms);
 }
