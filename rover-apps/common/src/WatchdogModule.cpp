@@ -6,8 +6,7 @@
 
 namespace Module;
 
-WatchdogModule::WatchdogModule(std::chrono::milliseconds countdown, std::chrono::milliseconds pet)
-    : countdown_ms(countdown) {
+WatchdogModule::WatchdogModule(std::chrono::milliseconds countdown) : countdown_ms(countdown) {
   Utility::WatchdogWrapper::startWatchdog(countdown_ms);
 }
 

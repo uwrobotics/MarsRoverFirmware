@@ -5,7 +5,9 @@
 #include "Module.h"
 #include "WatchdogModule.h"
 
-WatchdogModule science_watchdog;
+std::chrono::milliseconds countdown_ms = 1000ms; /*Test value*/
+
+WatchdogModule science_watchdog(countdown_ms);
 
 std::vector<Module*> gModules = {
     // put modules here
