@@ -7,8 +7,6 @@ class WatchdogWrapper {
  public:
   static void startWatchdog(std::chrono::milliseconds countdown_ms);
   static void logResetReason(void);
-
- private:
   static void petWatchdog(void);
 };
 }  // namespace Utility
