@@ -1,6 +1,5 @@
 #pragma once
 
-namespace Module {
 class Module {
  public:
   virtual void periodic_10s(void)   = 0;
@@ -9,4 +8,3 @@ class Module {
   virtual void periodic_10ms(void)  = 0;
   virtual void periodic_1ms(void)   = 0;
 };
-}  // namespace Module

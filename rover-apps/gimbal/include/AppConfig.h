@@ -7,7 +7,7 @@
 
 std::chrono::milliseconds countdown_ms = 1000ms; /*Test value*/
 
-Module::WatchdogModule gimbal_watchdog(countdown_ms);
+WatchdogModule gimbal_watchdog(countdown_ms);
 
 std::vector<Module*> gModules = {
     // put modules here
