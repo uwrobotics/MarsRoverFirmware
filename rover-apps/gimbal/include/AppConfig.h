@@ -5,9 +5,7 @@
 #include "Module.h"
 #include "WatchdogModule.h"
 
-std::chrono::milliseconds countdown_ms = 1000ms; /*Test value*/
-
-WatchdogModule gimbal_watchdog(countdown_ms);
+WatchdogModule gimbal_watchdog;
 
 std::vector<Module*> gModules = {
     // put modules here
