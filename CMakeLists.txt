@@ -94,6 +94,7 @@ add_app_subdirectory(${ROVER_APPS_DIR}/gamepad)
 add_app_subdirectory(${ROVER_APPS_DIR}/gimbal)
 add_app_subdirectory(${ROVER_APPS_DIR}/pdb)
 add_app_subdirectory(${ROVER_APPS_DIR}/science)
+add_subdirectory(${ROVER_APPS_DIR}/common)
 
 # Include Test Apps
 add_app_subdirectory(${TEST_APPS_DIR}/test-actuator-controller)
@@ -118,7 +119,7 @@ add_app_subdirectory(${TEST_APPS_DIR}/test-watchdog)
 # Ensure APP was specified
 if ("$ENV{APP}" STREQUAL "")
     message(FATAL_ERROR "APP was not specified")
-endif()
+endif ()
 
 # Ensure that a target exists for the specified APP
 # https://stackoverflow.com/a/62311397/10173605
