@@ -5,7 +5,7 @@ Thread pet_thread;
 std::chrono::milliseconds countdown_ms = 1000ms;
 std::chrono::milliseconds pet_ms       = 200ms;
 
-void periodic(std::chrono::milliseconds *pet_ms) {
+void pet_dog_task(std::chrono::milliseconds *pet_ms) {
   while (1) {
     Utility::WatchdogWrapper::petWatchdog();
     ThisThread::sleep_for(*pet_ms);

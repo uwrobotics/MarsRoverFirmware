@@ -6,7 +6,7 @@
 
 const std::chrono::milliseconds WatchdogModule::WATCHDOG_DEFAULT_COUNTDOWN = 5000ms;
 
-WatchdogModule::WatchdogModule(){
+WatchdogModule::WatchdogModule() {
   Utility::WatchdogWrapper::logResetReason();
   Utility::WatchdogWrapper::startWatchdog(WATCHDOG_DEFAULT_COUNTDOWN);
 }
