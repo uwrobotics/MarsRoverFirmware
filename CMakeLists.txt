@@ -119,7 +119,7 @@ add_app_subdirectory(${TEST_APPS_DIR}/test-watchdog)
 # Ensure APP was specified
 if ("$ENV{APP}" STREQUAL "")
     message(FATAL_ERROR "APP was not specified")
-endif ()
+endif()
 
 # Ensure that a target exists for the specified APP
 # https://stackoverflow.com/a/62311397/10173605
