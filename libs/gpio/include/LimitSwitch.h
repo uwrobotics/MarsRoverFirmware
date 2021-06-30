@@ -11,12 +11,12 @@ class LimitSwitch {
   // Overloaded bool operator
   operator bool();
 
-  DigitalIn m_limitPin;
   bool isConnected();
 
  private:
   // Active High is 1 and Active Low is 0
   bool m_ActiveHigh;
+  DigitalIn m_limitPin;
 };
 
 }  // namespace GPIO
