@@ -6,7 +6,7 @@
 
 namespace Utility {
 
-void WatchdogWrapper::startWatchdog(std::chrono::milliseconds countdown_ms /*= 5000ms*/) {
+void WatchdogWrapper::startWatchdog(std::chrono::milliseconds countdown_ms) {
   uint32_t countdown_uint32 = countdown_ms.count();
   Watchdog &watchdog        = Watchdog::get_instance();
   watchdog.start(countdown_uint32);
