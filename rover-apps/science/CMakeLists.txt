@@ -22,6 +22,8 @@ target_link_libraries(science
         #Sensor
         CurrentSensor
         AdafruitSTEMMA
+        #common-modules
+        AdafruitSTEMMAModule
         #Other
         uwrt-mars-rover-hw-bridge
         Logger

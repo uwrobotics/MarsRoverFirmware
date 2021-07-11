@@ -2,6 +2,7 @@
 
 #include "Module.h"
 #include "mbed.h"
+#include "AdafruitSTEMMAModule.h"
 
 class AdafruitSTEMMAModule final : public Module {
     public:
@@ -12,4 +13,6 @@ class AdafruitSTEMMAModule final : public Module {
         void periodic_100ms(void) override {}
         void periodic_10ms(void) override {}
         void periodic_1ms(void) override {}
+
+        AdafruitSTEMMA moistureSensor;
 }
