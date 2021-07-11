@@ -35,6 +35,14 @@ TARGETS_LIST := $(sort $(patsubst $(TARGETS_DIR)/TARGET_%/,%, $(wildcard $(TARGE
 
 NUMBER_OF_SUPPORTED_CONFIGS := $(shell python3 scripts/build_configurations_helper.py count-supported-configs)
 
+# Lowercase Command Args
+ifneq (,$(app))
+APP = $(app)
+endif
+ifneq (,$(target))
+TARGET = $(target)
+endif
+
 verify_app_target_tuple_is_specified:
 ifeq (,$(findstring $(APP), $(APPS_LIST)))
 
