@@ -83,8 +83,8 @@ void PDB_Module::rail_monitoring() {
     Utility::logger << "!!! 17V RAIL VOLTAGE: %.3fV !!!\n", rail_17V_voltage;
   }
   if (rail_5V_voltage < PDB_5V_RAIL_MIN_THRESHOLD || rail_5V_voltage > PDB_5V_RAIL_MAX_THRESHOLD) {
-      Utility::logger << "!!! 5V RAIL VOLTAGE: %.3fV !!!\n", rail_5V_voltage;
-    }
+    Utility::logger << "!!! 5V RAIL VOLTAGE: %.3fV !!!\n", rail_5V_voltage;
+  }
 }
 
 void PDB_Module::temperature_monitoring() {
@@ -94,8 +94,8 @@ void PDB_Module::temperature_monitoring() {
       30;
 
   if (temperature_celsius < PDB_TEMPERATURE_MIN_THRESHOLD || temperature_celsius > PDB_TEMPERATURE_MAX_THRESHOLD) {
-      Utility::logger << "!!! TEMPERATURE FAULT:" << temperature_celsius << "degrees Celsius\n";
-    }
+    Utility::logger << "!!! TEMPERATURE FAULT:" << temperature_celsius << "degrees Celsius\n";
+  }
 }
 
 void PDB_Module::periodic_1s() {
