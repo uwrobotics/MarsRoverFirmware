@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Module.h"
-#include "PDB_config.h"
+#include "PDB_Module.h"
 
 PDB_Module PDB;
 

@@ -1,8 +1,13 @@
 add_library(PDB_Monitoring STATIC)
 target_sources(PDB_Monitoring PRIVATE src/PDB_Module.cpp)
-target_include_directories(PDB_Monitoring PUBLIC include)
+target_include_directories(PDB_Monitoring PUBLIC
+        include
+        ../common/include
+        )
 target_link_libraries(PDB_Monitoring
         PRIVATE
+        Logger
+        uwrt-mars-rover-hw-bridge
         mbed-os
         )
 
@@ -15,7 +20,7 @@ target_link_libraries(pdb
         CANMsg
         Logger
         uwrt-mars-rover-hw-bridge
-        /* Modules */
+        #Modules
         PDB_Monitoring
         )
 mbed_set_post_build(pdb)
