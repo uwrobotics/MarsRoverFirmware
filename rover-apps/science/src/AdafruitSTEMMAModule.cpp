@@ -4,9 +4,10 @@
 #include "AdafruitSTEMMA.h"
 
 AdafruitSTEMMAModule::AdafruitSTEMMAModule() {
-    bool resetStatus = moistureSensor.reset();
+    moistureSensorModule = new AdafruitSTEMMA(TEMP_MOIST_I2C_SDA, TEMP_MOIST_I2C_SCL);
+    bool resetStatus = moistureSensor -> reset();
 }
 
 void AdafruitSTEMMAModule::periodic_100ms(void) {
-    bool updateStatus = moistureSensor.update();
+    bool updateStatus = moistureSensor -> update();
 }
