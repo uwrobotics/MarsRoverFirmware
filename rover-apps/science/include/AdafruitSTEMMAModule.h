@@ -3,6 +3,7 @@
 #include "Module.h"
 #include "mbed.h"
 #include "AdafruitSTEMMAModule.h"
+#include "AdafruitSTEMMA.h"
 
 class AdafruitSTEMMAModule final : public Module {
     public:
