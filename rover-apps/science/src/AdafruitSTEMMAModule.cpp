@@ -4,7 +4,7 @@
 #include "mbed.h"
 #include "AdafruitSTEMMA.h"
 
-AdafruitSTEMMAModule::AdafruitSTEMMAModule() : moistureSensor(TEMP_MOIST_I2C_ADA, TEMP_MOIST_I2C_SCL) {
+AdafruitSTEMMAModule::AdafruitSTEMMAModule(PinName sda, PinName scl) : moistureSensor(sda, scl) {
     static int numFails = 0;
     bool resetStatus = false;
 
