@@ -13,6 +13,7 @@ class AdafruitSTEMMAModule final : public Module {
         void periodic_100ms(void) override {}
         void periodic_10ms(void) override {}
         void periodic_1ms(void) override {}
-
+    
+    private:
         AdafruitSTEMMA moistureSensor;
 }
