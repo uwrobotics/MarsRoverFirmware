@@ -3,9 +3,9 @@
 #include <vector>
 
 #include "Module.h"
-#include "PDB_Module.h"
+#include "PDBMonitoring.h"
 
-PDB_Module PDB;
+PDBMonitoring PDB;
 
 std::vector<Module*> gModules = {
     // put modules here

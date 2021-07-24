@@ -1,10 +1,8 @@
-#include "PDB_Module.h"
+#include "PDBMonitoring.h"
 
 #include <cmath>
 
 #include "Logger.h"
-#include "PDB_config.h"
-#include "hw_bridge.h"
 
 /* Pins configuration for Load Monitoring */
 DigitalOut load1_5V_diag_en(LOAD1_5V_DIAG_EN);
@@ -35,18 +33,45 @@ DigitalIn rail24V_pgood_n(RAIL_24V_PGOOD_N);
 /* Pins configuration for Temperature Monitoring */
 AnalogIn temperatureADC(TEMPERATURE_ADC_IN);
 
-PDB_Module::PDB_Module() {
+const float PDBMonitoring::PDB_VBAT_RAIL_NOMINAL_VOLTAGE = 24.0;
+const float PDBMonitoring::PDB_VBAT_RAIL_MIN_THRESHOLD   = 18.0;
+const float PDBMonitoring::PDB_VBAT_RAIL_MAX_THRESHOLD   = 25.2;
+
+const float PDBMonitoring::PDB_24V_RAIL_NOMINAL_VOLTAGE = 24.0;
+const float PDBMonitoring::PDB_24V_RAIL_MIN_THRESHOLD   = 22.0;
+const float PDBMonitoring::PDB_24V_RAIL_MAX_THRESHOLD   = 26.0;
+
+const float PDBMonitoring::PDB_17V_RAIL_NOMINAL_VOLTAGE = 17.0;
+const float PDBMonitoring::PDB_17V_RAIL_MIN_THRESHOLD   = 16.0;
+const float PDBMonitoring::PDB_17V_RAIL_MAX_THRESHOLD   = 18.0;
+
+const float PDBMonitoring::PDB_5V_RAIL_NOMINAL_VOLTAGE = 5.0;
+const float PDBMonitoring::PDB_5V_RAIL_MIN_THRESHOLD   = 4.8;
+const float PDBMonitoring::PDB_5V_RAIL_MAX_THRESHOLD   = 6.0;
+
+const float PDBMonitoring::PDB_TEMPERATURE_MIN_THRESHOLD = 10.0;
+const float PDBMonitoring::PDB_TEMPERATURE_MAX_THRESHOLD = 50.0;
+
+const bool PDBMonitoring::PDB_5V_LOAD1_DIAG_EN = 1;
+const bool PDBMonitoring::PDB_5V_LOAD2_DIAG_EN = 0;
+const bool PDBMonitoring::PDB_5V_LOAD3_DIAG_EN = 0;
+const bool PDBMonitoring::PDB_5V_LOAD4_DIAG_EN = 0;
+const bool PDBMonitoring::PDB_5V_LOAD5_DIAG_EN = 0;
+const bool PDBMonitoring::PDB_17V_LOAD_DIAG_EN = 1;
+
+PDBMonitoring::PDBMonitoring() {
   load1_5V_diag_en = PDB_5V_LOAD1_DIAG_EN;
   load2_5V_diag_en = PDB_5V_LOAD2_DIAG_EN;
   load3_5V_diag_en = PDB_5V_LOAD3_DIAG_EN;
   load4_5V_diag_en = PDB_5V_LOAD4_DIAG_EN;
   load5_5V_diag_en = PDB_5V_LOAD5_DIAG_EN;
   load_17V_diag_en = PDB_17V_LOAD_DIAG_EN;
-
-  rail_counter = 0;
 }
 
-void PDB_Module::load_monitoring() {
+/*TODO:Replace the logger statements with CAN logs
+ * after CAN Module is ready */
+
+void PDBMonitoring::load_monitoring() {
   if (load1_5V_diag_en && !load1_5V_fault_n) {
     Utility::logger << "Fault on 5V load 1\n";
   }
@@ -67,7 +92,7 @@ void PDB_Module::load_monitoring() {
   }
 }
 
-void PDB_Module::rail_monitoring() {
+void PDBMonitoring::rail_monitoring() {
   float rail_vbat_voltage = railBattery.read_voltage() / 3 * PDB_VBAT_RAIL_NOMINAL_VOLTAGE;
   float rail_24V_voltage  = rail24V.read_voltage() / 3 * PDB_24V_RAIL_NOMINAL_VOLTAGE;
   float rail_17V_voltage  = rail17V.read_voltage() / 3 * PDB_17V_RAIL_NOMINAL_VOLTAGE;
@@ -87,7 +112,9 @@ void PDB_Module::rail_monitoring() {
   }
 }
 
-void PDB_Module::temperature_monitoring() {
+/*https://www.ti.com/lit/ds/symlink/lmt87-q1.pdf?ts=1627158177761&ref_url=https%253A%252F%252Fwww.google.com%252F*/
+
+void PDBMonitoring::temperature_monitoring() {
   float temperature_celsius =
       (13.582 - sqrt(pow(-13.582, 2) + 4 * 0.00433 * (2230.8 - temperatureADC.read_voltage() * 1000))) /
           (2 * (-0.00433)) +
@@ -98,13 +125,15 @@ void PDB_Module::temperature_monitoring() {
   }
 }
 
-void PDB_Module::periodic_1s() {
+void PDBMonitoring::periodic_1s() {
   temperature_monitoring();
   load_monitoring();
 }
 
-void PDB_Module::periodic_1ms() {
+void PDBMonitoring::periodic_1ms() {
   /*Monitoring Period = 500ms*/
+  int rail_counter = 0;
+
   if (rail_counter % 5 == 0) {
     rail_monitoring();
     rail_counter = 0;
