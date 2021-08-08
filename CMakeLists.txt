@@ -75,6 +75,9 @@ add_subdirectory(${LIBS_DIR}/pid)
 add_subdirectory(${LIBS_DIR}/sensors)
 add_subdirectory(${LIBS_DIR}/utility)
 
+# Include common 
+add_subdirectory(${ROVER_APPS_DIR}/common)
+
 # Only add subdirectory of requested APP
 function(add_app_subdirectory APP_SUBDIRECTORY)
     string(FIND ${APP_SUBDIRECTORY} / INDEX REVERSE)
@@ -144,3 +147,4 @@ if ("$ENV{APP}" IN_LIST ALL_BUILDSYSTEM_TARGETS)
 else ()
     message(FATAL_ERROR "$ENV{APP} app is not an app target found in ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif ()
+
