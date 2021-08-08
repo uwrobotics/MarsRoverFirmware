@@ -1,6 +1,7 @@
+#include "AdafruitSTEMMAModule.h"
+
 #include <ratio>
 
-#include "AdafruitSTEMMAModule.h"
 #include "Module.h"
 #include "mbed.h"
 
