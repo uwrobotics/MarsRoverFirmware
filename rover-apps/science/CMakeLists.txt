@@ -1,3 +1,14 @@
+add_library(AdafruitSTEMMAModule)
+target_sources(AdafruitSTEMMAModule PRIVATE src/AdafruitSTEMMAModule.cpp)
+target_include_directories(AdafruitSTEMMAModule PRIVATE include)
+target_link_libraries(AdafruitSTEMMAModule
+        PRIVATE
+        mbed-os        
+        PUBLIC
+        AdafruitSTEMMA 
+        Module
+)
+
 add_executable(science)
 target_sources(science PRIVATE ../common/src/main.cpp)
 target_include_directories(science PUBLIC include ../common/include)
