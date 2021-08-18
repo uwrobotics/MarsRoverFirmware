@@ -21,6 +21,8 @@ target_link_libraries(arm
         CANMsg
         #Sensor
         CurrentSensor
+        #common-modules
+        WatchdogModule
         #Other
         uwrt-mars-rover-hw-bridge
         Logger
