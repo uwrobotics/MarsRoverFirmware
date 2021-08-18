@@ -4,35 +4,6 @@
 
 #include "Logger.h"
 
-/* Pins configuration for Load Monitoring */
-DigitalOut load1_5V_diag_en(LOAD1_5V_DIAG_EN);
-DigitalIn load1_5V_fault_n(LOAD1_5V_FAULT);
-
-DigitalOut load2_5V_diag_en(LOAD2_5V_DIAG_EN);
-DigitalIn load2_5V_fault_n(LOAD2_5V_FAULT);
-
-DigitalOut load3_5V_diag_en(LOAD3_5V_DIAG_EN);
-DigitalIn load3_5V_fault_n(LOAD3_5V_FAULT);
-
-DigitalOut load4_5V_diag_en(LOAD4_5V_DIAG_EN);
-DigitalIn load4_5V_fault_n(LOAD4_5V_FAULT);
-
-DigitalOut load5_5V_diag_en(LOAD5_5V_DIAG_EN);
-DigitalIn load5_5V_fault_n(LOAD5_5V_FAULT);
-
-DigitalOut load_17V_diag_en(LOAD_17V_DIAG_EN);
-DigitalIn load_17V_fault_n(LOAD_17V_FAULT);
-
-/* Pins configuration for Rail Monitoring */
-AnalogIn railBattery(RAIL_BATTERY_ANLG_IN);
-AnalogIn rail5V(RAIL_5V_ANLG_IN);
-AnalogIn rail17V(RAIL_17V_ANLG_IN);
-AnalogIn rail24V(RAIL_24V_ANLG_IN);
-DigitalIn rail24V_pgood_n(RAIL_24V_PGOOD_N);
-
-/* Pins configuration for Temperature Monitoring */
-AnalogIn temperatureADC(TEMPERATURE_ADC_IN);
-
 const float PDBMonitoring::PDB_VBAT_RAIL_NOMINAL_VOLTAGE = 24.0;
 const float PDBMonitoring::PDB_VBAT_RAIL_MIN_THRESHOLD   = 18.0;
 const float PDBMonitoring::PDB_VBAT_RAIL_MAX_THRESHOLD   = 25.2;
@@ -59,7 +30,25 @@ const bool PDBMonitoring::PDB_5V_LOAD4_DIAG_EN = 0;
 const bool PDBMonitoring::PDB_5V_LOAD5_DIAG_EN = 0;
 const bool PDBMonitoring::PDB_17V_LOAD_DIAG_EN = 1;
 
-PDBMonitoring::PDBMonitoring() {
+PDBMonitoring::PDBMonitoring()
+    : load1_5V_diag_en(LOAD1_5V_DIAG_EN),
+      load1_5V_fault_n(LOAD1_5V_FAULT),
+      load2_5V_diag_en(LOAD2_5V_DIAG_EN),
+      load2_5V_fault_n(LOAD2_5V_FAULT),
+      load3_5V_diag_en(LOAD3_5V_DIAG_EN),
+      load3_5V_fault_n(LOAD3_5V_FAULT),
+      load4_5V_diag_en(LOAD4_5V_DIAG_EN),
+      load4_5V_fault_n(LOAD4_5V_FAULT),
+      load5_5V_diag_en(LOAD5_5V_DIAG_EN),
+      load5_5V_fault_n(LOAD5_5V_FAULT),
+      load_17V_diag_en(LOAD_17V_DIAG_EN),
+      load_17V_fault_n(LOAD_17V_FAULT),
+      railBattery(RAIL_BATTERY_ANLG_IN),
+      rail5V(RAIL_5V_ANLG_IN),
+      rail17V(RAIL_17V_ANLG_IN),
+      rail24V(RAIL_24V_ANLG_IN),
+      rail24V_pgood_n(RAIL_24V_PGOOD_N),
+      temperatureADC(TEMPERATURE_ADC_IN) {
   load1_5V_diag_en = PDB_5V_LOAD1_DIAG_EN;
   load2_5V_diag_en = PDB_5V_LOAD2_DIAG_EN;
   load3_5V_diag_en = PDB_5V_LOAD3_DIAG_EN;
