@@ -94,6 +94,7 @@ add_app_subdirectory(${ROVER_APPS_DIR}/gamepad_2021)
 add_app_subdirectory(${ROVER_APPS_DIR}/gimbal_2021)
 add_app_subdirectory(${ROVER_APPS_DIR}/pdb_2021)
 add_app_subdirectory(${ROVER_APPS_DIR}/science_2021)
+add_app_subdirectory(${ROVER_APPS_DIR}/common)
 
 # Include Test Apps
 add_app_subdirectory(${TEST_APPS_DIR}/test-actuator-controller)

@@ -26,6 +26,8 @@ target_link_libraries(gimbal
         CANMsg
         #Sensor
         CurrentSensor
+        #common-modules
+        WatchdogModule
         #Other
         Logger
         uwrt-mars-rover-hw-bridge
