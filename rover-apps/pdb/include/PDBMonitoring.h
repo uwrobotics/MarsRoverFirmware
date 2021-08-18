@@ -66,14 +66,13 @@ class PDBMonitoring final : public Module {
   DigitalOut load_17V_diag_en;
   DigitalIn load_17V_fault_n;
 
-/* Pins configuration for Rail Monitoring */
+  /* Pins configuration for Rail Monitoring */
   AnalogIn railBattery;
   AnalogIn rail5V;
   AnalogIn rail17V;
   AnalogIn rail24V;
   DigitalIn rail24V_pgood_n;
 
-/* Pins configuration for Temperature Monitoring */
+  /* Pins configuration for Temperature Monitoring */
   AnalogIn temperatureADC;
-
 };
