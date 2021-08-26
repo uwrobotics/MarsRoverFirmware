@@ -10,10 +10,10 @@ target_link_libraries(PDB_Monitoring
         mbed-os
         )
 
-add_executable(pdb_2021)
-target_sources(pdb_2021 PRIVATE src/main.cpp)
-target_include_directories(pdb_2021 PUBLIC include)
-target_link_libraries(pdb_2021
+add_executable(pdb)
+target_sources(pdb PRIVATE ../common/src/main.cpp)
+target_include_directories(pdb PUBLIC ../common/include)
+target_link_libraries(pdb
         PRIVATE
         CANBus
         CANMsg
@@ -22,4 +22,4 @@ target_link_libraries(pdb_2021
         #Modules
         PDB_Monitoring
         )
-mbed_set_post_build(pdb_2021)
+mbed_set_post_build(pdb)
