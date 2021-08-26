@@ -171,6 +171,29 @@ typedef enum {
   RAIL_17V_ANLG_IN     = PA_5,
   RAIL_24V_ANLG_IN     = PB_0,
   RAIL_BATTERY_ANLG_IN = PB_1,
+  RAIL_24V_PGOOD_N     = PC_6,
+
+  /**** Temperature Sensor ****/
+  TEMPERATURE_ADC_IN = PA_3,
+
+  /**** Load Monitor ****/
+  LOAD1_5V_DIAG_EN = PA_6,
+  LOAD1_5V_FAULT   = PA_7,
+
+  LOAD2_5V_DIAG_EN = PC_2,
+  LOAD2_5V_FAULT   = PC_3,
+
+  LOAD3_5V_DIAG_EN = PC_0,
+  LOAD3_5V_FAULT   = PC_1,
+
+  LOAD4_5V_DIAG_EN = PC_13,
+  LOAD4_5V_FAULT   = PC_14,
+
+  LOAD5_5V_DIAG_EN = PB_8,
+  LOAD5_5V_FAULT   = PB_9,
+
+  LOAD_17V_DIAG_EN = PC_4,
+  LOAD_17V_FAULT   = PC_5,
 
   /**** LED Matrix ****/
   LED_MATRIX_R_CHANNEL = PB_4,
