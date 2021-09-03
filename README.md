@@ -91,10 +91,13 @@ This repository contains:
 4. Run make with the target application and board
 
     Ex. Compile the science application for the science board:  
-    `make APP=science TARGET=SCIENCE_REV2`
+
+    `make APP=science TARGET=SCIENCE_REV2` OR `make app=science target=SCIENCE_REV2`
 
     Ex. Compile the arm application for the arm board:  
-    `make APP=arm TARGET=ARM_REV2`
+    `make APP=arm TARGET=ARM_REV2` OR `make app=arm target=ARM_REV2`
+
+    Note: The APP and TARGET variables can be defined in any order.
     
     After compiling an application you should see a message similar to the following:  
     ```shell script

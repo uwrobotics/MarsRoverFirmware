@@ -16,3 +16,12 @@ target_link_libraries(QEI
         PRIVATE
         mbed-os
         )
+
+
+add_library(LimitSwitch STATIC)
+target_sources(LimitSwitch PRIVATE src/LimitSwitch.cpp)
+target_include_directories(LimitSwitch PUBLIC include)
+target_link_libraries(LimitSwitch
+        PRIVATE
+        mbed-os
+        )
