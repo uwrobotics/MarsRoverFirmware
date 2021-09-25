@@ -1,7 +1,7 @@
-add_executable(science)
-target_sources(science PRIVATE src/main.cpp)
-target_include_directories(science PUBLIC include)
-target_link_libraries(science
+add_executable(gimbal_2021)
+target_sources(gimbal_2021 PRIVATE src/main.cpp)
+target_include_directories(gimbal_2021 PUBLIC include)
+target_link_libraries(gimbal_2021
         PRIVATE
         #Control
         OpenLoopController
@@ -11,23 +11,17 @@ target_link_libraries(science
         ActuatorControllerManager
         #Motors
         LimServo
-        DCMotor
+        ContServo
         #Encoders
         EncoderAEAT6012
-        EncoderMAE3
-        Quadrature64CPR
         #CAN
         CANInterface
         CANMsg
         #Sensor
         CurrentSensor
-        AdafruitSTEMMA
         #Other
-        uwrt-mars-rover-hw-bridge
         Logger
+        uwrt-mars-rover-hw-bridge
         mbed-events
         )
-mbed_set_post_build(science)
-
-add_library(ScienceConfig INTERFACE)
-target_include_directories(ScienceConfig INTERFACE include)
+mbed_set_post_build(gimbal_2021)

@@ -1,7 +1,7 @@
-add_executable(arm)
-target_sources(arm PRIVATE src/main.cpp)
-target_include_directories(arm PUBLIC include)
-target_link_libraries(arm
+add_executable(arm_2021)
+target_sources(arm_2021 PRIVATE src/main.cpp)
+target_include_directories(arm_2021 PUBLIC include)
+target_link_libraries(arm_2021
         PRIVATE
         #Control
         OpenLoopController
@@ -28,4 +28,4 @@ target_link_libraries(arm
         mbed-os
         mbed-events
         )
-mbed_set_post_build(arm)
+mbed_set_post_build(arm_2021)

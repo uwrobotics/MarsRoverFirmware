@@ -1,20 +1,20 @@
 # Commented boards should be supported, but currently are not
 
 # Rover Apps
-arm:
-  - ARM_REV2
+arm_2021:
+  - ARM_REV2_2021
 
-gamepad:
-  - GAMEPAD_REV1
+gamepad_2021:
+  - GAMEPAD_REV1_2021
 
-gimbal:
-  - GIMBAL_REV2
+gimbal_2021:
+  - GIMBAL_REV2_2021
 
-pdb:
-  - PDB_REV2
+pdb_2021:
+  - PDB_REV2_2021
 
-science:
-  - SCIENCE_REV2
+science_2021:
+  - SCIENCE_REV2_2021
 
 # Test Apps
 test-aeat-6012:
@@ -24,32 +24,32 @@ test-aeat-8800:
   - UWRT_NUCLEO
 
 test-actuator-controller:
-  - ARM_REV2
-  - GIMBAL_REV2
-  - SCIENCE_REV2
+  - ARM_REV2_2021
+  - GIMBAL_REV2_2021
+  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 test-blinky:
-  - ARM_REV2
-  - GAMEPAD_REV1
-  - GIMBAL_REV2
-  - PDB_REV2
-  - SCIENCE_REV2
+  - ARM_REV2_2021
+  - GAMEPAD_REV1_2021
+  - GIMBAL_REV2_2021
+  - PDB_REV2_2021
+  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 test-blockingneo:
   - UWRT_NUCLEO
 
 test-can:
-  - ARM_REV2
-  - GIMBAL_REV2
-  - PDB_REV2
-  - SCIENCE_REV2
+  - ARM_REV2_2021
+  - GIMBAL_REV2_2021
+  - PDB_REV2_2021
+  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 test-mae3:
-  #  - GIMBAL_REV2
-  #  - SCIENCE_REV2
+  #  - GIMBAL_REV2_2021
+  #  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 test-led-matrix:
@@ -59,39 +59,39 @@ test-limit-switch:
   - UWRT_NUCLEO
 
 test-logger:
-  - GIMBAL_REV2
-  - PDB_REV2
-  - SCIENCE_REV2
+  - GIMBAL_REV2_2021
+  - PDB_REV2_2021
+  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 test-lookup-table:
   - UWRT_NUCLEO
 
 test-adafruitSTEMMA:
-  - SCIENCE_REV2
+  - SCIENCE_REV2_2021
   #  - UWRT_NUCLEO
 
 test-units:
   - UWRT_NUCLEO
 
 test-pid:
-  #  - ARM_REV2
-  #  - GIMBAL_REV2
-  #  - SCIENCE_REV2
+  #  - ARM_REV2_2021
+  #  - GIMBAL_REV2_2021
+  #  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 test-pwm:
-  - ARM_REV2
-  - GIMBAL_REV2
-  - PDB_REV2
-  - SCIENCE_REV2
+  - ARM_REV2_2021
+  - GIMBAL_REV2_2021
+  - PDB_REV2_2021
+  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 test-pwmin:
-  - ARM_REV2
-  #  - GAMEPAD_REV1
-  #  - GIMBAL_REV2
-  #  - SCIENCE_REV2
+  - ARM_REV2_2021
+  #  - GAMEPAD_REV1_2021
+  #  - GIMBAL_REV2_2021
+  #  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
 
 
@@ -102,8 +102,8 @@ test-watchdog:
   - UWRT_NUCLEO
 
 test-stress-can:
-  - ARM_REV2
-  - GIMBAL_REV2
-  - PDB_REV2
-  - SCIENCE_REV2
+  - ARM_REV2_2021
+  - GIMBAL_REV2_2021
+  - PDB_REV2_2021
+  - SCIENCE_REV2_2021
   - UWRT_NUCLEO
