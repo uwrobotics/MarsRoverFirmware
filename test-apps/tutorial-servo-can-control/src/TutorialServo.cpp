@@ -2,10 +2,9 @@
 
 #include "mbed.h"
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs,
-                             float maxPulsewidthInMs)
-    : m_servoPwmOut(servoPin),
-      m_servoRangeInDegrees(servoRangeInDegrees),
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees,
+                             float minPulsewidthInMs, float maxPulsewidthInMs)
+    : m_servoPwmOut(servoPin), m_servoRangeInDegrees(servoRangeInDegrees),
       m_minPulsewidthInMs(minPulsewidthInMs),
       m_maxPulsewidthInMs(maxPulsewidthInMs) {
   m_servoPwmOut.period_ms(20);
@@ -19,7 +18,9 @@ void TutorialServo::setPositionInDegrees(const float degrees) {
   } else if (degrees < 0) {
     pulsewidth = m_minPulsewidthInMs;
   } else {
-    pulsewidth = m_minPulsewidthInMs + (degrees / m_servoRangeInDegrees) * (m_maxPulsewidthInMs - m_maxPulsewidthInMs);
+    pulsewidth =
+        m_minPulsewidthInMs + (degrees / m_servoRangeInDegrees) *
+                                  (m_maxPulsewidthInMs - m_maxPulsewidthInMs);
   }
 
   m_servoPwmOut.pulsewidth_ms(pulsewidth);
