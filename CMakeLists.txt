@@ -42,11 +42,11 @@ include(${MBED_PATH}/tools/cmake/app.cmake)
 add_compile_options(-fdiagnostics-color)
 
 # Include custom targets
-add_subdirectory(${TARGETS_DIR}/TARGET_ARM_REV2)
-add_subdirectory(${TARGETS_DIR}/TARGET_GAMEPAD_REV1)
-add_subdirectory(${TARGETS_DIR}/TARGET_GIMBAL_REV2)
-add_subdirectory(${TARGETS_DIR}/TARGET_PDB_REV2)
-add_subdirectory(${TARGETS_DIR}/TARGET_SCIENCE_REV2)
+add_subdirectory(${TARGETS_DIR}/TARGET_ARM_REV2_2021)
+add_subdirectory(${TARGETS_DIR}/TARGET_GAMEPAD_REV1_2021)
+add_subdirectory(${TARGETS_DIR}/TARGET_GIMBAL_REV2_2021)
+add_subdirectory(${TARGETS_DIR}/TARGET_PDB_REV2_2021)
+add_subdirectory(${TARGETS_DIR}/TARGET_SCIENCE_REV2_2021)
 add_subdirectory(${TARGETS_DIR}/TARGET_UWRT_NUCLEO)
 
 # Include mbed-os and disable warnings from within mbed-os
@@ -89,11 +89,11 @@ function(add_app_subdirectory APP_SUBDIRECTORY)
 endfunction()
 
 ## Include Rover Apps
-add_app_subdirectory(${ROVER_APPS_DIR}/arm)
-add_app_subdirectory(${ROVER_APPS_DIR}/gamepad)
-add_app_subdirectory(${ROVER_APPS_DIR}/gimbal)
-add_app_subdirectory(${ROVER_APPS_DIR}/pdb)
-add_app_subdirectory(${ROVER_APPS_DIR}/science)
+add_app_subdirectory(${ROVER_APPS_DIR}/arm_2021)
+add_app_subdirectory(${ROVER_APPS_DIR}/gamepad_2021)
+add_app_subdirectory(${ROVER_APPS_DIR}/gimbal_2021)
+add_app_subdirectory(${ROVER_APPS_DIR}/pdb_2021)
+add_app_subdirectory(${ROVER_APPS_DIR}/science_2021)
 
 # Include Test Apps
 add_app_subdirectory(${TEST_APPS_DIR}/test-actuator-controller)

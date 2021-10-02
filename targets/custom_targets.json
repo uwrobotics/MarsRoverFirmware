@@ -1,5 +1,5 @@
 {
-    "ARM_REV2": {
+    "ARM_REV2_2021": {
         "inherits": [
             "UWRT_STM32F446xE"
         ],
@@ -8,7 +8,7 @@
             "hse_value": "25000000U"
         }
     },
-    "GAMEPAD_REV1": {
+    "GAMEPAD_REV1_2021": {
         "inherits": [
             "UWRT_STM32F446xE"
         ],
@@ -17,7 +17,7 @@
             "hse_value": "25000000U"
         }
     },
-    "GIMBAL_REV2": {
+    "GIMBAL_REV2_2021": {
         "inherits": [
             "UWRT_STM32F446xE"
         ],
@@ -26,7 +26,7 @@
             "hse_value": "25000000U"
         }
     },
-    "PDB_REV2": {
+    "PDB_REV2_2021": {
         "inherits": [
             "UWRT_STM32F446xE"
         ],
@@ -35,7 +35,7 @@
             "hse_value": "25000000U"
         }
     },
-    "SCIENCE_REV2": {
+    "SCIENCE_REV2_2021": {
         "inherits": [
             "UWRT_STM32F446xE"
         ],
