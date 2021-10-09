@@ -107,3 +107,9 @@ test-stress-can:
   - PDB_REV2
   - SCIENCE_REV2
   - UWRT_NUCLEO
+
+tutorial-servo-pot-control:
+- UWRT_NUCLEO
+
+tutorial-servo-can-control:
+- UWRT_NUCLEO
