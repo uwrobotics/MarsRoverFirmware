@@ -98,7 +98,7 @@ add_app_subdirectory(${ROVER_APPS_DIR}/science_2021)
 # Include Test Apps
 add_app_subdirectory(${TEST_APPS_DIR}/test-actuator-controller)
 add_app_subdirectory(${TEST_APPS_DIR}/test-adafruitSTEMMA)
-add_app_subdirectory(${TEST_APPS_DIR}/test-aeat-6012)
+add_app_subdirectory(${TEST_APPS_DIR}/test-aeat-6012)\
 add_app_subdirectory(${TEST_APPS_DIR}/test-aeat-8800)
 add_app_subdirectory(${TEST_APPS_DIR}/test-blinky)
 add_app_subdirectory(${TEST_APPS_DIR}/test-blockingneo)
@@ -115,6 +115,8 @@ add_app_subdirectory(${TEST_APPS_DIR}/test-quadrature64cpr)
 add_app_subdirectory(${TEST_APPS_DIR}/test-stress-can)
 add_app_subdirectory(${TEST_APPS_DIR}/test-units)
 add_app_subdirectory(${TEST_APPS_DIR}/test-watchdog)
+add_app_subdirectory(${TEST_APPS_DIR}/tutorial-servo-pot-control)
+add_app_subdirectory(${TEST_APPS_DIR}/tutorial-servo-can-control)
 
 # Ensure APP was specified
 if ("$ENV{APP}" STREQUAL "")
