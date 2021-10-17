@@ -11,8 +11,8 @@ target_link_libraries(PDB_Monitoring
         )
 
 add_executable(pdb_2021)
-target_sources(pdb_2021 PRIVATE src/main.cpp)
-target_include_directories(pdb_2021 PUBLIC include)
+target_sources(pdb_2021 PRIVATE ../common/src/main.cpp)
+target_include_directories(pdb_2021 PUBLIC include ../common/include)
 target_link_libraries(pdb_2021
         PRIVATE
         CANBus

@@ -1,14 +1,7 @@
-<<<<<<< HEAD:rover-apps/science_2021/CMakeLists.txt
 add_executable(science_2021)
-target_sources(science_2021 PRIVATE src/main.cpp)
-target_include_directories(science_2021 PUBLIC include)
+target_sources(science_2021 PRIVATE ../common/src/main.cpp)
+target_include_directories(science_2021 PUBLIC include ../common/include)
 target_link_libraries(science_2021
-=======
-add_executable(science)
-target_sources(science PRIVATE ../common/src/main.cpp)
-target_include_directories(science PUBLIC include ../common/include)
-target_link_libraries(science
->>>>>>> Create modules skeleton for new app structure (#382):rover-apps/science/CMakeLists.txt
         PRIVATE
         #Control
         OpenLoopController
