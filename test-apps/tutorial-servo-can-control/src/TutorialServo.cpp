@@ -5,20 +5,11 @@
 CAN can1(PA_0, servoPin);
 float pulseWidthToSend;
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1, float maxPulsewidthInMs = 2) {
-    m_servoPwmOut = servoPin;
-    m_servoRangeInDegrees = servoRangeInDegrees;
-    m_minPulsewidthInMs = minPulsewidthInMs;
-    m_maxPulsewidthInMs = maxPulsewidthInMs;
-}
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1, float maxPulsewidthInMs = 2):m_servoPwmOut(servoPin), m_servoRangeInDegrees(servoRangeInDegrees), m_minPulsewidthInMs(minPulsewidthInMs), m_maxPulsewidthInMs(maxPulsewidthInMs) {}
 
 // Set servo position (ex. 45 deg)
 void setPositionInDegrees( const float degrees) {
-    m_servoPwmOut.period_ms(20);
-    pulseWidthToSend = (1+degrees/servoRangeInDegrees) / 1000;
-    if(can1.write(CANMessage(1337. &pulseWidthToSend, 4))) {
-        printf("Sending through CAN to servo!");
-    }
+    m_servoPwmOut.pulsewidth((1+degrees/servoRangeInDegrees) / 1000);
 }
 
 // Get the servo range in degrees (ex: 90 deg)
