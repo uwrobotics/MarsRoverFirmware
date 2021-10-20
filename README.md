@@ -68,7 +68,21 @@ This repository contains:
         ```
     - Install [ZOC](https://www.emtec.com/zoc/index.html) for serial interfacing
 
-2. Verify the the toolchains were installed correctly
+2. Download source code
+
+    ```shell script
+    git clone --recurse-submodules https://github.com/uwrobotics/MarsRover2020-firmware.git
+    cd MarsRover2020-firmware
+    ```
+
+    **Note:** The repository has a submodule. To update the submodule, use `git submodule update`
+
+3. Install mbed-tools and other python requirements: 
+   ```
+   pip3 install -r scripts/requirements.txt
+   ```
+
+4. Verify the the toolchains were installed correctly
 
     Open a new Command Prompt / Terminal window and run the following commands:
     ```shell script
@@ -79,23 +93,14 @@ This repository contains:
     arm-none-eabi-gcc --version       # Should be v10.2.1 or newer
     ```
 
-3. Download source code
-
-    ```shell script
-    git clone --recurse-submodules https://github.com/uwrobotics/MarsRover2020-firmware.git
-    cd MarsRover2020-firmware
-    ```
-
-    **Note:** The repository has a submodule. To update the submodule, use `git submodule update`
-
-4. Run make with the target application and board
+5. Run make with the target application and board
 
     Ex. Compile the science application for the science board:  
 
-    `make APP=science TARGET=SCIENCE_REV2` OR `make app=science target=SCIENCE_REV2`
+    `make APP=science_2021 TARGET=SCIENCE_REV2_2021` OR `make app=science_2021 target=SCIENCE_REV2_2021`
 
     Ex. Compile the arm application for the arm board:  
-    `make APP=arm TARGET=ARM_REV2` OR `make app=arm target=ARM_REV2`
+    `make APP=arm_2021 TARGET=ARM_REV2_2021` OR `make app=arm_2021 target=ARM_REV2_2021`
 
     Note: The APP and TARGET variables can be defined in any order.
     
@@ -124,7 +129,7 @@ This repository contains:
    **Tip:** You can choose to build all the supported app/target configs at once using `make all`
    
 
-5. Deploy onto board (see below for how to connect to a rover control board)
+6. Deploy onto board (see below for how to connect to a rover control board)
 
     **Note:** The following instructions only apply to Nucleo and Rev 1 boards. For Rev 2 boards and beyond, see [Using the ST-Link to Program Rover Boards (Rev 2 +)](#using-the-st-link-to-program-rover-boards-rev-2-)
 
