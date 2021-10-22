@@ -1,30 +1,42 @@
 #include "TutorialServo.h"
+
+#include <cstdlib>
+
 #include "mbed.h"
 
-//I believe we are writing to servoPin, which I set to be PA_1
-CAN can1(PA_0, servoPin);
-float pulseWidthToSend;
-
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1, float maxPulsewidthInMs = 2):m_servoPwmOut(servoPin), m_servoRangeInDegrees(servoRangeInDegrees), m_minPulsewidthInMs(minPulsewidthInMs), m_maxPulsewidthInMs(maxPulsewidthInMs) {
-    m_servoPwmOut.period_ms(20);
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs,
+                             float maxPulsewidthInMs)
+    : m_servoPwmOut(servoPin),
+      m_servoRangeInDegrees(servoRangeInDegrees),
+      m_minPulsewidthInMs(minPulsewidthInMs),
+      m_maxPulsewidthInMs(maxPulsewidthInMs) {
+  m_servoPwmOut.period_ms(20);
 }
 
 // Set servo position (ex. 45 deg)
-void setPositionInDegrees( const float degrees) {
-    m_servoPwmOut.pulsewidth((1+degrees/servoRangeInDegrees) / 1000);
+void setPositionInDegrees(const float degrees) {
+  if (degrees >= 0 && degrees <= m_servoRangeInDegrees) {
+    m_servoPwmOut.pulsewidth(
+        (m_minPulsewidthInMs + (degrees * (abs(m_maxPulsewidthInMs - m_minPulsewidthInMs) / m_servoRangeInDegrees))) /
+        1000);
+  } else if (degrees < 0) {
+    m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
+  } else {
+    m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs);
+  }
 }
 
 // Get the servo range in degrees (ex: 90 deg)
-float getServoRangeInDegrees( ) const {
-    return m_servoRangeInDegrees;
+float getServoRangeInDegrees() const {
+  return m_servoRangeInDegrees;
 }
 
 // Get the min pulse width in ms (ex: 1ms)
-float getMinPulseWidthInMs( ) const {
-    return m_minPulsewidthInMs;
+float getMinPulseWidthInMs() const {
+  return m_minPulsewidthInMs;
 }
 
 // Get the max pulse width in ms (ex: 2ms)
-float getMaxPulseWidthInMs( ) const {
-    return m_maxPulsewidthInMs;
+float getMaxPulseWidthInMs() const {
+  return m_maxPulsewidthInMs;
 }
