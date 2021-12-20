@@ -50,7 +50,7 @@ jobs:
         run: echo "${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}/bin" >> $GITHUB_PATH
 
       - name: Install Python dependencies
-        uses: py-actions/py-dependency-install@v2
+        uses: py-actions/py-dependency-install@v3
         with:
           path: "scripts/requirements.txt"
 
