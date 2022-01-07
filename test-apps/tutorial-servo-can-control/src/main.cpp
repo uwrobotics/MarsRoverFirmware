@@ -1,4 +1,3 @@
-#include "CANConfig.h"
 #include "CANInterface.h"
 #include "hw_bridge.h"
 #include "TutorialServo.hpp"
