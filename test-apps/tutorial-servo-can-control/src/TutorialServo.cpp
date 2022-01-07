@@ -7,15 +7,23 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float
   m_servoRangeInDegrees(servoRangeInDegrees),
   m_minPulsewidthInMs(minPulsewidthInMs),
   m_maxPulsewidthInMs(maxPulsewidthInMs)
-{}
+{
+  m_servoPwmOut.period_ms(20);
+}
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
-
-  m_servoPwmOut.period_ms(20);
   
-  m_servoPwmOut.pulsewidth((m_minPulsewidthInMs + degrees/m_servoRangeInDegrees) / 1000);
-  
+  if(degrees > m_servoRangeInDegrees) {
+      m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs);
+  }
+  else if (degrees < 0 ) {
+      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
+  }
+  else{
+      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs + degrees/(m_servoRangeInDegrees * 1000));
+  }  
 }
+
 float TutorialServo::getServoRangeInDegrees( ) const {
 
   return m_servoRangeInDegrees;
