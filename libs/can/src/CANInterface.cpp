@@ -55,12 +55,8 @@ void CANInterface::rxPostman(void) {
 void CANInterface::rxClient(void) {
   while (true) {
     CANMsg *mail = nullptr;
-
-    // Wait for a message to arrive
-    do {
-      mail = m_rxMailbox.try_get();  // using try_get() because try_get_for() was crashing
-      ThisThread::sleep_for(1ms); // TODO: Check for object in mailbox every ms
-    } while (mail == nullptr); 
+    // Check if a message has arrived:
+    mail = m_rxMailbox.try_get(); 
 
     MBED_ASSERT(mail != nullptr);
 
