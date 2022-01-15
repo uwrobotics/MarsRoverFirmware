@@ -55,12 +55,8 @@ void CANInterface::rxPostman(void) {
 void CANInterface::rxClient(void) {
   while (true) {
     CANMsg *mail = nullptr;
-
-    // Wait for a message to arrive
-    do {
-      mail = m_rxMailbox.try_get();  // using try_get() because try_get_for() was crashing
-      ThisThread::sleep_for(1ms);
-    } while (mail == nullptr);
+    // Check if a message has arrived:
+    mail = m_rxMailbox.try_get(); 
 
     MBED_ASSERT(mail != nullptr);
 
@@ -112,51 +108,47 @@ void CANInterface::rxClient(void) {
 }
 
 void CANInterface::txProcessor(void) {
-  while (true) {
-    auto startTime = Kernel::Clock::now();
+  auto startTime = Kernel::Clock::now();
 
-    CANMsg *mail = nullptr;
+  CANMsg *mail = nullptr;
 
-    // Send all one-shot messages that were queued
-    while ((mail = m_txMailboxOneShot.try_get()) != nullptr) {
-      if (!m_activeCANBus->write(*mail)) {
-        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_WRITE_FAILED), "CAN TX write failed");
+  // Send all one-shot messages that were queued
+  while ((mail = m_txMailboxOneShot.try_get()) != nullptr) {
+    if (!m_activeCANBus->write(*mail)) {
+      MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_WRITE_FAILED), "CAN TX write failed");
+      m_numCANTXFaults++;
+    }
+    MBED_ASSERT(m_txMailboxOneShot.free(mail) == osOK);
+    ThisThread::sleep_for(TX_INTERDELAY);
+  }
+
+  // Send all streamed messages
+  if (m_txMsgMap != nullptr) {
+    for (auto it = m_txMsgMap->begin(); it != m_txMsgMap->end(); it++) {
+      HWBRIDGE::CANID msgID          = it->first;
+      HWBRIDGE::CANMsgData_t msgData = {0};
+      size_t len                     = 0;
+
+      m_txMutex.lock();
+      bool msgPacked = HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txMsgMap, len);
+      m_txMutex.unlock();
+
+      if (msgPacked) {
+        // Send message
+        CANMsg msg;
+        msg.setID(msgID);
+        msg.setPayload(msgData, len);
+        m_activeCANBus->write(msg);
+
+        m_numStreamedMsgsSent++;
+
+        ThisThread::sleep_for(TX_INTERDELAY);
+      } else {
+        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                      "CAN TX message packing failed");
         m_numCANTXFaults++;
       }
-      MBED_ASSERT(m_txMailboxOneShot.free(mail) == osOK);
-      ThisThread::sleep_for(TX_INTERDELAY);
     }
-
-    // Send all streamed messages
-    if (m_txMsgMap != nullptr) {
-      for (auto it = m_txMsgMap->begin(); it != m_txMsgMap->end(); it++) {
-        HWBRIDGE::CANID msgID          = it->first;
-        HWBRIDGE::CANMsgData_t msgData = {0};
-        size_t len                     = 0;
-
-        m_txMutex.lock();
-        bool msgPacked = HWBRIDGE::packCANMsg(msgData.raw, msgID, m_txMsgMap, len);
-        m_txMutex.unlock();
-
-        if (msgPacked) {
-          // Send message
-          CANMsg msg;
-          msg.setID(msgID);
-          msg.setPayload(msgData, len);
-          m_activeCANBus->write(msg);
-
-          m_numStreamedMsgsSent++;
-
-          ThisThread::sleep_for(TX_INTERDELAY);
-        } else {
-          MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                       "CAN TX message packing failed");
-          m_numCANTXFaults++;
-        }
-      }
-    }
-
-    ThisThread::sleep_until(startTime + TX_PERIOD);
   }
 }
 
