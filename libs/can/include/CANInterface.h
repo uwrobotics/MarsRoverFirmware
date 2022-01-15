@@ -36,7 +36,7 @@ class CANInterface {
   bool getRXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t &signalValue);
 
   // Switch CAN bus
-  bool switchCANBus(HWBRIDGE::CANBUSID canBusID);
+  bool switchCANBus(HWBRIDGE::CANBUSID canBusID); // TODO: Unnecessary
 
   // Set CAN bus hw filter
   bool setFilter(HWBRIDGE::CANFILTER filter, CANFormat format = CANStandard,
