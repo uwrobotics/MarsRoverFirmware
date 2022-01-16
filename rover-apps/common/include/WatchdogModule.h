@@ -11,7 +11,7 @@ class WatchdogModule final : public Module {
   WatchdogModule();
 
   /* Periodic function to kick the watchdog and restart its timer every 1s
-   * */
+   */
   void periodic_1s(void) override;
 
   void periodic_10s(void) override {}

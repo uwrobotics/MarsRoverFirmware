@@ -1,4 +1,5 @@
 #include "AppConfig.h"
+#include "Logger.h"
 #include "mbed.h"
 
 Thread periodic_10s_thread(osPriorityNormal1);
@@ -12,7 +13,13 @@ void periodic_10s(void) {
   for (Module* module : gModules) {
     module->periodic_10s();
   }
-  ThisThread::sleep_until(startTime + 10s);
+
+  auto nextStartTime = startTime + 10s;
+  if (Kernel::Clock::now() > nextStartTime) {
+    Utility::logger << "Reseting periodic 10s task timing as it failed to hit the deadline!\n";
+    nextStartTime = Kernel::Clock::now() + 10s;
+  }
+  ThisThread::sleep_until(nextStartTime);
 }
 
 void periodic_1s(void) {
@@ -20,7 +27,13 @@ void periodic_1s(void) {
   for (Module* module : gModules) {
     module->periodic_1s();
   }
-  ThisThread::sleep_until(startTime + 1s);
+
+  auto nextStartTime = startTime + 1s;
+  if (Kernel::Clock::now() > nextStartTime) {
+    Utility::logger << "Reseting periodic 1s task timing as it failed to hit the deadline!\n";
+    nextStartTime = Kernel::Clock::now() + 1s;
+  }
+  ThisThread::sleep_until(nextStartTime);
 }
 
 void periodic_100ms(void) {
@@ -28,7 +41,13 @@ void periodic_100ms(void) {
   for (Module* module : gModules) {
     module->periodic_100ms();
   }
-  ThisThread::sleep_until(startTime + 100ms);
+
+  auto nextStartTime = startTime + 100ms;
+  if (Kernel::Clock::now() > nextStartTime) {
+    Utility::logger << "Reseting periodic 100ms task timing as it failed to hit the deadline!\n";
+    nextStartTime = Kernel::Clock::now() + 100ms;
+  }
+  ThisThread::sleep_until(nextStartTime);
 }
 
 void periodic_10ms(void) {
@@ -36,7 +55,13 @@ void periodic_10ms(void) {
   for (Module* module : gModules) {
     module->periodic_10ms();
   }
-  ThisThread::sleep_until(startTime + 10ms);
+
+  auto nextStartTime = startTime + 10ms;
+  if (Kernel::Clock::now() > nextStartTime) {
+    Utility::logger << "Reseting periodic 10ms task timing as it failed to hit the deadline!\n";
+    nextStartTime = Kernel::Clock::now() + 10ms;
+  }
+  ThisThread::sleep_until(nextStartTime);
 }
 
 void periodic_1ms(void) {
@@ -44,7 +69,13 @@ void periodic_1ms(void) {
   for (Module* module : gModules) {
     module->periodic_1ms();
   }
-  ThisThread::sleep_until(startTime + 1ms);
+
+  auto nextStartTime = startTime + 1ms;
+  if (Kernel::Clock::now() > nextStartTime) {
+    Utility::logger << "Reseting periodic 1ms task timing as it failed to hit the deadline!\n";
+    nextStartTime = Kernel::Clock::now() + 1ms;
+  }
+  ThisThread::sleep_until(nextStartTime);
 }
 
 int main() {
@@ -54,6 +85,6 @@ int main() {
   periodic_1s_thread.start(periodic_1s);
   periodic_10s_thread.start(periodic_10s);
 
-  while (true) {
-  }
+  while (true)
+    ;
 }

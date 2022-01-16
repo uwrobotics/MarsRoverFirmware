@@ -2,7 +2,7 @@ add_library(PDB_Monitoring STATIC)
 target_sources(PDB_Monitoring PRIVATE src/PDBMonitoring.cpp)
 target_include_directories(PDB_Monitoring PUBLIC
         include
-        ../common/include
+        ${ROVER_APPS_DIR}/common/include
         )
 target_link_libraries(PDB_Monitoring
         PRIVATE
@@ -11,8 +11,8 @@ target_link_libraries(PDB_Monitoring
         )
 
 add_executable(pdb_2021)
-target_sources(pdb_2021 PRIVATE ../common/src/main.cpp)
-target_include_directories(pdb_2021 PUBLIC include ../common/include)
+target_sources(pdb_2021 PRIVATE ${ROVER_APPS_DIR}/common/src/main.cpp)
+target_include_directories(pdb_2021 PUBLIC include ${ROVER_APPS_DIR}/common/include)
 target_link_libraries(pdb_2021
         PRIVATE
         CANBus
