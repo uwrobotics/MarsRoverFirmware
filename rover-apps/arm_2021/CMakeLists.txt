@@ -1,6 +1,6 @@
 add_executable(arm_2021)
-target_sources(arm_2021 PRIVATE src/main.cpp)
-target_include_directories(arm_2021 PUBLIC include)
+target_sources(arm_2021 PRIVATE ${ROVER_APPS_DIR}/common/src/main.cpp)
+target_include_directories(arm_2021 PUBLIC include ${ROVER_APPS_DIR}/common/include)
 target_link_libraries(arm_2021
         PRIVATE
         #Control
@@ -21,6 +21,8 @@ target_link_libraries(arm_2021
         CANMsg
         #Sensor
         CurrentSensor
+        #common-modules
+        WatchdogModule
         #Other
         uwrt-mars-rover-hw-bridge
         Logger

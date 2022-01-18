@@ -1,6 +1,6 @@
 add_executable(gimbal_2021)
-target_sources(gimbal_2021 PRIVATE src/main.cpp)
-target_include_directories(gimbal_2021 PUBLIC include)
+target_sources(gimbal_2021 PRIVATE ${ROVER_APPS_DIR}/common/src/main.cpp)
+target_include_directories(gimbal_2021 PUBLIC include ${ROVER_APPS_DIR}/common/include)
 target_link_libraries(gimbal_2021
         PRIVATE
         #Control
@@ -19,6 +19,8 @@ target_link_libraries(gimbal_2021
         CANMsg
         #Sensor
         CurrentSensor
+        #common-modules
+        WatchdogModule
         #Other
         Logger
         uwrt-mars-rover-hw-bridge
