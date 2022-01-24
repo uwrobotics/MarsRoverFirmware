@@ -1,2 +1,2 @@
 -r ../mbed-os/tools/cmake/requirements.txt
--r ./local-requirements.txt
+-r ./local-requirements/requirements.txt

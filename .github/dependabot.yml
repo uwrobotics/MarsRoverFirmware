@@ -29,7 +29,7 @@ updates:
       - "cindyli-13"
 
   - package-ecosystem: "pip"
-    directory: "/scripts"
+    directory: "/scripts/local-requirements"
     schedule:
       interval: "weekly"
     pull-request-branch-name:
