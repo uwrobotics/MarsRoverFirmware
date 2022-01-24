@@ -1,0 +1,4 @@
+PyYAML~=5.1
+mbed-tools~=7.3.3
+cantools~=36.2
+matplotlib~=3.4
