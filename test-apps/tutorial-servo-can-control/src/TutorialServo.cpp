@@ -14,13 +14,13 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float
 void TutorialServo::setPositionInDegrees(const float degrees) {
   
   if(degrees > m_servoRangeInDegrees) {
-      m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs);
+      m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs/1000);
   }
   else if (degrees < 0 ) {
-      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
+      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs/1000);
   }
   else{
-      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs + degrees/(m_servoRangeInDegrees * 1000));
+      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs/1000 + degrees/(m_servoRangeInDegrees * 1000));
   }  
 }
 

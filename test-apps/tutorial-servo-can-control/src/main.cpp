@@ -7,11 +7,14 @@ CANBus can(CAN1_RX, CAN1_TX);
 
 int main(){
 
-  float percent;
+  float percent, degrees;
   CANMsg rxMsg;
 
-  can.read(rxMsg);
+  while(true) {
+    can.read(rxMsg);
 
-  rxMsg.getPayload(percent);
-  servo.setPositionInDegrees(percent);
+    rxMsg.getPayload(percent);
+    degrees = servo.getServoRangeInDegrees();
+    servo.setPositionInDegrees(degrees*percent);
+  }
 }
