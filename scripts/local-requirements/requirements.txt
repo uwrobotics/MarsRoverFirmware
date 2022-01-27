@@ -1,4 +1,4 @@
 PyYAML~=5.1
 mbed-tools~=7.50.0
-cantools~=36.2
+cantools~=37.0
 matplotlib~=3.4
