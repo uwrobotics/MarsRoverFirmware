@@ -60,16 +60,14 @@ class CANInterface {
 
   void rxISR(void);
   void rxPostman(void);
-  void rxClient(void);
-  void txProcessor(void);
+  void rxClientPeriodic(void);
+  void txProcessorPeriodic(void);
 
   CANBus m_CANBus1;
   CANBus m_CANBus2;
   CANBus *m_activeCANBus;
 
   Thread m_rxPostmanThread;
-  Thread m_rxClientThread;
-  Thread m_txProcessorThread;
 
   Mutex m_rxMutex;
   Mutex m_txMutex;

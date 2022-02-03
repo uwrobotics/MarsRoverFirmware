@@ -5,8 +5,6 @@ CANInterface::CANInterface(const Config &config)
       m_CANBus2(config.can2_RX, config.can2_TX, config.frequency_hz),
       m_activeCANBus(&m_CANBus1),
       m_rxPostmanThread(RX_POSTMAN_THREAD_PRIORITY),
-      m_rxClientThread(RX_CLIENT_THREAD_PRIORITY),
-      m_txProcessorThread(TX_PROCESSOR_THREAD_PRIORITY),
       m_rxMsgMap(config.rxMsgMap),
       m_txMsgMap(config.txMsgMap),
       m_rxOneShotMsgHandler(config.rxOneShotMsgHandler),
@@ -22,8 +20,6 @@ CANInterface::CANInterface(const Config &config)
 
   // Processing threads
   m_rxPostmanThread.start(callback(&m_rxEventQueue, &EventQueue::dispatch_forever));
-  m_rxClientThread.start(callback(this, &CANInterface::rxClient));
-  m_txProcessorThread.start(callback(this, &CANInterface::txProcessor));
 
   // RX ISR
   m_CANBus1.attach(callback(this, &CANInterface::rxISR), CAN::RxIrq);
@@ -52,63 +48,60 @@ void CANInterface::rxPostman(void) {
   can_irq_set(m_activeCANBus->getHandle(), IRQ_RX, true);
 }
 
-void CANInterface::rxClient(void) {
-  while (true) {
-    CANMsg *mail = nullptr;
-    // Check if a message has arrived:
-    mail = m_rxMailbox.try_get(); 
+void CANInterface::rxClientPeriodic(void) {
+  CANMsg *mail = nullptr;
+  // Check if a message has arrived:
+  mail = m_rxMailbox.try_get(); 
 
-    MBED_ASSERT(mail != nullptr);
+  MBED_ASSERT(mail != nullptr);
 
-    // Extract message
-    CANMsg msg = *mail;
-    MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
+  // Extract message
+  CANMsg msg = *mail;
+  MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
 
-    // Check if message is intended to be received by this node
+  // Check if message is intended to be received by this node
+  m_rxMutex.lock();
+  bool validMsgReceived = (m_rxMsgMap != nullptr) && m_rxMsgMap->contains(msg.getID());
+  m_rxMutex.unlock();
+
+  if (validMsgReceived) {
+    HWBRIDGE::CANMsgData_t msgData;
+    msg.getPayload(msgData);
+
+    // Extract message signals and put into RX message map
     m_rxMutex.lock();
-    bool validMsgReceived = (m_rxMsgMap != nullptr) && m_rxMsgMap->contains(msg.getID());
+    bool msgUnpacked = HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxMsgMap);
     m_rxMutex.unlock();
 
-    if (validMsgReceived) {
-      HWBRIDGE::CANMsgData_t msgData;
-      msg.getPayload(msgData);
-
-      // Extract message signals and put into RX message map
-      m_rxMutex.lock();
-      bool msgUnpacked = HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxMsgMap);
-      m_rxMutex.unlock();
-
-      if (msgUnpacked) {
-        // If message is one-shot, process message
-        if ((m_rxOneShotMsgHandler != nullptr) && m_rxOneShotMsgHandler->contains(msg.getID())) {
-          if (m_rxOneShotMsgHandler->at(msg.getID())() != MBED_SUCCESS) {
-            MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
-                         "Failed to process CAN message");
-          }
-          m_numOneShotMsgsReceived++;
+    if (msgUnpacked) {
+      // If message is one-shot, process message
+      if ((m_rxOneShotMsgHandler != nullptr) && m_rxOneShotMsgHandler->contains(msg.getID())) {
+        if (m_rxOneShotMsgHandler->at(msg.getID())() != MBED_SUCCESS) {
+          MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
+                        "Failed to process CAN message");
         }
-        // Otherwise message is streamed
-        else {
-          m_numStreamedMsgsReceived++;
-        }
-      } else {
-        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                     "CAN RX message unpacking failed");
-        m_numCANRXFaults++;
+        m_numOneShotMsgsReceived++;
       }
-    }
-
-    // Otherwise invalid message was received
-    else {
+      // Otherwise message is streamed
+      else {
+        m_numStreamedMsgsReceived++;
+      }
+    } else {
       MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                   "Invalid CAN message received");
+                    "CAN RX message unpacking failed");
       m_numCANRXFaults++;
     }
   }
+
+  // Otherwise invalid message was received
+  else {
+    MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                  "Invalid CAN message received");
+    m_numCANRXFaults++;
+  }
 }
 
-void CANInterface::txProcessor(void) {
-  auto startTime = Kernel::Clock::now();
+void CANInterface::txProcessorPeriodic(void) {
 
   CANMsg *mail = nullptr;
 
@@ -119,7 +112,6 @@ void CANInterface::txProcessor(void) {
       m_numCANTXFaults++;
     }
     MBED_ASSERT(m_txMailboxOneShot.free(mail) == osOK);
-    ThisThread::sleep_for(TX_INTERDELAY);
   }
 
   // Send all streamed messages
@@ -142,7 +134,6 @@ void CANInterface::txProcessor(void) {
 
         m_numStreamedMsgsSent++;
 
-        ThisThread::sleep_for(TX_INTERDELAY);
       } else {
         MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
                       "CAN TX message packing failed");
