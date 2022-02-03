@@ -91,6 +91,7 @@ endfunction()
 ## Include Rover Apps
 add_subdirectory(${ROVER_APPS_DIR}/common)
 add_app_subdirectory(${ROVER_APPS_DIR}/arm_2021)
+add_app_subdirectory(${ROVER_APPS_DIR}/bms_2022)
 add_app_subdirectory(${ROVER_APPS_DIR}/gamepad_2021)
 add_app_subdirectory(${ROVER_APPS_DIR}/gimbal_2021)
 add_app_subdirectory(${ROVER_APPS_DIR}/pdb_2021)

@@ -16,6 +16,9 @@ pdb_2021:
 science_2021:
   - SCIENCE_REV2_2021
 
+bms_2022:
+  - PDB_REV2_2021
+
 # Test Apps
 test-aeat-6012:
   - UWRT_NUCLEO
