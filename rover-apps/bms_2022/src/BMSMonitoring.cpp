@@ -3,19 +3,22 @@
 #include <cmath>
 
 #include "Logger.h"
+#include "mbed.h"
+
+SPI spi(SDI, SDO, CLK); // mosi, miso, sclk
+AnalogIn currentADC(CURR_ANLG_IN);
+DigitalOut buzzer_en(BUZZER_EN);
+DigitalOut chip_select(SAMPL);
 
 BMSMonitoring::BMSMonitoring() {
-    buzzer_en(BUZZER_EN);
-    currentADC(CURR_ANLG_IN);
-    spi(SDI, SDO, CLK); // mosi, miso, sclk
-    chip_select(SAMPL);
-    chip_select = 1;
-    spi.format(24,3); 
-    spi.frequency(1000000);
+  buzzer_en.write(0);
+  chip_select.write(1);
+  spi.format(24,3); 
+  spi.frequency(1000000);
 }
 
 void BMSMonitoring::cell_monitoring() {
-  chip_select = 0;
+  chip_select.write(0);
   //is_cell_balancing = getRXSignal
   int spi_message = 0b000000000000000000000000;
   if(is_cell_balancing){
@@ -28,6 +31,7 @@ void BMSMonitoring::cell_monitoring() {
   }
   //setTXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t signalValue);
 
+  chip_select.write(1);
 
   //if voltage is too low on one cell, enable balancing on that cell
   //only way to balance is to keep all fets on so cells always have same voltage
@@ -35,7 +39,7 @@ void BMSMonitoring::cell_monitoring() {
 
 void BMSMonitoring::current_monitoring() {
 
-  float current = (currentADC.read_voltage() * 20) -33; 
+  float current = (currentADC.read() * 20) -33; 
   if(current < 0){
     current = 0;
   }else if(current > 29){

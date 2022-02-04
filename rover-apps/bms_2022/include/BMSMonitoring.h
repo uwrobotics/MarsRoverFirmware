@@ -20,11 +20,7 @@ class BMSMonitoring final : public Module {
   void current_monitoring();
   void cell_monitoring();
   
-  SPI spi;
-  DigitalOut chip_select;
   int cell_voltages[12];
-  DigitalOut buzzer_en;
-  AnalogIn currentADC;
   bool is_cell_balancing = false;
   int coloumb_count = 0;
   const int battery_capacity = 22000; // mAh
