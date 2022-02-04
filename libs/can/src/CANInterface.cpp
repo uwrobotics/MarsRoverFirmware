@@ -53,51 +53,51 @@ void CANInterface::rxClientPeriodic(void) {
   // Check if a message has arrived:
   mail = m_rxMailbox.try_get(); 
 
-  MBED_ASSERT(mail != nullptr);
+  if (mail != nullptr) {
+    // Extract message
+    CANMsg msg = *mail;
+    MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
 
-  // Extract message
-  CANMsg msg = *mail;
-  MBED_ASSERT(m_rxMailbox.free(mail) == osOK);
-
-  // Check if message is intended to be received by this node
-  m_rxMutex.lock();
-  bool validMsgReceived = (m_rxMsgMap != nullptr) && m_rxMsgMap->contains(msg.getID());
-  m_rxMutex.unlock();
-
-  if (validMsgReceived) {
-    HWBRIDGE::CANMsgData_t msgData;
-    msg.getPayload(msgData);
-
-    // Extract message signals and put into RX message map
+    // Check if message is intended to be received by this node
     m_rxMutex.lock();
-    bool msgUnpacked = HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxMsgMap);
+    bool validMsgReceived = (m_rxMsgMap != nullptr) && m_rxMsgMap->contains(msg.getID());
     m_rxMutex.unlock();
 
-    if (msgUnpacked) {
-      // If message is one-shot, process message
-      if ((m_rxOneShotMsgHandler != nullptr) && m_rxOneShotMsgHandler->contains(msg.getID())) {
-        if (m_rxOneShotMsgHandler->at(msg.getID())() != MBED_SUCCESS) {
-          MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
-                        "Failed to process CAN message");
+    if (validMsgReceived) {
+      HWBRIDGE::CANMsgData_t msgData;
+      msg.getPayload(msgData);
+
+      // Extract message signals and put into RX message map
+      m_rxMutex.lock();
+      bool msgUnpacked = HWBRIDGE::unpackCANMsg(msgData.raw, msg.getID(), m_rxMsgMap);
+      m_rxMutex.unlock();
+
+      if (msgUnpacked) {
+        // If message is one-shot, process message
+        if ((m_rxOneShotMsgHandler != nullptr) && m_rxOneShotMsgHandler->contains(msg.getID())) {
+          if (m_rxOneShotMsgHandler->at(msg.getID())() != MBED_SUCCESS) {
+            MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_FAILED_OPERATION),
+                         "Failed to process CAN message");
+          }
+          m_numOneShotMsgsReceived++;
         }
-        m_numOneShotMsgsReceived++;
+        // Otherwise message is streamed
+        else {
+          m_numStreamedMsgsReceived++;
+        }
+      } else {
+        MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
+                     "CAN RX message unpacking failed");
+        m_numCANRXFaults++;
       }
-      // Otherwise message is streamed
-      else {
-        m_numStreamedMsgsReceived++;
-      }
-    } else {
+    }
+
+    // Otherwise invalid message was received
+    else {
       MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                    "CAN RX message unpacking failed");
+                   "Invalid CAN message received");
       m_numCANRXFaults++;
     }
-  }
-
-  // Otherwise invalid message was received
-  else {
-    MBED_WARNING(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INVALID_DATA_DETECTED),
-                  "Invalid CAN message received");
-    m_numCANRXFaults++;
   }
 }
 
