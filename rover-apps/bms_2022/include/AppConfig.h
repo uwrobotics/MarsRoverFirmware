@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "Module.h"
 #include "BMSMonitoring.h"
+#include "Module.h"
 
 BMSMonitoring BMS_Monitoring;
 

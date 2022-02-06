@@ -195,13 +195,13 @@ typedef enum {
   // LOAD_17V_FAULT   = PC_5,
 
   /**** BMS ****/
-  BUZZER_EN        = PC_5,
-  CURR_ANLG_IN     = PC_8,
-  CLK              = PB_7,
-  SDI              = PB_8,
-  SDO              = PB_9,
-  SAMPL            = PB_10,
-  
+  BUZZER_EN    = PC_5,
+  CURR_ANLG_IN = PC_8,
+  CLK          = PB_7,
+  SDI          = PB_8,
+  SDO          = PB_9,
+  SAMPL        = PB_10,
+
   /**** LED Matrix ****/
   LED_MATRIX_R_CHANNEL = PB_4,
   LED_MATRIX_G_CHANNEL = PB_5,
