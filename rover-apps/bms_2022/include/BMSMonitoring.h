@@ -23,9 +23,9 @@ class BMSMonitoring final : public Module {
   void send_can_data();
 
   int cell_voltages[12];
-  bool is_cell_balancing = false;
-  int coloumb_count = 0;
-  const int battery_capacity = 22000; // mAh
+  bool is_cell_balancing     = false;
+  int coloumb_count          = 0;
+  const int battery_capacity = 22000;  // mAh
   int battery_percent_couloumb;
   int battery_percent_voltage;
   int battery_voltage;

@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-#include "Logger.h"
 #include "CANConfig.h"
+#include "Logger.h"
 #include "hw_bridge.h"
 
 const float PDBMonitoring::PDB_VBAT_RAIL_NOMINAL_VOLTAGE = 48.0;
@@ -21,7 +21,7 @@ const float PDBMonitoring::PDB_5V_RAIL_MAX_THRESHOLD   = 6.0;
 const float PDBMonitoring::PDB_TEMPERATURE_MIN_THRESHOLD = 10.0;
 const float PDBMonitoring::PDB_TEMPERATURE_MAX_THRESHOLD = 50.0;
 
-HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES LED_matrix_status   = HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::False;
+HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES LED_matrix_status = HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::False;
 
 CANInterface can(CANConfig::config);
 
@@ -45,7 +45,7 @@ PDBMonitoring::PDBMonitoring()
       LED_matrix_red(LED_MATRIX_R_CHANNEL),
       LED_matrix_blue(LED_MATRIX_B_CHANNEL),
       LED_matrix_green(LED_MATRIX_G_CHANNEL),
-  {
+{
   load1_5V_diag_en.write(1);
   load2_5V_diag_en.write(1);
   load3_5V_diag_en.write(1);
@@ -60,31 +60,31 @@ void PDBMonitoring::load_monitoring() {
   if (load1_5V_diag_en && !load1_5V_fault_n) {
     load1_5V_diag_en.write(0);
     Utility::logger << "Fault on 5V load 1\n";
-  }else{
+  } else {
     load1_5V_diag_en.write(1);
   }
   if (load2_5V_diag_en && !load2_5V_fault_n) {
     Utility::logger << "Fault on 5V load 2\n";
     load2_5V_diag_en.write(0);
-  }else{
+  } else {
     load2_5V_diag_en.write(1);
   }
   if (load3_5V_diag_en && !load3_5V_fault_n) {
     Utility::logger << "Fault on 5V load 3\n";
     load3_5V_diag_en.write(0);
-  }else{
+  } else {
     load3_5V_diag_en.write(1);
   }
   if (load4_5V_diag_en && !load4_5V_fault_n) {
     Utility::logger << "Fault on 5V load 4\n";
     load4_5V_diag_en.write(0);
-  }else{
+  } else {
     load4_5V_diag_en.write(1);
   }
   if (load_17V_diag_en && !load_17V_fault_n) {
     Utility::logger << "Fault on 17V load\n";
     load_17V_diag_en.write(0);
-  }else{
+  } else {
     load_17V_diag_en.write(1);
   }
 }
@@ -105,46 +105,46 @@ void PDBMonitoring::rail_monitoring() {
   }
 
   // Sends can status messaging
-  //TODO: Make CAN sending work
-  if(rail_17V_voltage < PDB_17V_RAIL_MIN_THRESHOLD){
+  // TODO: Make CAN sending work
+  if (rail_17V_voltage < PDB_17V_RAIL_MIN_THRESHOLD) {
     can.setTXSignalValue(HWBRIDGE::CANID::PDB_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::PDB_17_V_RAIL_STATUS_VALUES,
                          HWBRIDGE::CANSIGNAL::PDB_17_V_RAIL_STATUS_VALUES::UNDERVOLTAGE);
-  }else if(rail_17V_voltage > PDB_17V_RAIL_MAX_THRESHOLD){
+  } else if (rail_17V_voltage > PDB_17V_RAIL_MAX_THRESHOLD) {
     can.setTXSignalValue(HWBRIDGE::CANID::PDB_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::PDB_17_V_RAIL_STATUS_VALUES,
                          HWBRIDGE::CANSIGNAL::PDB_17_V_RAIL_STATUS_VALUES::OVERVOLTAGE);
-  }else{
+  } else {
     can.setTXSignalValue(HWBRIDGE::CANID::PDB_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::PDB_17_V_RAIL_STATUS_VALUES,
                          HWBRIDGE::CANSIGNAL::PDB_17_V_RAIL_STATUS_VALUES::OPERATIONAL);
   }
 
-  if(rail_5V_voltage < PDB_5V_RAIL_MIN_THRESHOLD){
+  if (rail_5V_voltage < PDB_5V_RAIL_MIN_THRESHOLD) {
     can.setTXSignalValue(HWBRIDGE::CANID::PDB_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::PDB_5_V_RAIL_STATUS_VALUES,
                          HWBRIDGE::CANSIGNAL::PDB_5_V_RAIL_STATUS_VALUES::UNDERVOLTAGE);
-  }else if(rail_5V_voltage > PDB_5V_RAIL_MAX_THRESHOLD){
+  } else if (rail_5V_voltage > PDB_5V_RAIL_MAX_THRESHOLD) {
     can.setTXSignalValue(HWBRIDGE::CANID::PDB_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::PDB_5_V_RAIL_STATUS_VALUES,
                          HWBRIDGE::CANSIGNAL::PDB_5_V_RAIL_STATUS_VALUES::OVERVOLTAGE);
-  }else{
+  } else {
     can.setTXSignalValue(HWBRIDGE::CANID::PDB_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::PDB_5_V_RAIL_STATUS_VALUES,
                          HWBRIDGE::CANSIGNAL::PDB_5_V_RAIL_STATUS_VALUES::OPERATIONAL);
-
   }
 }
-void PDBMonitoring::LED_matrix(){
-  //TODO: Make CAN receive work
-  can.getRXSignalValue(HWBRIDGE::CANID::PDB_SET_LED_MATRIX, HWBRIDGE::CANSIGNAL::PDB_LED_MATRIX_STATE, LED_matrix_status);
-  if(LED_matrix_status == HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::SOLID_RED){
+void PDBMonitoring::LED_matrix() {
+  // TODO: Make CAN receive work
+  can.getRXSignalValue(HWBRIDGE::CANID::PDB_SET_LED_MATRIX, HWBRIDGE::CANSIGNAL::PDB_LED_MATRIX_STATE,
+                       LED_matrix_status);
+  if (LED_matrix_status == HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::SOLID_RED) {
     LED_matrix_red.write(1);
     LED_matrix_green.write(0);
     LED_matrix_blue.write(0);
-  }else if(LED_matrix_status == HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::FLASHING_GREEN){
+  } else if (LED_matrix_status == HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::FLASHING_GREEN) {
     LED_matrix_green.write(0.50f);
     LED_matrix_blue.write(0);
     LED_matrix_red.write(0);
-  }else if(LED_matrix_status == HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::SOLID_BLUE){
+  } else if (LED_matrix_status == HWBRIDGE::PDB_LED_MATRIX_STATE_VALUES::SOLID_BLUE) {
     LED_matrix_blue.write(1);
     LED_matrix_red.write(0);
     LED_matrix_green.write(0);
-  }else{
+  } else {
     LED_matrix_blue.write(0);
     LED_matrix_red.write(0);
     LED_matrix_green.write(0);
