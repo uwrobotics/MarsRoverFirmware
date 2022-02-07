@@ -11,6 +11,5 @@ class PollingSensors final : Sensor {
   bool getStatus() const override;
   [[nodiscard]] bool reset() override;
   [[nodiscard]] bool update() override;
-  
-  //Add functions specific to sensor modules  
+  // Add functions specific to sensor modules
 };
