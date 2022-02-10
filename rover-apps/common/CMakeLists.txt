@@ -7,12 +7,12 @@ target_link_libraries(WatchdogModule
         mbed-os
         )
 
-add_library(CANDriverModule)
+add_library(CANDriverModule STATIC)
 target_sources(CANDriverModule PRIVATE src/CANDriverModule.cpp)
 target_include_directories(CANDriverModule PUBLIC include)
 target_link_libraries(CANDriverModule
         PRIVATE
         CANInterface
-        mbed-os    
+        mbed-os
         )
 

@@ -24,6 +24,7 @@ target_link_libraries(science_2021
         AdafruitSTEMMA
         #common-modules
         WatchdogModule
+        CANDriverModule
         #Other
         uwrt-mars-rover-hw-bridge
         Logger

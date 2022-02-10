@@ -33,7 +33,6 @@ target_link_libraries(CANInterface
         PUBLIC
         mbed-os
         mbed-events
-        PRIVATE
         uwrt-mars-rover-hw-bridge
         CANBus
         CANMsg

@@ -4,6 +4,7 @@
 
 #include "Module.h"
 #include "WatchdogModule.h"
+#include "CANDriverModule.h"
 
 WatchdogModule science_watchdog;
 

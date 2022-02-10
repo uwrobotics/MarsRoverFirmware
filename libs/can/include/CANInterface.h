@@ -51,6 +51,9 @@ class CANInterface {
   uint16_t getNumCANRXFaults(void);
   uint16_t getNumCANTXFaults(void);
 
+  void rxClientPeriodic(void);
+  void txProcessorPeriodic(void);
+
  private:
   static constexpr osPriority RX_POSTMAN_THREAD_PRIORITY   = osPriorityRealtime;
   static constexpr osPriority RX_CLIENT_THREAD_PRIORITY    = osPriorityAboveNormal;
@@ -60,8 +63,6 @@ class CANInterface {
 
   void rxISR(void);
   void rxPostman(void);
-  void rxClientPeriodic(void);
-  void txProcessorPeriodic(void);
 
   CANBus m_CANBus1;
   CANBus m_CANBus2;
