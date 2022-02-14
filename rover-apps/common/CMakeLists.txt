@@ -13,6 +13,7 @@ target_include_directories(CANDriverModule PUBLIC include)
 target_link_libraries(CANDriverModule
         PRIVATE
         CANInterface
+        CANMsg
         mbed-os
         )
 

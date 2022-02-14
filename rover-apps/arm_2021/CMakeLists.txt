@@ -23,6 +23,7 @@ target_link_libraries(arm_2021
         CurrentSensor
         #common-modules
         WatchdogModule
+        CANDriverModule
         #Other
         uwrt-mars-rover-hw-bridge
         Logger
