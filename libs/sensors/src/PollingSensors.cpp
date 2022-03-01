@@ -4,7 +4,10 @@
 
 using namespace Sensor;
 
-PollingSensors::PollingSensors() : moisture_in_adc(MOISTURE_IN), CO2_in_adc(CO2_IN) {}
+PollingSensors::PollingSensors(PinName moisture_in, PinName co2_in) {
+  moisture_in_adc = MOISTURE_IN;
+  CO2_in_adc      = CO2_IN;
+}
 
 // The function currently logs a status message. Can be changed to return just a float indicating the sensor value
 float moisture_monitoring() {

@@ -6,7 +6,7 @@
 namespace Sensor {
 class PollingSensors final : Sensor {
  public:
-  PollingSensors();
+  PollingSensors(PinName moisture_in, PinName co2_in);
 
   //        float read() override;
   //

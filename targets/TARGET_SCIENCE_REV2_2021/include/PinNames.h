@@ -216,12 +216,7 @@ typedef enum {
   SYS_JTCK_SWCLK = PA_14,
   SYS_JTDI       = PA_15,
   SYS_JTDO_SWO   = PB_3,
-  SYS_JTMS_SWDIO = PA_13,
-
-  /**** POLLING SENSOR pins ****/
-  /* TODO: CHANGE THE PIN NUMBERS ONCE SCHEMATIC IS READY*/
-  MOISTURE_IN = PC_7,
-  CO2_IN      = PC_8,
+  SYS_JTMS_SWDIO = PA_13
 } PinName;
 
 #ifdef __cplusplus
