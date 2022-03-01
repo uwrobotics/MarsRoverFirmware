@@ -8,7 +8,7 @@ PollingSensors::PollingSensors(PinName moisture_in, PinName co2_in)
     : moisture_in_adc(moisture_in), CO2_in_adc(co2_in) {}
 
 // The function currently logs a status message. Can be changed to return just a float indicating the sensor value
-float moisture_monitoring() {
+float PollingSensors::moisture_monitoring() {
   float moisture_reading = (moisture_in_adc.read_voltage() * 5.0) / 1023.0;
 
   if (moisture_reading < 0 && moisture_reading > 900) {
@@ -18,7 +18,7 @@ float moisture_monitoring() {
   return moisture_reading;
 }
 
-float C02_monitoring() {
+float PollingSensors::C02_monitoring() {
   float CO2_reading = CO2_in_adc.read_voltage() * 1000;
 
   if (CO2_reading <= 0) {
