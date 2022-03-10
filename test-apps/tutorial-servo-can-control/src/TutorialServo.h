@@ -26,7 +26,7 @@ public :
     float getMaxPulseWidthInMs( ) const ;
  
 private :  
-    PwmOut *m_servoPwmOut ; 
+    PwmOut m_servoPwmOut ; 
     float m_servoRangeInDegrees ; 
     float m_minPulsewidthInMs; 
     float m_maxPulsewidthInMs; 
