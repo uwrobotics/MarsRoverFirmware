@@ -12,14 +12,16 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 }  // setting the servo period to 20 ms
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
-  float pulse = (degrees / m_servoRangeInDegrees) * (m_maxPulsewidthInMs - m_minPulsewidthInMs);
-
   if (degrees > m_servoRangeInDegrees) {
     m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs);
-  } else if (pulse < m_minPulsewidthInMs) {
-    m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
   } else {
-    m_servoPwmOut.pulsewidth(pulse);
+    float pulse = (1 + degrees / m_servoRangeInDegrees) / 1000;
+
+    if (pulse < m_minPulsewidthInMs) {
+      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
+    } else {
+      m_servoPwmOut.pulsewidth(pulse);
+    }
   }
 }
 
