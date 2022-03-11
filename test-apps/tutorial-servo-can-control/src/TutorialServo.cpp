@@ -13,15 +13,12 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
   if (degrees > m_servoRangeInDegrees) {
-    m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs);
-  } else {
-    float pulse = (1 + degrees / m_servoRangeInDegrees) / 1000;
-
-    if (pulse < m_minPulsewidthInMs) {
-      m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
-    } else {
-      m_servoPwmOut.pulsewidth(pulse);
-    }
+    m_servoPwmOut.pulsewidth_ms(m_maxPulsewidthInMs);
+  } else if (degrees >= 0 && degrees <= m_servoRangeInDegrees) {
+    // find the percentage of the pulse ms range to be moved, multuply it by the pulse ms range, then add it to your min
+    // pulse ms offset
+    m_servoPwmOut.pulsewidth_ms((degrees / m_servoRangeInDegrees) * (m_maxPulsewidthInMs - m_minPulsewidthInMs) +
+                                m_minPulsewidthInMs);
   }
 }
 
