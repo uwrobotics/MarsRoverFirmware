@@ -5,21 +5,22 @@
 using namespace Sensor;
 
 PollingSensors::PollingSensors(PinName moisture_in, PinName co2_in)
-    : moisture_in_adc(moisture_in), CO2_in_adc(co2_in) {}
+    : m_moisture_in_adc(moisture_in), m_CO2_in_adc(co2_in) {}
 
-// The function currently logs a status message. Can be changed to return just a float indicating the sensor value
+/*https://www.dfrobot.com/product-599.html*/
 float PollingSensors::moisture_monitoring() {
-  float moisture_reading = (moisture_in_adc.read_voltage() * 5.0) / 1023.0;
+  float moisture_reading = (m_moisture_in_adc.read_voltage() * 950) / 4.2;
 
-  if (moisture_reading < 0 && moisture_reading > 900) {
+  if (moisture_reading < 0 && moisture_reading > 950) {
     Utility::logger << "!!! MOISTURE FAULT:" << moisture_reading << "\n";
     return -1;
   }
   return moisture_reading;
 }
 
+/*https://www.dfrobot.com/product-1549.html*/
 float PollingSensors::C02_monitoring() {
-  float CO2_reading = CO2_in_adc.read_voltage() * 1000;
+  float CO2_reading = m_CO2_in_adc.read_voltage() * 1000;
 
   if (CO2_reading <= 0) {
     Utility::logger << "!!! CO2 FAULT:" << CO2_reading << "\n";

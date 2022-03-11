@@ -35,9 +35,9 @@ class PollingSensors final : Sensor {
 
  private:
   /*Pins configuration for moisture sensing*/
-  AnalogIn moisture_in_adc;
+  AnalogIn m_moisture_in_adc;
 
   /*Pins configuration for CO2 sensing*/
-  AnalogIn CO2_in_adc;
+  AnalogIn m_CO2_in_adc;
 };
 }  // namespace Sensor
