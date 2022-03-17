@@ -13,6 +13,9 @@ gimbal_2021:
 pdb_2021:
   - PDB_REV2_2021
 
+pdb_2022:
+  - PDB_REV2_2021
+
 science_2021:
   - SCIENCE_REV2_2021
 

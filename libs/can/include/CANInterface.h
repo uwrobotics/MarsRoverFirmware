@@ -30,10 +30,10 @@ class CANInterface {
   bool sendOneShotMessage(CANMsg &msg, Kernel::Clock::duration_u32 timeout);
 
   // Update a TX CAN signal
-  bool setTXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t signalValue);
-
+  bool setTXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t signalValue); //here
+// PDB_setLEDMatrix. 
   // Read a RX CAN signal
-  bool getRXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t &signalValue);
+  bool getRXSignalValue(HWBRIDGE::CANID msgID, HWBRIDGE::CANSIGNAL signalName, HWBRIDGE::CANSignalValue_t &signalValue); //here
 
   // Switch CAN bus
   bool switchCANBus(HWBRIDGE::CANBUSID canBusID);

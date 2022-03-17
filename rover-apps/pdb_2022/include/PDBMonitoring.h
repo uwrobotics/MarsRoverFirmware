@@ -20,14 +20,11 @@ class PDBMonitoring final : public Module {
   void load_monitoring();
   void rail_monitoring();
   void temperature_monitoring();
+  void LED_matrix();
 
   static const float PDB_VBAT_RAIL_NOMINAL_VOLTAGE;
   static const float PDB_VBAT_RAIL_MIN_THRESHOLD;
   static const float PDB_VBAT_RAIL_MAX_THRESHOLD;
-
-  static const float PDB_24V_RAIL_NOMINAL_VOLTAGE;
-  static const float PDB_24V_RAIL_MIN_THRESHOLD;
-  static const float PDB_24V_RAIL_MAX_THRESHOLD;
 
   static const float PDB_17V_RAIL_NOMINAL_VOLTAGE;
   static const float PDB_17V_RAIL_MIN_THRESHOLD;
@@ -44,7 +41,6 @@ class PDBMonitoring final : public Module {
   static const bool PDB_5V_LOAD2_DIAG_EN;
   static const bool PDB_5V_LOAD3_DIAG_EN;
   static const bool PDB_5V_LOAD4_DIAG_EN;
-  static const bool PDB_5V_LOAD5_DIAG_EN;
   static const bool PDB_17V_LOAD_DIAG_EN;
 
   /* Pins configuration for Load Monitoring */
@@ -60,18 +56,17 @@ class PDBMonitoring final : public Module {
   DigitalOut load4_5V_diag_en;
   DigitalIn load4_5V_fault_n;
 
-  DigitalOut load5_5V_diag_en;
-  DigitalIn load5_5V_fault_n;
-
   DigitalOut load_17V_diag_en;
   DigitalIn load_17V_fault_n;
+
+  DigitalOut LED_matrix_red;
+  PwmOut LED_matrix_green;
+  DigitalOut LED_matrix_blue;
 
   /* Pins configuration for Rail Monitoring */
   AnalogIn railBattery;
   AnalogIn rail5V;
   AnalogIn rail17V;
-  AnalogIn rail24V;
-  DigitalIn rail24V_pgood_n;
 
   /* Pins configuration for Temperature Monitoring */
   AnalogIn temperatureADC;
