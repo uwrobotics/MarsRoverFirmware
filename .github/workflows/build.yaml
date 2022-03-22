@@ -55,7 +55,7 @@ jobs:
           path: "scripts/requirements.txt"
 
       - name: Load Cached Arm Toolchain
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: toolchain-cache
         with:
           path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
