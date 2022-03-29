@@ -21,3 +21,13 @@ target_link_libraries(CurrentSensor
         Sensor
         mbed-os
         )
+add_library(PollingSensors STATIC)
+target_sources(PollingSensors PRIVATE src/PollingSensors.cpp)
+target_include_directories(PollingSensors PUBLIC include)
+target_link_libraries(PollingSensors
+        PRIVATE
+        Sensor
+        mbed-os
+        Logger
+        )
+
