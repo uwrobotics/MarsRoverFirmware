@@ -21,3 +21,13 @@ target_link_libraries(CurrentSensor
         Sensor
         mbed-os
         )
+
+add_library(ProximitySwitch STATIC)
+target_sources(ProximitySwitch PRIVATE src/ProximitySwitch.cpp)
+target_include_directories(ProximitySwitch PUBLIC include)
+target_link_libraries(ProximitySwitch
+        PRIVATE
+        Sensor
+        mbed-os
+        Logger
+        )
