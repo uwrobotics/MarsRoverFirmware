@@ -1,7 +1,7 @@
 #include "TutorialServo.h"
 
-TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0, float minPulsewidthInMs = 1,
-                             float maxPulsewidthInMs = 2)
+TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float minPulsewidthInMs,
+                             float maxPulsewidthInMs)
     : m_servoPwmOut(servoPin),
       m_servoRangeInDegrees(servoRangeInDegrees),
       m_minPulsewidthInMs(minPulsewidthInMs) m_maxPulsewidthInMs(maxPulsewidthInMs) {
@@ -10,10 +10,16 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees = 180.0
 }
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
-  // assume degress are always < 360
-
-  // neglect the case where desire degree to set to is greater than the range
-  if (degrees > m_servoRangeInDegrees) return;
+  // if user set degrees to greater than servo range, set servo to max position
+  if (degree <= 0) {
+    m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
+    return;
+  }
+  // if user set degrees to greater than servo range, set servo to max position
+  if (degrees >= m_servoRangeInDegrees) {
+    m_servoPwmOut.pulsewidth(m_maxPulsewidthInMs);
+    return;
+  };
 
   // ratio of degrees/range = pulseWidth/(maxPulseWidth - minPulseWidth)
   // map the desire degree to its corresponding pulseWidth according to the ratio above
@@ -22,13 +28,13 @@ void TutorialServo::setPositionInDegrees(const float degrees) {
 }
 
 float TutorialServo::getServoRangeInDegrees() const {
-  return this->m_servoRangeInDegrees;
+  return m_servoRangeInDegrees;
 }
 
 float TutorialServo::getMinPulseWidthInMs() const {
-  return this->m_minPulsewidthInMs;
+  return m_minPulsewidthInMs;
 }
 
 float TutorialServo::getMaxPulseWidthInMs() const {
-  return this->m_maxPulsewidthInMs;
+  return m_maxPulsewidthInMs;
 }

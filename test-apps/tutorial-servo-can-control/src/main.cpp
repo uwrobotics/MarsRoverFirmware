@@ -11,18 +11,18 @@ CAN can(PB_8, PB_9);
 // note that txMsg is not declared since I'm not sending packets
 CANMsg rxMsg;
 
+// using 1ms ~ 2ms and 0 ~ 180 degrees as the range mapping (default arguments)
+TutorialServo servo(servoPwmOut);
+
 int main() {
-  // pass no paramter to TutorialServo's constructor, using 1ms ~ 2ms and 0 ~ 180 degrees as the range mapping
-  TutorialServo servo = TutorialServo();
   float rangeOfMotionPercent;
 
   while (1) {
     can.read(rxMsg);
 
-    // a float is four byte, use >> operator to map it directly to rangeOfMotionPercent
-    rxMsg >> rangeOfMotionPercent;
+    rxMsg.getPayLoad(rangeOfMotionPercent);
 
-    servo.setPositionInDegrees(rxMsg);
+    servo.setPositionInDegrees(rangeOfMotionPercent);
   }
 
   return 0;
