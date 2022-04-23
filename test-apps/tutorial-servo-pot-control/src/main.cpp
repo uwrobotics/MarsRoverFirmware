@@ -5,7 +5,7 @@ PwmOut servoPwmOut(PA_1);
 
 int main() {
   // set servo digital signal's period to 20ms
-  servoPwnOut.period_ms(20);
+  servoPwmOut.period_ms(20);
   while (1) {
     // 0.0 ~ 3.3V
     float potVoltage = potVoltageIn.read();

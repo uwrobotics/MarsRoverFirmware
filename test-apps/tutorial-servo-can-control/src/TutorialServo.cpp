@@ -4,14 +4,15 @@ TutorialServo::TutorialServo(PinName servoPin, float servoRangeInDegrees, float 
                              float maxPulsewidthInMs)
     : m_servoPwmOut(servoPin),
       m_servoRangeInDegrees(servoRangeInDegrees),
-      m_minPulsewidthInMs(minPulsewidthInMs) m_maxPulsewidthInMs(maxPulsewidthInMs) {
+      m_minPulsewidthInMs(minPulsewidthInMs),
+      m_maxPulsewidthInMs(maxPulsewidthInMs) {
   // period depends on the servo itself, check datasheet
-  servoPwnOut.period_ms(20);
+  m_servoPwmOut.period_ms(20);
 }
 
 void TutorialServo::setPositionInDegrees(const float degrees) {
   // if user set degrees to greater than servo range, set servo to max position
-  if (degree <= 0) {
+  if (degrees <= 0) {
     m_servoPwmOut.pulsewidth(m_minPulsewidthInMs);
     return;
   }
