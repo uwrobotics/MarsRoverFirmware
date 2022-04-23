@@ -15,6 +15,7 @@ CANMsg rxMsg;
 TutorialServo servo(servoPwmOut);
 
 int main() {
+  //this float is always < 1
   float rangeOfMotionPercent;
 
   while (1) {
@@ -22,7 +23,7 @@ int main() {
 
     rxMsg.getPayLoad(rangeOfMotionPercent);
 
-    servo.setPositionInDegrees(rangeOfMotionPercent);
+    servo.setPositionInDegrees(rangeOfMotionPercent * servo.getServoRangeInDegrees());
   }
 
   return 0;
