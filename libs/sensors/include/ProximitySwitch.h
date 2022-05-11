@@ -16,6 +16,6 @@ class ProximitySwitch final : Sensor {
   [[nodiscard]] bool update() override {}
 
  private:
-  AnalogIn m_proximity_in_adc;
+  DigitalIn m_proximity_in_adc;
 };
 }  // namespace Sensor
