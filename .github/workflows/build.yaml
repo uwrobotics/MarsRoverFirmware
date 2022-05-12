@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set Build Matrix Output
         id: set-matrix
@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: 'recursive'
 
@@ -55,7 +55,7 @@ jobs:
           path: "scripts/requirements.txt"
 
       - name: Load Cached Arm Toolchain
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: toolchain-cache
         with:
           path: ${{ env.HOME }}/${{ env.ARM_TOOLS_DIR }}
