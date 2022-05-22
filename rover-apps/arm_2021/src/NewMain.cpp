@@ -1,19 +1,61 @@
-#include "ArmControllerModule.h"
+#include <cmath>
 
+#include "CANConfig.h"
+#include "LimServo.h"
+#include "Logger.h"
+#include "TurntableModule.h"
+
+CANInterface can(CANConfig::config);
+
+// initialize modules
+TurntableModule turntable();
+
+// initalize polling threads
+Thread periodic_1ms_thread(osPriorityRealtime);
+
+void periodic_1ms(CANInterface can) {
+  auto startTime = Kernel::Clock::now();
+  //   for (Module* module : gModules) {
+  //     module->periodic_1ms();
+  //   }
+  // call each module's polling function periodic_1ms
+  turntable.periodic_1ms(can);
+
+  // *** UPDATE JOINT SET POINTS ***
+
+  auto nextStartTime = startTime + 1ms;
+  if (Kernel::Clock::now() > nextStartTime) {
+    Utility::logger << "Periodic 1ms task failed to hit the deadline!\n";
+  }
+  ThisThread::sleep_until(nextStartTime);
+}
+
+int main() {
+  Utility::logger << "";  // Band-aid fix for logger bug (issue #328)
+
+  printf("\r\n\r\n");
+  printf("ARM APPLICATION STARTED\r\n");
+  printf("=======================\r\n");
+
+  // Set CAN filters
+  can.setFilter(HWBRIDGE::CANFILTER::ARM_RX_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 0);
+  can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
+
+  // Start polling threads
+  periodic_1ms_thread.start(callback(periodic_1ms, can));
+}
 
 // Convert degrees to radians
-float ArmControllerModule::DEG_TO_RAD(float deg) {
+static inline float DEG_TO_RAD(float deg) {
   return deg * M_PI / 180.0f;
 }
 
 // Convert radians to degrees
-float ArmControllerModule::RAD_TO_DEG(float rad) {
+static inline float RAD_TO_DEG(float rad) {
   return rad * 180.0f / M_PI;
 }
 
-// *** HANDLERS FOR CAN RX ONE-SHOTS ***
-
-mbed_error_status_t ArmControllerModule::armSetControlMode(void) {
+static mbed_error_status_t armSetControlMode(void) {
   bool success = true;
   HWBRIDGE::CANSignalValue_t controlMode;
 
@@ -85,7 +127,7 @@ mbed_error_status_t ArmControllerModule::armSetControlMode(void) {
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-mbed_error_status_t ArmControllerModule::armSetJointPIDParams(void) {
+static mbed_error_status_t armSetJointPIDParams(void) {
   bool success = true;
 
   HWBRIDGE::CANSignalValue_t jointID;
@@ -136,7 +178,7 @@ mbed_error_status_t ArmControllerModule::armSetJointPIDParams(void) {
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-mbed_error_status_t ArmControllerModule::armSetSafetyCheck(void) {
+static mbed_error_status_t armSetSafetyCheck(void) {
   bool success = true;
   HWBRIDGE::CANSignalValue_t jointID;
   HWBRIDGE::CANSignalValue_t safetyCheck;
@@ -188,7 +230,7 @@ mbed_error_status_t ArmControllerModule::armSetSafetyCheck(void) {
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-mbed_error_status_t ArmControllerModule::commonSwitchCANBus(void) {
+static mbed_error_status_t commonSwitchCANBus(void) {
   bool success = true;
   HWBRIDGE::CANSignalValue_t canBusID;
 
@@ -204,7 +246,7 @@ mbed_error_status_t ArmControllerModule::commonSwitchCANBus(void) {
   return success ? MBED_SUCCESS : MBED_ERROR_CODE_FAILED_OPERATION;
 }
 
-void ArmControllerModule::sendACK(HWBRIDGE::ARM_ACK_VALUES ackValue) {
+static void sendACK(HWBRIDGE::ARM_ACK_VALUES ackValue) {
   struct uwrt_mars_rover_can_arm_report_ack_t ackMsgStruct = {
       .arm_ack = static_cast<uint8_t>(ackValue),
   };
