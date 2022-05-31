@@ -22,7 +22,7 @@ class TurntableModule final : public Module {
   void periodic_10s(void) override;
   void periodic_100ms(void) override;
   void periodic_10ms(void) override;
-  void periodic_1ms(CANInterface can) override;
+  void periodic_1ms(CANInterface& can) override;
 
   Encoder::AEAT6012 encoder;
   Actuator::DCMotor motor;

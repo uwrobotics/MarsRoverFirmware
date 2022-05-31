@@ -25,13 +25,8 @@ static inline float RAD_TO_DEG(float rad) {
 int main() {
   Utility::logger << "";  // Band-aid fix for logger bug (issue #328)
 
-  HWBRIDGE::CANSignalValue_t turntableSetPoint  = 0;
-  HWBRIDGE::CANSignalValue_t shoulderSetPoint   = 0;
-  HWBRIDGE::CANSignalValue_t elbowSetPoint      = 0;
-  HWBRIDGE::CANSignalValue_t leftWristSetPoint  = 0;
-  HWBRIDGE::CANSignalValue_t rightWristSetPoint = 0;
-  HWBRIDGE::CANSignalValue_t clawSetPoint       = 0;
-  HWBRIDGE::CANSignalValue_t toolTipPosition    = 0;
+  HWBRIDGE::CANSignalValue_t clawSetPoint    = 0;
+  HWBRIDGE::CANSignalValue_t toolTipPosition = 0;
 
   printf("\r\n\r\n");
   printf("ARM APPLICATION STARTED\r\n");
@@ -43,126 +38,6 @@ int main() {
 
   while (true) {
     // *** PROCESS CAN RX SIGNALS ***
-
-    // Determine new turntable set point
-    switch (Turntable::manager.getActiveControlMode()) {
-      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
-      case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_POSITION,
-                             turntableSetPoint);
-        turntableSetPoint = RAD_TO_DEG(turntableSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_ANGULAR_VELOCITY, turntableSetPoint);
-        turntableSetPoint = RAD_TO_DEG(turntableSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_TURNTABLE_CURRENT,
-                             turntableSetPoint);
-        break;
-
-      default:
-        break;
-    }
-
-    // Determine new shoulder set point
-    switch (Shoulder::manager.getActiveControlMode()) {
-      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
-      case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_POSITION,
-                             shoulderSetPoint);
-        shoulderSetPoint = RAD_TO_DEG(shoulderSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_ANGULAR_VELOCITY, shoulderSetPoint);
-        shoulderSetPoint = RAD_TO_DEG(shoulderSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_SHOULDER_CURRENT,
-                             shoulderSetPoint);
-        break;
-
-      default:
-        break;
-    }
-
-    // Determine new elbow set point
-    switch (Elbow::manager.getActiveControlMode()) {
-      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
-      case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_POSITION,
-                             elbowSetPoint);
-        elbowSetPoint = RAD_TO_DEG(elbowSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_ANGULAR_VELOCITY, elbowSetPoint);
-        elbowSetPoint = RAD_TO_DEG(elbowSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_ELBOW_CURRENT,
-                             elbowSetPoint);
-        break;
-
-      default:
-        break;
-    }
-
-    // Determine new left wrist set point
-    switch (Wrist::leftManager.getActiveControlMode()) {
-      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
-      case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_POSITION,
-                             leftWristSetPoint);
-        leftWristSetPoint = RAD_TO_DEG(leftWristSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_ANGULAR_VELOCITY, leftWristSetPoint);
-        leftWristSetPoint = RAD_TO_DEG(leftWristSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_LEFT_WRIST_CURRENT,
-                             leftWristSetPoint);
-        break;
-
-      default:
-        break;
-    }
-
-    // Determine new right wrist set point
-    switch (Wrist::rightManager.getActiveControlMode()) {
-      case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
-      case HWBRIDGE::CONTROL::Mode::POSITION:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_POSITION,
-                             rightWristSetPoint);
-        rightWristSetPoint = RAD_TO_DEG(rightWristSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::VELOCITY:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_ANGULAR_VELOCITY,
-                             HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_ANGULAR_VELOCITY, rightWristSetPoint);
-        rightWristSetPoint = RAD_TO_DEG(rightWristSetPoint);
-        break;
-
-      case HWBRIDGE::CONTROL::Mode::CURRENT:
-        can.getRXSignalValue(HWBRIDGE::CANID::ARM_SET_JOINT_CURRENT, HWBRIDGE::CANSIGNAL::ARM_SET_RIGHT_WRIST_CURRENT,
-                             rightWristSetPoint);
-        break;
-
-      default:
-        break;
-    }
 
     // Determine new claw set point
     switch (Claw::manager.getActiveControlMode()) {
@@ -194,65 +69,21 @@ int main() {
     toolTipPosition = RAD_TO_DEG(toolTipPosition);
 
     // *** UPDATE JOINT SET POINTS ***
-    Turntable::manager.getActiveController()->setSetPoint(static_cast<float>(turntableSetPoint));
-    Shoulder::manager.getActiveController()->setSetPoint(static_cast<float>(shoulderSetPoint));
-    Elbow::manager.getActiveController()->setSetPoint(static_cast<float>(elbowSetPoint));
-    Wrist::leftManager.getActiveController()->setSetPoint(static_cast<float>(leftWristSetPoint));
-    Wrist::rightManager.getActiveController()->setSetPoint(static_cast<float>(rightWristSetPoint));
+
     Claw::manager.getActiveController()->setSetPoint(static_cast<float>(clawSetPoint));
     Tooltip::clawTooltipServo.setValue(static_cast<float>(toolTipPosition));
 
     // *** COMPUTE ACTUATOR CONTROLS ***
-    Turntable::manager.getActiveController()->update();
-    Elbow::manager.getActiveController()->update();
-    Shoulder::manager.getActiveController()->update();
-    Wrist::leftManager.getActiveController()->update();
-    Wrist::rightManager.getActiveController()->update();
+
     Claw::manager.getActiveController()->update();
 
     // *** UPDATE TX SIGNALS ***
 
     // Joint position
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_POSITION,
-                         DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngleDeg()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_SHOULDER_POSITION,
-                         DEG_TO_RAD(Shoulder::manager.getActiveController()->reportAngleDeg()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_ELBOW_POSITION,
-                         DEG_TO_RAD(Elbow::manager.getActiveController()->reportAngleDeg()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
-                         HWBRIDGE::CANSIGNAL::ARM_REPORT_LEFT_WRIST_POSITION,
-                         DEG_TO_RAD(Wrist::leftManager.getActiveController()->reportAngleDeg()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION,
-                         HWBRIDGE::CANSIGNAL::ARM_REPORT_RIGHT_WRIST_POSITION,
-                         DEG_TO_RAD(Wrist::rightManager.getActiveController()->reportAngleDeg()));
 
     // Joint angular velocity
     can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_CLAW_POSITION,
                          DEG_TO_RAD(Claw::manager.getActiveController()->reportAngleDeg()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                         HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_ANGULAR_VELOCITY,
-                         DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngularVelocityDegPerSec()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                         HWBRIDGE::CANSIGNAL::ARM_REPORT_SHOULDER_ANGULAR_VELOCITY,
-                         DEG_TO_RAD(Shoulder::manager.getActiveController()->reportAngularVelocityDegPerSec()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                         HWBRIDGE::CANSIGNAL::ARM_REPORT_ELBOW_ANGULAR_VELOCITY,
-                         DEG_TO_RAD(Elbow::manager.getActiveController()->reportAngularVelocityDegPerSec()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                         HWBRIDGE::CANSIGNAL::ARM_REPORT_LEFT_WRIST_ANGULAR_VELOCITY,
-                         DEG_TO_RAD(Wrist::leftManager.getActiveController()->reportAngularVelocityDegPerSec()));
-
-    can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
-                         HWBRIDGE::CANSIGNAL::ARM_REPORT_RIGHT_WRIST_ANGULAR_VELOCITY,
-                         DEG_TO_RAD(Wrist::rightManager.getActiveController()->reportAngularVelocityDegPerSec()));
 
     can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
                          HWBRIDGE::CANSIGNAL::ARM_REPORT_CLAW_ANGULAR_VELOCITY,

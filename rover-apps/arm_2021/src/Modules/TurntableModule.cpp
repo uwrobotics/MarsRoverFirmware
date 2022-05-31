@@ -17,7 +17,7 @@ TurntableModule::TurntableModule()
           Controller::OpenLoop(motor, encoder, std::nullopt, MAXDEGPERSEC, MAXCURRENT, LIM_TRNTBL_LHS, LIM_TRNTBL_RHS)),
       manager(Controller::ActuatorControllerManager(Internal::lut, HWBRIDGE::CONTROL::Mode::OPEN_LOOP)) {}
 
-void periodic_1ms(CANInterface can) override {
+void periodic_1ms(CANInterface& can) override {
   switch (manager.getActiveControlMode()) {
     case HWBRIDGE::CONTROL::Mode::OPEN_LOOP:
     case HWBRIDGE::CONTROL::Mode::POSITION:
@@ -40,4 +40,12 @@ void periodic_1ms(CANInterface can) override {
     default:
       break;
   }
+
+  manager.getActiveController()->setSetPoint(static_cast<float>(turntableSetPoint));
+  Turntable::manager.getActiveController()->update();
+  can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_POSITION, HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_POSITION,
+                       DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngleDeg()));
+  can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_JOINT_ANGULAR_VELOCITY,
+                       HWBRIDGE::CANSIGNAL::ARM_REPORT_TURNTABLE_ANGULAR_VELOCITY,
+                       DEG_TO_RAD(Turntable::manager.getActiveController()->reportAngularVelocityDegPerSec()));
 }
