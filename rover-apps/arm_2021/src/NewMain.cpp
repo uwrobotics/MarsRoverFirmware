@@ -8,20 +8,33 @@
 CANInterface can(CANConfig::config);
 
 // initialize modules
+ClawModue claw();
+ElbowModule elbow();
+ShoulderModule shoulder();
+TooltipModule tooltip();
 TurntableModule turntable();
+WristModule wrist();
 
 // initalize polling threads
 Thread periodic_1ms_thread(osPriorityRealtime);
 
-void periodic_1ms(CANInterface can) {
+void periodic_1ms() {
   auto startTime = Kernel::Clock::now();
-  //   for (Module* module : gModules) {
-  //     module->periodic_1ms();
-  //   }
   // call each module's polling function periodic_1ms
-  turntable.periodic_1ms(can);
 
-  // *** UPDATE JOINT SET POINTS ***
+  for (Module *module : gModules) {
+    module->periodic_1ms();
+  }
+  can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::ARM_NUM_CANRX_FAULTS,
+                       can.getNumCANRXFaults());
+  can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_FAULTS, HWBRIDGE::CANSIGNAL::ARM_NUM_CANTX_FAULTS,
+                       can.getNumCANTXFaults());
+
+  // Report diagnostics
+  can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_DIAGNOSTICS,
+                       HWBRIDGE::CANSIGNAL::ARM_REPORT_NUM_STREAMED_MSGS_RECEIVED, can.getNumStreamedMsgsReceived());
+  can.setTXSignalValue(HWBRIDGE::CANID::ARM_REPORT_DIAGNOSTICS,
+                       HWBRIDGE::CANSIGNAL::ARM_REPORT_NUM_ONE_SHOT_MSGS_RECEIVED, can.getNumOneShotMsgsReceived());
 
   auto nextStartTime = startTime + 1ms;
   if (Kernel::Clock::now() > nextStartTime) {
@@ -42,7 +55,7 @@ int main() {
   can.setFilter(HWBRIDGE::CANFILTER::COMMON_FILTER, CANStandard, HWBRIDGE::ROVER_CANID_FILTER_MASK, 1);
 
   // Start polling threads
-  periodic_1ms_thread.start(callback(periodic_1ms, can));
+  periodic_1ms_thread.start(periodic_1ms);
 }
 
 // Convert degrees to radians

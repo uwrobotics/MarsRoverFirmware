@@ -5,13 +5,11 @@
 #include "Current.h"
 #include "DCMotor.h"
 #include "LookupTable.h"
-#include "Module.h"
 #include "OpenLoop.h"
 #include "PID.h"
 #include "Position.h"
 #include "Velocity.h"
 #include "hw_bridge.h"
-#include "mbed.h"
 
 class TurntableModule final : public Module {
  public:
