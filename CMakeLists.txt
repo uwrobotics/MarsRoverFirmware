@@ -114,6 +114,7 @@ add_app_subdirectory(${TEST_APPS_DIR}/test-pwm)
 add_app_subdirectory(${TEST_APPS_DIR}/test-pwmin)
 add_app_subdirectory(${TEST_APPS_DIR}/test-quadrature64cpr)
 add_app_subdirectory(${TEST_APPS_DIR}/test-stress-can)
+add_app_subdirectory(${TEST_APPS_DIR}/test-temp-RH)
 add_app_subdirectory(${TEST_APPS_DIR}/test-units)
 add_app_subdirectory(${TEST_APPS_DIR}/test-watchdog)
 

@@ -32,37 +32,21 @@
  * This code has been modified to work with the sensor module
  */
 
-#ifndef MBED_DHT_H
-#define MBED_DHT_H
+#pragma once
 
 #include "Sensor.h"
 #include "mbed.h"
 
-// enum eType { DHT11 = 11, SEN11301P = 11, RHT01 = 11, DHT22 = 22, AM2302 = 22, SEN51035P = 22, RHT02 = 22, RHT03 = 22
-// };
-
-// enum eError {
-//   ERROR_NONE         = 0,
-//   BUS_BUSY           = 1,
-//   ERROR_NOT_PRESENT  = 2,
-//   ERROR_ACK_TOO_LONG = 3,
-//   ERROR_SYNC_TIMEOUT = 4,
-//   ERROR_DATA_TIMEOUT = 5,
-//   ERROR_CHECKSUM     = 6,
-//   ERROR_NO_PATIENCE  = 7
-// };
-
-// typedef enum { CELCIUS = 0, FARENHEIT = 1, KELVIN = 2 } eScale;
 namespace Sensor {
 class DHT final : public Sensor {
  public:
   DHT(PinName pin);
   ~DHT();
+  [[nodiscard]] bool reset() override;
   [[nodiscard]] bool update(void);
-  float read(void);
-  float alternateRead(void);
-  // float CalcdewPoint(float celsius, float humidity);
-  // float CalcdewPointFast(float celsius, float humidity);
+  float read(void) override;
+  float alternateRead(void) override;
+  bool getStatus() const override;
 
  private:
   time_t _lastReadTime;
@@ -74,9 +58,5 @@ class DHT final : public Sensor {
   int DHT_data[6];
   float CalcTemperature();
   float CalcHumidity();
-  // float ConvertCelciustoFarenheit(float);
-  // float ConvertCelciustoKelvin(float);
 };
 }  // namespace Sensor
-
-#endif

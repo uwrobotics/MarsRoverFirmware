@@ -71,6 +71,9 @@ test-adafruitSTEMMA:
   - SCIENCE_REV2_2021
   #  - UWRT_NUCLEO
 
+test-temp-RH:
+  - UWRT_NUCLEO
+
 test-units:
   - UWRT_NUCLEO
 

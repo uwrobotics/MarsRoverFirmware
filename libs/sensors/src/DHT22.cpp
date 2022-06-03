@@ -32,7 +32,7 @@
  * This code has been modified to work with the sensor module
  */
 
-#include "DHT.h"
+#include "DHT22.h"
 
 #define DHT_DATA_BIT_COUNT 41
 
@@ -50,7 +50,6 @@ bool DHT::update() {
   int i, j, retryCount, b;
   unsigned int bitTimes[DHT_DATA_BIT_COUNT];
 
-  // eError err         = ERROR_NONE;
   time_t currentTime = time(NULL);
 
   DigitalInOut DHT_io(_pin);
@@ -62,7 +61,6 @@ bool DHT::update() {
   // Only asks for data if more than 2 seconds has lapsed since last call
   if (!_firsttime) {
     if (int(currentTime - _lastReadTime) < 2) {
-      // err = ERROR_NO_PATIENCE;
       return false;
     }
   } else {
@@ -73,7 +71,6 @@ bool DHT::update() {
 
   do {
     if (retryCount > 125) {
-      // err = BUS_BUSY;
       return false;
     }
     retryCount++;
@@ -92,16 +89,11 @@ bool DHT::update() {
   retryCount = 0;
   do {
     if (retryCount > 40) {
-      // err = ERROR_NOT_PRESENT;
       return false;
     }
     retryCount++;
     wait_us(1);
   } while ((DHT_io == 1));
-
-  // if (err != ERROR_NONE) {
-  //   return false;
-  // }
 
   wait_us(80);
 
@@ -110,7 +102,6 @@ bool DHT::update() {
       retryCount = 0;
       do {
         if (retryCount > 75) {
-          // err = ERROR_DATA_TIMEOUT;
           return false;
         }
         retryCount++;
@@ -146,7 +137,6 @@ bool DHT::update() {
     _lastHumidity    = CalcHumidity();
 
   } else {
-    // err = ERROR_CHECKSUM;
     return false;
   }
 
@@ -170,46 +160,8 @@ float DHT::read() {
   return _lastHumidity;
 }
 
-// float DHT::ConvertCelciustoFarenheit(float celsius) {
-//   return celsius * 9 / 5 + 32;
-// }
-
-// float DHT::ConvertCelciustoKelvin(float celsius) {
-//   return celsius + 273.15;
-// }
-
-// dewPoint function NOAA
-// reference: http://wahiduddin.net/calc/density_algorithms.htm
-// float DHT::CalcdewPoint(float celsius, float humidity) {
-//   float A0  = 373.15 / (273.15 + celsius);
-//   float SUM = -7.90298 * (A0 - 1);
-//   SUM += 5.02808 * log10(A0);
-//   SUM += -1.3816e-7 * (pow(10, (11.344 * (1 - 1 / A0))) - 1);
-//   SUM += 8.1328e-3 * (pow(10, (-3.49149 * (A0 - 1))) - 1);
-//   SUM += log10(1013.246);
-//   float VP = pow(10, SUM - 3) * humidity;
-//   float T  = log(VP / 0.61078);  // temp var
-//   return (241.88 * T) / (17.558 - T);
-// }
-
-// // delta max = 0.6544 wrt dewPoint()
-// // 5x faster than dewPoint()
-// // reference: http://en.wikipedia.org/wiki/Dew_point
-// float DHT::CalcdewPointFast(float celsius, float humidity) {
-//   float a    = 17.271;
-//   float b    = 237.7;
-//   float temp = (a * celsius) / (b + celsius) + log(humidity / 100);
-//   float Td   = (b * temp) / (a - temp);
-//   return Td;
-// }
-
 // Returns the last read temperature in the wanted scale
 float DHT::alternateRead() {
-  // if (Scale == FARENHEIT)
-  //   return ConvertCelciustoFarenheit(_lastTemperature);
-  // else if (Scale == KELVIN)
-  //   return ConvertCelciustoKelvin(_lastTemperature);
-  // else
   return _lastTemperature;
 }
 
@@ -221,4 +173,14 @@ float DHT::CalcHumidity() {
   v += DHT_data[1];
   v /= 10;
   return float(v);
+}
+
+// No current purpose
+bool DHT::reset() {
+  return true;
+}
+
+// No current purpose
+bool DHT::getStatus() const {
+  return true;
 }
