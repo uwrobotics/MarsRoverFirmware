@@ -54,7 +54,6 @@ class DHT final : public Sensor {
   float _lastHumidity;
   PinName _pin;
   bool _firsttime;
-  int _DHTtype;
   int DHT_data[6];
   float CalcTemperature();
   float CalcHumidity();

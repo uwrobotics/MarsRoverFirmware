@@ -4,7 +4,7 @@
 #include "mbed.h"
 
 int main() {
-  Sensor::DHT sensor(A0);
+  Sensor::DHT sensor(D7);
   while (true) {
     // MBED_ASSERT(sensor.update());
 
@@ -12,13 +12,14 @@ int main() {
 
     if (sensor.update()) {
       printf("\r\nSensor data received\r\n");
+
+      ThisThread::sleep_for(1000ms);
+
+      printf("Humidity: %i\r\n", 1000 * (int)sensor.read());
+      printf("Temperature: %i\r\n", 1000 * (int)sensor.alternateRead());
+
     } else {
       printf("\r\nSensor reading failed\r\n");
     }
-
-    ThisThread::sleep_for(1000ms);
-
-    printf("Temperature: %f \r\n", sensor.read());
-    printf("Temperature: %f \r\n", sensor.alternateRead());
   }
 }

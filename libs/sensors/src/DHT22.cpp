@@ -61,6 +61,7 @@ bool DHT::update() {
   // Only asks for data if more than 2 seconds has lapsed since last call
   if (!_firsttime) {
     if (int(currentTime - _lastReadTime) < 2) {
+      printf("Too Fast!");
       return false;
     }
   } else {
@@ -71,6 +72,7 @@ bool DHT::update() {
 
   do {
     if (retryCount > 125) {
+      printf("Bus Busy");
       return false;
     }
     retryCount++;
@@ -85,29 +87,35 @@ bool DHT::update() {
   wait_us(40);
   DHT_io.input();
 
-  // Fails if no response from sensor
+  // Fails if sensor doesn't pull down data bus
   retryCount = 0;
   do {
     if (retryCount > 40) {
+      printf("No Response from sensor");
       return false;
     }
     retryCount++;
     wait_us(1);
   } while ((DHT_io == 1));
 
+  // Sensor pulls down for 80us
   wait_us(80);
 
+  // Gather data from sensor
   for (i = 0; i < 5; i++) {
     for (j = 0; j < 8; j++) {
       retryCount = 0;
       do {
         if (retryCount > 75) {
+          printf("Data Timeout");
           return false;
         }
         retryCount++;
         wait_us(1);
       } while (DHT_io == 0);
+
       wait_us(40);
+
       bitTimes[i * 8 + j] = DHT_io;
 
       int count = 0;
@@ -120,7 +128,7 @@ bool DHT::update() {
   DHT_io.output();
   DHT_io = 1;
 
-  // Populate DHT_data with sensor data
+  // Populate DHT_data byte array with bit data
   for (i = 0; i < 5; i++) {
     b = 0;
     for (j = 0; j < 8; j++) {
@@ -137,6 +145,7 @@ bool DHT::update() {
     _lastHumidity    = CalcHumidity();
 
   } else {
+    printf("Checksum failed");
     return false;
   }
 
