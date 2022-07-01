@@ -61,7 +61,7 @@ bool DHT::update() {
   // Only asks for data if more than 2 seconds has lapsed since last call
   if (!_firsttime) {
     if (int(currentTime - _lastReadTime) < 2) {
-      printf("Too Fast!");
+      // printf("Too Fast!");
       return false;
     }
   } else {
@@ -72,7 +72,7 @@ bool DHT::update() {
 
   do {
     if (retryCount > 125) {
-      printf("Bus Busy");
+      // printf("Bus Busy");
       return false;
     }
     retryCount++;
@@ -91,7 +91,7 @@ bool DHT::update() {
   retryCount = 0;
   do {
     if (retryCount > 40) {
-      printf("No Response from sensor");
+      // printf("No Response from sensor");
       return false;
     }
     retryCount++;
@@ -107,7 +107,7 @@ bool DHT::update() {
       retryCount = 0;
       do {
         if (retryCount > 75) {
-          printf("Data Timeout");
+          // printf("Data Timeout");
           return false;
         }
         retryCount++;
@@ -145,7 +145,7 @@ bool DHT::update() {
     _lastHumidity    = CalcHumidity();
 
   } else {
-    printf("Checksum failed");
+    // printf("Checksum failed");
     return false;
   }
 

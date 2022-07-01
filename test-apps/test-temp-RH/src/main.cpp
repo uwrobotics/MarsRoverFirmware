@@ -6,8 +6,6 @@
 int main() {
   Sensor::DHT sensor(D7);
   while (true) {
-    // MBED_ASSERT(sensor.update());
-
     ThisThread::sleep_for(2000ms);
 
     if (sensor.update()) {
