@@ -107,3 +107,11 @@ test-stress-can:
   - PDB_REV2_2021
   - SCIENCE_REV2_2021
   - UWRT_NUCLEO
+
+test-moisture-sensor:
+  - SCIENCE_REV2_2021
+  - UWRT_NUCLEO
+
+test-CO2-sensor:
+  - SCIENCE_REV2_2021
+  - UWRT_NUCLEO

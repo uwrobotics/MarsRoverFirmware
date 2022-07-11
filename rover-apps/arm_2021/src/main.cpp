@@ -10,7 +10,7 @@
 #include "TurntableConfig.h"
 #include "WristConfig.h"
 
-CANInterface can(CANConfig::config);
+CANInterface can(CANConfig::config)       ;
 
 // Convert degrees to radians
 static inline float DEG_TO_RAD(float deg) {
