@@ -9,11 +9,9 @@ updates:
     pull-request-branch-name:
       separator: "/"
     assignees:
-      - "wmmc88"
-      - "cindyli-13"
+      - "jahnavithota2011"
     reviewers:
-      - "wmmc88"
-      - "cindyli-13"
+      - "jahnavithota2011"
 
   - package-ecosystem: "gitsubmodule"
     directory: "/"
@@ -22,11 +20,9 @@ updates:
     pull-request-branch-name:
       separator: "/"
     assignees:
-      - "wmmc88"
-      - "cindyli-13"
+      - "jahnavithota2011"
     reviewers:
-      - "wmmc88"
-      - "cindyli-13"
+      - "jahnavithota2011"
 
   - package-ecosystem: "pip"
     directory: "/scripts/local-requirements"
@@ -35,9 +31,6 @@ updates:
     pull-request-branch-name:
       separator: "/"
     assignees:
-      - "wmmc88"
-      - "cindyli-13"
+      - "jahnavithota2011"
     reviewers:
-      - "wmmc88"
-      - "cindyli-13"
-
+      - "jahnavithota2011"
