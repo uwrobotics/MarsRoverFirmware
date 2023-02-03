@@ -21,6 +21,16 @@ target_link_libraries(CurrentSensor
         Sensor
         mbed-os
         )
+
+add_library(DHT22 STATIC)
+target_sources(DHT22 PRIVATE src/DHT22.cpp)
+target_include_directories(DHT22 PUBLIC include)
+target_link_libraries(DHT22
+        PRIVATE
+        Sensor
+        mbed-os
+        )
+
 add_library(PollingSensors STATIC)
 target_sources(PollingSensors PRIVATE src/PollingSensors.cpp)
 target_include_directories(PollingSensors PUBLIC include)
@@ -30,4 +40,3 @@ target_link_libraries(PollingSensors
         mbed-os
         Logger
         )
-
