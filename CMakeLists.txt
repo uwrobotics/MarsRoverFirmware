@@ -116,6 +116,7 @@ add_app_subdirectory(${TEST_APPS_DIR}/test-quadrature64cpr)
 add_app_subdirectory(${TEST_APPS_DIR}/test-stress-can)
 add_app_subdirectory(${TEST_APPS_DIR}/test-units)
 add_app_subdirectory(${TEST_APPS_DIR}/test-watchdog)
+add_app_subdirectory(${TEST_APPS_DIR}/test-odrive-can)
 
 # Ensure APP was specified
 if ("$ENV{APP}" STREQUAL "")

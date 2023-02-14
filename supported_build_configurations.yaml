@@ -107,3 +107,6 @@ test-stress-can:
   - PDB_REV2_2021
   - SCIENCE_REV2_2021
   - UWRT_NUCLEO
+
+test-odrive-can:
+  - UWRT_NUCLEO
