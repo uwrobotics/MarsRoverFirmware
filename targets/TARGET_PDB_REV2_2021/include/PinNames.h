@@ -169,7 +169,6 @@ typedef enum {
   /**** Voltage Measurement ****/
   RAIL_5V_ANLG_IN      = PA_4,
   RAIL_17V_ANLG_IN     = PA_5,
-  RAIL_24V_ANLG_IN     = PB_0,
   RAIL_BATTERY_ANLG_IN = PB_1,
   RAIL_24V_PGOOD_N     = PC_6,
 
@@ -192,8 +191,16 @@ typedef enum {
   LOAD5_5V_DIAG_EN = PB_8,
   LOAD5_5V_FAULT   = PB_9,
 
-  LOAD_17V_DIAG_EN = PC_4,
-  LOAD_17V_FAULT   = PC_5,
+  // LOAD_17V_DIAG_EN = PC_4,
+  // LOAD_17V_FAULT   = PC_5,
+
+  /**** BMS ****/
+  BUZZER_EN    = PC_5,
+  CURR_ANLG_IN = PC_8,
+  CLK          = PB_7,
+  SDI          = PB_8,
+  SDO          = PB_9,
+  SAMPL        = PB_10,
 
   /**** LED Matrix ****/
   LED_MATRIX_R_CHANNEL = PB_4,
