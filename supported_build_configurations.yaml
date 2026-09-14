@@ -101,6 +101,12 @@ test-quadrature64cpr:
 test-watchdog:
   - UWRT_NUCLEO
 
+tutorial-servo-pot-control:
+  - UWRT_NUCLEO
+
+tutorial-servo-can-control:
+  - UWRT_NUCLEO
+
 test-stress-can:
   - ARM_REV2_2021
   - GIMBAL_REV2_2021
