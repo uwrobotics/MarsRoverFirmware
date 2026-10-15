@@ -1,6 +1,16 @@
 add_executable(tutorial-servo-can-control)
 target_sources(tutorial-servo-can-control PRIVATE src/main.cpp)
-target_link_libraries(tutorial-servo-can-control PRIVATE mbed-os TutorialServo)
+target_include_directories(tutorial-servo-can-control PUBLIC include)
+target_link_libraries(tutorial-servo-can-control
+        PRIVATE
+        CANInterface
+        CANBus
+        CANMsg
+        Logger
+        mbed-os
+        uwrt-mars-rover-hw-bridge
+        TutorialServo
+        )
 mbed_set_post_build(tutorial-servo-can-control)
 
 add_library(TutorialServo STATIC)
